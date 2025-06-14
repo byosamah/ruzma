@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Layout from '@/components/Layout';
@@ -11,9 +10,11 @@ import { PersonalInformationForm } from '@/components/Profile/PersonalInformatio
 import { AccountSettingsCard } from '@/components/Profile/AccountSettingsCard';
 import { useSupabaseAuth } from '@/hooks/useSupabaseAuth';
 import { supabase } from '@/integrations/supabase/client';
+import { useTranslation } from 'react-i18next';
 
 const Profile = () => {
   const { user, profile, loading: authLoading, refreshProfile } = useSupabaseAuth();
+  const { t } = useTranslation();
   const [profilePicture, setProfilePicture] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [formData, setFormData] = useState({
@@ -137,15 +138,15 @@ const Profile = () => {
   };
 
   if (authLoading || !profile) {
-    return <div className="flex justify-center items-center h-screen">Loading...</div>;
+    return <div className="flex justify-center items-center h-screen">{t('profile.loading')}</div>;
   }
 
   return (
     <Layout user={user} onSignOut={handleSignOut}>
       <div className="max-w-4xl mx-auto space-y-8">
         <div>
-          <h1 className="text-3xl font-bold text-slate-800">Profile Settings</h1>
-          <p className="text-slate-600 mt-2">Manage your account information and preferences</p>
+          <h1 className="text-3xl font-bold text-slate-800">{t('profile.title')}</h1>
+          <p className="text-slate-600 mt-2">{t('profile.subtitle')}</p>
         </div>
 
         <ImageCropperDialog

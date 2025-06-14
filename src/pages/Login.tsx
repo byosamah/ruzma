@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
@@ -84,7 +83,6 @@ const Login = () => {
                   autoComplete="email"
                 />
               </div>
-              
               <div className="space-y-2">
                 <Label htmlFor="password">{t('login.passwordLabel')}</Label>
                 <div className="relative">
@@ -124,7 +122,6 @@ const Login = () => {
                 {isLoading ? t('login.submitButtonLoading') : t('login.submitButton')}
               </Button>
             </form>
-
             <div className="mt-6 text-center space-y-2">
               <p className="text-sm text-slate-600">
                 {t('login.noAccount')}{' '}

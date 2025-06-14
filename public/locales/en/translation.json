@@ -85,5 +85,56 @@
     "signupErrorTitle": "Signup Error",
     "signupSuccessTitle": "Almost there!",
     "signupSuccessDescription": "Check your email to confirm your account before logging in."
+  },
+  "dashboard": {
+    "welcome": "Welcome back, {{name}}!",
+    "subtitle": "Manage your freelance projects and track payments",
+    "createNewProject": "New Project",
+    "totalProjects": "Total Projects",
+    "activeProjects": "Active projects",
+    "totalEarnings": "Total Earnings",
+    "fromCompletedMilestones": "From completed milestones",
+    "pendingPayments": "Pending Payments",
+    "awaitingApproval": "Awaiting approval",
+    "completed": "Completed",
+    "milestonesCompleted": "Milestones completed",
+    "yourProjects": "Your Projects",
+    "createYourFirstProject": "Create Your First Project",
+    "noProjectsYet": "No Projects Yet",
+    "emptyPrompt": "Create your first project to start managing client deliverables",
+    "createProject": "Create Project"
+  },
+  "editProject": {
+    "backToDashboard": "Back to Dashboard",
+    "title": "Edit Project",
+    "projectName": "Project Name",
+    "projectNamePlaceholder": "e.g. E-commerce Website Design",
+    "projectBrief": "Project Brief",
+    "projectBriefPlaceholder": "A short description of the project.",
+    "milestonesTitle": "Milestones",
+    "milestoneTitle": "Title",
+    "milestoneTitlePlaceholder": "e.g. Phase 1: Discovery",
+    "milestoneDescription": "Description",
+    "milestoneDescriptionPlaceholder": "Briefly describe this milestone",
+    "milestonePrice": "Price ($)",
+    "milestonePricePlaceholder": "e.g. 500",
+    "addMilestone": "Add Milestone",
+    "saveChanges": "Save Changes"
+  },
+  "projectManagement": {
+    "loading": "Loading...",
+    "notFoundTitle": "Project not found",
+    "goToDashboard": "Go to Dashboard",
+    "backToDashboard": "Back to Dashboard",
+    "projectId": "Project ID: {{id}}",
+    "created": "Created: {{createdAt}}",
+    "openClientPage": "Open Client Page",
+    "milestones": "Milestones",
+    "noMilestones": "No milestones yet."
+  },
+  "profile": {
+    "loading": "Loading...",
+    "title": "Profile Settings",
+    "subtitle": "Manage your account information and preferences"
   }
 }

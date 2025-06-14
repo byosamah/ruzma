@@ -85,5 +85,56 @@
     "signupErrorTitle": "خطأ في التسجيل",
     "signupSuccessTitle": "أوشكت على الانتهاء!",
     "signupSuccessDescription": "تحقق من بريدك الإلكتروني لتأكيد حسابك قبل تسجيل الدخول."
+  },
+  "dashboard": {
+    "welcome": "مرحباً بعودتك، {{name}}!",
+    "subtitle": "أدر مشاريعك المستقلة وتتبع المدفوعات",
+    "createNewProject": "مشروع جديد",
+    "totalProjects": "إجمالي المشاريع",
+    "activeProjects": "مشاريع نشطة",
+    "totalEarnings": "إجمالي الأرباح",
+    "fromCompletedMilestones": "من المراحل المكتملة",
+    "pendingPayments": "دفعات معلقة",
+    "awaitingApproval": "بانتظار الموافقة",
+    "completed": "المنجز",
+    "milestonesCompleted": "المراحل المنجزة",
+    "yourProjects": "مشاريعك",
+    "createYourFirstProject": "أنشئ أول مشروع لك",
+    "noProjectsYet": "لا توجد مشاريع بعد",
+    "emptyPrompt": "أنشئ مشروعك الأول لبدء إدارة التسليمات",
+    "createProject": "إنشاء مشروع"
+  },
+  "editProject": {
+    "backToDashboard": "العودة إلى لوحة التحكم",
+    "title": "تعديل المشروع",
+    "projectName": "اسم المشروع",
+    "projectNamePlaceholder": "مثال: تصميم موقع تجارة إلكترونية",
+    "projectBrief": "نبذة عن المشروع",
+    "projectBriefPlaceholder": "وصف موجز للمشروع.",
+    "milestonesTitle": "المراحل",
+    "milestoneTitle": "العنوان",
+    "milestoneTitlePlaceholder": "مثال: المرحلة 1: الاستكشاف",
+    "milestoneDescription": "الوصف",
+    "milestoneDescriptionPlaceholder": "وصف مختصر لهذه المرحلة",
+    "milestonePrice": "السعر (دولار)",
+    "milestonePricePlaceholder": "مثال: 500",
+    "addMilestone": "إضافة مرحلة",
+    "saveChanges": "حفظ التغييرات"
+  },
+  "projectManagement": {
+    "loading": "جارٍ التحميل...",
+    "notFoundTitle": "المشروع غير موجود",
+    "goToDashboard": "الانتقال إلى لوحة التحكم",
+    "backToDashboard": "العودة إلى لوحة التحكم",
+    "projectId": "معرف المشروع: {{id}}",
+    "created": "تاريخ الإنشاء: {{createdAt}}",
+    "openClientPage": "فتح صفحة العميل",
+    "milestones": "المراحل",
+    "noMilestones": "لا توجد مراحل بعد."
+  },
+  "profile": {
+    "loading": "جارٍ التحميل...",
+    "title": "إعدادات الملف الشخصي",
+    "subtitle": "قم بإدارة معلومات حسابك وتفضيلاتك"
   }
 }

@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import Layout from "@/components/Layout";
@@ -6,9 +5,11 @@ import { Button } from "@/components/ui/button";
 import MilestoneCard from "@/components/MilestoneCard";
 import { Project, Milestone } from "@/components/ProjectCard";
 import { ArrowLeft } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
 const ProjectManagement: React.FC = () => {
   const { projectId } = useParams<{ projectId: string }>();
+  const { t } = useTranslation();
   const [user, setUser] = useState<any>(null);
   const [project, setProject] = useState<Project | null>(null);
   const [allProjects, setAllProjects] = useState<Project[]>([]);
@@ -107,13 +108,13 @@ const ProjectManagement: React.FC = () => {
     localStorage.setItem("projects", JSON.stringify(updatedProjects));
   };
 
-  if (!user) return <div>Loading...</div>;
+  if (!user) return <div>{t('projectManagement.loading')}</div>;
   if (!project)
     return (
       <Layout user={user}>
         <div className="max-w-xl mx-auto text-center mt-20">
-          <h2 className="text-2xl font-bold mb-2">Project not found</h2>
-          <Button onClick={() => navigate("/dashboard")}>Go to Dashboard</Button>
+          <h2 className="text-2xl font-bold mb-2">{t('projectManagement.notFoundTitle')}</h2>
+          <Button onClick={() => navigate("/dashboard")}>{t('projectManagement.goToDashboard')}</Button>
         </div>
       </Layout>
     );
@@ -127,16 +128,16 @@ const ProjectManagement: React.FC = () => {
         onClick={() => navigate("/dashboard")}
       >
         <ArrowLeft className="w-4 h-4 mr-1" />
-        Back to Dashboard
+        {t('projectManagement.backToDashboard')}
       </Button>
       <div className="max-w-2xl mx-auto space-y-8">
         <div className="p-5 rounded-lg bg-white/80 shadow-sm">
           <h1 className="text-3xl font-bold text-slate-800 mb-2">{project.name}</h1>
           <p className="text-slate-600 mb-4">{project.brief}</p>
           <div className="flex items-center justify-between text-sm">
-            <span className="text-slate-500">Project ID: {project.id}</span>
+            <span className="text-slate-500">{t('projectManagement.projectId', { id: project.id })}</span>
             <span className="text-slate-500">
-              Created: {project.createdAt}
+              {t('projectManagement.created', { createdAt: project.createdAt })}
             </span>
           </div>
           <div className="mt-4">
@@ -146,15 +147,14 @@ const ProjectManagement: React.FC = () => {
               className="text-blue-600 underline"
               rel="noopener noreferrer"
             >
-              Open Client Page
+              {t('projectManagement.openClientPage')}
             </a>
           </div>
         </div>
-
         <div className="space-y-6">
-          <h2 className="text-2xl font-semibold">Milestones</h2>
+          <h2 className="text-2xl font-semibold">{t('projectManagement.milestones')}</h2>
           {project.milestones.length === 0 ? (
-            <div className="text-slate-500 text-center">No milestones yet.</div>
+            <div className="text-slate-500 text-center">{t('projectManagement.noMilestones')}</div>
           ) : (
             <div className="space-y-5">
               {project.milestones.map((milestone) => (

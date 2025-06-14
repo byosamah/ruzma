@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import Layout from '@/components/Layout';
@@ -9,6 +8,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Project, Milestone } from '@/components/ProjectCard';
 import { ArrowLeft, Plus, Trash2 } from 'lucide-react';
 import { useToast } from "@/components/ui/use-toast"
+import { useTranslation } from 'react-i18next';
 
 const EditProject: React.FC = () => {
   const { projectId } = useParams<{ projectId: string }>();
@@ -19,6 +19,7 @@ const EditProject: React.FC = () => {
   const [brief, setBrief] = useState('');
   const [milestones, setMilestones] = useState<Milestone[]>([]);
   const [user, setUser] = useState<any>(null);
+  const { t } = useTranslation();
 
   useEffect(() => {
     const userData = localStorage.getItem('user');
@@ -123,43 +124,43 @@ const EditProject: React.FC = () => {
         onClick={() => navigate("/dashboard")}
       >
         <ArrowLeft className="w-4 h-4 mr-1" />
-        Back to Dashboard
+        {t('editProject.backToDashboard')}
       </Button>
       <div className="max-w-2xl mx-auto">
         <Card>
           <CardHeader>
-            <CardTitle>Edit Project</CardTitle>
+            <CardTitle>{t('editProject.title')}</CardTitle>
           </CardHeader>
           <CardContent>
             <form onSubmit={handleSubmit} className="space-y-6">
               <div className="space-y-2">
-                <label htmlFor="name" className="text-sm font-medium text-slate-700">Project Name</label>
+                <label htmlFor="name" className="text-sm font-medium text-slate-700">{t('editProject.projectName')}</label>
                 <Input
                   id="name"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
-                  placeholder="e.g. E-commerce Website Design"
+                  placeholder={t('editProject.projectNamePlaceholder')}
                   required
                 />
               </div>
               <div className="space-y-2">
-                <label htmlFor="brief" className="text-sm font-medium text-slate-700">Project Brief</label>
+                <label htmlFor="brief" className="text-sm font-medium text-slate-700">{t('editProject.projectBrief')}</label>
                 <Textarea
                   id="brief"
                   value={brief}
                   onChange={(e) => setBrief(e.target.value)}
-                  placeholder="A short description of the project."
+                  placeholder={t('editProject.projectBriefPlaceholder')}
                   required
                   rows={4}
                 />
               </div>
 
               <div className="space-y-4 pt-6 border-t">
-                <h3 className="text-lg font-medium text-slate-800">Milestones</h3>
+                <h3 className="text-lg font-medium text-slate-800">{t('editProject.milestonesTitle')}</h3>
                 <div className="space-y-4">
                   {milestones.map((milestone, index) => (
                     <div key={milestone.id} className="p-4 border rounded-md space-y-3 bg-slate-50 relative">
-                       <Button
+                      <Button
                         type="button"
                         variant="ghost"
                         size="icon"
@@ -169,34 +170,34 @@ const EditProject: React.FC = () => {
                         <Trash2 className="w-4 h-4" />
                       </Button>
                       <div className="space-y-2">
-                        <label htmlFor={`milestone-title-${index}`} className="text-sm font-medium text-slate-700">Title</label>
+                        <label htmlFor={`milestone-title-${index}`} className="text-sm font-medium text-slate-700">{t('editProject.milestoneTitle')}</label>
                         <Input
                           id={`milestone-title-${index}`}
                           value={milestone.title}
                           onChange={(e) => handleMilestoneChange(index, 'title', e.target.value)}
-                          placeholder="e.g. Phase 1: Discovery"
+                          placeholder={t('editProject.milestoneTitlePlaceholder')}
                           required
                         />
                       </div>
                       <div className="space-y-2">
-                        <label htmlFor={`milestone-desc-${index}`} className="text-sm font-medium text-slate-700">Description</label>
+                        <label htmlFor={`milestone-desc-${index}`} className="text-sm font-medium text-slate-700">{t('editProject.milestoneDescription')}</label>
                         <Textarea
                           id={`milestone-desc-${index}`}
                           value={milestone.description}
                           onChange={(e) => handleMilestoneChange(index, 'description', e.target.value)}
-                          placeholder="Briefly describe this milestone"
+                          placeholder={t('editProject.milestoneDescriptionPlaceholder')}
                           required
                           rows={2}
                         />
                       </div>
                       <div className="space-y-2">
-                        <label htmlFor={`milestone-price-${index}`} className="text-sm font-medium text-slate-700">Price ($)</label>
+                        <label htmlFor={`milestone-price-${index}`} className="text-sm font-medium text-slate-700">{t('editProject.milestonePrice')}</label>
                         <Input
                           id={`milestone-price-${index}`}
                           type="number"
                           value={milestone.price}
                           onChange={(e) => handleMilestoneChange(index, 'price', e.target.value)}
-                          placeholder="e.g. 500"
+                          placeholder={t('editProject.milestonePricePlaceholder')}
                           required
                           min="0"
                         />
@@ -211,12 +212,11 @@ const EditProject: React.FC = () => {
                   className="w-full flex items-center"
                 >
                   <Plus className="w-4 h-4 mr-2" />
-                  Add Milestone
+                  {t('editProject.addMilestone')}
                 </Button>
               </div>
-
               <div className="flex justify-end">
-                <Button type="submit">Save Changes</Button>
+                <Button type="submit">{t('editProject.saveChanges')}</Button>
               </div>
             </form>
           </CardContent>
