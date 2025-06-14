@@ -1,7 +1,5 @@
-
 import React, { useState, useCallback } from 'react';
-import Cropper from 'react-easy-crop';
-import { Point, Area } from 'react-easy-crop/types';
+import Cropper, { type Point, type Area } from 'react-easy-crop';
 import { Button } from '@/components/ui/button';
 import { Slider } from '@/components/ui/slider';
 import {
