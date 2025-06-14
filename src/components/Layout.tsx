@@ -1,12 +1,15 @@
+
 import React from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { LogOut, User, Briefcase, Settings } from 'lucide-react';
+
 interface LayoutProps {
   children: React.ReactNode;
   user?: any;
   onSignOut?: () => void;
 }
+
 const Layout: React.FC<LayoutProps> = ({
   children,
   user,
@@ -25,12 +28,8 @@ const Layout: React.FC<LayoutProps> = ({
       <nav className="bg-white/80 backdrop-blur-sm border-b border-slate-200 sticky top-0 z-50">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
-            <Link to="/" className="flex items-center space-x-2">
-              <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
-                <span className="text-primary-foreground font-bold text-sm">R</span>
-              </div>
-              <span className="text-xl font-bold text-slate-800">
-            </span>
+            <Link to="/" className="flex items-center">
+              <img src="/lovable-uploads/bca9fbc0-5ee9-455b-91b3-b7eff1f56169.png" alt="Ruzma Logo" className="h-7" />
             </Link>
 
             <div className="flex items-center space-x-4">
