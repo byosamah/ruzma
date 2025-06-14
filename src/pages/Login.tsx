@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
@@ -38,6 +37,9 @@ const Login = () => {
       password: formData.password,
     });
 
+    console.log('[Login] Data:', data);
+    console.log('[Login] Error:', error);
+
     if (error) {
       setError(error.message);
       toast({
@@ -49,12 +51,19 @@ const Login = () => {
       return;
     }
 
-    if (data.session) {
-      window.location.href = '/dashboard';
-    } else {
-      setError("Login failed. Please check your credentials.");
+    // If no session and no error, the most likely cause is "unconfirmed email".
+    if (!data.session) {
+      setError(t('login.checkConfirmationOrReset') || "Login failed. Please confirm your email or reset your password.");
+      toast({
+        title: t('toast.loginErrorTitle'),
+        description: t('login.checkConfirmationOrReset') || "No active session could be created. Please check your email for confirmation or try resetting your password.",
+        variant: "destructive"
+      });
       setIsLoading(false);
+      return;
     }
+
+    window.location.href = '/dashboard';
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
