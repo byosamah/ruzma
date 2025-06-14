@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Captcha } from '@/components/ui/captcha';
 import Layout from '@/components/Layout';
 import { Eye, EyeOff } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
@@ -22,6 +23,7 @@ const SignUp = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [error, setError] = useState<string | null>(null);
+  const [isCaptchaVerified, setIsCaptchaVerified] = useState(false);
   const navigate = useNavigate();
   const { toast } = useToast();
   const { t } = useTranslation();
@@ -44,6 +46,9 @@ const SignUp = () => {
     }
     if (formData.password !== formData.confirmPassword) {
       newErrors.confirmPassword = t('signup.errors.passwordsNoMatch');
+    }
+    if (!isCaptchaVerified) {
+      newErrors.captcha = 'Please solve the security question';
     }
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -101,6 +106,16 @@ const SignUp = () => {
       }));
     }
     setError(null);
+  };
+
+  const handleCaptchaVerify = (isValid: boolean) => {
+    setIsCaptchaVerified(isValid);
+    if (isValid && errors.captcha) {
+      setErrors(prev => ({
+        ...prev,
+        captcha: ''
+      }));
+    }
   };
 
   return (
@@ -199,12 +214,18 @@ const SignUp = () => {
                 {errors.confirmPassword && <p className="text-sm text-red-600">{errors.confirmPassword}</p>}
               </div>
 
+              <Captcha 
+                onVerify={handleCaptchaVerify} 
+                className="space-y-2"
+              />
+              {errors.captcha && <p className="text-sm text-red-600">{errors.captcha}</p>}
+
               {error && <div className="text-sm text-red-600">{error}</div>}
 
               <Button 
                 type="submit" 
                 className="w-full" 
-                disabled={isLoading}
+                disabled={isLoading || !isCaptchaVerified}
               >
                 {isLoading ? t('signup.submitButtonLoading') : t('signup.submitButton')}
               </Button>
