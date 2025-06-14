@@ -30,6 +30,7 @@ const Login = () => {
     e.preventDefault();
     setIsLoading(true);
     setError(null);
+    setDebugInfo(null);
 
     await preAuthCleanup();
 
@@ -62,7 +63,7 @@ const Login = () => {
       return;
     }
 
-    window.location.href = '/dashboard';
+    navigate('/dashboard');
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -137,10 +138,12 @@ const Login = () => {
               {error && <div className="text-sm text-red-600">{error}</div>}
 
               {debugInfo && (
-                <details className="mt-2 text-xs bg-slate-100 rounded px-2 py-1 break-all">
-                  <summary>Debug info (data/error)</summary>
-                  <pre>{JSON.stringify(debugInfo, null, 2)}</pre>
-                </details>
+                <div className="mt-4 p-2 bg-slate-100 rounded border border-slate-200">
+                  <p className="text-sm font-medium text-slate-700">Debug Info:</p>
+                  <pre className="text-xs text-slate-600 break-all whitespace-pre-wrap">
+                    {JSON.stringify(debugInfo, null, 2)}
+                  </pre>
+                </div>
               )}
 
               <Button 
