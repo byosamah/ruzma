@@ -10,8 +10,6 @@ import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/components/ui/use-toast';
 import { useTranslation } from 'react-i18next';
 import { Checkbox } from "@/components/ui/checkbox";
-import { createClient } from '@supabase/supabase-js';
-import type { Database } from '@/integrations/supabase/types';
 
 const Login = () => {
   const [formData, setFormData] = useState({
@@ -31,21 +29,7 @@ const Login = () => {
     setIsLoading(true);
     setError(null);
 
-    const storage = rememberMe ? localStorage : sessionStorage;
-    
-    // Using credentials from the Supabase client file.
-    const SUPABASE_URL = "https://***REMOVED***.supabase.co";
-    const SUPABASE_PUBLISHABLE_KEY = "***REMOVED***";
-
-    const tempSupabaseClient = createClient<Database>(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY, {
-        auth: {
-            storage,
-            persistSession: true,
-            autoRefreshToken: true,
-        },
-    });
-
-    const { data, error } = await tempSupabaseClient.auth.signInWithPassword({
+    const { data, error } = await supabase.auth.signInWithPassword({
       email: formData.email,
       password: formData.password,
     });
