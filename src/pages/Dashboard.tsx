@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
@@ -6,20 +5,39 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import Layout from '@/components/Layout';
 import ProjectCard, { Project } from '@/components/ProjectCard';
 import { Plus, Briefcase, DollarSign, Clock, CheckCircle } from 'lucide-react';
+import { supabase } from '@/integrations/supabase/client';
+import { User } from '@supabase/supabase-js';
 
 const Dashboard = () => {
-  const [user, setUser] = useState<any>(null);
+  const [user, setUser] = useState<User | null>(null);
+  const [profile, setProfile] = useState<any>(null);
   const [projects, setProjects] = useState<Project[]>([]);
   const navigate = useNavigate();
 
   useEffect(() => {
-    const userData = localStorage.getItem('user');
-    if (!userData) {
-      navigate('/login');
-      return;
-    }
-    setUser(JSON.parse(userData));
+    const fetchUserAndProfile = async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (user) {
+        setUser(user);
+        const { data: profileData, error } = await supabase
+          .from('profiles')
+          .select('*')
+          .eq('id', user.id)
+          .single();
+        
+        if (error) {
+          console.error("Error fetching profile", error);
+        } else {
+          setProfile(profileData);
+        }
+      } else {
+        navigate('/login');
+      }
+    };
+    fetchUserAndProfile();
+  }, [navigate]);
 
+  useEffect(() => {
     // Load projects from localStorage or use demo projects as fallback
     const storedProjects = localStorage.getItem('projects');
     if (storedProjects) {
@@ -84,11 +102,10 @@ const Dashboard = () => {
       setProjects(demoProjects);
       localStorage.setItem('projects', JSON.stringify(demoProjects));
     }
-  }, [navigate]);
+  }, []);
 
-  const handleSignOut = () => {
-    localStorage.removeItem('user');
-    setUser(null);
+  const handleSignOut = async () => {
+    await supabase.auth.signOut();
     navigate('/');
   };
 
@@ -114,17 +131,17 @@ const Dashboard = () => {
   const totalEarnings = projects.reduce((sum, project) => 
     sum + project.milestones.filter(m => m.status === 'approved').reduce((mSum, m) => mSum + m.price, 0), 0);
 
-  if (!user) {
+  if (!user || !profile) {
     return <div>Loading...</div>;
   }
 
   return (
-    <Layout user={user} onSignOut={handleSignOut}>
+    <Layout user={profile || user} onSignOut={handleSignOut}>
       <div className="space-y-8">
         {/* Header */}
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
           <div>
-            <h1 className="text-3xl font-bold text-slate-800">Welcome back, {user.name}!</h1>
+            <h1 className="text-3xl font-bold text-slate-800">Welcome back, {profile.full_name || user.email}!</h1>
             <p className="text-slate-600 mt-1">Manage your freelance projects and track payments</p>
           </div>
           <Button onClick={() => navigate('/create-project')} size="lg">

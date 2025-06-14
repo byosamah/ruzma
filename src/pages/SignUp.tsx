@@ -7,6 +7,8 @@ import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import Layout from '@/components/Layout';
 import { Eye, EyeOff } from 'lucide-react';
+import { supabase } from '@/integrations/supabase/client';
+import { toast } from 'sonner';
 
 const SignUp = () => {
   const [formData, setFormData] = useState({
@@ -55,15 +57,24 @@ const SignUp = () => {
     
     setIsLoading(true);
     
-    // Simulate signup - replace with actual authentication
-    setTimeout(() => {
-      console.log('Signup attempt:', formData);
-      localStorage.setItem('user', JSON.stringify({ 
-        email: formData.email, 
-        name: formData.name 
-      }));
-      navigate('/dashboard');
-    }, 1000);
+    const { error } = await supabase.auth.signUp({
+      email: formData.email,
+      password: formData.password,
+      options: {
+        data: {
+          full_name: formData.name,
+        }
+      }
+    });
+
+    setIsLoading(false);
+
+    if (error) {
+      toast.error(error.message);
+    } else {
+      toast.success('Account created! Please check your email to verify your account.');
+      setFormData({ name: '', email: '', password: '', confirmPassword: '' });
+    }
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {

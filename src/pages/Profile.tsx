@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Layout from '@/components/Layout';
@@ -9,9 +8,11 @@ import { ImageCropperDialog } from '@/components/ImageCropperDialog';
 import { ProfilePictureCard } from '@/components/Profile/ProfilePictureCard';
 import { PersonalInformationForm } from '@/components/Profile/PersonalInformationForm';
 import { AccountSettingsCard } from '@/components/Profile/AccountSettingsCard';
+import { supabase } from '@/integrations/supabase/client';
+import { User } from '@supabase/supabase-js';
 
 const Profile = () => {
-  const [user, setUser] = useState<any>(null);
+  const [user, setUser] = useState<User | null>(null);
   const [profilePicture, setProfilePicture] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [formData, setFormData] = useState({
@@ -28,23 +29,34 @@ const Profile = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    const userData = localStorage.getItem('user');
-    if (!userData) {
-      navigate('/login');
-      return;
-    }
-    const parsedUser = JSON.parse(userData);
-    setUser(parsedUser);
-    setProfilePicture(parsedUser.profilePicture || null);
-    
-    // Initialize form with user data
-    setFormData({
-      name: parsedUser.name || '',
-      email: parsedUser.email || '',
-      company: parsedUser.company || '',
-      website: parsedUser.website || '',
-      bio: parsedUser.bio || ''
-    });
+    const fetchUserAndProfile = async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (user) {
+        setUser(user);
+        const { data: profile, error } = await supabase
+          .from('profiles')
+          .select('*')
+          .eq('id', user.id)
+          .single();
+
+        if (error) {
+          toast.error("Could not fetch your profile data.");
+          console.error(error);
+        } else if (profile) {
+          setFormData({
+            name: profile.full_name || '',
+            email: user.email || '',
+            company: profile.company || '',
+            website: profile.website || '',
+            bio: profile.bio || ''
+          });
+          setProfilePicture(profile.avatar_url || null);
+        }
+      } else {
+        navigate('/login');
+      }
+    };
+    fetchUserAndProfile();
   }, [navigate]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -57,18 +69,28 @@ const Profile = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!user) return;
     setIsLoading(true);
 
-    // Simulate save
-    setTimeout(() => {
-      const updatedUser = { ...user, ...formData };
-      localStorage.setItem('user', JSON.stringify(updatedUser));
-      setUser(updatedUser);
-      setIsLoading(false);
+    const { error } = await supabase
+      .from('profiles')
+      .update({
+        full_name: formData.name,
+        company: formData.company,
+        website: formData.website,
+        bio: formData.bio,
+      })
+      .eq('id', user.id);
+    
+    setIsLoading(false);
+
+    if (error) {
+      toast.error(error.message);
+    } else {
       setIsSaved(true);
-      
+      toast.success("Profile updated successfully!");
       setTimeout(() => setIsSaved(false), 3000);
-    }, 1000);
+    }
   };
 
   const handleUploadClick = () => {
@@ -91,19 +113,22 @@ const Profile = () => {
   };
 
   const onCropSave = async () => {
-    if (croppedAreaPixels && imageToCrop) {
+    if (croppedAreaPixels && imageToCrop && user) {
         try {
             const croppedImage = await getCroppedImg(imageToCrop, croppedAreaPixels);
-            setProfilePicture(croppedImage);
-
-            const updatedUser = { ...user, profilePicture: croppedImage };
-            localStorage.setItem('user', JSON.stringify(updatedUser));
-            setUser(updatedUser);
             
+            const { error } = await supabase
+              .from('profiles')
+              .update({ avatar_url: croppedImage })
+              .eq('id', user.id);
+
+            if (error) throw error;
+            
+            setProfilePicture(croppedImage);
             toast.success("Profile picture updated!");
         } catch (error) {
             console.error(error);
-            toast.error("There was an error cropping the image.");
+            toast.error("There was an error updating your profile picture.");
         } finally {
             setImageToCrop(null);
             if(fileInputRef.current) {
@@ -120,9 +145,8 @@ const Profile = () => {
     }
   }
 
-  const handleSignOut = () => {
-    localStorage.removeItem('user');
-    setUser(null);
+  const handleSignOut = async () => {
+    await supabase.auth.signOut();
     navigate('/');
   };
 
