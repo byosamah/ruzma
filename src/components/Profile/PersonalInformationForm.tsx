@@ -5,8 +5,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { User, Mail, Save, DollarSign } from 'lucide-react';
+import { User, Mail, Save } from 'lucide-react';
 
 interface PersonalInformationFormProps {
   formData: {
@@ -15,30 +14,19 @@ interface PersonalInformationFormProps {
     company: string;
     website: string;
     bio: string;
-    currency: string;
   };
   isLoading: boolean;
   isSaved: boolean;
   onFormChange: (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => void;
-  onCurrencyChange: (value: string) => void;
   onFormSubmit: (e: React.FormEvent) => void;
   onCancel: () => void;
 }
-
-const currencies = [
-  { value: 'SAR', label: 'SAR - Saudi Riyal' },
-  { value: 'USD', label: 'USD - US Dollar' },
-  { value: 'JOD', label: 'JOD - Jordanian Dinar' },
-  { value: 'AED', label: 'AED - UAE Dirham' },
-  { value: 'EGP', label: 'EGP - Egyptian Pound' },
-];
 
 export const PersonalInformationForm = ({
   formData,
   isLoading,
   isSaved,
   onFormChange,
-  onCurrencyChange,
   onFormSubmit,
   onCancel,
 }: PersonalInformationFormProps) => {
@@ -104,25 +92,6 @@ export const PersonalInformationForm = ({
                 value={formData.website}
                 onChange={onFormChange}
               />
-            </div>
-          </div>
-
-          <div className="space-y-2">
-            <Label htmlFor="currency">Preferred Currency</Label>
-            <div className="relative">
-              <DollarSign className="absolute left-3 top-3 h-4 w-4 text-slate-400 z-10" />
-              <Select value={formData.currency} onValueChange={onCurrencyChange}>
-                <SelectTrigger className="pl-10">
-                  <SelectValue placeholder="Select currency" />
-                </SelectTrigger>
-                <SelectContent>
-                  {currencies.map((currency) => (
-                    <SelectItem key={currency.value} value={currency.value}>
-                      {currency.label}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
             </div>
           </div>
 

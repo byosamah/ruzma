@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
@@ -5,14 +6,11 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import Layout from '@/components/Layout';
 import ProjectCard, { Project } from '@/components/ProjectCard';
 import { Plus, Briefcase, DollarSign, Clock, CheckCircle } from 'lucide-react';
-import { useTranslation } from 'react-i18next';
 
 const Dashboard = () => {
   const [user, setUser] = useState<any>(null);
   const [projects, setProjects] = useState<Project[]>([]);
-  const [userProfile, setUserProfile] = useState<any>(null);
   const navigate = useNavigate();
-  const { t } = useTranslation();
 
   useEffect(() => {
     const userData = localStorage.getItem('user');
@@ -20,14 +18,7 @@ const Dashboard = () => {
       navigate('/login');
       return;
     }
-    const parsedUser = JSON.parse(userData);
-    setUser(parsedUser);
-
-    // Get user profile for currency
-    const profileData = localStorage.getItem('userProfile');
-    if (profileData) {
-      setUserProfile(JSON.parse(profileData));
-    }
+    setUser(JSON.parse(userData));
 
     // Load projects from localStorage or use demo projects as fallback
     const storedProjects = localStorage.getItem('projects');
@@ -123,8 +114,6 @@ const Dashboard = () => {
   const totalEarnings = projects.reduce((sum, project) => 
     sum + project.milestones.filter(m => m.status === 'approved').reduce((mSum, m) => mSum + m.price, 0), 0);
 
-  const userCurrency = userProfile?.currency || 'USD';
-
   if (!user) {
     return <div>Loading...</div>;
   }
@@ -135,12 +124,12 @@ const Dashboard = () => {
         {/* Header */}
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
           <div>
-            <h1 className="text-3xl font-bold text-slate-800">{t('dashboard.welcome', { name: user.name })}</h1>
-            <p className="text-slate-600 mt-1">{t('dashboard.subtitle')}</p>
+            <h1 className="text-3xl font-bold text-slate-800">Welcome back, {user.name}!</h1>
+            <p className="text-slate-600 mt-1">Manage your freelance projects and track payments</p>
           </div>
           <Button onClick={() => navigate('/create-project')} size="lg">
             <Plus className="w-5 h-5 mr-2" />
-            {t('dashboard.createNewProject')}
+            New Project
           </Button>
         </div>
 
@@ -148,42 +137,45 @@ const Dashboard = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           <Card className="bg-secondary text-secondary-foreground">
             <CardHeader className="flex flex-row items-center justify-between pb-2">
-              <CardTitle className="text-sm font-medium">{t('dashboard.totalProjects')}</CardTitle>
+              <CardTitle className="text-sm font-medium">Total Projects</CardTitle>
               <Briefcase className="w-4 h-4" />
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold">{totalProjects}</div>
-              <p className="text-xs">{t('dashboard.activeProjects')}</p>
+              <p className="text-xs">Active projects</p>
             </CardContent>
           </Card>
+
           <Card className="bg-primary text-primary-foreground">
             <CardHeader className="flex flex-row items-center justify-between pb-2">
-              <CardTitle className="text-sm font-medium">{t('dashboard.totalEarnings')}</CardTitle>
+              <CardTitle className="text-sm font-medium">Total Earnings</CardTitle>
               <DollarSign className="w-4 h-4" />
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold">${totalEarnings.toLocaleString()}</div>
-              <p className="text-xs">{t('dashboard.fromCompletedMilestones')}</p>
+              <p className="text-xs">From completed milestones</p>
             </CardContent>
           </Card>
+
           <Card className="bg-accent text-accent-foreground">
             <CardHeader className="flex flex-row items-center justify-between pb-2">
-              <CardTitle className="text-sm font-medium">{t('dashboard.pendingPayments')}</CardTitle>
+              <CardTitle className="text-sm font-medium">Pending Payments</CardTitle>
               <Clock className="w-4 h-4" />
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold">{pendingPayments}</div>
-              <p className="text-xs">{t('dashboard.awaitingApproval')}</p>
+              <p className="text-xs">Awaiting approval</p>
             </CardContent>
           </Card>
+
           <Card className="bg-secondary text-secondary-foreground">
             <CardHeader className="flex flex-row items-center justify-between pb-2">
-              <CardTitle className="text-sm font-medium">{t('dashboard.completed')}</CardTitle>
+              <CardTitle className="text-sm font-medium">Completed</CardTitle>
               <CheckCircle className="w-4 h-4" />
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold">{completedMilestones}/{totalMilestones}</div>
-              <p className="text-xs">{t('dashboard.milestonesCompleted')}</p>
+              <p className="text-xs">Milestones completed</p>
             </CardContent>
           </Card>
         </div>
@@ -191,11 +183,11 @@ const Dashboard = () => {
         {/* Projects Grid */}
         <div className="space-y-6">
           <div className="flex justify-between items-center">
-            <h2 className="text-2xl font-bold text-slate-800">{t('dashboard.yourProjects')}</h2>
+            <h2 className="text-2xl font-bold text-slate-800">Your Projects</h2>
             {projects.length === 0 && (
               <Button onClick={() => navigate('/create-project')} variant="outline">
                 <Plus className="w-4 h-4 mr-2" />
-                {t('dashboard.createYourFirstProject')}
+                Create Your First Project
               </Button>
             )}
           </div>
@@ -204,11 +196,11 @@ const Dashboard = () => {
             <Card className="text-center py-12 bg-white/80 backdrop-blur-sm">
               <CardContent>
                 <Briefcase className="w-16 h-16 text-slate-400 mx-auto mb-4" />
-                <h3 className="text-xl font-semibold text-slate-700 mb-2">{t('dashboard.noProjectsYet')}</h3>
-                <p className="text-slate-600 mb-6">{t('dashboard.emptyPrompt')}</p>
+                <h3 className="text-xl font-semibold text-slate-700 mb-2">No Projects Yet</h3>
+                <p className="text-slate-600 mb-6">Create your first project to start managing client deliverables</p>
                 <Button onClick={() => navigate('/create-project')}>
                   <Plus className="w-4 h-4 mr-2" />
-                  {t('dashboard.createProject')}
+                  Create Project
                 </Button>
               </CardContent>
             </Card>
@@ -220,7 +212,6 @@ const Dashboard = () => {
                   project={project}
                   onEdit={handleEditProject}
                   onDelete={handleDeleteProject}
-                  userCurrency={userCurrency}
                 />
               ))}
             </div>

@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
@@ -11,43 +12,43 @@ const Index = () => {
   const features = [
     {
       icon: <Briefcase className="w-6 h-6" />,
-      title: t('index.featureProjectManagement'),
-      description: t('index.featureProjectManagementDesc')
+      title: 'Project Management',
+      description: 'Organize your freelance projects with clear milestones and deliverables.'
     },
     {
       icon: <DollarSign className="w-6 h-6" />,
-      title: t('index.featurePaymentVerification'),
-      description: t('index.featurePaymentVerificationDesc')
+      title: 'Payment Verification',
+      description: 'Verify client payments before releasing deliverables automatically.'
     },
     {
       icon: <FileCheck className="w-6 h-6" />,
-      title: t('index.featureSecureDelivery'),
-      description: t('index.featureSecureDeliveryDesc')
+      title: 'Secure Delivery',
+      description: 'Share files securely with clients through protected download links.'
     },
     {
       icon: <Shield className="w-6 h-6" />,
-      title: t('index.featureProfessionalPresentation'),
-      description: t('index.featureProfessionalPresentationDesc')
+      title: 'Professional Presentation',
+      description: 'Auto-generated client pages that look professional and trustworthy.'
     },
     {
       icon: <Zap className="w-6 h-6" />,
-      title: t('index.featureStreamlinedWorkflow'),
-      description: t('index.featureStreamlinedWorkflowDesc')
+      title: 'Streamlined Workflow',
+      description: 'Reduce back-and-forth emails with an automated approval process.'
     },
     {
       icon: <Users className="w-6 h-6" />,
-      title: t('index.featureClientFriendly'),
-      description: t('index.featureClientFriendlyDesc')
+      title: 'Client-Friendly',
+      description: 'Simple interface for clients to make payments and access deliverables.'
     }
   ];
 
   const benefits = [
-    t('index.benefit1'),
-    t('index.benefit2'),
-    t('index.benefit3'),
-    t('index.benefit4'),
-    t('index.benefit5'),
-    t('index.benefit6')
+    'Never chase payments again',
+    'Protect your work until payment',
+    'Professional client experience',
+    'Automated milestone tracking',
+    'Secure file sharing',
+    'Easy project management'
   ];
 
   return (
@@ -86,10 +87,10 @@ const Index = () => {
         <section className="space-y-8">
           <div className="text-center">
             <h2 className="text-3xl font-bold text-foreground mb-4">
-              {t('index.featuresTitle')}
+              Everything You Need to Manage Projects
             </h2>
             <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-              {t('index.featuresSubtitle')}
+              Streamline your freelance workflow with tools designed for professional project delivery.
             </p>
           </div>
           
@@ -115,10 +116,11 @@ const Index = () => {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
             <div className="space-y-6">
               <h2 className="text-3xl font-bold text-foreground">
-                {t('index.benefitsTitle')}
+                Why Freelancers Choose Ruzma
               </h2>
               <p className="text-lg text-muted-foreground">
-                {t('index.benefitsSubtitle')}
+                Built specifically for freelancers who want to protect their work and 
+                provide a professional experience for clients.
               </p>
               <div className="space-y-3">
                 {benefits.map((benefit, index) => (
@@ -134,23 +136,23 @@ const Index = () => {
                 <CardContent className="p-6">
                   <div className="space-y-3">
                     <div className="flex items-center justify-between">
-                      <span className="text-sm text-muted-foreground">{t('index.milestoneProjectName')}</span>
-                      <span className="text-sm font-medium text-secondary">{t('index.milestoneProgress')}</span>
+                      <span className="text-sm text-muted-foreground">Website Design Project</span>
+                      <span className="text-sm font-medium text-secondary">2/3 Milestones Complete</span>
                     </div>
                     <div className="w-full bg-slate-200 rounded-full h-2">
                       <div className="bg-gradient-to-r from-primary to-secondary h-2 rounded-full w-2/3"></div>
                     </div>
                     <div className="space-y-2 text-sm">
                       <div className="flex justify-between">
-                        <span>{t('index.milestone1')}</span>
+                        <span>Design Mockup</span>
                         <CheckCircle className="w-4 h-4 text-primary" />
                       </div>
                       <div className="flex justify-between">
-                        <span>{t('index.milestone2')}</span>
+                        <span>Development</span>
                         <CheckCircle className="w-4 h-4 text-primary" />
                       </div>
                       <div className="flex justify-between">
-                        <span>{t('index.milestone3')}</span>
+                        <span>Final Delivery</span>
                         <div className="w-4 h-4 rounded-full border-2 border-border"></div>
                       </div>
                     </div>
@@ -164,14 +166,14 @@ const Index = () => {
         {/* CTA Section */}
         <section className="text-center space-y-6 bg-gradient-to-r from-primary to-secondary rounded-2xl p-8 md:p-12 text-white">
           <h2 className="text-3xl font-bold">
-            {t('index.ctaTitle')}
+            Ready to Streamline Your Freelance Workflow?
           </h2>
           <p className="text-xl text-primary-foreground/90 max-w-2xl mx-auto">
-            {t('index.ctaSubtitle')}
+            Join thousands of freelancers who trust Ruzma to manage their projects and payments.
           </p>
           <Link to="/signup">
             <Button size="lg" variant="secondary" className="px-8 py-3 text-lg bg-white text-foreground hover:bg-slate-100">
-              {t('index.ctaButton')}
+              Start Your First Project
               <ArrowRight className="w-5 h-5 ml-2 rtl:mr-2 rtl:ml-0" />
             </Button>
           </Link>

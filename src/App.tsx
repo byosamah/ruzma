@@ -1,4 +1,3 @@
-
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -14,8 +13,6 @@ import Profile from "./pages/Profile";
 import NotFound from "./pages/NotFound";
 import ProjectManagement from "./pages/ProjectManagement";
 import EditProject from "./pages/EditProject";
-import ForgotPassword from "./pages/ForgotPassword";
-import UpdatePassword from "./pages/UpdatePassword";
 import { useSupabaseAuth } from "@/hooks/useSupabaseAuth";
 import React, { useEffect } from "react";
 import './i18n';
@@ -29,7 +26,7 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   if (loading) return <div>Loading...</div>;
   // Public pages
   if (
-    ["/login", "/signup", "/", "/forgot-password", "/update-password"].includes(location) ||
+    ["/login", "/signup", "/", "/forgot-password"].includes(location) ||
     location.startsWith("/client/")
   )
     return <>{children}</>;
@@ -60,8 +57,6 @@ const App = () => {
               <Route path="/" element={<Index />} />
               <Route path="/login" element={<Login />} />
               <Route path="/signup" element={<SignUp />} />
-              <Route path="/forgot-password" element={<ForgotPassword />} />
-              <Route path="/update-password" element={<UpdatePassword />} />
               <Route path="/dashboard" element={<Dashboard />} />
               <Route path="/create-project" element={<CreateProject />} />
               <Route path="/project/:projectId" element={<ProjectManagement />} />

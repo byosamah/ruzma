@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Layout from '@/components/Layout';
@@ -10,11 +11,9 @@ import { PersonalInformationForm } from '@/components/Profile/PersonalInformatio
 import { AccountSettingsCard } from '@/components/Profile/AccountSettingsCard';
 import { useSupabaseAuth } from '@/hooks/useSupabaseAuth';
 import { supabase } from '@/integrations/supabase/client';
-import { useTranslation } from 'react-i18next';
 
 const Profile = () => {
   const { user, profile, loading: authLoading, refreshProfile } = useSupabaseAuth();
-  const { t } = useTranslation();
   const [profilePicture, setProfilePicture] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [formData, setFormData] = useState({
@@ -22,8 +21,7 @@ const Profile = () => {
     email: '',
     company: '',
     website: '',
-    bio: '',
-    currency: 'USD'
+    bio: ''
   });
   const [isLoading, setIsLoading] = useState(false);
   const [isSaved, setIsSaved] = useState(false);
@@ -44,8 +42,7 @@ const Profile = () => {
         email: user?.email || '',
         company: profile.company || '',
         website: profile.website || '',
-        bio: profile.bio || '',
-        currency: profile.currency || 'USD'
+        bio: profile.bio || ''
       });
       setProfilePicture(profile.avatar_url || null);
     }
@@ -55,14 +52,6 @@ const Profile = () => {
     setFormData(prev => ({
       ...prev,
       [e.target.name]: e.target.value
-    }));
-    setIsSaved(false);
-  };
-
-  const handleCurrencyChange = (value: string) => {
-    setFormData(prev => ({
-      ...prev,
-      currency: value
     }));
     setIsSaved(false);
   };
@@ -80,7 +69,6 @@ const Profile = () => {
         company: formData.company,
         website: formData.website,
         bio: formData.bio,
-        currency: formData.currency,
       })
       .eq('id', user.id);
     
@@ -149,15 +137,15 @@ const Profile = () => {
   };
 
   if (authLoading || !profile) {
-    return <div className="flex justify-center items-center h-screen">{t('profile.loading')}</div>;
+    return <div className="flex justify-center items-center h-screen">Loading...</div>;
   }
 
   return (
     <Layout user={user} onSignOut={handleSignOut}>
       <div className="max-w-4xl mx-auto space-y-8">
         <div>
-          <h1 className="text-3xl font-bold text-slate-800">{t('profile.title')}</h1>
-          <p className="text-slate-600 mt-2">{t('profile.subtitle')}</p>
+          <h1 className="text-3xl font-bold text-slate-800">Profile Settings</h1>
+          <p className="text-slate-600 mt-2">Manage your account information and preferences</p>
         </div>
 
         <ImageCropperDialog
@@ -180,7 +168,6 @@ const Profile = () => {
             isLoading={isLoading}
             isSaved={isSaved}
             onFormChange={handleChange}
-            onCurrencyChange={handleCurrencyChange}
             onFormSubmit={handleSubmit}
             onCancel={() => navigate('/dashboard')}
           />

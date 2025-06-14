@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
@@ -9,8 +10,6 @@ import { Eye, EyeOff } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/components/ui/use-toast';
 import { useTranslation } from 'react-i18next';
-import { Checkbox } from "@/components/ui/checkbox";
-import { preAuthCleanup } from '@/lib/authUtils';
 
 const Login = () => {
   const [formData, setFormData] = useState({
@@ -18,10 +17,8 @@ const Login = () => {
     password: ''
   });
   const [showPassword, setShowPassword] = useState(false);
-  const [rememberMe, setRememberMe] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [debugInfo, setDebugInfo] = useState<{ data?: any, error?: any } | null>(null);
   const navigate = useNavigate();
   const { toast } = useToast();
   const { t } = useTranslation();
@@ -30,16 +27,11 @@ const Login = () => {
     e.preventDefault();
     setIsLoading(true);
     setError(null);
-    setDebugInfo(null);
-
-    await preAuthCleanup();
 
     const { data, error } = await supabase.auth.signInWithPassword({
       email: formData.email,
       password: formData.password,
     });
-
-    setDebugInfo({ data, error });
 
     if (error) {
       setError(error.message);
@@ -52,18 +44,13 @@ const Login = () => {
       return;
     }
 
-    if (!data.session) {
-      setError(t('login.checkConfirmationOrReset') || "Login failed. Please confirm your email or reset your password.");
-      toast({
-        title: t('toast.loginErrorTitle'),
-        description: t('login.checkConfirmationOrReset') || "No active session could be created. Please check your email for confirmation or try resetting your password.",
-        variant: "destructive"
-      });
+    if (data.session) {
+      // On successful login, reload for app-wide state.
+      window.location.href = '/dashboard';
+    } else {
+      setError("Login failed. Please check your credentials.");
       setIsLoading(false);
-      return;
     }
-
-    navigate('/dashboard');
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -97,6 +84,7 @@ const Login = () => {
                   autoComplete="email"
                 />
               </div>
+              
               <div className="space-y-2">
                 <Label htmlFor="password">{t('login.passwordLabel')}</Label>
                 <div className="relative">
@@ -126,25 +114,7 @@ const Login = () => {
                 </div>
               </div>
 
-              <div className="flex items-center space-x-2 rtl:space-x-reverse">
-                <Checkbox
-                  id="remember-me"
-                  checked={rememberMe}
-                  onCheckedChange={(checked) => setRememberMe(checked as boolean)}
-                />
-                <Label htmlFor="remember-me">{t('login.rememberMe')}</Label>
-              </div>
-
               {error && <div className="text-sm text-red-600">{error}</div>}
-
-              {debugInfo && (
-                <div className="mt-4 p-2 bg-slate-100 rounded border border-slate-200">
-                  <p className="text-sm font-medium text-slate-700">Debug Info:</p>
-                  <pre className="text-xs text-slate-600 break-all whitespace-pre-wrap">
-                    {JSON.stringify(debugInfo, null, 2)}
-                  </pre>
-                </div>
-              )}
 
               <Button 
                 type="submit" 
@@ -154,6 +124,7 @@ const Login = () => {
                 {isLoading ? t('login.submitButtonLoading') : t('login.submitButton')}
               </Button>
             </form>
+
             <div className="mt-6 text-center space-y-2">
               <p className="text-sm text-slate-600">
                 {t('login.noAccount')}{' '}
