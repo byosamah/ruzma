@@ -21,6 +21,7 @@ const Login = () => {
   const [rememberMe, setRememberMe] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [debugInfo, setDebugInfo] = useState<{ data?: any, error?: any } | null>(null);
   const navigate = useNavigate();
   const { toast } = useToast();
   const { t } = useTranslation();
@@ -37,8 +38,7 @@ const Login = () => {
       password: formData.password,
     });
 
-    console.log('[Login] Data:', data);
-    console.log('[Login] Error:', error);
+    setDebugInfo({ data, error });
 
     if (error) {
       setError(error.message);
@@ -51,7 +51,6 @@ const Login = () => {
       return;
     }
 
-    // If no session and no error, the most likely cause is "unconfirmed email".
     if (!data.session) {
       setError(t('login.checkConfirmationOrReset') || "Login failed. Please confirm your email or reset your password.");
       toast({
@@ -136,6 +135,13 @@ const Login = () => {
               </div>
 
               {error && <div className="text-sm text-red-600">{error}</div>}
+
+              {debugInfo && (
+                <details className="mt-2 text-xs bg-slate-100 rounded px-2 py-1 break-all">
+                  <summary>Debug info (data/error)</summary>
+                  <pre>{JSON.stringify(debugInfo, null, 2)}</pre>
+                </details>
+              )}
 
               <Button 
                 type="submit" 
