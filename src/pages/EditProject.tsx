@@ -8,43 +8,68 @@ import { Textarea } from '@/components/ui/textarea';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Project, Milestone } from '@/components/ProjectCard';
 import { ArrowLeft, Plus, Trash2 } from 'lucide-react';
-import { useToast } from "@/components/ui/use-toast"
+import { toast } from 'sonner';
+import { supabase } from '@/integrations/supabase/client';
+import { User } from '@supabase/supabase-js';
 
 const EditProject: React.FC = () => {
   const { projectId } = useParams<{ projectId: string }>();
   const navigate = useNavigate();
-  const { toast } = useToast();
+  const [user, setUser] = useState<User | null>(null);
+  const [profile, setProfile] = useState<any>(null);
   const [project, setProject] = useState<Project | null>(null);
   const [name, setName] = useState('');
   const [brief, setBrief] = useState('');
   const [milestones, setMilestones] = useState<Milestone[]>([]);
-  const [user, setUser] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const userData = localStorage.getItem('user');
-    if (!userData) {
-      navigate('/login');
-      return;
-    }
-    setUser(JSON.parse(userData));
+    const checkAuthAndLoadProject = async () => {
+      setLoading(true);
+      
+      const { data: { user }, error: userError } = await supabase.auth.getUser();
+      
+      if (userError || !user) {
+        console.log('No user found, redirecting to login');
+        navigate('/login');
+        return;
+      }
 
-    const projectsFromStorage = JSON.parse(localStorage.getItem('projects') || '[]');
-    const projectToEdit = projectsFromStorage.find((p: Project) => p.id === projectId);
+      setUser(user);
+      
+      // Fetch profile
+      const { data: profileData } = await supabase
+        .from('profiles')
+        .select('*')
+        .eq('id', user.id)
+        .maybeSingle();
+      
+      setProfile(profileData);
 
-    if (projectToEdit) {
-      setProject(projectToEdit);
-      setName(projectToEdit.name);
-      setBrief(projectToEdit.brief);
-      setMilestones(projectToEdit.milestones);
-    } else {
-      toast({
-        title: "Error",
-        description: "Project not found.",
-        variant: "destructive",
-      })
-      navigate('/dashboard');
-    }
-  }, [projectId, navigate, toast]);
+      // Load project from localStorage
+      const projectsFromStorage = JSON.parse(localStorage.getItem('projects') || '[]');
+      const projectToEdit = projectsFromStorage.find((p: Project) => p.id === projectId);
+
+      if (projectToEdit) {
+        setProject(projectToEdit);
+        setName(projectToEdit.name);
+        setBrief(projectToEdit.brief);
+        setMilestones(projectToEdit.milestones);
+      } else {
+        toast.error('Project not found.');
+        navigate('/dashboard');
+      }
+      
+      setLoading(false);
+    };
+
+    checkAuthAndLoadProject();
+  }, [projectId, navigate]);
+
+  const handleSignOut = async () => {
+    await supabase.auth.signOut();
+    navigate('/');
+  };
 
   const handleMilestoneChange = (index: number, field: keyof Milestone, value: string | number) => {
     const newMilestones = [...milestones];
@@ -82,11 +107,7 @@ const EditProject: React.FC = () => {
 
     for (const milestone of milestones) {
       if (!milestone.title.trim() || !milestone.description.trim()) {
-        toast({
-          title: 'Validation Error',
-          description: 'Milestone title and description cannot be empty.',
-          variant: 'destructive',
-        });
+        toast.error('Milestone title and description cannot be empty.');
         return;
       }
     }
@@ -99,23 +120,38 @@ const EditProject: React.FC = () => {
     );
 
     localStorage.setItem('projects', JSON.stringify(updatedProjects));
-    toast({
-      title: "Success!",
-      description: "Project has been updated successfully.",
-    });
+    toast.success('Project has been updated successfully.');
     navigate('/dashboard');
   };
 
-  if (!project) {
+  if (loading) {
     return (
-      <Layout user={user}>
-        <div>Loading...</div>
+      <Layout>
+        <div className="flex items-center justify-center min-h-[400px]">
+          <div className="text-center">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
+            <p className="text-slate-600">Loading project...</p>
+          </div>
+        </div>
+      </Layout>
+    );
+  }
+
+  if (!user || !project) {
+    return (
+      <Layout>
+        <div className="text-center py-12">
+          <p className="text-slate-600">Project not found or access denied.</p>
+          <Button onClick={() => navigate('/dashboard')} className="mt-4">
+            Return to Dashboard
+          </Button>
+        </div>
       </Layout>
     );
   }
 
   return (
-    <Layout user={user}>
+    <Layout user={profile || user} onSignOut={handleSignOut}>
       <Button
         variant="ghost"
         size="sm"
