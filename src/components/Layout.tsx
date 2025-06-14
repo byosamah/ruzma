@@ -27,13 +27,22 @@ const Layout: React.FC<LayoutProps> = ({
     }
     navigate('/');
   };
+  const isLandingPage = location.pathname === '/';
+  const logoLinkTarget = user ? '/dashboard' : '/';
+
   return <div className="min-h-screen bg-background">
       <nav className="bg-white/80 backdrop-blur-sm border-b border-slate-200 sticky top-0 z-50">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
-            <Link to="/" className="flex items-center">
-              <img src="/lovable-uploads/bca9fbc0-5ee9-455b-91b3-b7eff1f56169.png" alt="Ruzma Logo" className="h-7" />
-            </Link>
+            {isLandingPage && !user ? (
+              <div className="flex items-center">
+                <img src="/lovable-uploads/bca9fbc0-5ee9-455b-91b3-b7eff1f56169.png" alt="Ruzma Logo" className="h-7" />
+              </div>
+            ) : (
+              <Link to={logoLinkTarget} className="flex items-center">
+                <img src="/lovable-uploads/bca9fbc0-5ee9-455b-91b3-b7eff1f56169.png" alt="Ruzma Logo" className="h-7" />
+              </Link>
+            )}
 
             <div className="flex items-center space-x-4">
               {user ? <>
