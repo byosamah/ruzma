@@ -15,6 +15,7 @@ export type Database = {
           bio: string | null
           company: string | null
           created_at: string | null
+          currency: string | null
           full_name: string | null
           id: string
           website: string | null
@@ -24,6 +25,7 @@ export type Database = {
           bio?: string | null
           company?: string | null
           created_at?: string | null
+          currency?: string | null
           full_name?: string | null
           id: string
           website?: string | null
@@ -33,6 +35,7 @@ export type Database = {
           bio?: string | null
           company?: string | null
           created_at?: string | null
+          currency?: string | null
           full_name?: string | null
           id?: string
           website?: string | null

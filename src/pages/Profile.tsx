@@ -22,7 +22,8 @@ const Profile = () => {
     email: '',
     company: '',
     website: '',
-    bio: ''
+    bio: '',
+    currency: 'USD'
   });
   const [isLoading, setIsLoading] = useState(false);
   const [isSaved, setIsSaved] = useState(false);
@@ -43,7 +44,8 @@ const Profile = () => {
         email: user?.email || '',
         company: profile.company || '',
         website: profile.website || '',
-        bio: profile.bio || ''
+        bio: profile.bio || '',
+        currency: profile.currency || 'USD'
       });
       setProfilePicture(profile.avatar_url || null);
     }
@@ -53,6 +55,14 @@ const Profile = () => {
     setFormData(prev => ({
       ...prev,
       [e.target.name]: e.target.value
+    }));
+    setIsSaved(false);
+  };
+
+  const handleCurrencyChange = (value: string) => {
+    setFormData(prev => ({
+      ...prev,
+      currency: value
     }));
     setIsSaved(false);
   };
@@ -70,6 +80,7 @@ const Profile = () => {
         company: formData.company,
         website: formData.website,
         bio: formData.bio,
+        currency: formData.currency,
       })
       .eq('id', user.id);
     
@@ -169,6 +180,7 @@ const Profile = () => {
             isLoading={isLoading}
             isSaved={isSaved}
             onFormChange={handleChange}
+            onCurrencyChange={handleCurrencyChange}
             onFormSubmit={handleSubmit}
             onCancel={() => navigate('/dashboard')}
           />

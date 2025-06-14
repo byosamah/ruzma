@@ -11,6 +11,7 @@ export interface SupabaseProfile {
   company: string | null;
   website: string | null;
   bio: string | null;
+  currency: string | null;
 }
 
 export const useSupabaseAuth = () => {
