@@ -1,4 +1,3 @@
-
 {
   "nav": {
     "login": "تسجيل الدخول",
@@ -12,7 +11,37 @@
     "heroTitle2": "أصبحت بسيطة",
     "heroSubtitle": "أدر مشاريعك الحرة بثقة. تحقق من المدفوعات، وتتبع المراحل، وسلم العمل بأمان للعملاء من خلال صفحات مشاريع احترافية.",
     "getStartedButton": "ابدأ مجاناً",
-    "signInButton": "تسجيل الدخول"
+    "signInButton": "تسجيل الدخول",
+    "featuresTitle": "كل ما تحتاجه لإدارة مشاريعك",
+    "featuresSubtitle": "بسّط عملك المستقل باستخدام أدوات مصممة لتسليم المشاريع باحترافية.",
+    "featureProjectManagement": "إدارة المشاريع",
+    "featureProjectManagementDesc": "نظّم مشاريعك الحرة مع مراحل وتسليمات واضحة.",
+    "featurePaymentVerification": "التحقق من الدفع",
+    "featurePaymentVerificationDesc": "تحقق من مدفوعات العميل قبل تسليم العمل تلقائياً.",
+    "featureSecureDelivery": "تسليم آمن",
+    "featureSecureDeliveryDesc": "شارك الملفات بأمان مع العملاء عبر روابط تنزيل محمية.",
+    "featureProfessionalPresentation": "عرض احترافي",
+    "featureProfessionalPresentationDesc": "صفحات مشاريع احترافية يتم إنشاؤها تلقائياً للعملاء.",
+    "featureStreamlinedWorkflow": "سير عمل مبسط",
+    "featureStreamlinedWorkflowDesc": "قلل المراسلات المتكررة مع عملية موافقة مؤتمتة.",
+    "featureClientFriendly": "سهل للعملاء",
+    "featureClientFriendlyDesc": "واجهة بسيطة للعميل للدفع والوصول إلى التسليمات.",
+    "benefitsTitle": "لماذا يختار المستقلون منصة رزما؟",
+    "benefitsSubtitle": "صُممت خصيصاً للمستقلين الذين يريدون حماية أعمالهم وتقديم تجربة احترافية للعملاء.",
+    "benefit1": "لن تطارد المدفوعات مجدداً",
+    "benefit2": "احمِ عملك حتى يتم الدفع",
+    "benefit3": "تجربة عميل احترافية",
+    "benefit4": "تتبع المراحل تلقائياً",
+    "benefit5": "مشاركة ملفات بشكل آمن",
+    "benefit6": "إدارة مشاريع سهلة",
+    "milestoneProjectName": "مشروع تصميم موقع",
+    "milestoneProgress": "2/3 مراحل مكتملة",
+    "milestone1": "تصميم الواجهة",
+    "milestone2": "البرمجة",
+    "milestone3": "التسليم النهائي",
+    "ctaTitle": "هل أنت جاهز لتبسيط عملك الحر؟",
+    "ctaSubtitle": "انضم إلى آلاف المستقلين الذين يثقون في رزما لإدارة مشاريعهم ومدفوعاتهم.",
+    "ctaButton": "ابدأ مشروعك الأول"
   },
   "login": {
     "title": "مرحباً بعودتك",

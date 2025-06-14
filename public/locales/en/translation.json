@@ -1,4 +1,3 @@
-
 {
   "nav": {
     "login": "Login",
@@ -12,7 +11,37 @@
     "heroTitle2": "Made Simple",
     "heroSubtitle": "Manage your freelance projects with confidence. Verify payments, track milestones, and deliver work securely to clients through professional project pages.",
     "getStartedButton": "Get Started Free",
-    "signInButton": "Sign In"
+    "signInButton": "Sign In",
+    "featuresTitle": "Everything You Need to Manage Projects",
+    "featuresSubtitle": "Streamline your freelance workflow with tools designed for professional project delivery.",
+    "featureProjectManagement": "Project Management",
+    "featureProjectManagementDesc": "Organize your freelance projects with clear milestones and deliverables.",
+    "featurePaymentVerification": "Payment Verification",
+    "featurePaymentVerificationDesc": "Verify client payments before releasing deliverables automatically.",
+    "featureSecureDelivery": "Secure Delivery",
+    "featureSecureDeliveryDesc": "Share files securely with clients through protected download links.",
+    "featureProfessionalPresentation": "Professional Presentation",
+    "featureProfessionalPresentationDesc": "Auto-generated client pages that look professional and trustworthy.",
+    "featureStreamlinedWorkflow": "Streamlined Workflow",
+    "featureStreamlinedWorkflowDesc": "Reduce back-and-forth emails with an automated approval process.",
+    "featureClientFriendly": "Client-Friendly",
+    "featureClientFriendlyDesc": "Simple interface for clients to make payments and access deliverables.",
+    "benefitsTitle": "Why Freelancers Choose Ruzma",
+    "benefitsSubtitle": "Built specifically for freelancers who want to protect their work and provide a professional experience for clients.",
+    "benefit1": "Never chase payments again",
+    "benefit2": "Protect your work until payment",
+    "benefit3": "Professional client experience",
+    "benefit4": "Automated milestone tracking",
+    "benefit5": "Secure file sharing",
+    "benefit6": "Easy project management",
+    "milestoneProjectName": "Website Design Project",
+    "milestoneProgress": "2/3 Milestones Complete",
+    "milestone1": "Design Mockup",
+    "milestone2": "Development",
+    "milestone3": "Final Delivery",
+    "ctaTitle": "Ready to Streamline Your Freelance Workflow?",
+    "ctaSubtitle": "Join thousands of freelancers who trust Ruzma to manage their projects and payments.",
+    "ctaButton": "Start Your First Project"
   },
   "login": {
     "title": "Welcome Back",
