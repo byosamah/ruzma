@@ -5,8 +5,10 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import Layout from '@/components/Layout';
 import { CheckCircle, Shield, Zap, Users, ArrowRight, Briefcase, DollarSign, FileCheck } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 
 const Index = () => {
+  const { t } = useTranslation();
   const features = [
     {
       icon: <Briefcase className="w-6 h-6" />,
@@ -56,27 +58,26 @@ const Index = () => {
         <section className="text-center space-y-8">
           <div className="space-y-4">
             <h1 className="text-4xl md:text-6xl font-bold text-foreground leading-tight">
-              Freelance Deliverables
+              {t('index.heroTitle1')}
               <span className="block text-transparent bg-clip-text bg-gradient-to-r from-primary to-secondary">
-                Made Simple
+                {t('index.heroTitle2')}
               </span>
             </h1>
             <p className="text-xl text-muted-foreground max-w-3xl mx-auto leading-relaxed">
-              Manage your freelance projects with confidence. Verify payments, track milestones, 
-              and deliver work securely to clients through professional project pages.
+              {t('index.heroSubtitle')}
             </p>
           </div>
           
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
             <Link to="/signup">
               <Button size="lg" className="px-8 py-3 text-lg">
-                Get Started Free
-                <ArrowRight className="w-5 h-5 ml-2" />
+                {t('index.getStartedButton')}
+                <ArrowRight className="w-5 h-5 ml-2 rtl:mr-2 rtl:ml-0" />
               </Button>
             </Link>
             <Link to="/login">
               <Button variant="outline" size="lg" className="px-8 py-3 text-lg">
-                Sign In
+                {t('index.signInButton')}
               </Button>
             </Link>
           </div>
@@ -173,7 +174,7 @@ const Index = () => {
           <Link to="/signup">
             <Button size="lg" variant="secondary" className="px-8 py-3 text-lg bg-white text-foreground hover:bg-slate-100">
               Start Your First Project
-              <ArrowRight className="w-5 h-5 ml-2" />
+              <ArrowRight className="w-5 h-5 ml-2 rtl:mr-2 rtl:ml-0" />
             </Button>
           </Link>
         </section>

@@ -9,6 +9,7 @@ import Layout from '@/components/Layout';
 import { Eye, EyeOff } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/components/ui/use-toast';
+import { useTranslation } from 'react-i18next';
 
 const Login = () => {
   const [formData, setFormData] = useState({
@@ -20,6 +21,7 @@ const Login = () => {
   const [error, setError] = useState<string | null>(null);
   const navigate = useNavigate();
   const { toast } = useToast();
+  const { t } = useTranslation();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -34,7 +36,7 @@ const Login = () => {
     if (error) {
       setError(error.message);
       toast({
-        title: "Login Error",
+        title: t('toast.loginErrorTitle'),
         description: error.message,
         variant: "destructive"
       });
@@ -64,18 +66,18 @@ const Login = () => {
       <div className="max-w-md mx-auto">
         <Card className="bg-white/80 backdrop-blur-sm">
           <CardHeader className="text-center">
-            <CardTitle className="text-2xl font-bold text-slate-800">Welcome Back</CardTitle>
-            <p className="text-slate-600">Sign in to your Ruzma account</p>
+            <CardTitle className="text-2xl font-bold text-slate-800">{t('login.title')}</CardTitle>
+            <p className="text-slate-600">{t('login.subtitle')}</p>
           </CardHeader>
           <CardContent>
             <form onSubmit={handleSubmit} className="space-y-4">
               <div className="space-y-2">
-                <Label htmlFor="email">Email</Label>
+                <Label htmlFor="email">{t('login.emailLabel')}</Label>
                 <Input
                   id="email"
                   name="email"
                   type="email"
-                  placeholder="Enter your email"
+                  placeholder={t('login.emailPlaceholder')}
                   value={formData.email}
                   onChange={handleChange}
                   required
@@ -84,13 +86,13 @@ const Login = () => {
               </div>
               
               <div className="space-y-2">
-                <Label htmlFor="password">Password</Label>
+                <Label htmlFor="password">{t('login.passwordLabel')}</Label>
                 <div className="relative">
                   <Input
                     id="password"
                     name="password"
                     type={showPassword ? 'text' : 'password'}
-                    placeholder="Enter your password"
+                    placeholder={t('login.passwordPlaceholder')}
                     value={formData.password}
                     onChange={handleChange}
                     required
@@ -100,7 +102,7 @@ const Login = () => {
                     type="button"
                     variant="ghost"
                     size="sm"
-                    className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
+                    className="absolute right-0 rtl:left-0 rtl:right-auto top-0 h-full px-3 py-2 hover:bg-transparent"
                     onClick={() => setShowPassword(!showPassword)}
                   >
                     {showPassword ? (
@@ -119,19 +121,19 @@ const Login = () => {
                 className="w-full" 
                 disabled={isLoading}
               >
-                {isLoading ? 'Signing In...' : 'Sign In'}
+                {isLoading ? t('login.submitButtonLoading') : t('login.submitButton')}
               </Button>
             </form>
 
             <div className="mt-6 text-center space-y-2">
               <p className="text-sm text-slate-600">
-                Don't have an account?{' '}
+                {t('login.noAccount')}{' '}
                 <Link to="/signup" className="text-blue-600 hover:text-blue-700 font-medium">
-                  Sign up
+                  {t('login.signUpLink')}
                 </Link>
               </p>
               <Link to="/forgot-password" className="text-sm text-blue-600 hover:text-blue-700">
-                Forgot your password?
+                {t('login.forgotPasswordLink')}
               </Link>
             </div>
           </CardContent>

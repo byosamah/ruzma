@@ -1,0 +1,60 @@
+
+{
+  "nav": {
+    "login": "تسجيل الدخول",
+    "signUp": "اشتراك",
+    "dashboard": "لوحة التحكم",
+    "profile": "الملف الشخصي",
+    "signOut": "تسجيل الخروج"
+  },
+  "index": {
+    "heroTitle1": "تسليمات العمل الحر",
+    "heroTitle2": "أصبحت بسيطة",
+    "heroSubtitle": "أدر مشاريعك الحرة بثقة. تحقق من المدفوعات، وتتبع المراحل، وسلم العمل بأمان للعملاء من خلال صفحات مشاريع احترافية.",
+    "getStartedButton": "ابدأ مجاناً",
+    "signInButton": "تسجيل الدخول"
+  },
+  "login": {
+    "title": "مرحباً بعودتك",
+    "subtitle": "سجل الدخول إلى حساب Ruzma الخاص بك",
+    "emailLabel": "البريد الإلكتروني",
+    "emailPlaceholder": "أدخل بريدك الإلكتروني",
+    "passwordLabel": "كلمة المرور",
+    "passwordPlaceholder": "أدخل كلمة المرور الخاصة بك",
+    "submitButton": "تسجيل الدخول",
+    "submitButtonLoading": "جارٍ تسجيل الدخول...",
+    "noAccount": "ليس لديك حساب؟",
+    "signUpLink": "اشتراك",
+    "forgotPasswordLink": "هل نسيت كلمة المرور؟"
+  },
+  "signup": {
+    "title": "إنشاء حساب",
+    "subtitle": "ابدأ في إدارة مشاريعك المستقلة اليوم",
+    "fullNameLabel": "الاسم الكامل",
+    "fullNamePlaceholder": "أدخل اسمك الكامل",
+    "emailLabel": "البريد الإلكتروني",
+    "emailPlaceholder": "أدخل بريدك الإلكتروني",
+    "passwordLabel": "كلمة المرور",
+    "passwordPlaceholder": "أنشئ كلمة مرور",
+    "confirmPasswordLabel": "تأكيد كلمة المرور",
+    "confirmPasswordPlaceholder": "أكد كلمة المرور الخاصة بك",
+    "submitButton": "إنشاء حساب",
+    "submitButtonLoading": "جارٍ إنشاء الحساب...",
+    "hasAccount": "لديك حساب بالفعل؟",
+    "signInLink": "تسجيل الدخول",
+    "errors": {
+      "fullNameRequired": "الاسم مطلوب",
+      "emailRequired": "البريد الإلكتروني مطلوب",
+      "emailInvalid": "الرجاء إدخال بريد إلكتروني صالح",
+      "passwordRequired": "كلمة المرور مطلوبة",
+      "passwordLength": "يجب أن تتكون كلمة المرور من 6 أحرف على الأقل",
+      "passwordsNoMatch": "كلمات المرور غير متطابقة"
+    }
+  },
+  "toast": {
+    "loginErrorTitle": "خطأ في تسجيل الدخول",
+    "signupErrorTitle": "خطأ في التسجيل",
+    "signupSuccessTitle": "أوشكت على الانتهاء!",
+    "signupSuccessDescription": "تحقق من بريدك الإلكتروني لتأكيد حسابك قبل تسجيل الدخول."
+  }
+}

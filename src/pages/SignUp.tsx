@@ -9,6 +9,7 @@ import Layout from '@/components/Layout';
 import { Eye, EyeOff } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/components/ui/use-toast';
+import { useTranslation } from 'react-i18next';
 
 const SignUp = () => {
   const [formData, setFormData] = useState({
@@ -24,25 +25,26 @@ const SignUp = () => {
   const [error, setError] = useState<string | null>(null);
   const navigate = useNavigate();
   const { toast } = useToast();
+  const { t } = useTranslation();
 
   const validateForm = () => {
     const newErrors: Record<string, string> = {};
 
     if (!formData.full_name.trim()) {
-      newErrors.full_name = 'Name is required';
+      newErrors.full_name = t('signup.errors.fullNameRequired');
     }
     if (!formData.email.trim()) {
-      newErrors.email = 'Email is required';
+      newErrors.email = t('signup.errors.emailRequired');
     } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
-      newErrors.email = 'Please enter a valid email';
+      newErrors.email = t('signup.errors.emailInvalid');
     }
     if (!formData.password) {
-      newErrors.password = 'Password is required';
+      newErrors.password = t('signup.errors.passwordRequired');
     } else if (formData.password.length < 6) {
-      newErrors.password = 'Password must be at least 6 characters';
+      newErrors.password = t('signup.errors.passwordLength');
     }
     if (formData.password !== formData.confirmPassword) {
-      newErrors.confirmPassword = 'Passwords do not match';
+      newErrors.confirmPassword = t('signup.errors.passwordsNoMatch');
     }
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -70,7 +72,7 @@ const SignUp = () => {
     if (error) {
       setError(error.message);
       toast({
-        title: "Signup Error",
+        title: t('toast.signupErrorTitle'),
         description: error.message,
         variant: "destructive"
       });
@@ -79,8 +81,8 @@ const SignUp = () => {
     }
     // If confirmation is required, user must check email before logging in
     toast({
-      title: "Almost there!",
-      description: "Check your email to confirm your account before logging in."
+      title: t('toast.signupSuccessTitle'),
+      description: t('toast.signupSuccessDescription')
     });
     setIsLoading(false);
     navigate("/login");
@@ -107,18 +109,18 @@ const SignUp = () => {
       <div className="max-w-md mx-auto">
         <Card className="bg-white/80 backdrop-blur-sm">
           <CardHeader className="text-center">
-            <CardTitle className="text-2xl font-bold text-slate-800">Create Account</CardTitle>
-            <p className="text-slate-600">Start managing your freelance projects today</p>
+            <CardTitle className="text-2xl font-bold text-slate-800">{t('signup.title')}</CardTitle>
+            <p className="text-slate-600">{t('signup.subtitle')}</p>
           </CardHeader>
           <CardContent>
             <form onSubmit={handleSubmit} className="space-y-4">
               <div className="space-y-2">
-                <Label htmlFor="full_name">Full Name</Label>
+                <Label htmlFor="full_name">{t('signup.fullNameLabel')}</Label>
                 <Input
                   id="full_name"
                   name="full_name"
                   type="text"
-                  placeholder="Enter your full name"
+                  placeholder={t('signup.fullNamePlaceholder')}
                   value={formData.full_name}
                   onChange={handleChange}
                   className={errors.full_name ? 'border-red-500' : ''}
@@ -127,12 +129,12 @@ const SignUp = () => {
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="email">Email</Label>
+                <Label htmlFor="email">{t('signup.emailLabel')}</Label>
                 <Input
                   id="email"
                   name="email"
                   type="email"
-                  placeholder="Enter your email"
+                  placeholder={t('signup.emailPlaceholder')}
                   value={formData.email}
                   onChange={handleChange}
                   className={errors.email ? 'border-red-500' : ''}
@@ -141,13 +143,13 @@ const SignUp = () => {
               </div>
               
               <div className="space-y-2">
-                <Label htmlFor="password">Password</Label>
+                <Label htmlFor="password">{t('signup.passwordLabel')}</Label>
                 <div className="relative">
                   <Input
                     id="password"
                     name="password"
                     type={showPassword ? 'text' : 'password'}
-                    placeholder="Create a password"
+                    placeholder={t('signup.passwordPlaceholder')}
                     value={formData.password}
                     onChange={handleChange}
                     className={errors.password ? 'border-red-500' : ''}
@@ -156,7 +158,7 @@ const SignUp = () => {
                     type="button"
                     variant="ghost"
                     size="sm"
-                    className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
+                    className="absolute right-0 rtl:left-0 rtl:right-auto top-0 h-full px-3 py-2 hover:bg-transparent"
                     onClick={() => setShowPassword(!showPassword)}
                   >
                     {showPassword ? (
@@ -170,13 +172,13 @@ const SignUp = () => {
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="confirmPassword">Confirm Password</Label>
+                <Label htmlFor="confirmPassword">{t('signup.confirmPasswordLabel')}</Label>
                 <div className="relative">
                   <Input
                     id="confirmPassword"
                     name="confirmPassword"
                     type={showConfirmPassword ? 'text' : 'password'}
-                    placeholder="Confirm your password"
+                    placeholder={t('signup.confirmPasswordPlaceholder')}
                     value={formData.confirmPassword}
                     onChange={handleChange}
                     className={errors.confirmPassword ? 'border-red-500' : ''}
@@ -185,7 +187,7 @@ const SignUp = () => {
                     type="button"
                     variant="ghost"
                     size="sm"
-                    className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
+                    className="absolute right-0 rtl:left-0 rtl:right-auto top-0 h-full px-3 py-2 hover:bg-transparent"
                     onClick={() => setShowConfirmPassword(!showConfirmPassword)}
                   >
                     {showConfirmPassword ? (
@@ -205,15 +207,15 @@ const SignUp = () => {
                 className="w-full" 
                 disabled={isLoading}
               >
-                {isLoading ? 'Creating Account...' : 'Create Account'}
+                {isLoading ? t('signup.submitButtonLoading') : t('signup.submitButton')}
               </Button>
             </form>
 
             <div className="mt-6 text-center">
               <p className="text-sm text-slate-600">
-                Already have an account?{' '}
+                {t('signup.hasAccount')}{' '}
                 <Link to="/login" className="text-blue-600 hover:text-blue-700 font-medium">
-                  Sign in
+                  {t('signup.signInLink')}
                 </Link>
               </p>
             </div>
