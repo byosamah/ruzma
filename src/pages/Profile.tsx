@@ -172,7 +172,7 @@ const Profile = () => {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           <ProfilePictureCard
             profilePicture={profilePicture}
-            userName={user.name}
+            userName={formData.name}
             onUploadClick={handleUploadClick}
             onFileChange={handleFileChange}
             fileInputRef={fileInputRef}
