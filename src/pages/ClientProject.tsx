@@ -272,8 +272,7 @@ const ClientProject = () => {
                       status: milestone.status,
                       deliverable: milestone.deliverable_name ? {
                         name: milestone.deliverable_name,
-                        size: milestone.deliverable_size || 0,
-                        url: milestone.deliverable_url || ''
+                        size: milestone.deliverable_size || 0
                       } : undefined,
                     }}
                     isClient={true}

@@ -281,6 +281,8 @@ export const useProjects = (user: User | null) => {
     }
 
     try {
+      console.log('Uploading deliverable for milestone:', milestoneId, 'File:', file.name, 'Size:', file.size);
+      
       // For now, we'll store the file info in the database
       // In a real app, you'd upload to Supabase Storage first
       const { error } = await supabase
@@ -327,6 +329,7 @@ export const useProjects = (user: User | null) => {
       }
 
       // In a real app, this would download from Supabase Storage
+      console.log('Downloading deliverable:', milestone.deliverable_name);
       toast.success(`Downloading ${milestone.deliverable_name}`);
       return true;
     } catch (error) {
