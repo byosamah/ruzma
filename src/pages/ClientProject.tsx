@@ -4,65 +4,96 @@ import { useParams } from 'react-router-dom';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import MilestoneCard from '@/components/MilestoneCard';
-import { Project } from '@/components/ProjectCard';
 import { CheckCircle, Clock, Briefcase } from 'lucide-react';
+import { supabase } from '@/integrations/supabase/client';
+import { DatabaseProject } from '@/hooks/useProjects';
 
 const ClientProject = () => {
   const { projectId } = useParams();
-  const [project, setProject] = useState<Project | null>(null);
+  const [project, setProject] = useState<DatabaseProject | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    // Simulate loading project data
-    setTimeout(() => {
-      const demoProject: Project = {
-        id: projectId || '1',
-        name: 'E-commerce Website Design',
-        brief: 'Complete e-commerce platform with payment integration and admin dashboard. This project will include modern design, responsive layout, and secure payment processing.',
-        milestones: [
-          {
-            id: '1',
-            title: 'UI/UX Design',
-            description: 'Wireframes, user flow diagrams, and high-fidelity mockups for all pages including homepage, product pages, cart, and checkout.',
-            price: 800,
-            status: 'approved'
-          },
-          {
-            id: '2',
-            title: 'Frontend Development',
-            description: 'React-based responsive frontend with interactive components, product catalog, shopping cart, and user authentication.',
-            price: 1200,
-            status: 'payment_submitted'
-          },
-          {
-            id: '3',
-            title: 'Backend & Deployment',
-            description: 'API development, database setup, payment gateway integration, and hosting deployment with SSL certificate.',
-            price: 1000,
-            status: 'pending'
-          }
-        ],
-        createdAt: '2024-01-15',
-        clientUrl: `/client/project/${projectId}`
-      };
-      setProject(demoProject);
-      setIsLoading(false);
-    }, 500);
+    const fetchProject = async () => {
+      if (!projectId) {
+        setError('No project ID provided');
+        setIsLoading(false);
+        return;
+      }
+
+      try {
+        setIsLoading(true);
+        
+        // Fetch project with its milestones
+        const { data: projectData, error: projectError } = await supabase
+          .from('projects')
+          .select(`
+            *,
+            milestones (*)
+          `)
+          .eq('id', projectId)
+          .single();
+
+        if (projectError) {
+          console.error('Error fetching project:', projectError);
+          setError('Project not found');
+          setIsLoading(false);
+          return;
+        }
+
+        // Type the project data properly
+        const typedProject = {
+          ...projectData,
+          milestones: projectData.milestones.map((milestone: any) => ({
+            ...milestone,
+            status: milestone.status as 'pending' | 'payment_submitted' | 'approved' | 'rejected'
+          }))
+        } as DatabaseProject;
+
+        setProject(typedProject);
+      } catch (error) {
+        console.error('Error:', error);
+        setError('Failed to load project');
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchProject();
   }, [projectId]);
 
-  const handlePaymentUpload = (milestoneId: string, file: File) => {
+  const handlePaymentUpload = async (milestoneId: string, file: File) => {
     console.log('Payment proof uploaded for milestone:', milestoneId, file);
     
-    // Update milestone status
-    setProject(prev => {
-      if (!prev) return prev;
-      return {
-        ...prev,
-        milestones: prev.milestones.map(m =>
-          m.id === milestoneId ? { ...m, status: 'payment_submitted' as const, paymentProof: file } : m
-        )
-      };
-    });
+    try {
+      // Update milestone status to payment_submitted
+      const { error } = await supabase
+        .from('milestones')
+        .update({ 
+          status: 'payment_submitted',
+          updated_at: new Date().toISOString()
+        })
+        .eq('id', milestoneId);
+
+      if (error) {
+        console.error('Error updating milestone status:', error);
+        return;
+      }
+
+      // Update local state
+      setProject(prev => {
+        if (!prev) return prev;
+        return {
+          ...prev,
+          milestones: prev.milestones.map(m =>
+            m.id === milestoneId ? { ...m, status: 'payment_submitted' as const } : m
+          )
+        };
+      });
+    } catch (error) {
+      console.error('Error updating milestone:', error);
+    }
   };
 
   if (isLoading) {
@@ -76,13 +107,13 @@ const ClientProject = () => {
     );
   }
 
-  if (!project) {
+  if (error || !project) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 flex items-center justify-center">
         <Card className="max-w-md mx-auto text-center">
           <CardContent className="pt-6">
             <h1 className="text-2xl font-bold text-slate-800 mb-2">Project Not Found</h1>
-            <p className="text-slate-600">The project you're looking for doesn't exist or has been removed.</p>
+            <p className="text-slate-600">{error || "The project you're looking for doesn't exist or has been removed."}</p>
           </CardContent>
         </Card>
       </div>
@@ -137,7 +168,7 @@ const ClientProject = () => {
               </div>
               <div className="text-center">
                 <div className="text-2xl font-bold text-slate-800">
-                  {Math.round((completedMilestones / totalMilestones) * 100)}%
+                  {totalMilestones > 0 ? Math.round((completedMilestones / totalMilestones) * 100) : 0}%
                 </div>
                 <div className="text-sm text-slate-600">Progress</div>
               </div>
@@ -151,7 +182,7 @@ const ClientProject = () => {
               <div className="w-full bg-slate-200 rounded-full h-3">
                 <div 
                   className="bg-gradient-to-r from-blue-500 to-purple-500 h-3 rounded-full transition-all duration-300"
-                  style={{ width: `${(completedMilestones / totalMilestones) * 100}%` }}
+                  style={{ width: `${totalMilestones > 0 ? (completedMilestones / totalMilestones) * 100 : 0}%` }}
                 ></div>
               </div>
             </div>
@@ -185,18 +216,32 @@ const ClientProject = () => {
           <h2 className="text-2xl font-bold text-slate-800">Project Milestones</h2>
           
           <div className="space-y-4">
-            {project.milestones.map((milestone, index) => (
-              <div key={milestone.id} className="relative">
-                {index > 0 && (
-                  <div className="absolute -top-4 left-6 w-0.5 h-4 bg-slate-300"></div>
-                )}
-                <MilestoneCard
-                  milestone={milestone}
-                  isClient={true}
-                  onPaymentUpload={handlePaymentUpload}
-                />
-              </div>
-            ))}
+            {project.milestones.length === 0 ? (
+              <Card className="text-center py-8">
+                <CardContent>
+                  <p className="text-slate-500">No milestones have been set up for this project yet.</p>
+                </CardContent>
+              </Card>
+            ) : (
+              project.milestones.map((milestone, index) => (
+                <div key={milestone.id} className="relative">
+                  {index > 0 && (
+                    <div className="absolute -top-4 left-6 w-0.5 h-4 bg-slate-300"></div>
+                  )}
+                  <MilestoneCard
+                    milestone={{
+                      id: milestone.id,
+                      title: milestone.title,
+                      description: milestone.description,
+                      price: milestone.price,
+                      status: milestone.status,
+                    }}
+                    isClient={true}
+                    onPaymentUpload={handlePaymentUpload}
+                  />
+                </div>
+              ))
+            )}
           </div>
         </div>
 
