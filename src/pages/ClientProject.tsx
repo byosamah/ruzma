@@ -16,6 +16,7 @@ const ClientProject = () => {
 
   useEffect(() => {
     const fetchProject = async () => {
+      console.log('ClientProject: URL projectId:', projectId);
       if (!projectId) {
         setError('No project ID provided');
         setIsLoading(false);
@@ -24,8 +25,7 @@ const ClientProject = () => {
 
       try {
         setIsLoading(true);
-        
-        // Fetch project with its milestones
+
         const { data: projectData, error: projectError } = await supabase
           .from('projects')
           .select(`
@@ -35,14 +35,16 @@ const ClientProject = () => {
           .eq('id', projectId)
           .single();
 
-        if (projectError) {
+        console.log('ClientProject: Supabase data:', projectData);
+        console.log('ClientProject: Supabase error:', projectError);
+
+        if (projectError || !projectData) {
           console.error('Error fetching project:', projectError);
           setError('Project not found');
           setIsLoading(false);
           return;
         }
 
-        // Type the project data properly
         const typedProject = {
           ...projectData,
           milestones: projectData.milestones.map((milestone: any) => ({
@@ -262,3 +264,4 @@ const ClientProject = () => {
 };
 
 export default ClientProject;
+
