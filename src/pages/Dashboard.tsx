@@ -10,6 +10,7 @@ import { useTranslation } from 'react-i18next';
 const Dashboard = () => {
   const [user, setUser] = useState<any>(null);
   const [projects, setProjects] = useState<Project[]>([]);
+  const [userProfile, setUserProfile] = useState<any>(null);
   const navigate = useNavigate();
   const { t } = useTranslation();
 
@@ -19,7 +20,14 @@ const Dashboard = () => {
       navigate('/login');
       return;
     }
-    setUser(JSON.parse(userData));
+    const parsedUser = JSON.parse(userData);
+    setUser(parsedUser);
+
+    // Get user profile for currency
+    const profileData = localStorage.getItem('userProfile');
+    if (profileData) {
+      setUserProfile(JSON.parse(profileData));
+    }
 
     // Load projects from localStorage or use demo projects as fallback
     const storedProjects = localStorage.getItem('projects');
@@ -114,6 +122,8 @@ const Dashboard = () => {
     sum + project.milestones.filter(m => m.status === 'payment_submitted').length, 0);
   const totalEarnings = projects.reduce((sum, project) => 
     sum + project.milestones.filter(m => m.status === 'approved').reduce((mSum, m) => mSum + m.price, 0), 0);
+
+  const userCurrency = userProfile?.currency || 'USD';
 
   if (!user) {
     return <div>Loading...</div>;
@@ -210,6 +220,7 @@ const Dashboard = () => {
                   project={project}
                   onEdit={handleEditProject}
                   onDelete={handleDeleteProject}
+                  userCurrency={userCurrency}
                 />
               ))}
             </div>

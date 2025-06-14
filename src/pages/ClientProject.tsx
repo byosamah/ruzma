@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -6,11 +5,13 @@ import { Badge } from '@/components/ui/badge';
 import MilestoneCard from '@/components/MilestoneCard';
 import { Project } from '@/components/ProjectCard';
 import { CheckCircle, Clock, Briefcase } from 'lucide-react';
+import { formatCurrency } from '@/lib/currencyUtils';
 
 const ClientProject = () => {
   const { projectId } = useParams();
   const [project, setProject] = useState<Project | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [userCurrency] = useState('USD'); // Default for client view, could be enhanced to detect from URL params
 
   useEffect(() => {
     // Simulate loading project data
@@ -120,7 +121,7 @@ const ClientProject = () => {
                 <p className="text-slate-600 mt-2">{project.brief}</p>
               </div>
               <div className="text-right">
-                <div className="text-3xl font-bold text-slate-800">${totalValue.toLocaleString()}</div>
+                <div className="text-3xl font-bold text-slate-800">{formatCurrency(totalValue, userCurrency)}</div>
                 <div className="text-sm text-slate-600">Total Project Value</div>
               </div>
             </div>
@@ -194,6 +195,7 @@ const ClientProject = () => {
                   milestone={milestone}
                   isClient={true}
                   onPaymentUpload={handlePaymentUpload}
+                  userCurrency={userCurrency}
                 />
               </div>
             ))}

@@ -13,6 +13,7 @@ const ProjectManagement: React.FC = () => {
   const [user, setUser] = useState<any>(null);
   const [project, setProject] = useState<Project | null>(null);
   const [allProjects, setAllProjects] = useState<Project[]>([]);
+  const [userProfile, setUserProfile] = useState<any>(null);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -22,6 +23,12 @@ const ProjectManagement: React.FC = () => {
       return;
     }
     setUser(JSON.parse(userData));
+
+    // Get user profile for currency
+    const profileData = localStorage.getItem('userProfile');
+    if (profileData) {
+      setUserProfile(JSON.parse(profileData));
+    }
 
     // Load all projects from dashboard demo or storage
     // In a real app, fetch from an API or supabase
@@ -108,6 +115,8 @@ const ProjectManagement: React.FC = () => {
     localStorage.setItem("projects", JSON.stringify(updatedProjects));
   };
 
+  const userCurrency = userProfile?.currency || 'USD';
+
   if (!user) return <div>{t('projectManagement.loading')}</div>;
   if (!project)
     return (
@@ -171,6 +180,7 @@ const ProjectManagement: React.FC = () => {
                       ? (mId) => updateMilestoneStatus(mId, "rejected")
                       : undefined
                   }
+                  userCurrency={userCurrency}
                 />
               ))}
             </div>

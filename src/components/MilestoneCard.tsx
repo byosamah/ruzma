@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { CheckCircle, XCircle, Clock, Download, Upload, DollarSign } from 'lucide-react';
 import { Milestone } from './ProjectCard';
+import { formatCurrency } from '@/lib/currencyUtils';
 
 interface MilestoneCardProps {
   milestone: Milestone;
@@ -12,6 +13,7 @@ interface MilestoneCardProps {
   onReject?: (milestoneId: string) => void;
   isClient?: boolean;
   onPaymentUpload?: (milestoneId: string, file: File) => void;
+  userCurrency?: string;
 }
 
 const MilestoneCard: React.FC<MilestoneCardProps> = ({ 
@@ -19,7 +21,8 @@ const MilestoneCard: React.FC<MilestoneCardProps> = ({
   onApprove, 
   onReject, 
   isClient = false,
-  onPaymentUpload 
+  onPaymentUpload,
+  userCurrency = 'USD'
 }) => {
   const getStatusColor = (status: string) => {
     switch (status) {
@@ -59,7 +62,7 @@ const MilestoneCard: React.FC<MilestoneCardProps> = ({
           <div className="text-right">
             <div className="flex items-center text-lg font-bold text-slate-800">
               <DollarSign className="w-5 h-5" />
-              {milestone.price.toFixed(2)}
+              {formatCurrency(milestone.price, userCurrency)}
             </div>
             <Badge className={`mt-1 ${getStatusColor(milestone.status)} flex items-center space-x-1`}>
               {getStatusIcon(milestone.status)}

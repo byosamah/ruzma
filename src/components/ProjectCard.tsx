@@ -1,10 +1,10 @@
-
 import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Edit, Trash2, ExternalLink, Clock, CheckCircle, XCircle } from 'lucide-react';
+import { Edit, Trash2, ExternalLink, Clock, CheckCircle, XCircle, DollarSign } from 'lucide-react';
+import { formatCurrency } from '@/lib/currencyUtils';
 
 export interface Milestone {
   id: string;
@@ -29,13 +29,15 @@ interface ProjectCardProps {
   project: Project;
   onEdit: (project: Project) => void;
   onDelete: (projectId: string) => void;
+  userCurrency?: string;
 }
 
-const ProjectCard: React.FC<ProjectCardProps> = ({ project, onEdit, onDelete }) => {
+const ProjectCard: React.FC<ProjectCardProps> = ({ project, onEdit, onDelete, userCurrency = 'USD' }) => {
   const navigate = useNavigate();
   const totalMilestones = project.milestones.length;
   const completedMilestones = project.milestones.filter(m => m.status === 'approved').length;
   const pendingPayments = project.milestones.filter(m => m.status === 'payment_submitted').length;
+  const totalValue = project.milestones.reduce((sum, m) => sum + m.price, 0);
 
   const handleCardClick = () => {
     navigate(`/project/${project.id}`);
@@ -81,6 +83,10 @@ const ProjectCard: React.FC<ProjectCardProps> = ({ project, onEdit, onDelete }) 
           <div>
             <CardTitle className="text-lg font-semibold text-slate-800">{project.name}</CardTitle>
             <p className="text-sm text-slate-600 mt-1 line-clamp-2">{project.brief}</p>
+            <div className="flex items-center text-sm font-medium text-slate-700 mt-2">
+              <DollarSign className="w-4 h-4 mr-1" />
+              {formatCurrency(totalValue, userCurrency)}
+            </div>
           </div>
           <div className="flex space-x-2">
             <Button variant="ghost" size="sm" onClick={handleEditClick}>
@@ -119,10 +125,13 @@ const ProjectCard: React.FC<ProjectCardProps> = ({ project, onEdit, onDelete }) 
             {project.milestones.slice(0, 3).map((milestone) => (
               <div key={milestone.id} className="flex items-center justify-between py-1">
                 <span className="text-sm text-slate-600 truncate">{milestone.title}</span>
-                <Badge className={`text-xs flex items-center space-x-1 ${getStatusColor(milestone.status)}`}>
-                  {getStatusIcon(milestone.status)}
-                  <span className="capitalize">{milestone.status.replace('_', ' ')}</span>
-                </Badge>
+                <div className="flex items-center space-x-2">
+                  <span className="text-xs text-slate-500">{formatCurrency(milestone.price, userCurrency)}</span>
+                  <Badge className={`text-xs flex items-center space-x-1 ${getStatusColor(milestone.status)}`}>
+                    {getStatusIcon(milestone.status)}
+                    <span className="capitalize">{milestone.status.replace('_', ' ')}</span>
+                  </Badge>
+                </div>
               </div>
             ))}
           </div>
