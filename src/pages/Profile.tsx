@@ -1,5 +1,4 @@
-
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -8,9 +7,13 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
 import Layout from '@/components/Layout';
 import { User, Mail, Save, Upload } from 'lucide-react';
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { toast } from "sonner";
 
 const Profile = () => {
   const [user, setUser] = useState<any>(null);
+  const [profilePicture, setProfilePicture] = useState<string | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -30,6 +33,7 @@ const Profile = () => {
     }
     const parsedUser = JSON.parse(userData);
     setUser(parsedUser);
+    setProfilePicture(parsedUser.profilePicture || null);
     
     // Initialize form with user data
     setFormData({
@@ -65,6 +69,32 @@ const Profile = () => {
     }, 1000);
   };
 
+  const handleUploadClick = () => {
+    fileInputRef.current?.click();
+  };
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      if (file.size > 2 * 1024 * 1024) { // 2MB limit
+        toast.error("File is too large. Max size is 2MB.");
+        return;
+      }
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        const base64String = reader.result as string;
+        setProfilePicture(base64String);
+        
+        const updatedUser = { ...user, profilePicture: base64String };
+        localStorage.setItem('user', JSON.stringify(updatedUser));
+        setUser(updatedUser);
+        
+        toast.success("Profile picture updated!");
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
   const handleSignOut = () => {
     localStorage.removeItem('user');
     setUser(null);
@@ -90,11 +120,21 @@ const Profile = () => {
               <CardTitle>Profile Picture</CardTitle>
             </CardHeader>
             <CardContent className="text-center space-y-4">
-              <div className="w-32 h-32 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full flex items-center justify-center mx-auto text-white text-4xl font-bold">
-                {user.name?.charAt(0).toUpperCase() || 'U'}
-              </div>
+              <Avatar className="w-32 h-32 mx-auto text-4xl font-bold">
+                <AvatarImage src={profilePicture || undefined} alt={user.name} />
+                <AvatarFallback className="bg-gradient-to-r from-blue-500 to-purple-500 text-white">
+                  {user.name?.charAt(0).toUpperCase() || 'U'}
+                </AvatarFallback>
+              </Avatar>
+              <input
+                type="file"
+                ref={fileInputRef}
+                onChange={handleFileChange}
+                className="hidden"
+                accept="image/png, image/jpeg, image/gif"
+              />
               <div>
-                <Button variant="outline" size="sm">
+                <Button variant="outline" size="sm" onClick={handleUploadClick}>
                   <Upload className="w-4 h-4 mr-2" />
                   Upload Photo
                 </Button>
