@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -7,33 +7,69 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import Layout from '@/components/Layout';
-import { Plus, Trash2, Upload } from 'lucide-react';
-import { Milestone } from '@/components/ProjectCard';
+import { Plus, Trash2, ArrowLeft } from 'lucide-react';
+import { supabase } from '@/integrations/supabase/client';
+import { User } from '@supabase/supabase-js';
+import { useProjects } from '@/hooks/useProjects';
+
+interface MilestoneFormData {
+  id: string;
+  title: string;
+  description: string;
+  price: number;
+}
 
 const CreateProject = () => {
-  const [user, setUser] = useState<any>(null);
+  const [user, setUser] = useState<User | null>(null);
+  const [profile, setProfile] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
   const [formData, setFormData] = useState({
     name: '',
     brief: ''
   });
-  const [milestones, setMilestones] = useState<Milestone[]>([{
+  const [milestones, setMilestones] = useState<MilestoneFormData[]>([{
     id: '1',
     title: '',
     description: '',
-    price: 0,
-    status: 'pending' as const
+    price: 0
   }]);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const navigate = useNavigate();
+  
+  const { createProject } = useProjects(user);
 
-  React.useEffect(() => {
-    const userData = localStorage.getItem('user');
-    if (!userData) {
-      navigate('/login');
-      return;
-    }
-    setUser(JSON.parse(userData));
+  useEffect(() => {
+    const checkAuthAndLoadData = async () => {
+      setLoading(true);
+      
+      const { data: { user }, error: userError } = await supabase.auth.getUser();
+      
+      if (userError || !user) {
+        console.log('No user found, redirecting to login');
+        navigate('/login');
+        return;
+      }
+
+      setUser(user);
+      
+      // Fetch profile
+      const { data: profileData } = await supabase
+        .from('profiles')
+        .select('*')
+        .eq('id', user.id)
+        .maybeSingle();
+      
+      setProfile(profileData);
+      setLoading(false);
+    };
+
+    checkAuthAndLoadData();
   }, [navigate]);
+
+  const handleSignOut = async () => {
+    await supabase.auth.signOut();
+    navigate('/');
+  };
 
   const handleFormChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setFormData(prev => ({
@@ -42,19 +78,18 @@ const CreateProject = () => {
     }));
   };
 
-  const handleMilestoneChange = (index: number, field: keyof Milestone, value: any) => {
+  const handleMilestoneChange = (index: number, field: keyof MilestoneFormData, value: any) => {
     setMilestones(prev => prev.map((milestone, i) => 
       i === index ? { ...milestone, [field]: value } : milestone
     ));
   };
 
   const addMilestone = () => {
-    const newMilestone: Milestone = {
+    const newMilestone: MilestoneFormData = {
       id: Date.now().toString(),
       title: '',
       description: '',
-      price: 0,
-      status: 'pending'
+      price: 0
     };
     setMilestones(prev => [...prev, newMilestone]);
   };
@@ -65,48 +100,74 @@ const CreateProject = () => {
     }
   };
 
-  const handleFileUpload = (index: number, file: File) => {
-    setMilestones(prev => prev.map((milestone, i) => 
-      i === index ? { ...milestone, deliverable: file } : milestone
-    ));
-  };
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setIsLoading(true);
+    
+    if (!user) {
+      return;
+    }
 
     // Validate form
     if (!formData.name.trim() || !formData.brief.trim()) {
       alert('Please fill in all required fields');
-      setIsLoading(false);
       return;
     }
 
     if (milestones.some(m => !m.title.trim() || !m.description.trim() || m.price <= 0)) {
       alert('Please complete all milestone details');
-      setIsLoading(false);
       return;
     }
 
-    // Simulate project creation
-    setTimeout(() => {
-      console.log('Creating project:', { formData, milestones });
+    setIsSubmitting(true);
+
+    const projectData = {
+      name: formData.name,
+      brief: formData.brief,
+      milestones: milestones.map(m => ({
+        title: m.title,
+        description: m.description,
+        price: m.price
+      }))
+    };
+
+    const result = await createProject(projectData);
+    
+    if (result) {
       navigate('/dashboard');
-    }, 1000);
+    }
+    
+    setIsSubmitting(false);
   };
 
-  const handleSignOut = () => {
-    localStorage.removeItem('user');
-    setUser(null);
-    navigate('/');
-  };
+  if (loading) {
+    return (
+      <Layout>
+        <div className="flex items-center justify-center min-h-[400px]">
+          <div className="text-center">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
+            <p className="text-slate-600">Loading...</p>
+          </div>
+        </div>
+      </Layout>
+    );
+  }
 
   if (!user) {
     return <div>Loading...</div>;
   }
 
   return (
-    <Layout user={user} onSignOut={handleSignOut}>
+    <Layout user={profile || user} onSignOut={handleSignOut}>
+      <Button
+        variant="ghost"
+        size="sm"
+        className="mb-6 flex items-center"
+        onClick={() => navigate("/dashboard")}
+      >
+        <ArrowLeft className="w-4 h-4 mr-1" />
+        Back to Dashboard
+      </Button>
+      
       <div className="max-w-4xl mx-auto space-y-8">
         <div>
           <h1 className="text-3xl font-bold text-slate-800">Create New Project</h1>
@@ -211,32 +272,6 @@ const CreateProject = () => {
                       required
                     />
                   </div>
-
-                  <div className="space-y-2">
-                    <Label>Deliverable File (Optional)</Label>
-                    <div className="flex items-center space-x-2">
-                      <input
-                        type="file"
-                        className="hidden"
-                        id={`deliverable-${index}`}
-                        onChange={(e) => {
-                          const file = e.target.files?.[0];
-                          if (file) handleFileUpload(index, file);
-                        }}
-                      />
-                      <label htmlFor={`deliverable-${index}`}>
-                        <Button asChild type="button" variant="outline" size="sm">
-                          <span className="cursor-pointer flex items-center">
-                            <Upload className="w-4 h-4 mr-2" />
-                            Upload File
-                          </span>
-                        </Button>
-                      </label>
-                      {milestone.deliverable && (
-                        <span className="text-sm text-slate-600">{milestone.deliverable.name}</span>
-                      )}
-                    </div>
-                  </div>
                 </div>
               ))}
             </CardContent>
@@ -246,8 +281,8 @@ const CreateProject = () => {
             <Button type="button" variant="outline" onClick={() => navigate('/dashboard')}>
               Cancel
             </Button>
-            <Button type="submit" disabled={isLoading}>
-              {isLoading ? 'Creating...' : 'Create Project'}
+            <Button type="submit" disabled={isSubmitting}>
+              {isSubmitting ? 'Creating...' : 'Create Project'}
             </Button>
           </div>
         </form>

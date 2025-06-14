@@ -1,20 +1,23 @@
+
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import Layout from '@/components/Layout';
-import ProjectCard, { Project } from '@/components/ProjectCard';
+import ProjectCard from '@/components/ProjectCard';
 import { Plus, Briefcase, DollarSign, Clock, CheckCircle } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { User } from '@supabase/supabase-js';
 import { toast } from 'sonner';
+import { useProjects } from '@/hooks/useProjects';
 
 const Dashboard = () => {
   const [user, setUser] = useState<User | null>(null);
   const [profile, setProfile] = useState<any>(null);
-  const [projects, setProjects] = useState<Project[]>([]);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
+  
+  const { projects, loading: projectsLoading, deleteProject } = useProjects(user);
 
   useEffect(() => {
     const fetchUserAndProfile = async () => {
@@ -35,7 +38,7 @@ const Dashboard = () => {
         .from('profiles')
         .select('*')
         .eq('id', user.id)
-        .maybeSingle(); // Use maybeSingle instead of single to avoid errors when no profile exists
+        .maybeSingle();
 
       if (profileError) {
         console.error("Error fetching profile:", profileError);
@@ -65,101 +68,48 @@ const Dashboard = () => {
     fetchUserAndProfile();
   }, [navigate]);
 
-  useEffect(() => {
-    // Load projects from localStorage or use demo projects as fallback
-    const storedProjects = localStorage.getItem('projects');
-    if (storedProjects) {
-      setProjects(JSON.parse(storedProjects));
-    } else {
-      // Load demo projects
-      const demoProjects: Project[] = [
-        {
-          id: '1',
-          name: 'E-commerce Website Design',
-          brief: 'Complete e-commerce platform with payment integration and admin dashboard.',
-          milestones: [
-            {
-              id: '1',
-              title: 'UI/UX Design',
-              description: 'Wireframes and high-fidelity mockups',
-              price: 800,
-              status: 'approved'
-            },
-            {
-              id: '2',
-              title: 'Frontend Development',
-              description: 'React-based responsive frontend',
-              price: 1200,
-              status: 'payment_submitted'
-            },
-            {
-              id: '3',
-              title: 'Backend & Deployment',
-              description: 'API development and hosting setup',
-              price: 1000,
-              status: 'pending'
-            }
-          ],
-          createdAt: '2024-01-15',
-          clientUrl: `/client/project/1`
-        },
-        {
-          id: '2',
-          name: 'Brand Identity Package',
-          brief: 'Complete brand identity including logo, colors, and style guide.',
-          milestones: [
-            {
-              id: '4',
-              title: 'Logo Design',
-              description: 'Primary logo and variations',
-              price: 500,
-              status: 'approved'
-            },
-            {
-              id: '5',
-              title: 'Brand Guidelines',
-              description: 'Color palette, typography, usage guidelines',
-              price: 300,
-              status: 'approved'
-            }
-          ],
-          createdAt: '2024-01-10',
-          clientUrl: `/client/project/2`
-        }
-      ];
-      setProjects(demoProjects);
-      localStorage.setItem('projects', JSON.stringify(demoProjects));
-    }
-  }, []);
-
   const handleSignOut = async () => {
     await supabase.auth.signOut();
     navigate('/');
   };
 
-  const handleEditProject = (project: Project) => {
+  const handleEditProject = (project: any) => {
     navigate(`/edit-project/${project.id}`);
   };
 
-  const handleDeleteProject = (projectId: string) => {
+  const handleDeleteProject = async (projectId: string) => {
     if (confirm('Are you sure you want to delete this project?')) {
-      const updatedProjects = projects.filter(p => p.id !== projectId);
-      setProjects(updatedProjects);
-      localStorage.setItem('projects', JSON.stringify(updatedProjects));
+      await deleteProject(projectId);
     }
   };
 
+  // Convert database projects to the format expected by ProjectCard
+  const convertedProjects = projects.map(project => ({
+    id: project.id,
+    name: project.name,
+    brief: project.brief,
+    milestones: project.milestones.map(milestone => ({
+      id: milestone.id,
+      title: milestone.title,
+      description: milestone.description,
+      price: milestone.price,
+      status: milestone.status,
+    })),
+    createdAt: new Date(project.created_at).toLocaleDateString(),
+    clientUrl: `/client/project/${project.id}`,
+  }));
+
   // Calculate stats
-  const totalProjects = projects.length;
-  const totalMilestones = projects.reduce((sum, project) => sum + project.milestones.length, 0);
-  const completedMilestones = projects.reduce((sum, project) => 
+  const totalProjects = convertedProjects.length;
+  const totalMilestones = convertedProjects.reduce((sum, project) => sum + project.milestones.length, 0);
+  const completedMilestones = convertedProjects.reduce((sum, project) => 
     sum + project.milestones.filter(m => m.status === 'approved').length, 0);
-  const pendingPayments = projects.reduce((sum, project) => 
+  const pendingPayments = convertedProjects.reduce((sum, project) => 
     sum + project.milestones.filter(m => m.status === 'payment_submitted').length, 0);
-  const totalEarnings = projects.reduce((sum, project) => 
+  const totalEarnings = convertedProjects.reduce((sum, project) => 
     sum + project.milestones.filter(m => m.status === 'approved').reduce((mSum, m) => mSum + m.price, 0), 0);
 
-  if (loading) {
+  if (loading || projectsLoading) {
     return (
       <Layout>
         <div className="flex items-center justify-center min-h-[400px]">
@@ -244,7 +194,7 @@ const Dashboard = () => {
         <div className="space-y-6">
           <div className="flex justify-between items-center">
             <h2 className="text-2xl font-bold text-slate-800">Your Projects</h2>
-            {projects.length === 0 && (
+            {convertedProjects.length === 0 && (
               <Button onClick={() => navigate('/create-project')} variant="outline">
                 <Plus className="w-4 h-4 mr-2" />
                 Create Your First Project
@@ -252,7 +202,7 @@ const Dashboard = () => {
             )}
           </div>
 
-          {projects.length === 0 ? (
+          {convertedProjects.length === 0 ? (
             <Card className="text-center py-12 bg-white/80 backdrop-blur-sm">
               <CardContent>
                 <Briefcase className="w-16 h-16 text-slate-400 mx-auto mb-4" />
@@ -266,7 +216,7 @@ const Dashboard = () => {
             </Card>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {projects.map(project => (
+              {convertedProjects.map(project => (
                 <ProjectCard
                   key={project.id}
                   project={project}

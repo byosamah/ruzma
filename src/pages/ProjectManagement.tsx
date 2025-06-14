@@ -4,122 +4,89 @@ import { useParams, useNavigate } from "react-router-dom";
 import Layout from "@/components/Layout";
 import { Button } from "@/components/ui/button";
 import MilestoneCard from "@/components/MilestoneCard";
-import { Project, Milestone } from "@/components/ProjectCard";
+import { Milestone } from "@/components/ProjectCard";
 import { ArrowLeft } from "lucide-react";
+import { supabase } from '@/integrations/supabase/client';
+import { User } from '@supabase/supabase-js';
+import { useProjects, DatabaseProject } from '@/hooks/useProjects';
 
 const ProjectManagement: React.FC = () => {
   const { projectId } = useParams<{ projectId: string }>();
-  const [user, setUser] = useState<any>(null);
-  const [project, setProject] = useState<Project | null>(null);
-  const [allProjects, setAllProjects] = useState<Project[]>([]);
+  const [user, setUser] = useState<User | null>(null);
+  const [profile, setProfile] = useState<any>(null);
+  const [project, setProject] = useState<DatabaseProject | null>(null);
+  const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
-  useEffect(() => {
-    const userData = localStorage.getItem("user");
-    if (!userData) {
-      navigate("/login");
-      return;
-    }
-    setUser(JSON.parse(userData));
+  const { projects, updateMilestoneStatus } = useProjects(user);
 
-    // Load all projects from dashboard demo or storage
-    // In a real app, fetch from an API or supabase
-    let projects: Project[] = [];
-    if (localStorage.getItem("projects")) {
-      projects = JSON.parse(localStorage.getItem("projects")!);
-    } else {
-      // fallback to demo (same as Dashboard default)
-      projects = [
-        {
-          id: '1',
-          name: 'E-commerce Website Design',
-          brief: 'Complete e-commerce platform with payment integration and admin dashboard.',
-          milestones: [
-            {
-              id: '1',
-              title: 'UI/UX Design',
-              description: 'Wireframes and high-fidelity mockups',
-              price: 800,
-              status: 'approved'
-            },
-            {
-              id: '2',
-              title: 'Frontend Development',
-              description: 'React-based responsive frontend',
-              price: 1200,
-              status: 'payment_submitted'
-            },
-            {
-              id: '3',
-              title: 'Backend & Deployment',
-              description: 'API development and hosting setup',
-              price: 1000,
-              status: 'pending'
-            }
-          ],
-          createdAt: '2024-01-15',
-          clientUrl: `/client/project/1`
-        },
-        {
-          id: '2',
-          name: 'Brand Identity Package',
-          brief: 'Complete brand identity including logo, colors, and style guide.',
-          milestones: [
-            {
-              id: '4',
-              title: 'Logo Design',
-              description: 'Primary logo and variations',
-              price: 500,
-              status: 'approved'
-            },
-            {
-              id: '5',
-              title: 'Brand Guidelines',
-              description: 'Color palette, typography, usage guidelines',
-              price: 300,
-              status: 'approved'
-            }
-          ],
-          createdAt: '2024-01-10',
-          clientUrl: `/client/project/2`
-        }
-      ];
-    }
-    setAllProjects(projects);
-    const found = projects.find((p) => p.id === projectId);
-    setProject(found || null);
+  useEffect(() => {
+    const checkAuthAndLoadData = async () => {
+      setLoading(true);
+      
+      const { data: { user }, error: userError } = await supabase.auth.getUser();
+      
+      if (userError || !user) {
+        console.log('No user found, redirecting to login');
+        navigate('/login');
+        return;
+      }
+
+      setUser(user);
+      
+      // Fetch profile
+      const { data: profileData } = await supabase
+        .from('profiles')
+        .select('*')
+        .eq('id', user.id)
+        .maybeSingle();
+      
+      setProfile(profileData);
+      setLoading(false);
+    };
+
+    checkAuthAndLoadData();
   }, [projectId, navigate]);
 
-  // Update project milestone status (approve/reject)
-  const updateMilestoneStatus = (milestoneId: string, newStatus: Milestone["status"]) => {
-    if (!project) return;
-    const updatedMilestones = project.milestones.map(milestone =>
-      milestone.id === milestoneId ? { ...milestone, status: newStatus } : milestone
-    );
-    const updatedProject = { ...project, milestones: updatedMilestones };
-    setProject(updatedProject);
+  useEffect(() => {
+    if (projects.length > 0 && projectId) {
+      const found = projects.find((p) => p.id === projectId);
+      setProject(found || null);
+    }
+  }, [projects, projectId]);
 
-    // Persist to allProjects/localStorage for demo
-    const updatedProjects = allProjects.map(p =>
-      p.id === project.id ? updatedProject : p
-    );
-    setAllProjects(updatedProjects);
-    localStorage.setItem("projects", JSON.stringify(updatedProjects));
+  const handleUpdateMilestoneStatus = async (milestoneId: string, newStatus: Milestone["status"]) => {
+    await updateMilestoneStatus(milestoneId, newStatus);
   };
 
-  if (!user) return <div>Loading...</div>;
-  if (!project)
+  if (loading) {
     return (
-      <Layout user={user}>
+      <Layout>
+        <div className="flex items-center justify-center min-h-[400px]">
+          <div className="text-center">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
+            <p className="text-slate-600">Loading project...</p>
+          </div>
+        </div>
+      </Layout>
+    );
+  }
+
+  if (!user) return <div>Loading...</div>;
+  
+  if (!project) {
+    return (
+      <Layout user={profile || user}>
         <div className="max-w-xl mx-auto text-center mt-20">
           <h2 className="text-2xl font-bold mb-2">Project not found</h2>
           <Button onClick={() => navigate("/dashboard")}>Go to Dashboard</Button>
         </div>
       </Layout>
     );
+  }
 
   return (
-    <Layout user={user}>
+    <Layout user={profile || user}>
       <Button
         variant="ghost"
         size="sm"
@@ -136,12 +103,12 @@ const ProjectManagement: React.FC = () => {
           <div className="flex items-center justify-between text-sm">
             <span className="text-slate-500">Project ID: {project.id}</span>
             <span className="text-slate-500">
-              Created: {project.createdAt}
+              Created: {new Date(project.created_at).toLocaleDateString()}
             </span>
           </div>
           <div className="mt-4">
             <a
-              href={project.clientUrl}
+              href={`/client/project/${project.id}`}
               target="_blank"
               className="text-blue-600 underline"
               rel="noopener noreferrer"
@@ -160,15 +127,21 @@ const ProjectManagement: React.FC = () => {
               {project.milestones.map((milestone) => (
                 <MilestoneCard
                   key={milestone.id}
-                  milestone={milestone}
+                  milestone={{
+                    id: milestone.id,
+                    title: milestone.title,
+                    description: milestone.description,
+                    price: milestone.price,
+                    status: milestone.status,
+                  }}
                   onApprove={
                     milestone.status === "payment_submitted"
-                      ? (mId) => updateMilestoneStatus(mId, "approved")
+                      ? (mId) => handleUpdateMilestoneStatus(mId, "approved")
                       : undefined
                   }
                   onReject={
                     milestone.status === "payment_submitted"
-                      ? (mId) => updateMilestoneStatus(mId, "rejected")
+                      ? (mId) => handleUpdateMilestoneStatus(mId, "rejected")
                       : undefined
                   }
                 />

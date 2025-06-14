@@ -6,22 +6,32 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Project, Milestone } from '@/components/ProjectCard';
 import { ArrowLeft, Plus, Trash2 } from 'lucide-react';
-import { toast } from 'sonner';
 import { supabase } from '@/integrations/supabase/client';
 import { User } from '@supabase/supabase-js';
+import { useProjects, DatabaseProject } from '@/hooks/useProjects';
+
+interface MilestoneFormData {
+  id?: string;
+  title: string;
+  description: string;
+  price: number;
+  status: 'pending' | 'payment_submitted' | 'approved' | 'rejected';
+}
 
 const EditProject: React.FC = () => {
   const { projectId } = useParams<{ projectId: string }>();
   const navigate = useNavigate();
   const [user, setUser] = useState<User | null>(null);
   const [profile, setProfile] = useState<any>(null);
-  const [project, setProject] = useState<Project | null>(null);
+  const [project, setProject] = useState<DatabaseProject | null>(null);
   const [name, setName] = useState('');
   const [brief, setBrief] = useState('');
-  const [milestones, setMilestones] = useState<Milestone[]>([]);
+  const [milestones, setMilestones] = useState<MilestoneFormData[]>([]);
   const [loading, setLoading] = useState(true);
+  const [updating, setUpdating] = useState(false);
+
+  const { projects, updateProject } = useProjects(user);
 
   useEffect(() => {
     const checkAuthAndLoadProject = async () => {
@@ -45,33 +55,36 @@ const EditProject: React.FC = () => {
         .maybeSingle();
       
       setProfile(profileData);
-
-      // Load project from localStorage
-      const projectsFromStorage = JSON.parse(localStorage.getItem('projects') || '[]');
-      const projectToEdit = projectsFromStorage.find((p: Project) => p.id === projectId);
-
-      if (projectToEdit) {
-        setProject(projectToEdit);
-        setName(projectToEdit.name);
-        setBrief(projectToEdit.brief);
-        setMilestones(projectToEdit.milestones);
-      } else {
-        toast.error('Project not found.');
-        navigate('/dashboard');
-      }
-      
       setLoading(false);
     };
 
     checkAuthAndLoadProject();
   }, [projectId, navigate]);
 
+  useEffect(() => {
+    if (projects.length > 0 && projectId) {
+      const projectToEdit = projects.find(p => p.id === projectId);
+      if (projectToEdit) {
+        setProject(projectToEdit);
+        setName(projectToEdit.name);
+        setBrief(projectToEdit.brief);
+        setMilestones(projectToEdit.milestones.map(m => ({
+          id: m.id,
+          title: m.title,
+          description: m.description,
+          price: m.price,
+          status: m.status,
+        })));
+      }
+    }
+  }, [projects, projectId]);
+
   const handleSignOut = async () => {
     await supabase.auth.signOut();
     navigate('/');
   };
 
-  const handleMilestoneChange = (index: number, field: keyof Milestone, value: string | number) => {
+  const handleMilestoneChange = (index: number, field: keyof MilestoneFormData, value: string | number) => {
     const newMilestones = [...milestones];
     const milestoneToUpdate = { ...newMilestones[index] };
 
@@ -88,7 +101,6 @@ const EditProject: React.FC = () => {
     setMilestones([
       ...milestones,
       {
-        id: `new-${Date.now()}`,
         title: '',
         description: '',
         price: 0,
@@ -97,31 +109,34 @@ const EditProject: React.FC = () => {
     ]);
   };
 
-  const handleDeleteMilestone = (id: string) => {
-    setMilestones(milestones.filter(m => m.id !== id));
+  const handleDeleteMilestone = (index: number) => {
+    setMilestones(milestones.filter((_, i) => i !== index));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!project) return;
+    if (!project || !projectId) return;
 
     for (const milestone of milestones) {
       if (!milestone.title.trim() || !milestone.description.trim()) {
-        toast.error('Milestone title and description cannot be empty.');
+        alert('Milestone title and description cannot be empty.');
         return;
       }
     }
 
-    const updatedProject = { ...project, name, brief, milestones };
+    setUpdating(true);
+    
+    const success = await updateProject(projectId, {
+      name,
+      brief,
+      milestones,
+    });
 
-    const projectsFromStorage: Project[] = JSON.parse(localStorage.getItem('projects') || '[]');
-    const updatedProjects = projectsFromStorage.map(p =>
-      p.id === projectId ? updatedProject : p
-    );
-
-    localStorage.setItem('projects', JSON.stringify(updatedProjects));
-    toast.success('Project has been updated successfully.');
-    navigate('/dashboard');
+    if (success) {
+      navigate('/dashboard');
+    }
+    
+    setUpdating(false);
   };
 
   if (loading) {
@@ -194,13 +209,13 @@ const EditProject: React.FC = () => {
                 <h3 className="text-lg font-medium text-slate-800">Milestones</h3>
                 <div className="space-y-4">
                   {milestones.map((milestone, index) => (
-                    <div key={milestone.id} className="p-4 border rounded-md space-y-3 bg-slate-50 relative">
+                    <div key={index} className="p-4 border rounded-md space-y-3 bg-slate-50 relative">
                        <Button
                         type="button"
                         variant="ghost"
                         size="icon"
                         className="absolute top-2 right-2 h-7 w-7 text-slate-500 hover:bg-red-100 hover:text-red-600"
-                        onClick={() => handleDeleteMilestone(milestone.id)}
+                        onClick={() => handleDeleteMilestone(index)}
                       >
                         <Trash2 className="w-4 h-4" />
                       </Button>
@@ -252,7 +267,9 @@ const EditProject: React.FC = () => {
               </div>
 
               <div className="flex justify-end">
-                <Button type="submit">Save Changes</Button>
+                <Button type="submit" disabled={updating}>
+                  {updating ? 'Saving...' : 'Save Changes'}
+                </Button>
               </div>
             </form>
           </CardContent>
