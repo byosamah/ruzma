@@ -7,13 +7,10 @@ import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import Layout from '@/components/Layout';
 import { Eye, EyeOff } from 'lucide-react';
-import { supabase } from '@/integrations/supabase/client';
-import { useToast } from '@/components/ui/use-toast';
-import { useTranslation } from 'react-i18next';
 
 const SignUp = () => {
   const [formData, setFormData] = useState({
-    full_name: '',
+    name: '',
     email: '',
     password: '',
     confirmPassword: ''
@@ -22,70 +19,51 @@ const SignUp = () => {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
-  const [error, setError] = useState<string | null>(null);
   const navigate = useNavigate();
-  const { toast } = useToast();
-  const { t } = useTranslation();
 
   const validateForm = () => {
     const newErrors: Record<string, string> = {};
-
-    if (!formData.full_name.trim()) {
-      newErrors.full_name = t('signup.errors.fullNameRequired');
+    
+    if (!formData.name.trim()) {
+      newErrors.name = 'Name is required';
     }
+    
     if (!formData.email.trim()) {
-      newErrors.email = t('signup.errors.emailRequired');
+      newErrors.email = 'Email is required';
     } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
-      newErrors.email = t('signup.errors.emailInvalid');
+      newErrors.email = 'Please enter a valid email';
     }
+    
     if (!formData.password) {
-      newErrors.password = t('signup.errors.passwordRequired');
+      newErrors.password = 'Password is required';
     } else if (formData.password.length < 6) {
-      newErrors.password = t('signup.errors.passwordLength');
+      newErrors.password = 'Password must be at least 6 characters';
     }
+    
     if (formData.password !== formData.confirmPassword) {
-      newErrors.confirmPassword = t('signup.errors.passwordsNoMatch');
+      newErrors.confirmPassword = 'Passwords do not match';
     }
+    
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError(null);
-
+    
     if (!validateForm()) return;
-
+    
     setIsLoading(true);
-
-    // Use Supabase signup with full_name as user metadata (for trigger)
-    const redirectUrl = `${window.location.origin}/`;
-    const { data, error } = await supabase.auth.signUp({
-      email: formData.email,
-      password: formData.password,
-      options: {
-        data: { full_name: formData.full_name },
-        emailRedirectTo: redirectUrl, // <== REQUIRED for magic link confirmation
-      }
-    });
-
-    if (error) {
-      setError(error.message);
-      toast({
-        title: t('toast.signupErrorTitle'),
-        description: error.message,
-        variant: "destructive"
-      });
-      setIsLoading(false);
-      return;
-    }
-    // If confirmation is required, user must check email before logging in
-    toast({
-      title: t('toast.signupSuccessTitle'),
-      description: t('toast.signupSuccessDescription')
-    });
-    setIsLoading(false);
-    navigate("/login");
+    
+    // Simulate signup - replace with actual authentication
+    setTimeout(() => {
+      console.log('Signup attempt:', formData);
+      localStorage.setItem('user', JSON.stringify({ 
+        email: formData.email, 
+        name: formData.name 
+      }));
+      navigate('/dashboard');
+    }, 1000);
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -93,7 +71,7 @@ const SignUp = () => {
       ...prev,
       [e.target.name]: e.target.value
     }));
-
+    
     // Clear error when user starts typing
     if (errors[e.target.name]) {
       setErrors(prev => ({
@@ -101,7 +79,6 @@ const SignUp = () => {
         [e.target.name]: ''
       }));
     }
-    setError(null);
   };
 
   return (
@@ -109,32 +86,32 @@ const SignUp = () => {
       <div className="max-w-md mx-auto">
         <Card className="bg-white/80 backdrop-blur-sm">
           <CardHeader className="text-center">
-            <CardTitle className="text-2xl font-bold text-slate-800">{t('signup.title')}</CardTitle>
-            <p className="text-slate-600">{t('signup.subtitle')}</p>
+            <CardTitle className="text-2xl font-bold text-slate-800">Create Account</CardTitle>
+            <p className="text-slate-600">Start managing your freelance projects today</p>
           </CardHeader>
           <CardContent>
             <form onSubmit={handleSubmit} className="space-y-4">
               <div className="space-y-2">
-                <Label htmlFor="full_name">{t('signup.fullNameLabel')}</Label>
+                <Label htmlFor="name">Full Name</Label>
                 <Input
-                  id="full_name"
-                  name="full_name"
+                  id="name"
+                  name="name"
                   type="text"
-                  placeholder={t('signup.fullNamePlaceholder')}
-                  value={formData.full_name}
+                  placeholder="Enter your full name"
+                  value={formData.name}
                   onChange={handleChange}
-                  className={errors.full_name ? 'border-red-500' : ''}
+                  className={errors.name ? 'border-red-500' : ''}
                 />
-                {errors.full_name && <p className="text-sm text-red-600">{errors.full_name}</p>}
+                {errors.name && <p className="text-sm text-red-600">{errors.name}</p>}
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="email">{t('signup.emailLabel')}</Label>
+                <Label htmlFor="email">Email</Label>
                 <Input
                   id="email"
                   name="email"
                   type="email"
-                  placeholder={t('signup.emailPlaceholder')}
+                  placeholder="Enter your email"
                   value={formData.email}
                   onChange={handleChange}
                   className={errors.email ? 'border-red-500' : ''}
@@ -143,13 +120,13 @@ const SignUp = () => {
               </div>
               
               <div className="space-y-2">
-                <Label htmlFor="password">{t('signup.passwordLabel')}</Label>
+                <Label htmlFor="password">Password</Label>
                 <div className="relative">
                   <Input
                     id="password"
                     name="password"
                     type={showPassword ? 'text' : 'password'}
-                    placeholder={t('signup.passwordPlaceholder')}
+                    placeholder="Create a password"
                     value={formData.password}
                     onChange={handleChange}
                     className={errors.password ? 'border-red-500' : ''}
@@ -158,7 +135,7 @@ const SignUp = () => {
                     type="button"
                     variant="ghost"
                     size="sm"
-                    className="absolute right-0 rtl:left-0 rtl:right-auto top-0 h-full px-3 py-2 hover:bg-transparent"
+                    className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
                     onClick={() => setShowPassword(!showPassword)}
                   >
                     {showPassword ? (
@@ -172,13 +149,13 @@ const SignUp = () => {
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="confirmPassword">{t('signup.confirmPasswordLabel')}</Label>
+                <Label htmlFor="confirmPassword">Confirm Password</Label>
                 <div className="relative">
                   <Input
                     id="confirmPassword"
                     name="confirmPassword"
                     type={showConfirmPassword ? 'text' : 'password'}
-                    placeholder={t('signup.confirmPasswordPlaceholder')}
+                    placeholder="Confirm your password"
                     value={formData.confirmPassword}
                     onChange={handleChange}
                     className={errors.confirmPassword ? 'border-red-500' : ''}
@@ -187,7 +164,7 @@ const SignUp = () => {
                     type="button"
                     variant="ghost"
                     size="sm"
-                    className="absolute right-0 rtl:left-0 rtl:right-auto top-0 h-full px-3 py-2 hover:bg-transparent"
+                    className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
                     onClick={() => setShowConfirmPassword(!showConfirmPassword)}
                   >
                     {showConfirmPassword ? (
@@ -200,22 +177,20 @@ const SignUp = () => {
                 {errors.confirmPassword && <p className="text-sm text-red-600">{errors.confirmPassword}</p>}
               </div>
 
-              {error && <div className="text-sm text-red-600">{error}</div>}
-
               <Button 
                 type="submit" 
                 className="w-full" 
                 disabled={isLoading}
               >
-                {isLoading ? t('signup.submitButtonLoading') : t('signup.submitButton')}
+                {isLoading ? 'Creating Account...' : 'Create Account'}
               </Button>
             </form>
 
             <div className="mt-6 text-center">
               <p className="text-sm text-slate-600">
-                {t('signup.hasAccount')}{' '}
+                Already have an account?{' '}
                 <Link to="/login" className="text-blue-600 hover:text-blue-700 font-medium">
-                  {t('signup.signInLink')}
+                  Sign in
                 </Link>
               </p>
             </div>

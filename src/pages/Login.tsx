@@ -7,9 +7,6 @@ import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import Layout from '@/components/Layout';
 import { Eye, EyeOff } from 'lucide-react';
-import { supabase } from '@/integrations/supabase/client';
-import { useToast } from '@/components/ui/use-toast';
-import { useTranslation } from 'react-i18next';
 
 const Login = () => {
   const [formData, setFormData] = useState({
@@ -18,39 +15,21 @@ const Login = () => {
   });
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
   const navigate = useNavigate();
-  const { toast } = useToast();
-  const { t } = useTranslation();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
-    setError(null);
-
-    const { data, error } = await supabase.auth.signInWithPassword({
-      email: formData.email,
-      password: formData.password,
-    });
-
-    if (error) {
-      setError(error.message);
-      toast({
-        title: t('toast.loginErrorTitle'),
-        description: error.message,
-        variant: "destructive"
-      });
-      setIsLoading(false);
-      return;
-    }
-
-    if (data.session) {
-      // On successful login, reload for app-wide state.
-      window.location.href = '/dashboard';
-    } else {
-      setError("Login failed. Please check your credentials.");
-      setIsLoading(false);
-    }
+    
+    // Simulate login - replace with actual authentication
+    setTimeout(() => {
+      console.log('Login attempt:', formData);
+      localStorage.setItem('user', JSON.stringify({ 
+        email: formData.email, 
+        name: formData.email.split('@')[0] 
+      }));
+      navigate('/dashboard');
+    }, 1000);
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -58,7 +37,6 @@ const Login = () => {
       ...prev,
       [e.target.name]: e.target.value
     }));
-    setError(null);
   };
 
   return (
@@ -66,43 +44,41 @@ const Login = () => {
       <div className="max-w-md mx-auto">
         <Card className="bg-white/80 backdrop-blur-sm">
           <CardHeader className="text-center">
-            <CardTitle className="text-2xl font-bold text-slate-800">{t('login.title')}</CardTitle>
-            <p className="text-slate-600">{t('login.subtitle')}</p>
+            <CardTitle className="text-2xl font-bold text-slate-800">Welcome Back</CardTitle>
+            <p className="text-slate-600">Sign in to your Ruzma account</p>
           </CardHeader>
           <CardContent>
             <form onSubmit={handleSubmit} className="space-y-4">
               <div className="space-y-2">
-                <Label htmlFor="email">{t('login.emailLabel')}</Label>
+                <Label htmlFor="email">Email</Label>
                 <Input
                   id="email"
                   name="email"
                   type="email"
-                  placeholder={t('login.emailPlaceholder')}
+                  placeholder="Enter your email"
                   value={formData.email}
                   onChange={handleChange}
                   required
-                  autoComplete="email"
                 />
               </div>
               
               <div className="space-y-2">
-                <Label htmlFor="password">{t('login.passwordLabel')}</Label>
+                <Label htmlFor="password">Password</Label>
                 <div className="relative">
                   <Input
                     id="password"
                     name="password"
                     type={showPassword ? 'text' : 'password'}
-                    placeholder={t('login.passwordPlaceholder')}
+                    placeholder="Enter your password"
                     value={formData.password}
                     onChange={handleChange}
                     required
-                    autoComplete="current-password"
                   />
                   <Button
                     type="button"
                     variant="ghost"
                     size="sm"
-                    className="absolute right-0 rtl:left-0 rtl:right-auto top-0 h-full px-3 py-2 hover:bg-transparent"
+                    className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
                     onClick={() => setShowPassword(!showPassword)}
                   >
                     {showPassword ? (
@@ -114,26 +90,24 @@ const Login = () => {
                 </div>
               </div>
 
-              {error && <div className="text-sm text-red-600">{error}</div>}
-
               <Button 
                 type="submit" 
                 className="w-full" 
                 disabled={isLoading}
               >
-                {isLoading ? t('login.submitButtonLoading') : t('login.submitButton')}
+                {isLoading ? 'Signing In...' : 'Sign In'}
               </Button>
             </form>
 
             <div className="mt-6 text-center space-y-2">
               <p className="text-sm text-slate-600">
-                {t('login.noAccount')}{' '}
+                Don't have an account?{' '}
                 <Link to="/signup" className="text-blue-600 hover:text-blue-700 font-medium">
-                  {t('login.signUpLink')}
+                  Sign up
                 </Link>
               </p>
               <Link to="/forgot-password" className="text-sm text-blue-600 hover:text-blue-700">
-                {t('login.forgotPasswordLink')}
+                Forgot your password?
               </Link>
             </div>
           </CardContent>
