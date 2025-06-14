@@ -20,63 +20,70 @@ const Dashboard = () => {
     }
     setUser(JSON.parse(userData));
 
-    // Load demo projects
-    const demoProjects: Project[] = [
-      {
-        id: '1',
-        name: 'E-commerce Website Design',
-        brief: 'Complete e-commerce platform with payment integration and admin dashboard.',
-        milestones: [
-          {
-            id: '1',
-            title: 'UI/UX Design',
-            description: 'Wireframes and high-fidelity mockups',
-            price: 800,
-            status: 'approved'
-          },
-          {
-            id: '2',
-            title: 'Frontend Development',
-            description: 'React-based responsive frontend',
-            price: 1200,
-            status: 'payment_submitted'
-          },
-          {
-            id: '3',
-            title: 'Backend & Deployment',
-            description: 'API development and hosting setup',
-            price: 1000,
-            status: 'pending'
-          }
-        ],
-        createdAt: '2024-01-15',
-        clientUrl: `/client/project/1`
-      },
-      {
-        id: '2',
-        name: 'Brand Identity Package',
-        brief: 'Complete brand identity including logo, colors, and style guide.',
-        milestones: [
-          {
-            id: '4',
-            title: 'Logo Design',
-            description: 'Primary logo and variations',
-            price: 500,
-            status: 'approved'
-          },
-          {
-            id: '5',
-            title: 'Brand Guidelines',
-            description: 'Color palette, typography, usage guidelines',
-            price: 300,
-            status: 'approved'
-          }
-        ],
-        createdAt: '2024-01-10',
-        clientUrl: `/client/project/2`
-      }
-    ];
-    setProjects(demoProjects);
+    // Load projects from localStorage or use demo projects as fallback
+    const storedProjects = localStorage.getItem('projects');
+    if (storedProjects) {
+      setProjects(JSON.parse(storedProjects));
+    } else {
+      // Load demo projects
+      const demoProjects: Project[] = [
+        {
+          id: '1',
+          name: 'E-commerce Website Design',
+          brief: 'Complete e-commerce platform with payment integration and admin dashboard.',
+          milestones: [
+            {
+              id: '1',
+              title: 'UI/UX Design',
+              description: 'Wireframes and high-fidelity mockups',
+              price: 800,
+              status: 'approved'
+            },
+            {
+              id: '2',
+              title: 'Frontend Development',
+              description: 'React-based responsive frontend',
+              price: 1200,
+              status: 'payment_submitted'
+            },
+            {
+              id: '3',
+              title: 'Backend & Deployment',
+              description: 'API development and hosting setup',
+              price: 1000,
+              status: 'pending'
+            }
+          ],
+          createdAt: '2024-01-15',
+          clientUrl: `/client/project/1`
+        },
+        {
+          id: '2',
+          name: 'Brand Identity Package',
+          brief: 'Complete brand identity including logo, colors, and style guide.',
+          milestones: [
+            {
+              id: '4',
+              title: 'Logo Design',
+              description: 'Primary logo and variations',
+              price: 500,
+              status: 'approved'
+            },
+            {
+              id: '5',
+              title: 'Brand Guidelines',
+              description: 'Color palette, typography, usage guidelines',
+              price: 300,
+              status: 'approved'
+            }
+          ],
+          createdAt: '2024-01-10',
+          clientUrl: `/client/project/2`
+        }
+      ];
+      setProjects(demoProjects);
+      localStorage.setItem('projects', JSON.stringify(demoProjects));
+    }
   }, [navigate]);
 
   const handleSignOut = () => {
@@ -86,13 +93,14 @@ const Dashboard = () => {
   };
 
   const handleEditProject = (project: Project) => {
-    console.log('Edit project:', project);
-    // Navigate to edit page or open modal
+    navigate(`/edit-project/${project.id}`);
   };
 
   const handleDeleteProject = (projectId: string) => {
     if (confirm('Are you sure you want to delete this project?')) {
-      setProjects(prev => prev.filter(p => p.id !== projectId));
+      const updatedProjects = projects.filter(p => p.id !== projectId);
+      setProjects(updatedProjects);
+      localStorage.setItem('projects', JSON.stringify(updatedProjects));
     }
   };
 
