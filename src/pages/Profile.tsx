@@ -9,6 +9,9 @@ import Layout from '@/components/Layout';
 import { User, Mail, Save, Upload } from 'lucide-react';
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { toast } from "sonner";
+import { Area } from 'react-easy-crop';
+import { getCroppedImg } from '@/lib/imageUtils';
+import { ImageCropperDialog } from '@/components/ImageCropperDialog';
 
 const Profile = () => {
   const [user, setUser] = useState<any>(null);
@@ -23,6 +26,8 @@ const Profile = () => {
   });
   const [isLoading, setIsLoading] = useState(false);
   const [isSaved, setIsSaved] = useState(false);
+  const [imageToCrop, setImageToCrop] = useState<string | null>(null);
+  const [croppedAreaPixels, setCroppedAreaPixels] = useState<Area | null>(null);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -82,18 +87,41 @@ const Profile = () => {
       }
       const reader = new FileReader();
       reader.onloadend = () => {
-        const base64String = reader.result as string;
-        setProfilePicture(base64String);
-        
-        const updatedUser = { ...user, profilePicture: base64String };
-        localStorage.setItem('user', JSON.stringify(updatedUser));
-        setUser(updatedUser);
-        
-        toast.success("Profile picture updated!");
+        setImageToCrop(reader.result as string);
       };
       reader.readAsDataURL(file);
     }
   };
+
+  const onCropSave = async () => {
+    if (croppedAreaPixels && imageToCrop) {
+        try {
+            const croppedImage = await getCroppedImg(imageToCrop, croppedAreaPixels);
+            setProfilePicture(croppedImage);
+
+            const updatedUser = { ...user, profilePicture: croppedImage };
+            localStorage.setItem('user', JSON.stringify(updatedUser));
+            setUser(updatedUser);
+            
+            toast.success("Profile picture updated!");
+        } catch (error) {
+            console.error(error);
+            toast.error("There was an error cropping the image.");
+        } finally {
+            setImageToCrop(null);
+            if(fileInputRef.current) {
+              fileInputRef.current.value = '';
+            }
+        }
+    }
+  };
+
+  const onCropCancel = () => {
+    setImageToCrop(null);
+    if(fileInputRef.current) {
+      fileInputRef.current.value = '';
+    }
+  }
 
   const handleSignOut = () => {
     localStorage.removeItem('user');
@@ -112,6 +140,13 @@ const Profile = () => {
           <h1 className="text-3xl font-bold text-slate-800">Profile Settings</h1>
           <p className="text-slate-600 mt-2">Manage your account information and preferences</p>
         </div>
+
+        <ImageCropperDialog
+          image={imageToCrop}
+          onCropComplete={setCroppedAreaPixels}
+          onSave={onCropSave}
+          onClose={onCropCancel}
+        />
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Profile Picture Section */}
