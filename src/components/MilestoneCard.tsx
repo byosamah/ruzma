@@ -3,7 +3,7 @@ import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { CheckCircle, XCircle, Clock, Download, Upload, DollarSign } from 'lucide-react';
+import { CheckCircle, XCircle, Clock, Download, Upload, DollarSign, FileUp } from 'lucide-react';
 import { Milestone } from './ProjectCard';
 
 interface MilestoneCardProps {
@@ -12,6 +12,8 @@ interface MilestoneCardProps {
   onReject?: (milestoneId: string) => void;
   isClient?: boolean;
   onPaymentUpload?: (milestoneId: string, file: File) => void;
+  onDeliverableUpload?: (milestoneId: string, file: File) => void;
+  onDeliverableDownload?: (milestoneId: string) => void;
 }
 
 const MilestoneCard: React.FC<MilestoneCardProps> = ({ 
@@ -19,7 +21,9 @@ const MilestoneCard: React.FC<MilestoneCardProps> = ({
   onApprove, 
   onReject, 
   isClient = false,
-  onPaymentUpload 
+  onPaymentUpload,
+  onDeliverableUpload,
+  onDeliverableDownload
 }) => {
   const getStatusColor = (status: string) => {
     switch (status) {
@@ -41,10 +45,17 @@ const MilestoneCard: React.FC<MilestoneCardProps> = ({
     }
   };
 
-  const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handlePaymentFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file && onPaymentUpload) {
       onPaymentUpload(milestone.id, file);
+    }
+  };
+
+  const handleDeliverableFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file && onDeliverableUpload) {
+      onDeliverableUpload(milestone.id, file);
     }
   };
 
@@ -80,7 +91,7 @@ const MilestoneCard: React.FC<MilestoneCardProps> = ({
                     <input
                       type="file"
                       accept="image/*,.pdf"
-                      onChange={handleFileUpload}
+                      onChange={handlePaymentFileUpload}
                       className="hidden"
                       id={`payment-${milestone.id}`}
                     />
@@ -101,7 +112,11 @@ const MilestoneCard: React.FC<MilestoneCardProps> = ({
               )}
               
               {milestone.status === 'approved' && milestone.deliverable && (
-                <Button className="w-full" size="sm">
+                <Button 
+                  className="w-full" 
+                  size="sm"
+                  onClick={() => onDeliverableDownload?.(milestone.id)}
+                >
                   <Download className="w-4 h-4 mr-2" />
                   Download Deliverable
                 </Button>
@@ -144,15 +159,54 @@ const MilestoneCard: React.FC<MilestoneCardProps> = ({
                 <p className="text-sm text-green-600">Payment approved. Client can download deliverable.</p>
               )}
               
-              {milestone.deliverable && (
-                <div className="pt-2 border-t">
-                  <p className="text-sm font-medium text-slate-700 mb-2">Deliverable:</p>
-                  <div className="flex items-center space-x-2 text-sm text-slate-600">
-                    <Download className="w-4 h-4" />
-                    <span>{milestone.deliverable.name}</span>
+              {/* Deliverable upload section for freelancers */}
+              <div className="pt-2 border-t">
+                <p className="text-sm font-medium text-slate-700 mb-2">Deliverable:</p>
+                {milestone.deliverable ? (
+                  <div className="flex items-center justify-between bg-slate-50 p-2 rounded">
+                    <div className="flex items-center space-x-2 text-sm text-slate-600">
+                      <Download className="w-4 h-4" />
+                      <span>{milestone.deliverable.name}</span>
+                      <span className="text-xs text-slate-400">
+                        ({(milestone.deliverable.size / 1024 / 1024).toFixed(1)} MB)
+                      </span>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <input
+                        type="file"
+                        onChange={handleDeliverableFileUpload}
+                        className="hidden"
+                        id={`deliverable-${milestone.id}`}
+                      />
+                      <label htmlFor={`deliverable-${milestone.id}`}>
+                        <Button asChild size="sm" variant="outline">
+                          <span className="cursor-pointer flex items-center">
+                            <FileUp className="w-4 h-4 mr-1" />
+                            Replace
+                          </span>
+                        </Button>
+                      </label>
+                    </div>
                   </div>
-                </div>
-              )}
+                ) : (
+                  <div className="flex items-center space-x-2">
+                    <input
+                      type="file"
+                      onChange={handleDeliverableFileUpload}
+                      className="hidden"
+                      id={`deliverable-${milestone.id}`}
+                    />
+                    <label htmlFor={`deliverable-${milestone.id}`}>
+                      <Button asChild size="sm">
+                        <span className="cursor-pointer flex items-center">
+                          <Upload className="w-4 h-4 mr-2" />
+                          Upload Deliverable
+                        </span>
+                      </Button>
+                    </label>
+                  </div>
+                )}
+              </div>
             </div>
           )}
         </div>

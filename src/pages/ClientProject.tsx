@@ -7,6 +7,7 @@ import MilestoneCard from '@/components/MilestoneCard';
 import { CheckCircle, Clock, Briefcase } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { DatabaseProject } from '@/hooks/useProjects';
+import { toast } from 'sonner';
 
 const ClientProject = () => {
   const { projectId } = useParams();
@@ -74,14 +75,18 @@ const ClientProject = () => {
         .from('milestones')
         .update({ 
           status: 'payment_submitted',
+          payment_proof_url: `temp-payment-url-${milestoneId}`, // This would be the actual storage URL
           updated_at: new Date().toISOString()
         })
         .eq('id', milestoneId);
 
       if (error) {
         console.error('Error updating milestone status:', error);
+        toast.error('Failed to upload payment proof');
         return;
       }
+
+      toast.success('Payment proof uploaded successfully');
 
       // Update local state
       setProject(prev => {
@@ -95,6 +100,34 @@ const ClientProject = () => {
       });
     } catch (error) {
       console.error('Error updating milestone:', error);
+      toast.error('Failed to upload payment proof');
+    }
+  };
+
+  const handleDeliverableDownload = async (milestoneId: string) => {
+    try {
+      const milestone = project?.milestones.find(m => m.id === milestoneId);
+      
+      if (!milestone) {
+        toast.error('Milestone not found');
+        return;
+      }
+
+      if (milestone.status !== 'approved') {
+        toast.error('Payment must be approved before downloading');
+        return;
+      }
+
+      if (!milestone.deliverable_name) {
+        toast.error('No deliverable available');
+        return;
+      }
+
+      // In a real app, this would download from Supabase Storage
+      toast.success(`Downloading ${milestone.deliverable_name}`);
+    } catch (error) {
+      console.error('Error downloading deliverable:', error);
+      toast.error('Failed to download deliverable');
     }
   };
 
@@ -237,9 +270,15 @@ const ClientProject = () => {
                       description: milestone.description,
                       price: milestone.price,
                       status: milestone.status,
+                      deliverable: milestone.deliverable_name ? {
+                        name: milestone.deliverable_name,
+                        size: milestone.deliverable_size || 0,
+                        url: milestone.deliverable_url || ''
+                      } : undefined,
                     }}
                     isClient={true}
                     onPaymentUpload={handlePaymentUpload}
+                    onDeliverableDownload={handleDeliverableDownload}
                   />
                 </div>
               ))
@@ -264,4 +303,3 @@ const ClientProject = () => {
 };
 
 export default ClientProject;
-

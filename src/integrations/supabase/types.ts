@@ -12,8 +12,12 @@ export type Database = {
       milestones: {
         Row: {
           created_at: string
+          deliverable_name: string | null
+          deliverable_size: number | null
+          deliverable_url: string | null
           description: string
           id: string
+          payment_proof_url: string | null
           price: number
           project_id: string
           status: string
@@ -22,8 +26,12 @@ export type Database = {
         }
         Insert: {
           created_at?: string
+          deliverable_name?: string | null
+          deliverable_size?: number | null
+          deliverable_url?: string | null
           description: string
           id?: string
+          payment_proof_url?: string | null
           price?: number
           project_id: string
           status?: string
@@ -32,8 +40,12 @@ export type Database = {
         }
         Update: {
           created_at?: string
+          deliverable_name?: string | null
+          deliverable_size?: number | null
+          deliverable_url?: string | null
           description?: string
           id?: string
+          payment_proof_url?: string | null
           price?: number
           project_id?: string
           status?: string

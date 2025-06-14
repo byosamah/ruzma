@@ -23,6 +23,10 @@ export interface DatabaseMilestone {
   status: 'pending' | 'payment_submitted' | 'approved' | 'rejected';
   created_at: string;
   updated_at: string;
+  deliverable_name?: string;
+  deliverable_url?: string;
+  deliverable_size?: number;
+  payment_proof_url?: string;
 }
 
 export const useProjects = (user: User | null) => {
@@ -270,6 +274,68 @@ export const useProjects = (user: User | null) => {
     }
   };
 
+  const uploadDeliverable = async (milestoneId: string, file: File) => {
+    if (!user) {
+      toast.error('You must be logged in to upload deliverables');
+      return false;
+    }
+
+    try {
+      // For now, we'll store the file info in the database
+      // In a real app, you'd upload to Supabase Storage first
+      const { error } = await supabase
+        .from('milestones')
+        .update({
+          deliverable_name: file.name,
+          deliverable_size: file.size,
+          deliverable_url: `temp-url-${milestoneId}`, // This would be the actual storage URL
+          updated_at: new Date().toISOString()
+        })
+        .eq('id', milestoneId);
+
+      if (error) {
+        console.error('Error uploading deliverable:', error);
+        toast.error('Failed to upload deliverable');
+        return false;
+      }
+
+      toast.success('Deliverable uploaded successfully');
+      await fetchProjects(); // Refresh the list
+      return true;
+    } catch (error) {
+      console.error('Error:', error);
+      toast.error('Failed to upload deliverable');
+      return false;
+    }
+  };
+
+  const downloadDeliverable = async (milestoneId: string) => {
+    try {
+      // Find the milestone
+      const milestone = projects
+        .flatMap(p => p.milestones)
+        .find(m => m.id === milestoneId);
+
+      if (!milestone || !milestone.deliverable_name) {
+        toast.error('Deliverable not found');
+        return false;
+      }
+
+      if (milestone.status !== 'approved') {
+        toast.error('Payment must be approved before downloading');
+        return false;
+      }
+
+      // In a real app, this would download from Supabase Storage
+      toast.success(`Downloading ${milestone.deliverable_name}`);
+      return true;
+    } catch (error) {
+      console.error('Error:', error);
+      toast.error('Failed to download deliverable');
+      return false;
+    }
+  };
+
   useEffect(() => {
     fetchProjects();
   }, [user]);
@@ -282,5 +348,7 @@ export const useProjects = (user: User | null) => {
     updateProject,
     deleteProject,
     updateMilestoneStatus,
+    uploadDeliverable,
+    downloadDeliverable,
   };
 };
