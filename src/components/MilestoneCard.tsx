@@ -4,7 +4,19 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { CheckCircle, XCircle, Clock, Download, Upload, DollarSign, FileUp } from 'lucide-react';
-import { Milestone } from './ProjectCard';
+
+export interface Milestone {
+  id: string;
+  title: string;
+  description: string;
+  price: number;
+  status: 'pending' | 'payment_submitted' | 'approved' | 'rejected';
+  deliverable?: {
+    name: string;
+    size: number;
+    url?: string;
+  };
+}
 
 interface MilestoneCardProps {
   milestone: Milestone;
@@ -118,7 +130,7 @@ const MilestoneCard: React.FC<MilestoneCardProps> = ({
                   onClick={() => onDeliverableDownload?.(milestone.id)}
                 >
                   <Download className="w-4 h-4 mr-2" />
-                  Download Deliverable
+                  Download {milestone.deliverable.name}
                 </Button>
               )}
               
