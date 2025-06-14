@@ -6,37 +6,37 @@ import { Separator } from '@/components/ui/separator';
 
 export const AccountSettingsCard = () => {
   return (
-    <Card className="bg-white/90 backdrop-blur-lg shadow-lg border-white/20">
+    <Card className="bg-white/80 backdrop-blur-sm">
       <CardHeader>
-        <CardTitle className="text-brand-navy">Account Settings</CardTitle>
+        <CardTitle>Account Settings</CardTitle>
       </CardHeader>
       <CardContent className="space-y-4">
         <div className="flex justify-between items-center py-3">
           <div>
-            <h3 className="font-medium text-brand-navy">Change Password</h3>
-            <p className="text-sm text-brand-navy/70">Update your account password</p>
+            <h3 className="font-medium text-slate-800">Change Password</h3>
+            <p className="text-sm text-slate-600">Update your account password</p>
           </div>
-          <Button variant="outline" className="border-brand-blue text-brand-blue hover:bg-brand-blue hover:text-white shadow-md">Update Password</Button>
+          <Button variant="outline">Update Password</Button>
         </div>
 
-        <Separator className="bg-brand-blue/20" />
+        <Separator />
 
         <div className="flex justify-between items-center py-3">
           <div>
-            <h3 className="font-medium text-brand-navy">Email Notifications</h3>
-            <p className="text-sm text-brand-navy/70">Manage your notification preferences</p>
+            <h3 className="font-medium text-slate-800">Email Notifications</h3>
+            <p className="text-sm text-slate-600">Manage your notification preferences</p>
           </div>
-          <Button variant="outline" className="border-brand-blue text-brand-blue hover:bg-brand-blue hover:text-white shadow-md">Manage</Button>
+          <Button variant="outline">Manage</Button>
         </div>
 
-        <Separator className="bg-brand-blue/20" />
+        <Separator />
 
         <div className="flex justify-between items-center py-3">
           <div>
             <h3 className="font-medium text-red-600">Delete Account</h3>
-            <p className="text-sm text-brand-navy/70">Permanently delete your account and all data</p>
+            <p className="text-sm text-slate-600">Permanently delete your account and all data</p>
           </div>
-          <Button variant="outline" className="text-red-600 border-red-300 hover:bg-red-50 shadow-md">
+          <Button variant="outline" className="text-red-600 border-red-300 hover:bg-red-50">
             Delete Account
           </Button>
         </div>
