@@ -127,47 +127,47 @@ const Dashboard = () => {
 
         {/* Stats Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          <Card className="bg-gradient-to-r from-blue-500 to-blue-600 text-white">
+          <Card className="bg-secondary text-secondary-foreground">
             <CardHeader className="flex flex-row items-center justify-between pb-2">
-              <CardTitle className="text-sm font-medium text-blue-100">Total Projects</CardTitle>
-              <Briefcase className="w-4 h-4 text-blue-200" />
+              <CardTitle className="text-sm font-medium">Total Projects</CardTitle>
+              <Briefcase className="w-4 h-4" />
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold">{totalProjects}</div>
-              <p className="text-xs text-blue-200">Active projects</p>
+              <p className="text-xs">Active projects</p>
             </CardContent>
           </Card>
 
-          <Card className="bg-gradient-to-r from-green-500 to-green-600 text-white">
+          <Card className="bg-primary text-primary-foreground">
             <CardHeader className="flex flex-row items-center justify-between pb-2">
-              <CardTitle className="text-sm font-medium text-green-100">Total Earnings</CardTitle>
-              <DollarSign className="w-4 h-4 text-green-200" />
+              <CardTitle className="text-sm font-medium">Total Earnings</CardTitle>
+              <DollarSign className="w-4 h-4" />
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold">${totalEarnings.toLocaleString()}</div>
-              <p className="text-xs text-green-200">From completed milestones</p>
+              <p className="text-xs">From completed milestones</p>
             </CardContent>
           </Card>
 
-          <Card className="bg-gradient-to-r from-orange-500 to-orange-600 text-white">
+          <Card className="bg-accent text-accent-foreground">
             <CardHeader className="flex flex-row items-center justify-between pb-2">
-              <CardTitle className="text-sm font-medium text-orange-100">Pending Payments</CardTitle>
-              <Clock className="w-4 h-4 text-orange-200" />
+              <CardTitle className="text-sm font-medium">Pending Payments</CardTitle>
+              <Clock className="w-4 h-4" />
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold">{pendingPayments}</div>
-              <p className="text-xs text-orange-200">Awaiting approval</p>
+              <p className="text-xs">Awaiting approval</p>
             </CardContent>
           </Card>
 
-          <Card className="bg-gradient-to-r from-purple-500 to-purple-600 text-white">
+          <Card className="bg-secondary text-secondary-foreground">
             <CardHeader className="flex flex-row items-center justify-between pb-2">
-              <CardTitle className="text-sm font-medium text-purple-100">Completed</CardTitle>
-              <CheckCircle className="w-4 h-4 text-purple-200" />
+              <CardTitle className="text-sm font-medium">Completed</CardTitle>
+              <CheckCircle className="w-4 h-4" />
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold">{completedMilestones}/{totalMilestones}</div>
-              <p className="text-xs text-purple-200">Milestones completed</p>
+              <p className="text-xs">Milestones completed</p>
             </CardContent>
           </Card>
         </div>

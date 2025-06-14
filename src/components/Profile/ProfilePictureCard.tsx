@@ -28,7 +28,7 @@ export const ProfilePictureCard = ({
       <CardContent className="text-center space-y-4">
         <Avatar className="w-32 h-32 mx-auto text-4xl font-bold">
           <AvatarImage src={profilePicture || undefined} alt={userName} />
-          <AvatarFallback className="bg-gradient-to-r from-blue-500 to-purple-500 text-white">
+          <AvatarFallback className="bg-primary text-primary-foreground">
             {userName?.charAt(0).toUpperCase() || 'U'}
           </AvatarFallback>
         </Avatar>
