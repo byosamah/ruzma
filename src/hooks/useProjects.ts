@@ -55,7 +55,16 @@ export const useProjects = (user: User | null) => {
         return;
       }
 
-      setProjects(projectsData || []);
+      // Type assertion to ensure proper typing
+      const typedProjects = (projectsData || []).map(project => ({
+        ...project,
+        milestones: project.milestones.map((milestone: any) => ({
+          ...milestone,
+          status: milestone.status as 'pending' | 'payment_submitted' | 'approved' | 'rejected'
+        }))
+      })) as DatabaseProject[];
+
+      setProjects(typedProjects);
     } catch (error) {
       console.error('Error:', error);
       toast.error('Failed to load projects');
