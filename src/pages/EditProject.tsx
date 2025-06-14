@@ -6,8 +6,8 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Project } from '@/components/ProjectCard';
-import { ArrowLeft } from 'lucide-react';
+import { Project, Milestone } from '@/components/ProjectCard';
+import { ArrowLeft, Plus, Trash2 } from 'lucide-react';
 import { useToast } from "@/components/ui/use-toast"
 
 const EditProject: React.FC = () => {
@@ -17,6 +17,7 @@ const EditProject: React.FC = () => {
   const [project, setProject] = useState<Project | null>(null);
   const [name, setName] = useState('');
   const [brief, setBrief] = useState('');
+  const [milestones, setMilestones] = useState<Milestone[]>([]);
   const [user, setUser] = useState<any>(null);
 
   useEffect(() => {
@@ -34,6 +35,7 @@ const EditProject: React.FC = () => {
       setProject(projectToEdit);
       setName(projectToEdit.name);
       setBrief(projectToEdit.brief);
+      setMilestones(projectToEdit.milestones);
     } else {
       toast({
         title: "Error",
@@ -44,11 +46,52 @@ const EditProject: React.FC = () => {
     }
   }, [projectId, navigate, toast]);
 
+  const handleMilestoneChange = (index: number, field: keyof Milestone, value: string | number) => {
+    const newMilestones = [...milestones];
+    const milestoneToUpdate = { ...newMilestones[index] };
+
+    if (field === 'price') {
+      milestoneToUpdate[field] = parseFloat(value as string) || 0;
+    } else {
+      (milestoneToUpdate as any)[field] = value;
+    }
+    newMilestones[index] = milestoneToUpdate;
+    setMilestones(newMilestones);
+  };
+
+  const handleAddMilestone = () => {
+    setMilestones([
+      ...milestones,
+      {
+        id: `new-${Date.now()}`,
+        title: '',
+        description: '',
+        price: 0,
+        status: 'pending',
+      },
+    ]);
+  };
+
+  const handleDeleteMilestone = (id: string) => {
+    setMilestones(milestones.filter(m => m.id !== id));
+  };
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!project) return;
 
-    const updatedProject = { ...project, name, brief };
+    for (const milestone of milestones) {
+      if (!milestone.title.trim() || !milestone.description.trim()) {
+        toast({
+          title: 'Validation Error',
+          description: 'Milestone title and description cannot be empty.',
+          variant: 'destructive',
+        });
+        return;
+      }
+    }
+
+    const updatedProject = { ...project, name, brief, milestones };
 
     const projectsFromStorage: Project[] = JSON.parse(localStorage.getItem('projects') || '[]');
     const updatedProjects = projectsFromStorage.map(p =>
@@ -110,6 +153,68 @@ const EditProject: React.FC = () => {
                   rows={4}
                 />
               </div>
+
+              <div className="space-y-4 pt-6 border-t">
+                <h3 className="text-lg font-medium text-slate-800">Milestones</h3>
+                <div className="space-y-4">
+                  {milestones.map((milestone, index) => (
+                    <div key={milestone.id} className="p-4 border rounded-md space-y-3 bg-slate-50 relative">
+                       <Button
+                        type="button"
+                        variant="ghost"
+                        size="icon"
+                        className="absolute top-2 right-2 h-7 w-7 text-slate-500 hover:bg-red-100 hover:text-red-600"
+                        onClick={() => handleDeleteMilestone(milestone.id)}
+                      >
+                        <Trash2 className="w-4 h-4" />
+                      </Button>
+                      <div className="space-y-2">
+                        <label htmlFor={`milestone-title-${index}`} className="text-sm font-medium text-slate-700">Title</label>
+                        <Input
+                          id={`milestone-title-${index}`}
+                          value={milestone.title}
+                          onChange={(e) => handleMilestoneChange(index, 'title', e.target.value)}
+                          placeholder="e.g. Phase 1: Discovery"
+                          required
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <label htmlFor={`milestone-desc-${index}`} className="text-sm font-medium text-slate-700">Description</label>
+                        <Textarea
+                          id={`milestone-desc-${index}`}
+                          value={milestone.description}
+                          onChange={(e) => handleMilestoneChange(index, 'description', e.target.value)}
+                          placeholder="Briefly describe this milestone"
+                          required
+                          rows={2}
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <label htmlFor={`milestone-price-${index}`} className="text-sm font-medium text-slate-700">Price ($)</label>
+                        <Input
+                          id={`milestone-price-${index}`}
+                          type="number"
+                          value={milestone.price}
+                          onChange={(e) => handleMilestoneChange(index, 'price', e.target.value)}
+                          placeholder="e.g. 500"
+                          required
+                          min="0"
+                        />
+                      </div>
+                    </div>
+                  ))}
+                </div>
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={handleAddMilestone}
+                  className="w-full flex items-center"
+                >
+                  <Plus className="w-4 h-4 mr-2" />
+                  Add Milestone
+                </Button>
+              </div>
+
               <div className="flex justify-end">
                 <Button type="submit">Save Changes</Button>
               </div>
