@@ -1,4 +1,3 @@
-
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 
@@ -6,7 +5,10 @@ export interface SupabaseProfile {
   id: string;
   full_name: string | null;
   avatar_url: string | null;
-  created_at: string;
+  created_at: string | null;
+  company: string | null;
+  website: string | null;
+  bio: string | null;
 }
 
 export const useSupabaseAuth = () => {

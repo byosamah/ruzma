@@ -9,9 +9,11 @@ import { ImageCropperDialog } from '@/components/ImageCropperDialog';
 import { ProfilePictureCard } from '@/components/Profile/ProfilePictureCard';
 import { PersonalInformationForm } from '@/components/Profile/PersonalInformationForm';
 import { AccountSettingsCard } from '@/components/Profile/AccountSettingsCard';
+import { useSupabaseAuth } from '@/hooks/useSupabaseAuth';
+import { supabase } from '@/integrations/supabase/client';
 
 const Profile = () => {
-  const [user, setUser] = useState<any>(null);
+  const { user, profile, loading: authLoading, refreshProfile } = useSupabaseAuth();
   const [profilePicture, setProfilePicture] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [formData, setFormData] = useState({
@@ -28,24 +30,23 @@ const Profile = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    const userData = localStorage.getItem('user');
-    if (!userData) {
+    if (!authLoading && !user) {
       navigate('/login');
-      return;
     }
-    const parsedUser = JSON.parse(userData);
-    setUser(parsedUser);
-    setProfilePicture(parsedUser.profilePicture || null);
-    
-    // Initialize form with user data
-    setFormData({
-      name: parsedUser.name || '',
-      email: parsedUser.email || '',
-      company: parsedUser.company || '',
-      website: parsedUser.website || '',
-      bio: parsedUser.bio || ''
-    });
-  }, [navigate]);
+  }, [user, authLoading, navigate]);
+
+  useEffect(() => {
+    if (profile) {
+      setFormData({
+        name: profile.full_name || '',
+        email: user?.email || '',
+        company: profile.company || '',
+        website: profile.website || '',
+        bio: profile.bio || ''
+      });
+      setProfilePicture(profile.avatar_url || null);
+    }
+  }, [profile, user]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setFormData(prev => ({
@@ -57,18 +58,30 @@ const Profile = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!user) return;
+
     setIsLoading(true);
 
-    // Simulate save
-    setTimeout(() => {
-      const updatedUser = { ...user, ...formData };
-      localStorage.setItem('user', JSON.stringify(updatedUser));
-      setUser(updatedUser);
-      setIsLoading(false);
+    const { error } = await supabase
+      .from('profiles')
+      .update({
+        full_name: formData.name,
+        company: formData.company,
+        website: formData.website,
+        bio: formData.bio,
+      })
+      .eq('id', user.id);
+    
+    setIsLoading(false);
+
+    if (error) {
+      toast.error(error.message);
+    } else {
       setIsSaved(true);
-      
+      toast.success("Profile updated successfully!");
+      refreshProfile();
       setTimeout(() => setIsSaved(false), 3000);
-    }, 1000);
+    }
   };
 
   const handleUploadClick = () => {
@@ -90,17 +103,15 @@ const Profile = () => {
     }
   };
 
+  // NOTE: This only updates the local image preview. 
+  // Saving the image to Supabase Storage is a next step.
   const onCropSave = async () => {
     if (croppedAreaPixels && imageToCrop) {
         try {
             const croppedImage = await getCroppedImg(imageToCrop, croppedAreaPixels);
             setProfilePicture(croppedImage);
-
-            const updatedUser = { ...user, profilePicture: croppedImage };
-            localStorage.setItem('user', JSON.stringify(updatedUser));
-            setUser(updatedUser);
             
-            toast.success("Profile picture updated!");
+            toast.success("Profile picture updated locally! Save your profile to make it permanent.");
         } catch (error) {
             console.error(error);
             toast.error("There was an error cropping the image.");
@@ -120,14 +131,13 @@ const Profile = () => {
     }
   }
 
-  const handleSignOut = () => {
-    localStorage.removeItem('user');
-    setUser(null);
+  const handleSignOut = async () => {
+    await supabase.auth.signOut();
     navigate('/');
   };
 
-  if (!user) {
-    return <div>Loading...</div>;
+  if (authLoading || !profile) {
+    return <div className="flex justify-center items-center h-screen">Loading...</div>;
   }
 
   return (
@@ -148,7 +158,7 @@ const Profile = () => {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           <ProfilePictureCard
             profilePicture={profilePicture}
-            userName={user.name}
+            userName={formData.name}
             onUploadClick={handleUploadClick}
             onFileChange={handleFileChange}
             fileInputRef={fileInputRef}
