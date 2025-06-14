@@ -23,18 +23,26 @@ const Login = () => {
     e.preventDefault();
     setIsLoading(true);
 
-    const { error } = await supabase.auth.signInWithPassword({
-      email: formData.email,
-      password: formData.password,
-    });
+    try {
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email: formData.email,
+        password: formData.password,
+      });
 
-    setIsLoading(false);
+      if (error) {
+        throw error;
+      }
 
-    if (error) {
-      toast.error(error.message);
-    } else {
-      toast.success('Signed in successfully!');
-      navigate('/dashboard');
+      if (data.user) {
+        toast.success('Signed in successfully!');
+        // Use window.location.href for a complete page refresh to ensure clean state
+        window.location.href = '/dashboard';
+      }
+    } catch (error: any) {
+      console.error('Login error:', error);
+      toast.error(error.message || 'Failed to sign in');
+    } finally {
+      setIsLoading(false);
     }
   };
 

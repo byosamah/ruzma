@@ -7,33 +7,61 @@ import ProjectCard, { Project } from '@/components/ProjectCard';
 import { Plus, Briefcase, DollarSign, Clock, CheckCircle } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { User } from '@supabase/supabase-js';
+import { toast } from 'sonner';
 
 const Dashboard = () => {
   const [user, setUser] = useState<User | null>(null);
   const [profile, setProfile] = useState<any>(null);
   const [projects, setProjects] = useState<Project[]>([]);
+  const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
   useEffect(() => {
     const fetchUserAndProfile = async () => {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (user) {
-        setUser(user);
-        const { data: profileData, error } = await supabase
+      setLoading(true);
+      
+      const { data: { user }, error: userError } = await supabase.auth.getUser();
+      
+      if (userError || !user) {
+        console.log('No user found, redirecting to login');
+        navigate('/login');
+        return;
+      }
+
+      setUser(user);
+      
+      // Try to fetch profile, but don't fail if it doesn't exist
+      const { data: profileData, error: profileError } = await supabase
+        .from('profiles')
+        .select('*')
+        .eq('id', user.id)
+        .maybeSingle(); // Use maybeSingle instead of single to avoid errors when no profile exists
+
+      if (profileError) {
+        console.error("Error fetching profile:", profileError);
+        // Create a default profile if none exists
+        const { data: newProfile, error: createError } = await supabase
           .from('profiles')
-          .select('*')
-          .eq('id', user.id)
+          .insert({
+            id: user.id,
+            full_name: user.user_metadata?.full_name || user.email?.split('@')[0] || 'User'
+          })
+          .select()
           .single();
-        
-        if (error) {
-          console.error("Error fetching profile", error);
+          
+        if (createError) {
+          console.error("Error creating profile:", createError);
+          toast.error("Error setting up your profile. Please try refreshing the page.");
         } else {
-          setProfile(profileData);
+          setProfile(newProfile);
         }
       } else {
-        navigate('/login');
+        setProfile(profileData);
       }
+      
+      setLoading(false);
     };
+
     fetchUserAndProfile();
   }, [navigate]);
 
@@ -131,9 +159,24 @@ const Dashboard = () => {
   const totalEarnings = projects.reduce((sum, project) => 
     sum + project.milestones.filter(m => m.status === 'approved').reduce((mSum, m) => mSum + m.price, 0), 0);
 
-  if (!user || !profile) {
+  if (loading) {
+    return (
+      <Layout>
+        <div className="flex items-center justify-center min-h-[400px]">
+          <div className="text-center">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
+            <p className="text-slate-600">Loading your dashboard...</p>
+          </div>
+        </div>
+      </Layout>
+    );
+  }
+
+  if (!user) {
     return <div>Loading...</div>;
   }
+
+  const displayName = profile?.full_name || user.user_metadata?.full_name || user.email?.split('@')[0] || 'User';
 
   return (
     <Layout user={profile || user} onSignOut={handleSignOut}>
@@ -141,7 +184,7 @@ const Dashboard = () => {
         {/* Header */}
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
           <div>
-            <h1 className="text-3xl font-bold text-slate-800">Welcome back, {profile.full_name || user.email}!</h1>
+            <h1 className="text-3xl font-bold text-slate-800">Welcome back, {displayName}!</h1>
             <p className="text-slate-600 mt-1">Manage your freelance projects and track payments</p>
           </div>
           <Button onClick={() => navigate('/create-project')} size="lg">
