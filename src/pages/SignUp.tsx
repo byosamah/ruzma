@@ -10,6 +10,7 @@ import { Eye, EyeOff } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/components/ui/use-toast';
 import { useTranslation } from 'react-i18next';
+import { preAuthCleanup } from '@/lib/authUtils';
 
 const SignUp = () => {
   const [formData, setFormData] = useState({
@@ -57,6 +58,8 @@ const SignUp = () => {
     if (!validateForm()) return;
 
     setIsLoading(true);
+
+    await preAuthCleanup();
 
     // Use Supabase signup with full_name as user metadata (for trigger)
     const redirectUrl = `${window.location.origin}/`;

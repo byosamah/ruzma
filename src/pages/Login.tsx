@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
@@ -10,6 +11,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/components/ui/use-toast';
 import { useTranslation } from 'react-i18next';
 import { Checkbox } from "@/components/ui/checkbox";
+import { preAuthCleanup } from '@/lib/authUtils';
 
 const Login = () => {
   const [formData, setFormData] = useState({
@@ -28,6 +30,8 @@ const Login = () => {
     e.preventDefault();
     setIsLoading(true);
     setError(null);
+
+    await preAuthCleanup();
 
     const { data, error } = await supabase.auth.signInWithPassword({
       email: formData.email,
