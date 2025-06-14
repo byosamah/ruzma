@@ -7,6 +7,8 @@ import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import Layout from '@/components/Layout';
 import { Eye, EyeOff } from 'lucide-react';
+import { supabase } from '@/integrations/supabase/client';
+import { useToast } from '@/components/ui/use-toast';
 
 const Login = () => {
   const [formData, setFormData] = useState({
@@ -15,21 +17,38 @@ const Login = () => {
   });
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const navigate = useNavigate();
+  const { toast } = useToast();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
-    
-    // Simulate login - replace with actual authentication
-    setTimeout(() => {
-      console.log('Login attempt:', formData);
-      localStorage.setItem('user', JSON.stringify({ 
-        email: formData.email, 
-        name: formData.email.split('@')[0] 
-      }));
-      navigate('/dashboard');
-    }, 1000);
+    setError(null);
+
+    const { data, error } = await supabase.auth.signInWithPassword({
+      email: formData.email,
+      password: formData.password,
+    });
+
+    if (error) {
+      setError(error.message);
+      toast({
+        title: "Login Error",
+        description: error.message,
+        variant: "destructive"
+      });
+      setIsLoading(false);
+      return;
+    }
+
+    if (data.session) {
+      // On successful login, reload for app-wide state.
+      window.location.href = '/dashboard';
+    } else {
+      setError("Login failed. Please check your credentials.");
+      setIsLoading(false);
+    }
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -37,6 +56,7 @@ const Login = () => {
       ...prev,
       [e.target.name]: e.target.value
     }));
+    setError(null);
   };
 
   return (
@@ -59,6 +79,7 @@ const Login = () => {
                   value={formData.email}
                   onChange={handleChange}
                   required
+                  autoComplete="email"
                 />
               </div>
               
@@ -73,6 +94,7 @@ const Login = () => {
                     value={formData.password}
                     onChange={handleChange}
                     required
+                    autoComplete="current-password"
                   />
                   <Button
                     type="button"
@@ -89,6 +111,8 @@ const Login = () => {
                   </Button>
                 </div>
               </div>
+
+              {error && <div className="text-sm text-red-600">{error}</div>}
 
               <Button 
                 type="submit" 

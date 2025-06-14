@@ -7,10 +7,12 @@ import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import Layout from '@/components/Layout';
 import { Eye, EyeOff } from 'lucide-react';
+import { supabase } from '@/integrations/supabase/client';
+import { useToast } from '@/components/ui/use-toast';
 
 const SignUp = () => {
   const [formData, setFormData] = useState({
-    name: '',
+    full_name: '',
     email: '',
     password: '',
     confirmPassword: ''
@@ -19,51 +21,69 @@ const SignUp = () => {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const [error, setError] = useState<string | null>(null);
   const navigate = useNavigate();
+  const { toast } = useToast();
 
   const validateForm = () => {
     const newErrors: Record<string, string> = {};
-    
-    if (!formData.name.trim()) {
-      newErrors.name = 'Name is required';
+
+    if (!formData.full_name.trim()) {
+      newErrors.full_name = 'Name is required';
     }
-    
     if (!formData.email.trim()) {
       newErrors.email = 'Email is required';
     } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
       newErrors.email = 'Please enter a valid email';
     }
-    
     if (!formData.password) {
       newErrors.password = 'Password is required';
     } else if (formData.password.length < 6) {
       newErrors.password = 'Password must be at least 6 characters';
     }
-    
     if (formData.password !== formData.confirmPassword) {
       newErrors.confirmPassword = 'Passwords do not match';
     }
-    
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+    setError(null);
+
     if (!validateForm()) return;
-    
+
     setIsLoading(true);
-    
-    // Simulate signup - replace with actual authentication
-    setTimeout(() => {
-      console.log('Signup attempt:', formData);
-      localStorage.setItem('user', JSON.stringify({ 
-        email: formData.email, 
-        name: formData.name 
-      }));
-      navigate('/dashboard');
-    }, 1000);
+
+    // Use Supabase signup with full_name as user metadata (for trigger)
+    const redirectUrl = `${window.location.origin}/`;
+    const { data, error } = await supabase.auth.signUp({
+      email: formData.email,
+      password: formData.password,
+      options: {
+        data: { full_name: formData.full_name },
+        emailRedirectTo: redirectUrl, // <== REQUIRED for magic link confirmation
+      }
+    });
+
+    if (error) {
+      setError(error.message);
+      toast({
+        title: "Signup Error",
+        description: error.message,
+        variant: "destructive"
+      });
+      setIsLoading(false);
+      return;
+    }
+    // If confirmation is required, user must check email before logging in
+    toast({
+      title: "Almost there!",
+      description: "Check your email to confirm your account before logging in."
+    });
+    setIsLoading(false);
+    navigate("/login");
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -71,7 +91,7 @@ const SignUp = () => {
       ...prev,
       [e.target.name]: e.target.value
     }));
-    
+
     // Clear error when user starts typing
     if (errors[e.target.name]) {
       setErrors(prev => ({
@@ -79,6 +99,7 @@ const SignUp = () => {
         [e.target.name]: ''
       }));
     }
+    setError(null);
   };
 
   return (
@@ -92,17 +113,17 @@ const SignUp = () => {
           <CardContent>
             <form onSubmit={handleSubmit} className="space-y-4">
               <div className="space-y-2">
-                <Label htmlFor="name">Full Name</Label>
+                <Label htmlFor="full_name">Full Name</Label>
                 <Input
-                  id="name"
-                  name="name"
+                  id="full_name"
+                  name="full_name"
                   type="text"
                   placeholder="Enter your full name"
-                  value={formData.name}
+                  value={formData.full_name}
                   onChange={handleChange}
-                  className={errors.name ? 'border-red-500' : ''}
+                  className={errors.full_name ? 'border-red-500' : ''}
                 />
-                {errors.name && <p className="text-sm text-red-600">{errors.name}</p>}
+                {errors.full_name && <p className="text-sm text-red-600">{errors.full_name}</p>}
               </div>
 
               <div className="space-y-2">
@@ -176,6 +197,8 @@ const SignUp = () => {
                 </div>
                 {errors.confirmPassword && <p className="text-sm text-red-600">{errors.confirmPassword}</p>}
               </div>
+
+              {error && <div className="text-sm text-red-600">{error}</div>}
 
               <Button 
                 type="submit" 
