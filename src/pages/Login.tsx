@@ -9,6 +9,9 @@ import { Eye, EyeOff } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/components/ui/use-toast';
 import { useTranslation } from 'react-i18next';
+import { Checkbox } from "@/components/ui/checkbox";
+import { createClient } from '@supabase/supabase-js';
+import type { Database } from '@/integrations/supabase/types';
 
 const Login = () => {
   const [formData, setFormData] = useState({
@@ -16,6 +19,7 @@ const Login = () => {
     password: ''
   });
   const [showPassword, setShowPassword] = useState(false);
+  const [rememberMe, setRememberMe] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const navigate = useNavigate();
@@ -27,7 +31,21 @@ const Login = () => {
     setIsLoading(true);
     setError(null);
 
-    const { data, error } = await supabase.auth.signInWithPassword({
+    const storage = rememberMe ? localStorage : sessionStorage;
+    
+    // Using credentials from the Supabase client file.
+    const SUPABASE_URL = "https://***REMOVED***.supabase.co";
+    const SUPABASE_PUBLISHABLE_KEY = "***REMOVED***";
+
+    const tempSupabaseClient = createClient<Database>(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY, {
+        auth: {
+            storage,
+            persistSession: true,
+            autoRefreshToken: true,
+        },
+    });
+
+    const { data, error } = await tempSupabaseClient.auth.signInWithPassword({
       email: formData.email,
       password: formData.password,
     });
@@ -44,7 +62,6 @@ const Login = () => {
     }
 
     if (data.session) {
-      // On successful login, reload for app-wide state.
       window.location.href = '/dashboard';
     } else {
       setError("Login failed. Please check your credentials.");
@@ -110,6 +127,15 @@ const Login = () => {
                     )}
                   </Button>
                 </div>
+              </div>
+
+              <div className="flex items-center space-x-2 rtl:space-x-reverse">
+                <Checkbox
+                  id="remember-me"
+                  checked={rememberMe}
+                  onCheckedChange={(checked) => setRememberMe(checked as boolean)}
+                />
+                <Label htmlFor="remember-me">{t('login.rememberMe')}</Label>
               </div>
 
               {error && <div className="text-sm text-red-600">{error}</div>}

@@ -1,3 +1,4 @@
+
 {
   "nav": {
     "login": "تسجيل الدخول",
@@ -50,6 +51,7 @@
     "emailPlaceholder": "أدخل بريدك الإلكتروني",
     "passwordLabel": "كلمة المرور",
     "passwordPlaceholder": "أدخل كلمة المرور الخاصة بك",
+    "rememberMe": "تذكرني",
     "submitButton": "تسجيل الدخول",
     "submitButtonLoading": "جارٍ تسجيل الدخول...",
     "noAccount": "ليس لديك حساب؟",
