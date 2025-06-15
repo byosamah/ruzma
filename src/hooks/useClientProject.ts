@@ -12,6 +12,7 @@ export const useClientProject = (token?: string) => {
   const fetchProject = useCallback(async () => {
     setIsLoading(true);
     setError(null);
+    
     if (!token) {
       setError('No project token provided.');
       setIsLoading(false);
@@ -19,23 +20,39 @@ export const useClientProject = (token?: string) => {
     }
 
     try {
+      console.log('Fetching project with token:', token);
+      
       const { data, error: invokeError } = await supabase.functions.invoke('get-client-project', {
-        body: { token },
+        body: JSON.stringify({ token }),
+        headers: {
+          'Content-Type': 'application/json',
+        },
       });
 
-      if (invokeError) throw invokeError;
-      if (!data || data.error) {
-        throw new Error(data?.error || 'Project not found.');
+      console.log('Edge function response:', { data, invokeError });
+
+      if (invokeError) {
+        console.error('Edge function invocation error:', invokeError);
+        throw new Error(`Failed to connect to server: ${invokeError.message}`);
       }
 
-      const projectData = data;
+      if (!data) {
+        throw new Error('No data received from server');
+      }
+
+      if (data.error) {
+        throw new Error(data.error);
+      }
+
       const typedProject: DatabaseProject = {
-        ...projectData,
-        milestones: projectData.milestones.map((milestone: any) => ({
+        ...data,
+        milestones: (data.milestones || []).map((milestone: any) => ({
           ...milestone,
           status: milestone.status as 'pending' | 'payment_submitted' | 'approved' | 'rejected',
         })),
       };
+      
+      console.log('Successfully fetched project:', typedProject);
       setProject(typedProject);
     } catch (err: any) {
       console.error('Error fetching client project:', err);
@@ -52,10 +69,11 @@ export const useClientProject = (token?: string) => {
 
   const handlePaymentUpload = async (milestoneId: string, file: File) => {
     if (!token) {
-        toast.error("Project token is missing. Cannot upload proof.");
-        return false;
+      toast.error("Project token is missing. Cannot upload proof.");
+      return false;
     }
-    toast.loading('Uploading payment proof...');
+    
+    const toastId = toast.loading('Uploading payment proof...');
 
     try {
       const formData = new FormData();
@@ -67,7 +85,7 @@ export const useClientProject = (token?: string) => {
         body: formData,
       });
 
-      toast.dismiss();
+      toast.dismiss(toastId);
 
       if (invokeError) {
         console.error('Edge function invocation error:', invokeError);
@@ -85,7 +103,7 @@ export const useClientProject = (token?: string) => {
       await fetchProject(); // Refresh data
       return true;
     } catch (e: any) {
-      toast.dismiss();
+      toast.dismiss(toastId);
       console.error("Upload exception:", e);
       toast.error(e.message || 'An unexpected error occurred during upload.');
       return false;
