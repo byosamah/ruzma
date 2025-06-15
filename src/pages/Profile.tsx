@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Layout from '@/components/Layout';
@@ -38,11 +39,34 @@ const Profile = () => {
           .from('profiles')
           .select('*')
           .eq('id', user.id)
-          .single();
+          .maybeSingle();
 
         if (error) {
-          toast.error("Could not fetch your profile data.");
-          console.error(error);
+          console.error("Error fetching profile:", error);
+          // Create a default profile if none exists
+          const { data: newProfile, error: createError } = await supabase
+            .from('profiles')
+            .insert({
+              id: user.id,
+              full_name: user.user_metadata?.full_name || user.email?.split('@')[0] || 'User'
+            })
+            .select()
+            .single();
+            
+          if (createError) {
+            console.error("Error creating profile:", createError);
+            toast.error("Error setting up your profile. Please try refreshing the page.");
+          } else {
+            setFormData({
+              name: newProfile.full_name || '',
+              email: user.email || '',
+              company: newProfile.company || '',
+              website: newProfile.website || '',
+              bio: newProfile.bio || '',
+              currency: newProfile.currency || 'USD'
+            });
+            setProfilePicture(newProfile.avatar_url || null);
+          }
         } else if (profile) {
           setFormData({
             name: profile.full_name || '',
@@ -53,6 +77,31 @@ const Profile = () => {
             currency: profile.currency || 'USD'
           });
           setProfilePicture(profile.avatar_url || null);
+        } else {
+          // No profile exists, create one
+          const { data: newProfile, error: createError } = await supabase
+            .from('profiles')
+            .insert({
+              id: user.id,
+              full_name: user.user_metadata?.full_name || user.email?.split('@')[0] || 'User'
+            })
+            .select()
+            .single();
+            
+          if (createError) {
+            console.error("Error creating profile:", createError);
+            toast.error("Error setting up your profile. Please try refreshing the page.");
+          } else {
+            setFormData({
+              name: newProfile.full_name || '',
+              email: user.email || '',
+              company: newProfile.company || '',
+              website: newProfile.website || '',
+              bio: newProfile.bio || '',
+              currency: newProfile.currency || 'USD'
+            });
+            setProfilePicture(newProfile.avatar_url || null);
+          }
         }
       } else {
         navigate('/login');
