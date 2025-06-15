@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -140,22 +141,69 @@ const MilestoneCard: React.FC<MilestoneCardProps> = ({
                 )}
                 
                 {milestone.status === 'payment_submitted' && (
-                  <p className="text-sm text-blue-600">Payment proof submitted. Waiting for approval...</p>
+                  <div className="space-y-2">
+                    <p className="text-sm text-blue-600">Payment proof submitted. Waiting for approval...</p>
+                    {milestone.paymentProofUrl && (
+                      <div className="flex items-center space-x-2">
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => window.open(milestone.paymentProofUrl, '_blank')}
+                          className="flex items-center space-x-1"
+                        >
+                          <ExternalLink className="w-4 h-4" />
+                          <span>View Uploaded Proof</span>
+                        </Button>
+                      </div>
+                    )}
+                  </div>
                 )}
                 
-                {milestone.status === 'approved' && milestone.deliverable && (
-                  <Button 
-                    className="w-full" 
-                    size="sm"
-                    onClick={() => onDeliverableDownload?.(milestone.id)}
-                  >
-                    <Download className="w-4 h-4 mr-2" />
-                    Download {milestone.deliverable.name}
-                  </Button>
+                {milestone.status === 'approved' && (
+                  <div className="space-y-2">
+                    {milestone.deliverable && (
+                      <Button 
+                        className="w-full" 
+                        size="sm"
+                        onClick={() => onDeliverableDownload?.(milestone.id)}
+                      >
+                        <Download className="w-4 h-4 mr-2" />
+                        Download {milestone.deliverable.name}
+                      </Button>
+                    )}
+                    {milestone.paymentProofUrl && (
+                      <div className="flex items-center space-x-2">
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => window.open(milestone.paymentProofUrl, '_blank')}
+                          className="flex items-center space-x-1"
+                        >
+                          <ExternalLink className="w-4 h-4" />
+                          <span>View Payment Proof</span>
+                        </Button>
+                      </div>
+                    )}
+                  </div>
                 )}
                 
                 {milestone.status === 'rejected' && (
-                  <p className="text-sm text-red-600">Payment was rejected. Please resubmit with correct details.</p>
+                  <div className="space-y-2">
+                    <p className="text-sm text-red-600">Payment was rejected. Please resubmit with correct details.</p>
+                    {milestone.paymentProofUrl && (
+                      <div className="flex items-center space-x-2">
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => window.open(milestone.paymentProofUrl, '_blank')}
+                          className="flex items-center space-x-1"
+                        >
+                          <ExternalLink className="w-4 h-4" />
+                          <span>View Previous Proof</span>
+                        </Button>
+                      </div>
+                    )}
+                  </div>
                 )}
               </div>
             ) : (
