@@ -351,13 +351,17 @@ export const useProjects = (user: User | null) => {
       console.log('Generated public URL for payment proof:', paymentProofUrl);
 
       // Invoke edge function to update the milestone securely
-      const { error: functionError } = await supabase.functions.invoke('submit-payment-proof', {
+      console.log('Invoking submit-payment-proof function with:', { milestoneId, paymentProofUrl });
+      
+      const { data: functionData, error: functionError } = await supabase.functions.invoke('submit-payment-proof', {
         body: { milestoneId, paymentProofUrl },
       });
 
+      console.log('Function response:', { data: functionData, error: functionError });
+
       if (functionError) {
         console.error('Error updating milestone via function:', functionError);
-        toast.error('Failed to update milestone in database');
+        toast.error(`Failed to update milestone in database: ${functionError.message}`);
         // Remove uploaded file to prevent orphan files
         await supabase.storage.from('payment-proofs').remove([filePath]);
         return false;
