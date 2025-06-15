@@ -26,30 +26,28 @@ export const useCreateProjectForm = (templateData?: TemplateData) => {
     mode: 'onChange',
   });
 
-  // Helper function to safely map template milestones
-  const mapTemplateMilestones = (milestones: any[] = []) => {
-    if (!Array.isArray(milestones) || milestones.length === 0) {
-      return [{ title: '', description: '', price: 0 }];
-    }
-    
-    return milestones.map((milestone: any) => ({
-      title: String(milestone?.title || ''),
-      description: String(milestone?.description || ''),
-      price: Number(milestone?.price || 0),
-    }));
-  };
-
   // Update form when template data changes
   useEffect(() => {
     if (templateData) {
+      const mappedMilestones = (templateData.milestones || []).map(m => ({
+        title: m.title || '',
+        description: m.description || '',
+        price: m.price || 0,
+      }));
+
+      // Ensure there's at least one milestone for the form array
+      if (mappedMilestones.length === 0) {
+        mappedMilestones.push({ title: '', description: '', price: 0 });
+      }
+
       form.reset({
         name: templateData.name || '',
         brief: templateData.brief || '',
         clientEmail: '',
-        milestones: mapTemplateMilestones(templateData.milestones),
+        milestones: mappedMilestones,
       });
     }
   }, [templateData, form]);
 
-  return { form, mapTemplateMilestones };
+  return { form };
 };
