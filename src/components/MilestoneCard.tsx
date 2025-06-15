@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { CheckCircle, XCircle, Clock, Download, Upload, FileUp, Eye, X } from 'lucide-react';
+import { CheckCircle, XCircle, Clock, Download, Upload, FileUp, Eye, X, ExternalLink } from 'lucide-react';
 import { formatCurrency, CurrencyCode } from '@/lib/currency';
 
 export interface Milestone {
@@ -81,6 +81,16 @@ const MilestoneCard: React.FC<MilestoneCardProps> = ({
     return url.toLowerCase().includes('.pdf') || url.toLowerCase().includes('pdf');
   };
 
+  const handleImageError = () => {
+    console.log('Image failed to load:', milestone.paymentProofUrl);
+    setImageLoadError(true);
+  };
+
+  const handleImageLoad = () => {
+    console.log('Image loaded successfully:', milestone.paymentProofUrl);
+    setImageLoadError(false);
+  };
+
   return (
     <>
       <Card className={`transition-all duration-200 ${getStatusColor(milestone.status)} border-l-4`}>
@@ -155,15 +165,26 @@ const MilestoneCard: React.FC<MilestoneCardProps> = ({
                   <div className="space-y-3">
                     <div className="flex items-center justify-between bg-blue-50 p-3 rounded-lg">
                       <p className="text-sm font-medium text-blue-800">Payment proof submitted by client</p>
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => setShowPaymentProofPreview(true)}
-                        className="flex items-center space-x-1"
-                      >
-                        <Eye className="w-4 h-4" />
-                        <span>Preview</span>
-                      </Button>
+                      <div className="flex items-center space-x-2">
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => setShowPaymentProofPreview(true)}
+                          className="flex items-center space-x-1"
+                        >
+                          <Eye className="w-4 h-4" />
+                          <span>Preview</span>
+                        </Button>
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => window.open(milestone.paymentProofUrl, '_blank')}
+                          className="flex items-center space-x-1"
+                        >
+                          <ExternalLink className="w-4 h-4" />
+                          <span>Open</span>
+                        </Button>
+                      </div>
                     </div>
                     
                     {onApprove && onReject && (
@@ -285,8 +306,9 @@ const MilestoneCard: React.FC<MilestoneCardProps> = ({
                         src={milestone.paymentProofUrl}
                         alt="Payment Proof"
                         className="max-w-full max-h-96 object-contain rounded shadow-lg"
-                        onError={() => setImageLoadError(true)}
-                        onLoad={() => setImageLoadError(false)}
+                        onError={handleImageError}
+                        onLoad={handleImageLoad}
+                        crossOrigin="anonymous"
                       />
                     ) : (
                       <div className="flex flex-col items-center space-y-4 text-slate-500">
@@ -296,15 +318,32 @@ const MilestoneCard: React.FC<MilestoneCardProps> = ({
                         <div className="text-center">
                           <p className="font-medium">Unable to load image</p>
                           <p className="text-sm">The image may be corrupted or the link is invalid</p>
-                          <p className="text-xs mt-2 break-all">{milestone.paymentProofUrl}</p>
+                          <p className="text-xs mt-2 break-all max-w-md">{milestone.paymentProofUrl}</p>
                         </div>
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          onClick={() => window.open(milestone.paymentProofUrl, '_blank')}
-                        >
-                          Open in New Tab
-                        </Button>
+                        <div className="flex space-x-2">
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => window.open(milestone.paymentProofUrl, '_blank')}
+                          >
+                            <ExternalLink className="w-4 h-4 mr-2" />
+                            Open in New Tab
+                          </Button>
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => {
+                              setImageLoadError(false);
+                              // Force reload the image
+                              const img = document.querySelector(`img[src="${milestone.paymentProofUrl}"]`) as HTMLImageElement;
+                              if (img) {
+                                img.src = milestone.paymentProofUrl + '?reload=' + Date.now();
+                              }
+                            }}
+                          >
+                            Try Again
+                          </Button>
+                        </div>
                       </div>
                     )}
                   </>

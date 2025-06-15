@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
@@ -283,8 +284,10 @@ export const useProjects = (user: User | null) => {
       console.log('Uploading payment proof for milestone:', milestoneId, 'File:', file.name, 'Size:', file.size);
       
       // Create file path with user ID folder structure
-      const fileName = `${Date.now()}-${file.name}`;
+      const fileName = `${Date.now()}-${file.name.replace(/[^a-zA-Z0-9.-]/g, '_')}`;
       const filePath = `${user.id}/${milestoneId}/${fileName}`;
+      
+      console.log('Upload path:', filePath);
       
       // Upload file to Supabase Storage
       const { data: uploadData, error: uploadError } = await supabase.storage
@@ -296,18 +299,30 @@ export const useProjects = (user: User | null) => {
 
       if (uploadError) {
         console.error('Error uploading payment proof to storage:', uploadError);
-        toast.error('Failed to upload payment proof');
+        toast.error(`Failed to upload payment proof: ${uploadError.message}`);
         return false;
       }
 
       console.log('Payment proof uploaded successfully to storage:', uploadData);
 
-      // Get public URL for the uploaded file
-      const { data: { publicUrl } } = supabase.storage
+      // Get public URL for the uploaded file using the correct method
+      const { data: publicUrlData } = supabase.storage
         .from('payment-proofs')
         .getPublicUrl(filePath);
 
+      const publicUrl = publicUrlData.publicUrl;
       console.log('Generated public URL for payment proof:', publicUrl);
+
+      // Verify the file exists by trying to create a signed URL as well
+      const { data: signedUrlData, error: signedUrlError } = await supabase.storage
+        .from('payment-proofs')
+        .createSignedUrl(filePath, 3600); // 1 hour expiry
+
+      if (signedUrlError) {
+        console.warn('Could not create signed URL, but continuing with public URL:', signedUrlError);
+      } else {
+        console.log('Signed URL created successfully:', signedUrlData.signedUrl);
+      }
 
       // Update milestone with payment proof URL and status in database
       const { data: updatedMilestone, error: updateError } = await supabase
