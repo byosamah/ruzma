@@ -56,10 +56,8 @@ const handler = async (req: Request): Promise<Response> => {
       `;
     }
 
-    // Use your verified domain here instead of resend.dev
-    // Replace "notifications@yourdomain.com" with your actual verified domain
     const emailResponse = await resend.emails.send({
-      from: "Ruzma <notifications@yourdomain.com>", // Change this to your verified domain
+      from: "Ruzma <notifications@ruzma.co>",
       to: [clientEmail],
       subject: subject,
       html: htmlContent,
