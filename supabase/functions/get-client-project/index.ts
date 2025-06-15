@@ -1,4 +1,3 @@
-
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
 
 const corsHeaders = {
@@ -53,38 +52,17 @@ Deno.serve(async (req) => {
 
     const supabaseAdmin = createClient(supabaseUrl, supabaseServiceKey)
 
-    console.log('Searching for project with token:', token)
+    console.log('Searching for project with client_access_token:', token)
     
-    // First try to find by client_access_token
-    let { data: projectData, error: projectError } = await supabaseAdmin
+    const { data: projectData, error: projectError } = await supabaseAdmin
       .from('projects')
       .select('*, milestones (*)')
       .eq('client_access_token', token)
       .single()
 
-    // If not found by token, try by project ID (as fallback)
     if (projectError || !projectData) {
-      console.log('Project not found by token, trying by ID:', token)
-      const { data: projectByIdData, error: projectByIdError } = await supabaseAdmin
-        .from('projects')
-        .select('*, milestones (*)')
-        .eq('id', token)
-        .single()
-      
-      if (projectByIdError || !projectByIdData) {
-        console.error('Error fetching project by ID:', projectByIdError)
-        return new Response(JSON.stringify({ error: 'Project not found' }), {
-          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-          status: 404,
-        })
-      }
-      
-      projectData = projectByIdData;
-    }
-
-    if (!projectData) {
-      console.error('No project data found')
-      return new Response(JSON.stringify({ error: 'Project not found' }), {
+      console.error('Project not found or error fetching project by token:', projectError)
+      return new Response(JSON.stringify({ error: 'Project not found or access denied' }), {
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
         status: 404,
       })
@@ -104,4 +82,3 @@ Deno.serve(async (req) => {
     })
   }
 })
-

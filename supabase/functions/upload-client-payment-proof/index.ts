@@ -1,5 +1,9 @@
+
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
 import { corsHeaders } from '../_shared/cors.ts'
+
+const MAX_FILE_SIZE_MB = 5;
+const ALLOWED_FILE_TYPES = ['image/jpeg', 'image/png', 'image/gif', 'application/pdf'];
 
 Deno.serve(async (req) => {
   if (req.method === 'OPTIONS') {
@@ -10,32 +14,64 @@ Deno.serve(async (req) => {
     const formData = await req.formData()
     const file = formData.get('file') as File | null
     const milestoneId = formData.get('milestoneId') as string | null
+    const token = formData.get('token') as string | null
 
-    if (!file || !milestoneId) {
-      return new Response(JSON.stringify({ error: 'File and milestoneId are required' }), {
+    if (!file || !milestoneId || !token) {
+      return new Response(JSON.stringify({ error: 'File, milestoneId, and token are required' }), {
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
         status: 400,
       })
     }
+
+    // --- SECURITY: Input Validation ---
+    if (file.size > MAX_FILE_SIZE_MB * 1024 * 1024) {
+        return new Response(JSON.stringify({ error: `File size exceeds ${MAX_FILE_SIZE_MB}MB limit` }), {
+            headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+            status: 413, // Payload Too Large
+        });
+    }
+
+    if (!ALLOWED_FILE_TYPES.includes(file.type)) {
+        return new Response(JSON.stringify({ error: `Invalid file type. Allowed types: ${ALLOWED_FILE_TYPES.join(', ')}` }), {
+            headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+            status: 415, // Unsupported Media Type
+        });
+    }
+    // --- END SECURITY ---
 
     const supabaseAdmin = createClient(
       Deno.env.get('SUPABASE_URL')!,
       Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!
     )
 
-    // Verify milestone exists
-    const { data: milestone, error: milestoneError } = await supabaseAdmin
-      .from('milestones')
+    // --- SECURITY: Verify token and milestone ownership ---
+    const { data: project, error: projectError } = await supabaseAdmin
+      .from('projects')
       .select('id')
-      .eq('id', milestoneId)
+      .eq('client_access_token', token)
       .single()
 
-    if (milestoneError || !milestone) {
-        return new Response(JSON.stringify({ error: 'Milestone not found' }), {
+    if (projectError || !project) {
+        return new Response(JSON.stringify({ error: 'Project not found or access denied' }), {
             headers: { ...corsHeaders, 'Content-Type': 'application/json' },
             status: 404,
         })
     }
+
+    const { data: milestone, error: milestoneError } = await supabaseAdmin
+      .from('milestones')
+      .select('id')
+      .eq('id', milestoneId)
+      .eq('project_id', project.id)
+      .single()
+
+    if (milestoneError || !milestone) {
+        return new Response(JSON.stringify({ error: 'Milestone not found or does not belong to this project' }), {
+            headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+            status: 404,
+        })
+    }
+    // --- END SECURITY ---
 
     const fileExt = file.name.split('.').pop()
     const fileName = `${Date.now()}.${fileExt}`
