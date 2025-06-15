@@ -27,60 +27,90 @@ const Dashboard = () => {
   const userCurrency = useUserCurrency(user);
 
   useEffect(() => {
+    let isMounted = true; // Prevent state updates if component unmounts
+    
     const fetchUserAndProfile = async () => {
-      setLoading(true);
-      console.log('Dashboard: fetchUserAndProfile start');
+      if (!isMounted) return;
       
-      const { data: { user }, error: userError } = await supabase.auth.getUser();
-      console.log('Dashboard: supabase.auth.getUser result', { user, userError });
+      console.log('Dashboard: Starting auth check...');
       
-      if (userError || !user) {
-        console.log('Dashboard: No user found, redirecting to login');
-        setLoading(false);
-        navigate('/login');
-        return;
-      }
-
-      setUser(user);
-      console.log('Dashboard: User set', user);
-
-      const { data: profileData, error: profileError } = await supabase
-        .from('profiles')
-        .select('*')
-        .eq('id', user.id)
-        .maybeSingle();
-
-      console.log('Dashboard: profile fetch result', { profileData, profileError });
-
-      if (profileError) {
-        console.error("Dashboard: Error fetching profile:", profileError);
-        const { data: newProfile, error: createError } = await supabase
-          .from('profiles')
-          .insert({
-            id: user.id,
-            full_name: user.user_metadata?.full_name || user.email?.split('@')[0] || t('defaultUser')
-          })
-          .select()
-          .single();
-        console.log('Dashboard: profile insert attempt', { newProfile, createError });
-        if (createError) {
-          console.error("Dashboard: Error creating profile:", createError);
-          toast.error(t("profileSetupError"));
-        } else {
-          setProfile(newProfile);
-          console.log('Dashboard: New profile set', newProfile);
+      try {
+        const { data: { user }, error: userError } = await supabase.auth.getUser();
+        console.log('Dashboard: Auth result -', { 
+          hasUser: !!user, 
+          userEmail: user?.email, 
+          error: userError?.message 
+        });
+        
+        if (!isMounted) return;
+        
+        if (userError || !user) {
+          console.log('Dashboard: No authenticated user, redirecting to login');
+          setLoading(false);
+          navigate('/login');
+          return;
         }
-      } else {
-        setProfile(profileData);
-        console.log('Dashboard: Existing profile set', profileData);
-      }
 
-      setLoading(false);
-      console.log('Dashboard: Finished loading');
+        setUser(user);
+        console.log('Dashboard: User authenticated, fetching profile...');
+
+        const { data: profileData, error: profileError } = await supabase
+          .from('profiles')
+          .select('*')
+          .eq('id', user.id)
+          .maybeSingle();
+
+        if (!isMounted) return;
+
+        console.log('Dashboard: Profile fetch result -', { 
+          hasProfile: !!profileData, 
+          profileError: profileError?.message 
+        });
+
+        if (profileError) {
+          console.log('Dashboard: Creating new profile...');
+          const { data: newProfile, error: createError } = await supabase
+            .from('profiles')
+            .insert({
+              id: user.id,
+              full_name: user.user_metadata?.full_name || user.email?.split('@')[0] || t('defaultUser')
+            })
+            .select()
+            .single();
+            
+          if (!isMounted) return;
+          
+          if (createError) {
+            console.error("Dashboard: Profile creation failed:", createError);
+            toast.error(t("profileSetupError"));
+          } else {
+            console.log('Dashboard: New profile created');
+            setProfile(newProfile);
+          }
+        } else {
+          setProfile(profileData);
+          console.log('Dashboard: Existing profile loaded');
+        }
+      } catch (error) {
+        console.error('Dashboard: Unexpected error:', error);
+        if (isMounted) {
+          setLoading(false);
+          navigate('/login');
+        }
+      } finally {
+        if (isMounted) {
+          setLoading(false);
+          console.log('Dashboard: Loading complete');
+        }
+      }
     };
 
     fetchUserAndProfile();
-  }, [navigate, t]);
+    
+    return () => {
+      isMounted = false;
+    };
+  }, []); // Empty dependency array to run only once
 
   const handleSignOut = async () => {
     await supabase.auth.signOut();
@@ -135,6 +165,7 @@ const Dashboard = () => {
   }
 
   if (!user) {
+    console.log('Dashboard: Rendering without user - this should not happen');
     return <div>{t('loadingDashboard')}</div>;
   }
 
