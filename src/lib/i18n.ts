@@ -73,6 +73,8 @@ const translations = {
     rememberMe: "Remember Me",
     signingIn: "Signing In...",
     loginFailed: "Failed to sign in",
+    profileSetupError: "Error setting up your profile. Please try refreshing the page.",
+    defaultUser: "User",
   },
   ar: {
     dashboard: "لوحة التحكم",
@@ -145,6 +147,8 @@ const translations = {
     rememberMe: "تذكرني",
     signingIn: "جارٍ تسجيل الدخول...",
     loginFailed: "فشل في تسجيل الدخول",
+    profileSetupError: "حدث خطأ أثناء إعداد ملفك الشخصي. يرجى محاولة تحديث الصفحة.",
+    defaultUser: "مستخدم",
   },
 };
 

@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
@@ -50,14 +49,14 @@ const Dashboard = () => {
           .from('profiles')
           .insert({
             id: user.id,
-            full_name: user.user_metadata?.full_name || user.email?.split('@')[0] || 'User'
+            full_name: user.user_metadata?.full_name || user.email?.split('@')[0] || t('defaultUser')
           })
           .select()
           .single();
           
         if (createError) {
           console.error("Error creating profile:", createError);
-          toast.error("Error setting up your profile. Please try refreshing the page.");
+          toast.error(t("profileSetupError"));
         } else {
           setProfile(newProfile);
         }
@@ -69,7 +68,7 @@ const Dashboard = () => {
     };
 
     fetchUserAndProfile();
-  }, [navigate]);
+  }, [navigate, t]);
 
   const handleSignOut = async () => {
     await supabase.auth.signOut();
@@ -127,7 +126,7 @@ const Dashboard = () => {
     return <div>{t('loadingDashboard')}</div>;
   }
 
-  const displayName = profile?.full_name || user.user_metadata?.full_name || user.email?.split('@')[0] || 'User';
+  const displayName = profile?.full_name || user.user_metadata?.full_name || user.email?.split('@')[0] || t('defaultUser');
 
   return (
     <Layout user={profile || user} onSignOut={handleSignOut}>
@@ -235,4 +234,3 @@ const Dashboard = () => {
 };
 
 export default Dashboard;
-
