@@ -1,3 +1,4 @@
+
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import Layout from "@/components/Layout";
@@ -156,7 +157,7 @@ const ProjectManagement: React.FC = () => {
                       url: milestone.deliverable_url
                     } : undefined,
                     paymentProofUrl: milestone.payment_proof_url,
-                    watermarkText: milestone.watermark_text ?? undefined, // Pass the value camelCase
+                    watermarkText: milestone.watermark_text || undefined,
                   }}
                   onApprove={
                     milestone.status === "payment_submitted"
