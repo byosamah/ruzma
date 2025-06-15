@@ -11,7 +11,7 @@ import ProjectMilestonesList from "@/components/ProjectClient/ProjectMilestonesL
 import ProjectFooter from "@/components/ProjectClient/ProjectFooter";
 
 const ClientProject = () => {
-  const { token } = useParams();
+  const { token } = useParams<{ token: string }>();
   const {
     project,
     isLoading,
@@ -35,7 +35,7 @@ const ClientProject = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50">
       <ClientProjectHeader />
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
+      <main className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
         <ProjectOverviewCard
           projectName={project.name}
           projectBrief={project.brief}
@@ -49,8 +49,8 @@ const ClientProject = () => {
           onPaymentUpload={handlePaymentUpload}
           onDeliverableDownload={handleDeliverableDownload}
         />
-        <ProjectFooter />
-      </div>
+      </main>
+      <ProjectFooter />
     </div>
   );
 };
