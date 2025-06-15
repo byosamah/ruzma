@@ -17,14 +17,13 @@ Deno.serve(async (req) => {
     console.log('Request method:', req.method)
     console.log('Request headers:', Object.fromEntries(req.headers.entries()))
     
-    let requestBody;
-    try {
-      const text = await req.text();
-      console.log('Raw request body:', text);
-      requestBody = text ? JSON.parse(text) : {};
-    } catch (parseError) {
-      console.error('Error parsing request body:', parseError);
-      return new Response(JSON.stringify({ error: 'Invalid JSON in request body' }), {
+    const requestBody = await req.json().catch((e) => {
+      console.error('Failed to parse request body as JSON:', e.message)
+      return null
+    })
+
+    if (!requestBody) {
+      return new Response(JSON.stringify({ error: 'Invalid or empty JSON body' }), {
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
         status: 400,
       })
@@ -34,7 +33,7 @@ Deno.serve(async (req) => {
     console.log('Received token:', token)
     
     if (!token) {
-      console.error('No token provided')
+      console.error('No token provided in request body')
       return new Response(JSON.stringify({ error: 'Token is required' }), {
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
         status: 400,
@@ -105,3 +104,4 @@ Deno.serve(async (req) => {
     })
   }
 })
+

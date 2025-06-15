@@ -1,4 +1,3 @@
-
 import { useState, useEffect, useCallback } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { DatabaseProject } from '@/hooks/projectTypes';
@@ -23,10 +22,7 @@ export const useClientProject = (token?: string) => {
       console.log('Fetching project with token:', token);
       
       const { data, error: invokeError } = await supabase.functions.invoke('get-client-project', {
-        body: JSON.stringify({ token }),
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        body: { token },
       });
 
       console.log('Edge function response:', { data, invokeError });
