@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import Layout from "@/components/Layout";
@@ -125,14 +124,21 @@ const ProjectManagement: React.FC = () => {
             </span>
           </div>
           <div className="mt-4">
-            <a
-              href={`/client/project/${project.id}`}
-              target="_blank"
-              className="text-blue-600 underline"
-              rel="noopener noreferrer"
+            <Button
+              asChild
+              variant="outline"
+              size="sm"
+              className="text-blue-600 border-blue-200 hover:bg-blue-50"
             >
-              Open Client Page
-            </a>
+              <a
+                href={`/client/project/${project.id}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                tabIndex={0}
+              >
+                Open Client Page
+              </a>
+            </Button>
           </div>
         </div>
 
