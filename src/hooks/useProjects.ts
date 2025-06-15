@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
@@ -287,7 +288,7 @@ export const useProjects = (user: User | null) => {
         fileType: file.type,
         userId: user.id
       });
-      
+
       // Compose file path with user id
       const fileName = `${Date.now()}-${file.name.replace(/[^a-zA-Z0-9.-]/g, '_')}`;
       const filePath = `${user.id}/${milestoneId}/${fileName}`;
@@ -315,13 +316,16 @@ export const useProjects = (user: User | null) => {
         .from('payment-proofs')
         .getPublicUrl(filePath);
 
-      let paymentProofUrl: string | undefined = publicUrlData?.publicUrl;
+      // Always use only the .publicUrl if and only if it's a real HTTP URL
+      const paymentProofUrl: string | null =
+        publicUrlData?.publicUrl && publicUrlData.publicUrl.startsWith('http')
+          ? publicUrlData.publicUrl
+          : null;
 
-      // Validate URL format
-      if (!paymentProofUrl || !paymentProofUrl.startsWith('http')) {
+      if (!paymentProofUrl) {
         console.error('Could not get a valid public URL for uploaded file:', publicUrlData);
         toast.error('Upload succeeded but failed to get file URL');
-        // Optionally: Remove failed upload
+        // Clean up failed upload if possible
         await supabase.storage.from('payment-proofs').remove([filePath]);
         return false;
       }
