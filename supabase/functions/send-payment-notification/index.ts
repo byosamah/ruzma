@@ -2,8 +2,6 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { Resend } from "npm:resend@2.0.0";
 
-const resend = new Resend(Deno.env.get("RESEND_API_KEY"));
-
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers":
@@ -25,11 +23,21 @@ const handler = async (req: Request): Promise<Response> => {
   }
 
   try {
+    // Initialize Resend with API key
+    const resendApiKey = Deno.env.get("RESEND_API_KEY");
+    if (!resendApiKey) {
+      console.error("RESEND_API_KEY environment variable is not set");
+      throw new Error("Email service not configured");
+    }
+
+    const resend = new Resend(resendApiKey);
+    
     const { clientEmail, projectName, projectId, clientToken, isApproved, milestoneName }: EmailRequest = await req.json();
 
     console.log("Sending email with verified domain: notifications@ruzma.co");
     console.log("Recipient:", clientEmail);
     console.log("Project:", projectName);
+    console.log("Resend API Key configured:", !!resendApiKey);
 
     const clientProjectUrl = `${Deno.env.get("SUPABASE_URL")?.replace('supabase.co', 'lovable.app')}/client/${projectId}?token=${clientToken}`;
     
@@ -60,6 +68,8 @@ const handler = async (req: Request): Promise<Response> => {
       `;
     }
 
+    console.log("About to send email with from address: notifications@ruzma.co");
+    
     const emailResponse = await resend.emails.send({
       from: "Ruzma <notifications@ruzma.co>",
       to: [clientEmail],
