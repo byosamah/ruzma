@@ -1,111 +1,53 @@
-import { useState, useEffect, useCallback } from 'react';
-import { supabase } from '@/integrations/supabase/client';
-import { DatabaseProject } from '@/hooks/projectTypes';
+
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { getClientProject, uploadPaymentProof } from '@/api/clientProject';
 import { toast } from 'sonner';
 
 export const useClientProject = (token?: string) => {
-  const [project, setProject] = useState<DatabaseProject | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const queryClient = useQueryClient();
 
-  const fetchProject = useCallback(async () => {
-    setIsLoading(true);
-    setError(null);
-    
-    if (!token) {
-      setError('No project token provided.');
-      setIsLoading(false);
-      return;
+  const { data: project, isLoading, error: queryError } = useQuery({
+    queryKey: ['clientProject', token],
+    queryFn: () => {
+      if (!token) throw new Error('No project token provided.');
+      return getClientProject(token);
+    },
+    enabled: !!token,
+  });
+
+  const uploadMutation = useMutation({
+    mutationFn: uploadPaymentProof,
+    onSuccess: () => {
+      toast.success('Payment proof uploaded successfully!');
+      queryClient.invalidateQueries({ queryKey: ['clientProject', token] });
+    },
+    onError: (err: any) => {
+      toast.error(err.message || 'An unexpected error occurred during upload.');
+    },
+    onMutate: () => {
+      return toast.loading('Uploading payment proof...');
+    },
+    onSettled: (_data, _error, _variables, context) => {
+      if (context) {
+        toast.dismiss(context);
+      }
     }
+  });
 
-    try {
-      console.log('Fetching project with token:', token);
-      
-      const { data, error: invokeError } = await supabase.functions.invoke('get-client-project', {
-        body: { token },
-      });
-
-      console.log('Edge function response:', { data, invokeError });
-
-      if (invokeError) {
-        console.error('Edge function invocation error:', invokeError);
-        throw new Error(`Failed to connect to server: ${invokeError.message}`);
-      }
-
-      if (!data) {
-        throw new Error('No data received from server');
-      }
-
-      if (data.error) {
-        throw new Error(data.error);
-      }
-
-      const typedProject: DatabaseProject = {
-        ...data,
-        milestones: (data.milestones || []).map((milestone: any) => ({
-          ...milestone,
-          status: milestone.status as 'pending' | 'payment_submitted' | 'approved' | 'rejected',
-        })),
-      };
-      
-      console.log('Successfully fetched project:', typedProject);
-      setProject(typedProject);
-    } catch (err: any) {
-      console.error('Error fetching client project:', err);
-      setError(err.message || 'Failed to load project details.');
-      setProject(null);
-    } finally {
-      setIsLoading(false);
-    }
-  }, [token]);
-
-  useEffect(() => {
-    fetchProject();
-  }, [fetchProject]);
-
-  const handlePaymentUpload = async (milestoneId: string, file: File) => {
+  const handlePaymentUpload = async (milestoneId: string, file: File): Promise<boolean> => {
     if (!token) {
       toast.error("Project token is missing. Cannot upload proof.");
       return false;
     }
-    
-    const toastId = toast.loading('Uploading payment proof...');
-
     try {
-      const formData = new FormData();
-      formData.append('file', file);
-      formData.append('milestoneId', milestoneId);
-      formData.append('token', token);
-
-      const { data, error: invokeError } = await supabase.functions.invoke('upload-client-payment-proof', {
-        body: formData,
-      });
-
-      toast.dismiss(toastId);
-
-      if (invokeError) {
-        console.error('Edge function invocation error:', invokeError);
-        toast.error(`Upload failed: ${invokeError.message}`);
-        return false;
-      }
-
-      if (!data?.success) {
-        console.error('Edge function returned an error:', data?.error);
-        toast.error(data?.error || 'Failed to upload payment proof.');
-        return false;
-      }
-      
-      toast.success('Payment proof uploaded successfully!');
-      await fetchProject(); // Refresh data
+      await uploadMutation.mutateAsync({ milestoneId, file, token });
       return true;
-    } catch (e: any) {
-      toast.dismiss(toastId);
-      console.error("Upload exception:", e);
-      toast.error(e.message || 'An unexpected error occurred during upload.');
+    } catch (e) {
+      // Error is already handled by useMutation's onError
       return false;
     }
   };
-
+  
   const handleDeliverableDownload = async (milestoneId: string) => {
     try {
       const milestone = project?.milestones.find(m => m.id === milestoneId);
@@ -140,8 +82,10 @@ export const useClientProject = (token?: string) => {
     }
   };
 
+  const error = queryError ? (queryError as Error).message : null;
+
   return {
-    project,
+    project: project || null,
     isLoading,
     error,
     handlePaymentUpload,
