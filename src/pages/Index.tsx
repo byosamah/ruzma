@@ -10,42 +10,42 @@ const Index = () => {
     {
       icon: Briefcase,
       title: 'Project Management',
-      description: 'Organize your freelance projects with clear milestones and deliverables.'
+      description: 'Ditch the messy spreadsheets. Visualize your project\'s progress with clear milestones, tasks, and deadlines that keep both you and your client on the same page.'
     },
     {
       icon: DollarSign,
       title: 'Payment Verification',
-      description: 'Verify client payments before releasing deliverables automatically.'
+      description: 'Our secure escrow-like system holds client funds and automatically releases them to you when a milestone is approved. Get paid on time, every time.'
     },
     {
       icon: FileCheck,
       title: 'Secure Delivery',
-      description: 'Share files securely with clients through protected download links.'
+      description: 'Stop worrying about unauthorized access. Deliver files through encrypted, one-time-use links, ensuring your hard work is only seen after payment is confirmed.'
     },
     {
       icon: Shield,
       title: 'Professional Presentation',
-      description: 'Auto-generated client pages that look professional and trustworthy.'
+      description: 'Impress clients from day one with a dedicated, beautifully designed project portal. Your brand, your logo—a premium experience they\'ll love.'
     },
     {
       icon: Zap,
       title: 'Streamlined Workflow',
-      description: 'Reduce back-and-forth emails with an automated approval process.'
+      description: 'Cut down on endless email chains. Clients can review work, leave feedback, and approve milestones directly in their portal, creating a clear, single source of truth.'
     },
     {
       icon: Users,
       title: 'Client-Friendly',
-      description: 'Simple interface for clients to make payments and access deliverables.'
+      description: 'Onboarding clients has never been easier. A simple, intuitive interface means your clients can get started in minutes, no training required.'
     }
   ];
 
   const benefits = [
-    'Never chase payments again',
-    'Protect your work until payment',
-    'Professional client experience',
-    'Automated milestone tracking',
-    'Secure file sharing',
-    'Easy project management'
+    'Automated payment security',
+    'Milestone-based fund release',
+    'Branded client portals',
+    'Clear progress and deadline tracking',
+    'Encrypted deliverable links',
+    'Simplified project dashboard'
   ];
 
   return (
@@ -72,10 +72,10 @@ const Index = () => {
           <div className="grid md:grid-cols-2 gap-12 items-center">
             <div className="text-left">
               <h1 className="text-4xl md:text-5xl font-extrabold text-brand-black leading-tight tracking-tight">
-                The modern way for freelancers to deliver projects.
+                The Smartest Way to Manage Your Freelance Business
               </h1>
               <p className="mt-4 mb-8 text-lg text-brand-navy opacity-80 max-w-lg">
-                Verify payments, track milestones, and deliver work securely through stunning, professional project pages.
+                Ruzma helps you manage projects, secure payments, and deliver exceptional work—all from one beautiful client portal. Stop juggling tools and start focusing on what you do best.
               </p>
               <Link to="/signup">
                 <Button size="lg" className="bg-brand-yellow text-brand-black font-bold rounded-lg px-8 h-14 text-base hover:bg-brand-yellow/90">
@@ -114,9 +114,9 @@ const Index = () => {
         {/* Features Section */}
         <section className="py-20 bg-slate-50/70">
           <div className="container mx-auto px-6 text-center">
-            <h2 className="text-3xl md:text-4xl font-bold text-brand-black mb-4">Performance insights for your productivity</h2>
-            <p className="text-lg text-brand-navy/80 mb-12 max-w-2xl mx-auto">
-              Streamline your freelance workflow with features designed for modern project delivery.
+            <h2 className="text-3xl md:text-4xl font-bold text-brand-black mb-4">Everything You Need, All in One Place</h2>
+            <p className="text-lg text-brand-navy/80 mb-12 max-w-3xl mx-auto">
+              Ruzma is packed with powerful features to streamline your entire freelance workflow, from first contact to final payment.
             </p>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 text-left">
               {features.map((feature) => {
@@ -171,10 +171,10 @@ const Index = () => {
             </div>
             <div className="text-left">
               <h2 className="text-3xl md:text-4xl font-bold text-brand-black">
-                Powerful insights to grow your business
+                Gain Peace of Mind, Not More Paperwork
               </h2>
               <p className="mt-4 mb-6 text-lg text-brand-navy/80">
-                Built for freelancers who want to protect their work and wow their clients.
+                We handle the administrative headaches so you can focus on creative work. Ruzma is your automated project manager, accountant, and delivery assistant, rolled into one.
               </p>
               <ul className="space-y-4">
                 {benefits.map((benefit, i) => (
@@ -192,10 +192,10 @@ const Index = () => {
         <section className="bg-brand-navy">
           <div className="container mx-auto px-6 py-20 text-center">
             <h2 className="text-4xl font-extrabold tracking-tight text-white mb-5">
-              Ready to Level Up Your Freelance Workflow?
+              Ready to Transform Your Freelance Business?
             </h2>
-            <p className="text-xl max-w-lg mx-auto mb-9 text-white/80">
-              Join thousands of freelancers who trust Ruzma to manage projects, get paid, and impress clients.
+            <p className="text-xl max-w-2xl mx-auto mb-9 text-white/80">
+              Join hundreds of successful freelancers who use Ruzma to get paid faster, reduce admin, and deliver work that wows clients. Your first project is on us.
             </p>
             <Link to="/signup">
               <Button size="lg" className="px-8 h-14 text-lg font-bold rounded-lg bg-brand-yellow text-brand-black hover:bg-white">
