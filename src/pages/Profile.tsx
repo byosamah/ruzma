@@ -6,8 +6,10 @@ import { ProfilePictureCard } from '@/components/Profile/ProfilePictureCard';
 import { PersonalInformationForm } from '@/components/Profile/PersonalInformationForm';
 import { AccountSettingsCard } from '@/components/Profile/AccountSettingsCard';
 import { useProfile } from '@/hooks/useProfile';
+import { useT } from '@/lib/i18n';
 
 const Profile = () => {
+  const t = useT();
   const {
     user,
     profilePicture,
@@ -29,15 +31,15 @@ const Profile = () => {
   } = useProfile();
 
   if (!user) {
-    return <div>Loading...</div>;
+    return <div>{t('loading')}</div>;
   }
 
   return (
     <Layout user={user} onSignOut={handleSignOut}>
       <div className="max-w-4xl mx-auto space-y-8">
         <div>
-          <h1 className="text-3xl font-bold text-slate-800">Profile Settings</h1>
-          <p className="text-slate-600 mt-2">Manage your account information and preferences</p>
+          <h1 className="text-3xl font-bold text-slate-800">{t('profileSettings')}</h1>
+          <p className="text-slate-600 mt-2">{t('manageAccountInfo')}</p>
         </div>
 
         <ImageCropperDialog

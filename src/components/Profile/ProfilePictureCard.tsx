@@ -4,6 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from '@/components/ui/button';
 import { Upload } from 'lucide-react';
+import { useT } from '@/lib/i18n';
 
 interface ProfilePictureCardProps {
   profilePicture: string | null;
@@ -20,10 +21,12 @@ export const ProfilePictureCard = ({
   onFileChange,
   fileInputRef,
 }: ProfilePictureCardProps) => {
+  const t = useT();
+
   return (
     <Card className="lg:col-span-1 bg-white/80 backdrop-blur-sm">
       <CardHeader>
-        <CardTitle>Profile Picture</CardTitle>
+        <CardTitle>{t('profilePicture')}</CardTitle>
       </CardHeader>
       <CardContent className="text-center space-y-4">
         <Avatar className="w-32 h-32 mx-auto text-4xl font-bold">
@@ -42,11 +45,11 @@ export const ProfilePictureCard = ({
         <div>
           <Button variant="outline" size="sm" onClick={onUploadClick}>
             <Upload className="w-4 h-4 mr-2" />
-            Upload Photo
+            {t('uploadPhoto')}
           </Button>
         </div>
         <p className="text-xs text-slate-500">
-          JPG, PNG or GIF. Max size 2MB.
+          {t('photoFormat')}
         </p>
       </CardContent>
     </Card>

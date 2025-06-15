@@ -8,6 +8,7 @@ import { Separator } from '@/components/ui/separator';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { User, Mail, Save, DollarSign } from 'lucide-react';
 import { CURRENCIES, CurrencyCode } from '@/lib/currency';
+import { useT } from '@/lib/i18n';
 
 interface PersonalInformationFormProps {
   formData: {
@@ -35,6 +36,8 @@ export const PersonalInformationForm = ({
   onCancel,
   onCurrencyChange,
 }: PersonalInformationFormProps) => {
+  const t = useT();
+
   const handleCurrencyChange = (value: string) => {
     if (onCurrencyChange) {
       onCurrencyChange(value);
@@ -44,19 +47,19 @@ export const PersonalInformationForm = ({
   return (
     <Card className="lg:col-span-2 bg-white/80 backdrop-blur-sm">
       <CardHeader>
-        <CardTitle>Personal Information</CardTitle>
+        <CardTitle>{t('personalInformation')}</CardTitle>
       </CardHeader>
       <CardContent>
         <form onSubmit={onFormSubmit} className="space-y-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="space-y-2">
-              <Label htmlFor="name">Full Name</Label>
+              <Label htmlFor="name">{t('fullName')}</Label>
               <div className="relative">
                 <User className="absolute left-3 top-3 h-4 w-4 text-slate-400" />
                 <Input
                   id="name"
                   name="name"
-                  placeholder="Enter your full name"
+                  placeholder={t('enterFullName')}
                   value={formData.name}
                   onChange={onFormChange}
                   className="pl-10"
@@ -65,14 +68,14 @@ export const PersonalInformationForm = ({
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="email">Email Address</Label>
+              <Label htmlFor="email">{t('emailAddress')}</Label>
               <div className="relative">
                 <Mail className="absolute left-3 top-3 h-4 w-4 text-slate-400" />
                 <Input
                   id="email"
                   name="email"
                   type="email"
-                  placeholder="Enter your email"
+                  placeholder={t('enterEmail')}
                   value={formData.email}
                   onChange={onFormChange}
                   className="pl-10"
@@ -83,23 +86,23 @@ export const PersonalInformationForm = ({
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="space-y-2">
-              <Label htmlFor="company">Company (Optional)</Label>
+              <Label htmlFor="company">{t('company')}</Label>
               <Input
                 id="company"
                 name="company"
-                placeholder="Your company name"
+                placeholder={t('companyName')}
                 value={formData.company}
                 onChange={onFormChange}
               />
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="website">Website (Optional)</Label>
+              <Label htmlFor="website">{t('website')}</Label>
               <Input
                 id="website"
                 name="website"
                 type="url"
-                placeholder="https://yourwebsite.com"
+                placeholder={t('websiteUrl')}
                 value={formData.website}
                 onChange={onFormChange}
               />
@@ -107,12 +110,12 @@ export const PersonalInformationForm = ({
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="currency">Preferred Currency</Label>
+            <Label htmlFor="currency">{t('preferredCurrency')}</Label>
             <div className="relative">
               <DollarSign className="absolute left-3 top-3 h-4 w-4 text-slate-400 z-10" />
               <Select value={formData.currency || 'USD'} onValueChange={handleCurrencyChange}>
                 <SelectTrigger className="pl-10">
-                  <SelectValue placeholder="Select currency" />
+                  <SelectValue placeholder={t('selectCurrency')} />
                 </SelectTrigger>
                 <SelectContent>
                   {Object.entries(CURRENCIES).map(([code, { symbol, name }]) => (
@@ -126,13 +129,13 @@ export const PersonalInformationForm = ({
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="bio">Bio (Optional)</Label>
+            <Label htmlFor="bio">{t('bio')}</Label>
             <textarea
               id="bio"
               name="bio"
               rows={4}
               className="w-full px-3 py-2 border border-slate-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
-              placeholder="Tell clients about yourself and your expertise..."
+              placeholder={t('bioPlaceholder')}
               value={formData.bio}
               onChange={onFormChange}
             />
@@ -142,17 +145,17 @@ export const PersonalInformationForm = ({
 
           <div className="flex justify-end space-x-4">
             <Button type="button" variant="outline" onClick={onCancel}>
-              Cancel
+              {t('cancel')}
             </Button>
             <Button type="submit" disabled={isLoading}>
               {isLoading ? (
-                'Saving...'
+                t('saving')
               ) : isSaved ? (
-                'Saved!'
+                t('saved')
               ) : (
                 <>
                   <Save className="w-4 h-4 mr-2" />
-                  Save Changes
+                  {t('saveChanges')}
                 </>
               )}
             </Button>

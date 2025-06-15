@@ -6,6 +6,7 @@ import { projectTranslations } from "./translations/projects";
 import { clientTranslations } from "./translations/client";
 import { landingTranslations } from "./translations/landing";
 import { commonTranslations } from "./translations/common";
+import { profileTranslations } from "./translations/profile";
 
 // Combine all translations
 const translations = {
@@ -16,6 +17,7 @@ const translations = {
     ...clientTranslations.en,
     ...landingTranslations.en,
     ...commonTranslations.en,
+    ...profileTranslations.en,
   },
   ar: {
     ...authTranslations.ar,
@@ -24,6 +26,7 @@ const translations = {
     ...clientTranslations.ar,
     ...landingTranslations.ar,
     ...commonTranslations.ar,
+    ...profileTranslations.ar,
   },
 };
 
