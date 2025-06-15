@@ -41,6 +41,7 @@ const MilestoneCard: React.FC<MilestoneCardProps> = ({
   currency = 'USD'
 }) => {
   const [showPaymentProofPreview, setShowPaymentProofPreview] = useState(false);
+  const [imageLoadError, setImageLoadError] = useState(false);
 
   const getStatusColor = (status: string) => {
     switch (status) {
@@ -74,6 +75,10 @@ const MilestoneCard: React.FC<MilestoneCardProps> = ({
     if (file && onDeliverableUpload) {
       onDeliverableUpload(milestone.id, file);
     }
+  };
+
+  const isPdfFile = (url: string) => {
+    return url.toLowerCase().includes('.pdf') || url.toLowerCase().includes('pdf');
   };
 
   return (
@@ -250,31 +255,59 @@ const MilestoneCard: React.FC<MilestoneCardProps> = ({
       {/* Payment Proof Preview Modal */}
       {showPaymentProofPreview && milestone.paymentProofUrl && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-lg max-w-4xl max-h-[90vh] overflow-auto">
+          <div className="bg-white rounded-lg max-w-4xl max-h-[90vh] overflow-auto w-full">
             <div className="flex items-center justify-between p-4 border-b">
               <h3 className="text-lg font-semibold">Payment Proof Preview</h3>
               <Button
                 variant="ghost"
                 size="sm"
-                onClick={() => setShowPaymentProofPreview(false)}
+                onClick={() => {
+                  setShowPaymentProofPreview(false);
+                  setImageLoadError(false);
+                }}
               >
                 <X className="w-4 h-4" />
               </Button>
             </div>
             <div className="p-4">
-              <div className="flex items-center justify-center">
-                {milestone.paymentProofUrl.toLowerCase().includes('.pdf') ? (
+              <div className="flex items-center justify-center min-h-[300px]">
+                {isPdfFile(milestone.paymentProofUrl) ? (
                   <iframe
                     src={milestone.paymentProofUrl}
                     className="w-full h-96 border rounded"
                     title="Payment Proof PDF"
+                    onError={() => setImageLoadError(true)}
                   />
                 ) : (
-                  <img
-                    src={milestone.paymentProofUrl}
-                    alt="Payment Proof"
-                    className="max-w-full max-h-96 object-contain rounded"
-                  />
+                  <>
+                    {!imageLoadError ? (
+                      <img
+                        src={milestone.paymentProofUrl}
+                        alt="Payment Proof"
+                        className="max-w-full max-h-96 object-contain rounded shadow-lg"
+                        onError={() => setImageLoadError(true)}
+                        onLoad={() => setImageLoadError(false)}
+                      />
+                    ) : (
+                      <div className="flex flex-col items-center space-y-4 text-slate-500">
+                        <div className="w-16 h-16 bg-slate-100 rounded-lg flex items-center justify-center">
+                          <Eye className="w-8 h-8" />
+                        </div>
+                        <div className="text-center">
+                          <p className="font-medium">Unable to load image</p>
+                          <p className="text-sm">The image may be corrupted or the link is invalid</p>
+                          <p className="text-xs mt-2 break-all">{milestone.paymentProofUrl}</p>
+                        </div>
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => window.open(milestone.paymentProofUrl, '_blank')}
+                        >
+                          Open in New Tab
+                        </Button>
+                      </div>
+                    )}
+                  </>
                 )}
               </div>
               <div className="flex justify-center space-x-2 mt-4">
