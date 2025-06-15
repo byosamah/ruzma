@@ -301,13 +301,17 @@ export const useProjects = (user: User | null) => {
         return false;
       }
 
+      console.log('File uploaded successfully to storage:', uploadData);
+
       // Get public URL for the uploaded file
       const { data: { publicUrl } } = supabase.storage
         .from('deliverables')
         .getPublicUrl(filePath);
 
-      // Update milestone with deliverable info
-      const { error: updateError } = await supabase
+      console.log('Generated public URL:', publicUrl);
+
+      // Update milestone with deliverable info in database
+      const { data: updatedMilestone, error: updateError } = await supabase
         .from('milestones')
         .update({
           deliverable_name: file.name,
@@ -315,19 +319,38 @@ export const useProjects = (user: User | null) => {
           deliverable_url: publicUrl,
           updated_at: new Date().toISOString()
         })
-        .eq('id', milestoneId);
+        .eq('id', milestoneId)
+        .select()
+        .single();
 
       if (updateError) {
         console.error('Error updating milestone with deliverable info:', updateError);
-        toast.error('Failed to update milestone');
+        toast.error('Failed to update milestone in database');
+        // Clean up uploaded file if database update fails
+        await supabase.storage.from('deliverables').remove([filePath]);
         return false;
+      }
+
+      console.log('Milestone updated successfully in database:', updatedMilestone);
+
+      // Verify the data was saved by fetching it back
+      const { data: verifyData, error: verifyError } = await supabase
+        .from('milestones')
+        .select('deliverable_name, deliverable_url, deliverable_size')
+        .eq('id', milestoneId)
+        .single();
+
+      if (verifyError) {
+        console.error('Error verifying database update:', verifyError);
+      } else {
+        console.log('Verified database data:', verifyData);
       }
 
       toast.success('Deliverable uploaded successfully');
       await fetchProjects(); // Refresh the list
       return true;
     } catch (error) {
-      console.error('Error:', error);
+      console.error('Error uploading deliverable:', error);
       toast.error('Failed to upload deliverable');
       return false;
     }
