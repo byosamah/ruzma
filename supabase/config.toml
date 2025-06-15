@@ -7,4 +7,7 @@ verify_jwt = false
 [functions.get-client-project]
 verify_jwt = false
 
+[functions.submit-payment-proof]
+verify_jwt = false
+
 # Add any additional function configs here if needed
