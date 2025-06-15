@@ -6,6 +6,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Plus } from 'lucide-react';
 import { MilestoneFormData } from './types';
 import { MilestoneItemEditor } from './MilestoneItemEditor';
+import { useT } from '@/lib/i18n';
 
 interface ProjectFormProps {
   name: string;
@@ -32,32 +33,33 @@ export const ProjectForm: React.FC<ProjectFormProps> = ({
   onDeleteMilestone,
   onSubmit,
 }) => {
+  const t = useT();
   return (
     <form onSubmit={onSubmit} className="space-y-6">
       <div className="space-y-2">
-        <label htmlFor="name" className="text-sm font-medium text-slate-700">Project Name</label>
+        <label htmlFor="name" className="text-sm font-medium text-slate-700">{t('projectName')}</label>
         <Input
           id="name"
           value={name}
           onChange={(e) => onNameChange(e.target.value)}
-          placeholder="e.g. E-commerce Website Design"
+          placeholder={t('projectNamePlaceholder_edit')}
           required
         />
       </div>
       <div className="space-y-2">
-        <label htmlFor="brief" className="text-sm font-medium text-slate-700">Project Brief</label>
+        <label htmlFor="brief" className="text-sm font-medium text-slate-700">{t('projectBrief')}</label>
         <Textarea
           id="brief"
           value={brief}
           onChange={(e) => onBriefChange(e.target.value)}
-          placeholder="A short description of the project."
+          placeholder={t('projectBriefPlaceholder_edit')}
           required
           rows={4}
         />
       </div>
 
       <div className="space-y-4 pt-6 border-t">
-        <h3 className="text-lg font-medium text-slate-800">Milestones</h3>
+        <h3 className="text-lg font-medium text-slate-800">{t('milestones')}</h3>
         <div className="space-y-4">
           {milestones.map((milestone, index) => (
             <MilestoneItemEditor
@@ -76,13 +78,13 @@ export const ProjectForm: React.FC<ProjectFormProps> = ({
           className="w-full flex items-center"
         >
           <Plus className="w-4 h-4 mr-2" />
-          Add Milestone
+          {t('addMilestone')}
         </Button>
       </div>
 
       <div className="flex justify-end">
         <Button type="submit" disabled={updating}>
-          {updating ? 'Saving...' : 'Save Changes'}
+          {updating ? t('saving') : t('saveChanges')}
         </Button>
       </div>
     </form>

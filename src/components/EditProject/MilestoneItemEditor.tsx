@@ -5,6 +5,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Button } from '@/components/ui/button';
 import { Trash2 } from 'lucide-react';
 import { MilestoneFormData } from './types';
+import { useT } from '@/lib/i18n';
 
 interface MilestoneItemEditorProps {
   milestone: MilestoneFormData;
@@ -19,6 +20,7 @@ export const MilestoneItemEditor: React.FC<MilestoneItemEditorProps> = ({
   onMilestoneChange,
   onDeleteMilestone,
 }) => {
+  const t = useT();
   return (
     <div className="p-4 border rounded-md space-y-3 bg-slate-50 relative">
       <Button
@@ -31,34 +33,34 @@ export const MilestoneItemEditor: React.FC<MilestoneItemEditorProps> = ({
         <Trash2 className="w-4 h-4" />
       </Button>
       <div className="space-y-2">
-        <label htmlFor={`milestone-title-${index}`} className="text-sm font-medium text-slate-700">Title</label>
+        <label htmlFor={`milestone-title-${index}`} className="text-sm font-medium text-slate-700">{t('title')}</label>
         <Input
           id={`milestone-title-${index}`}
           value={milestone.title}
           onChange={(e) => onMilestoneChange(index, 'title', e.target.value)}
-          placeholder="e.g. Phase 1: Discovery"
+          placeholder={t('milestoneTitlePlaceholder_edit')}
           required
         />
       </div>
       <div className="space-y-2">
-        <label htmlFor={`milestone-desc-${index}`} className="text-sm font-medium text-slate-700">Description</label>
+        <label htmlFor={`milestone-desc-${index}`} className="text-sm font-medium text-slate-700">{t('description')}</label>
         <Textarea
           id={`milestone-desc-${index}`}
           value={milestone.description}
           onChange={(e) => onMilestoneChange(index, 'description', e.target.value)}
-          placeholder="Briefly describe this milestone"
+          placeholder={t('milestoneDescriptionPlaceholder_edit')}
           required
           rows={2}
         />
       </div>
       <div className="space-y-2">
-        <label htmlFor={`milestone-price-${index}`} className="text-sm font-medium text-slate-700">Price ($)</label>
+        <label htmlFor={`milestone-price-${index}`} className="text-sm font-medium text-slate-700">{t('price')}</label>
         <Input
           id={`milestone-price-${index}`}
           type="number"
           value={milestone.price}
           onChange={(e) => onMilestoneChange(index, 'price', e.target.value)}
-          placeholder="e.g. 500"
+          placeholder={t('milestonePricePlaceholder_edit')}
           required
           min="0"
         />
