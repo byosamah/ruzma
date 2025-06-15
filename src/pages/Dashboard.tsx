@@ -12,6 +12,9 @@ import { useProjects } from '@/hooks/useProjects';
 import { useUserCurrency } from '@/hooks/useUserCurrency';
 import { formatCurrency, getCurrencySymbol } from '@/lib/currency';
 import { useT } from '@/lib/i18n';
+import DashboardHeader from "@/components/dashboard/DashboardHeader";
+import DashboardStats from "@/components/dashboard/DashboardStats";
+import DashboardProjectList from "@/components/dashboard/DashboardProjectList";
 
 const Dashboard = () => {
   const [user, setUser] = useState<User | null>(null);
@@ -126,108 +129,34 @@ const Dashboard = () => {
     return <div>{t('loadingDashboard')}</div>;
   }
 
-  const displayName = profile?.full_name || user.user_metadata?.full_name || user.email?.split('@')[0] || t('defaultUser');
+  const displayName =
+    profile?.full_name ||
+    user.user_metadata?.full_name ||
+    user.email?.split("@")[0] ||
+    t("defaultUser");
 
   return (
     <Layout user={profile || user} onSignOut={handleSignOut}>
       <div className="space-y-8">
-        {/* Header */}
-        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-          <div>
-            <h1 className="text-3xl font-bold text-slate-800">{t('welcomeBack', { name: displayName })}</h1>
-            <p className="text-slate-600 mt-1">{t('manageProjects')}</p>
-          </div>
-          <Button onClick={() => navigate('/create-project')} size="lg">
-            <Plus className="w-5 h-5 mr-2" />
-            {t('newProject')}
-          </Button>
-        </div>
-
-        {/* Stats Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          <Card className="bg-secondary text-secondary-foreground">
-            <CardHeader className="flex flex-row items-center justify-between pb-2">
-              <CardTitle className="text-sm font-medium">{t('totalProjects')}</CardTitle>
-              <Briefcase className="w-4 h-4" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">{totalProjects}</div>
-              <p className="text-xs">{t('activeProjects')}</p>
-            </CardContent>
-          </Card>
-
-          <Card className="bg-primary text-primary-foreground">
-            <CardHeader className="flex flex-row items-center justify-between pb-2">
-              <CardTitle className="text-sm font-medium">{t('totalEarnings')}</CardTitle>
-              <DollarSign className="w-4 h-4" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">{formatCurrency(totalEarnings, userCurrency)}</div>
-              <p className="text-xs">{t('fromCompletedMilestones')}</p>
-            </CardContent>
-          </Card>
-
-          <Card className="bg-accent text-accent-foreground">
-            <CardHeader className="flex flex-row items-center justify-between pb-2">
-              <CardTitle className="text-sm font-medium">{t('pendingPayments')}</CardTitle>
-              <Clock className="w-4 h-4" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">{pendingPayments}</div>
-              <p className="text-xs">{t('awaitingApproval')}</p>
-            </CardContent>
-          </Card>
-
-          <Card className="bg-secondary text-secondary-foreground">
-            <CardHeader className="flex flex-row items-center justify-between pb-2">
-              <CardTitle className="text-sm font-medium">{t('completed')}</CardTitle>
-              <CheckCircle className="w-4 h-4" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">{completedMilestones}/{totalMilestones}</div>
-              <p className="text-xs">{t('milestonesCompleted')}</p>
-            </CardContent>
-          </Card>
-        </div>
-
-        {/* Projects Grid */}
-        <div className="space-y-6">
-          <div className="flex justify-between items-center">
-            <h2 className="text-2xl font-bold text-slate-800">{t('yourProjects')}</h2>
-            {convertedProjects.length === 0 && (
-              <Button onClick={() => navigate('/create-project')} variant="outline">
-                <Plus className="w-4 h-4 mr-2" />
-                {t('createFirstProject')}
-              </Button>
-            )}
-          </div>
-
-          {convertedProjects.length === 0 ? (
-            <Card className="text-center py-12 bg-white/80 backdrop-blur-sm">
-              <CardContent>
-                <Briefcase className="w-16 h-16 text-slate-400 mx-auto mb-4" />
-                <h3 className="text-xl font-semibold text-slate-700 mb-2">{t('noProjectsYet')}</h3>
-                <p className="text-slate-600 mb-6">{t('createFirstProjectDesc')}</p>
-                <Button onClick={() => navigate('/create-project')}>
-                  <Plus className="w-4 h-4 mr-2" />
-                  {t('createProject')}
-                </Button>
-              </CardContent>
-            </Card>
-          ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {convertedProjects.map(project => (
-                <ProjectCard
-                  key={project.id}
-                  project={project}
-                  onEdit={handleEditProject}
-                  onDelete={handleDeleteProject}
-                  currency={userCurrency}
-                />
-              ))}
-            </div>
-          )}
-        </div>
+        <DashboardHeader
+          displayName={displayName}
+          onNewProject={() => navigate("/create-project")}
+        />
+        <DashboardStats
+          totalProjects={totalProjects}
+          totalEarnings={totalEarnings}
+          completedMilestones={completedMilestones}
+          totalMilestones={totalMilestones}
+          pendingPayments={pendingPayments}
+          userCurrency={userCurrency}
+        />
+        <DashboardProjectList
+          projects={convertedProjects}
+          userCurrency={userCurrency}
+          onEdit={handleEditProject}
+          onDelete={handleDeleteProject}
+          onNewProject={() => navigate("/create-project")}
+        />
       </div>
     </Layout>
   );
