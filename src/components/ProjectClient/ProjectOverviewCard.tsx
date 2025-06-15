@@ -1,6 +1,7 @@
 
 import React from "react";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
+import { useT } from "@/lib/i18n";
 
 interface ProjectOverviewCardProps {
   projectName: string;
@@ -17,6 +18,7 @@ const ProjectOverviewCard: React.FC<ProjectOverviewCardProps> = ({
   totalMilestones,
   completedMilestones,
 }) => {
+  const t = useT();
   return (
     <Card className="bg-white/80 backdrop-blur-sm">
       <CardHeader>
@@ -27,7 +29,7 @@ const ProjectOverviewCard: React.FC<ProjectOverviewCardProps> = ({
           </div>
           <div className="text-right">
             <div className="text-3xl font-bold text-slate-800">${totalValue.toLocaleString()}</div>
-            <div className="text-sm text-slate-600">Total Project Value</div>
+            <div className="text-sm text-slate-600">{t('totalProjectValue')}</div>
           </div>
         </div>
       </CardHeader>
@@ -35,23 +37,23 @@ const ProjectOverviewCard: React.FC<ProjectOverviewCardProps> = ({
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           <div className="text-center">
             <div className="text-2xl font-bold text-blue-600">{totalMilestones}</div>
-            <div className="text-sm text-slate-600">Total Milestones</div>
+            <div className="text-sm text-slate-600">{t('totalMilestones')}</div>
           </div>
           <div className="text-center">
             <div className="text-2xl font-bold text-green-600">{completedMilestones}</div>
-            <div className="text-sm text-slate-600">Completed</div>
+            <div className="text-sm text-slate-600">{t('completed')}</div>
           </div>
           <div className="text-center">
             <div className="text-2xl font-bold text-slate-800">
               {totalMilestones > 0 ? Math.round((completedMilestones / totalMilestones) * 100) : 0}%
             </div>
-            <div className="text-sm text-slate-600">Progress</div>
+            <div className="text-sm text-slate-600">{t('progress')}</div>
           </div>
         </div>
         <div className="mt-6">
           <div className="flex justify-between items-center mb-2">
-            <span className="text-sm font-medium text-slate-700">Project Progress</span>
-            <span className="text-sm text-slate-600">{completedMilestones}/{totalMilestones} milestones</span>
+            <span className="text-sm font-medium text-slate-700">{t('projectProgress')}</span>
+            <span className="text-sm text-slate-600">{completedMilestones}/{totalMilestones} {t('milestones_plural')}</span>
           </div>
           <div className="w-full bg-slate-200 rounded-full h-3">
             <div 

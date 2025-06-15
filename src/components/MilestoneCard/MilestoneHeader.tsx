@@ -4,6 +4,7 @@ import { CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { formatCurrency, CurrencyCode } from '@/lib/currency';
 import { getStatusColor, getStatusIcon } from './utils';
+import { useT, TranslationKey } from '@/lib/i18n';
 
 interface MilestoneHeaderProps {
   title: string;
@@ -21,6 +22,8 @@ const MilestoneHeader: React.FC<MilestoneHeaderProps> = ({
   currency
 }) => {
   const StatusIcon = getStatusIcon(status);
+  const t = useT();
+  const statusKey = `status_${status}` as TranslationKey;
 
   return (
     <CardHeader>
@@ -35,7 +38,7 @@ const MilestoneHeader: React.FC<MilestoneHeaderProps> = ({
           </div>
           <Badge className={`mt-1 ${getStatusColor(status)} flex items-center space-x-1`}>
             <StatusIcon className="w-4 h-4" />
-            <span className="capitalize">{status.replace('_', ' ')}</span>
+            <span className="capitalize">{t(statusKey)}</span>
           </Badge>
         </div>
       </div>

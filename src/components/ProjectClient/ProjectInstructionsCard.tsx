@@ -2,8 +2,11 @@
 import React from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { CheckCircle } from "lucide-react";
+import { useT } from "@/lib/i18n";
 
-const ProjectInstructionsCard: React.FC = () => (
+const ProjectInstructionsCard: React.FC = () => {
+  const t = useT();
+  return (
   <Card className="bg-gradient-to-r from-blue-50 to-purple-50 border-blue-200">
     <CardContent className="pt-6">
       <div className="flex items-start space-x-3">
@@ -13,17 +16,17 @@ const ProjectInstructionsCard: React.FC = () => (
           </div>
         </div>
         <div>
-          <h3 className="font-semibold text-slate-800 mb-2">How it works:</h3>
+          <h3 className="font-semibold text-slate-800 mb-2">{t('howItWorks')}</h3>
           <ol className="text-sm text-slate-700 space-y-1 list-decimal list-inside">
-            <li>Review each milestone below with its description and price</li>
-            <li>Upload proof of payment (screenshot, receipt, or transaction ID) for each milestone</li>
-            <li>Once payment is verified, you'll be able to download the deliverable</li>
-            <li>Milestones must be completed in order</li>
+            <li>{t('instruction1')}</li>
+            <li>{t('instruction2')}</li>
+            <li>{t('instruction3')}</li>
+            <li>{t('instruction4')}</li>
           </ol>
         </div>
       </div>
     </CardContent>
   </Card>
-);
+)};
 
 export default ProjectInstructionsCard;

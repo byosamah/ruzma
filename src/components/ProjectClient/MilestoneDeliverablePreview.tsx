@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import DeliverableWatermarkedPreview from "@/components/MilestoneCard/DeliverableWatermarkedPreview";
 import { Button } from "@/components/ui/button";
 import { Eye } from "lucide-react";
+import { useT } from "@/lib/i18n";
 
 interface MilestoneDeliverablePreviewProps {
   milestoneId: string;
@@ -29,6 +30,7 @@ const MilestoneDeliverablePreview: React.FC<MilestoneDeliverablePreviewProps> = 
   watermarkText,
 }) => {
   const [open, setOpen] = useState(false);
+  const t = useT();
 
   if (!deliverableUrl || !deliverableName || status === "approved") {
     return null;
@@ -44,16 +46,16 @@ const MilestoneDeliverablePreview: React.FC<MilestoneDeliverablePreviewProps> = 
           onClick={() => setOpen((o) => !o)}
         >
           <Eye className="w-4 h-4" />
-          <span className="ml-1">{open ? "Hide" : "Show"} Preview</span>
+          <span className="ml-1">{open ? t('hidePreview') : t('showPreview')}</span>
         </Button>
         <span className="text-xs text-slate-600 select-none">
-          {watermarkText ? `(Watermarked)` : ""}
+          {watermarkText ? t('watermarked') : ""}
         </span>
       </div>
       {open && (
         <DeliverableWatermarkedPreview
           fileUrl={deliverableUrl}
-          watermarkText={watermarkText || "Pending Payment"}
+          watermarkText={watermarkText || t('pendingPayment')}
           fileType={getDeliverableFileType(deliverableName, deliverableUrl)}
         />
       )}

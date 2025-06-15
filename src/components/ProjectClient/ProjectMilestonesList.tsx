@@ -4,6 +4,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import MilestoneCard from "@/components/MilestoneCard";
 import MilestoneDeliverablePreview from "@/components/ProjectClient/MilestoneDeliverablePreview";
 import { DatabaseMilestone } from "@/hooks/useProjects";
+import { useT } from "@/lib/i18n";
 
 interface ProjectMilestonesListProps {
   milestones: DatabaseMilestone[];
@@ -16,14 +17,15 @@ const ProjectMilestonesList: React.FC<ProjectMilestonesListProps> = ({
   onPaymentUpload,
   onDeliverableDownload,
 }) => {
+  const t = useT();
   return (
     <div className="space-y-6">
-      <h2 className="text-2xl font-bold text-slate-800">Project Milestones</h2>
+      <h2 className="text-2xl font-bold text-slate-800">{t('projectMilestones')}</h2>
       <div className="space-y-4">
         {milestones.length === 0 ? (
           <Card className="text-center py-8">
             <CardContent>
-              <p className="text-slate-500">No milestones have been set up for this project yet.</p>
+              <p className="text-slate-500">{t('noMilestonesSetup')}</p>
             </CardContent>
           </Card>
         ) : (

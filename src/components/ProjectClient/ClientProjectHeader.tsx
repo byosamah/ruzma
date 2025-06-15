@@ -1,8 +1,10 @@
 
 import React from 'react';
 import { Briefcase } from 'lucide-react';
+import { useT } from '@/lib/i18n';
 
 const ClientProjectHeader: React.FC = () => {
+  const t = useT();
   return (
     <div className="bg-white/80 backdrop-blur-sm border-b border-slate-200">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
@@ -11,8 +13,8 @@ const ClientProjectHeader: React.FC = () => {
             <Briefcase className="w-6 h-6 text-white" />
           </div>
           <div>
-            <h1 className="text-2xl font-bold text-slate-800">Client Project Portal</h1>
-            <p className="text-slate-600">Track your project progress and make payments</p>
+            <h1 className="text-2xl font-bold text-slate-800">{t('clientProjectPortal')}</h1>
+            <p className="text-slate-600">{t('trackProjectProgressAndMakePayments')}</p>
           </div>
         </div>
       </div>

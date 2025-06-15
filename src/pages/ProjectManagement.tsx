@@ -10,6 +10,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { User } from '@supabase/supabase-js';
 import { useProjects, DatabaseProject } from '@/hooks/useProjects';
 import { useUserCurrency } from '@/hooks/useUserCurrency';
+import { useT, TranslationKey } from "@/lib/i18n";
 
 const ProjectManagement: React.FC = () => {
   const { projectId } = useParams<{ projectId: string }>();
@@ -18,6 +19,7 @@ const ProjectManagement: React.FC = () => {
   const [project, setProject] = useState<DatabaseProject | null>(null);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
+  const t = useT();
 
   const { projects, updateMilestoneStatus, uploadPaymentProof, uploadDeliverable, downloadDeliverable, updateMilestoneWatermark } = useProjects(user);
   const userCurrency = useUserCurrency(user);
@@ -83,7 +85,7 @@ const ProjectManagement: React.FC = () => {
         <div className="flex items-center justify-center min-h-[400px]">
           <div className="text-center">
             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
-            <p className="text-slate-600">Loading project...</p>
+            <p className="text-slate-600">{t('loadingProject')}</p>
           </div>
         </div>
       </Layout>
@@ -96,8 +98,8 @@ const ProjectManagement: React.FC = () => {
     return (
       <Layout user={profile || user}>
         <div className="max-w-xl mx-auto text-center mt-20">
-          <h2 className="text-2xl font-bold mb-2">Project not found</h2>
-          <Button onClick={() => navigate("/dashboard")}>Go to Dashboard</Button>
+          <h2 className="text-2xl font-bold mb-2">{t('projectNotFound')}</h2>
+          <Button onClick={() => navigate("/dashboard")}>{t('goToDashboard')}</Button>
         </div>
       </Layout>
     );
@@ -112,16 +114,16 @@ const ProjectManagement: React.FC = () => {
         onClick={() => navigate("/dashboard")}
       >
         <ArrowLeft className="w-4 h-4 mr-1" />
-        Back to Dashboard
+        {t('backToDashboard')}
       </Button>
       <div className="max-w-2xl mx-auto space-y-8">
         <div className="p-5 rounded-lg bg-white/80 shadow-sm">
           <h1 className="text-3xl font-bold text-slate-800 mb-2">{project.name}</h1>
           <p className="text-slate-600 mb-4">{project.brief}</p>
           <div className="flex items-center justify-between text-sm">
-            <span className="text-slate-500">Project ID: {project.id}</span>
+            <span className="text-slate-500">{t('projectId')}: {project.id}</span>
             <span className="text-slate-500">
-              Created: {new Date(project.created_at).toLocaleDateString()}
+              {t('created')}: {new Date(project.created_at).toLocaleDateString()}
             </span>
           </div>
           <div className="mt-4">
@@ -137,16 +139,16 @@ const ProjectManagement: React.FC = () => {
                 rel="noopener noreferrer"
                 tabIndex={0}
               >
-                Open Client Page
+                {t('openClientPage')}
               </a>
             </Button>
           </div>
         </div>
 
         <div className="space-y-6">
-          <h2 className="text-2xl font-semibold">Milestones</h2>
+          <h2 className="text-2xl font-semibold">{t('milestones')}</h2>
           {project.milestones.length === 0 ? (
-            <div className="text-slate-500 text-center">No milestones yet.</div>
+            <div className="text-slate-500 text-center">{t('noMilestonesYet')}</div>
           ) : (
             <div className="space-y-5">
               {project.milestones.map((milestone) => (
