@@ -7,8 +7,10 @@ import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
+import { useT } from '@/lib/i18n';
 
 const ForgotPassword = () => {
+  const t = useT();
   const [email, setEmail] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [emailSent, setEmailSent] = useState(false);
@@ -27,10 +29,10 @@ const ForgotPassword = () => {
       }
 
       setEmailSent(true);
-      toast.success('Password reset email sent! Check your inbox.');
+      toast.success(t('passwordResetEmailSent'));
     } catch (error: any) {
       console.error('Password reset error:', error);
-      toast.error(error.message || 'Failed to send password reset email');
+      toast.error(error.message || t('passwordResetEmailFailed'));
     } finally {
       setIsLoading(false);
     }
@@ -47,23 +49,23 @@ const ForgotPassword = () => {
         <div className="w-full max-w-md">
           <Card>
             <CardHeader className="text-center">
-              <CardTitle className="text-2xl font-bold text-slate-800">Check Your Email</CardTitle>
+              <CardTitle className="text-2xl font-bold text-slate-800">{t('checkYourEmailTitle')}</CardTitle>
               <p className="text-slate-600">
-                We've sent a password reset link to {email}
+                {t('checkYourEmailSubtitle', { email })}
               </p>
             </CardHeader>
             <CardContent className="text-center">
               <p className="text-sm text-slate-600 mb-4">
-                Click the link in the email to reset your password. If you don't see it, check your spam folder.
+                {t('checkYourEmailInfo')}
               </p>
               <Link to="/login" className="text-brand-yellow hover:underline font-medium">
-                Back to Login
+                {t('backToLogin')}
               </Link>
             </CardContent>
           </Card>
         </div>
         <div className="absolute bottom-8 text-sm text-slate-600">
-          © {new Date().getFullYear()} Ruzma. All rights reserved.
+          {t('footerRights', { year: new Date().getFullYear().toString() })}
         </div>
       </div>
     );
@@ -79,18 +81,18 @@ const ForgotPassword = () => {
       <div className="w-full max-w-md">
         <Card>
           <CardHeader className="text-center">
-            <CardTitle className="text-2xl font-bold text-slate-800">Reset Password</CardTitle>
-            <p className="text-slate-600">Enter your email to receive a password reset link</p>
+            <CardTitle className="text-2xl font-bold text-slate-800">{t('resetPasswordTitle')}</CardTitle>
+            <p className="text-slate-600">{t('resetPasswordSubtitle')}</p>
           </CardHeader>
           <CardContent>
             <form onSubmit={handleSubmit} className="space-y-4">
               <div className="space-y-2">
-                <Label htmlFor="email">Email</Label>
+                <Label htmlFor="email">{t('emailLabel')}</Label>
                 <Input
                   id="email"
                   name="email"
                   type="email"
-                  placeholder="Enter your email"
+                  placeholder={t('enterYourEmailPlaceholder')}
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   required
@@ -102,20 +104,20 @@ const ForgotPassword = () => {
                 className="w-full bg-brand-yellow text-brand-black hover:bg-brand-yellow/90" 
                 disabled={isLoading}
               >
-                {isLoading ? 'Sending...' : 'Send Reset Link'}
+                {isLoading ? t('sendingResetLink') : t('sendResetLink')}
               </Button>
             </form>
 
             <div className="mt-6 text-center">
               <Link to="/login" className="text-sm text-brand-yellow hover:underline">
-                Back to Login
+                {t('backToLogin')}
               </Link>
             </div>
           </CardContent>
         </Card>
       </div>
        <div className="absolute bottom-8 text-sm text-slate-600">
-          © {new Date().getFullYear()} Ruzma. All rights reserved.
+          {t('footerRights', { year: new Date().getFullYear().toString() })}
         </div>
     </div>
   );

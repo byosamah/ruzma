@@ -8,8 +8,10 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Eye, EyeOff } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
+import { useT } from '@/lib/i18n';
 
 const ResetPassword = () => {
+  const t = useT();
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
@@ -43,12 +45,12 @@ const ResetPassword = () => {
     e.preventDefault();
     
     if (password !== confirmPassword) {
-      toast.error('Passwords do not match');
+      toast.error(t('passwordsDoNotMatch'));
       return;
     }
 
     if (password.length < 6) {
-      toast.error('Password must be at least 6 characters long');
+      toast.error(t('passwordLengthError'));
       return;
     }
 
@@ -63,11 +65,11 @@ const ResetPassword = () => {
         throw error;
       }
 
-      toast.success('Password updated successfully!');
+      toast.success(t('passwordUpdateSuccess'));
       navigate('/login');
     } catch (error: any) {
       console.error('Password update error:', error);
-      toast.error(error.message || 'Failed to update password');
+      toast.error(error.message || t('passwordUpdateFailed'));
     } finally {
       setIsLoading(false);
     }
@@ -83,19 +85,19 @@ const ResetPassword = () => {
       <div className="w-full max-w-md">
         <Card>
           <CardHeader className="text-center">
-            <CardTitle className="text-2xl font-bold text-slate-800">Set New Password</CardTitle>
-            <p className="text-slate-600">Enter your new password below</p>
+            <CardTitle className="text-2xl font-bold text-slate-800">{t('setNewPasswordTitle')}</CardTitle>
+            <p className="text-slate-600">{t('setNewPasswordSubtitle')}</p>
           </CardHeader>
           <CardContent>
             <form onSubmit={handleSubmit} className="space-y-4">
               <div className="space-y-2">
-                <Label htmlFor="password">New Password</Label>
+                <Label htmlFor="password">{t('newPasswordLabel')}</Label>
                 <div className="relative">
                   <Input
                     id="password"
                     name="password"
                     type={showPassword ? 'text' : 'password'}
-                    placeholder="Enter new password"
+                    placeholder={t('enterNewPasswordPlaceholder')}
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     required
@@ -117,13 +119,13 @@ const ResetPassword = () => {
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="confirmPassword">Confirm New Password</Label>
+                <Label htmlFor="confirmPassword">{t('confirmNewPasswordLabel')}</Label>
                 <div className="relative">
                   <Input
                     id="confirmPassword"
                     name="confirmPassword"
                     type={showConfirmPassword ? 'text' : 'password'}
-                    placeholder="Confirm new password"
+                    placeholder={t('confirmNewPasswordPlaceholder')}
                     value={confirmPassword}
                     onChange={(e) => setConfirmPassword(e.target.value)}
                     required
@@ -149,14 +151,14 @@ const ResetPassword = () => {
                 className="w-full bg-brand-yellow text-brand-black hover:bg-brand-yellow/90" 
                 disabled={isLoading}
               >
-                {isLoading ? 'Updating...' : 'Update Password'}
+                {isLoading ? t('updatingPassword') : t('updatePassword')}
               </Button>
             </form>
           </CardContent>
         </Card>
       </div>
       <div className="absolute bottom-8 text-sm text-slate-600">
-        © {new Date().getFullYear()} Ruzma. All rights reserved.
+        {t('footerRights', { year: new Date().getFullYear().toString() })}
       </div>
     </div>
   );
