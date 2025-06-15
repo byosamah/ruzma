@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
@@ -275,23 +274,20 @@ export const useProjects = (user: User | null) => {
   };
 
   const uploadPaymentProof = async (milestoneId: string, file: File) => {
-    if (!user) {
-      toast.error('You must be logged in to upload payment proof');
-      return false;
-    }
-
     try {
       console.log('Starting payment proof upload:', {
         milestoneId,
         fileName: file.name,
         fileSize: file.size,
         fileType: file.type,
-        userId: user.id
+        userId: user?.id || 'anonymous'
       });
 
-      // Compose file path with user id
+      // Compose file path - use milestoneId as primary folder for anonymous uploads
       const fileName = `${Date.now()}-${file.name.replace(/[^a-zA-Z0-9.-]/g, '_')}`;
-      const filePath = `${user.id}/${milestoneId}/${fileName}`;
+      const filePath = user?.id 
+        ? `${user.id}/${milestoneId}/${fileName}` 
+        : `anonymous/${milestoneId}/${fileName}`;
       console.log('Upload path:', filePath);
 
       // Upload to bucket
