@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
@@ -5,8 +6,9 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Eye, EyeOff, Mail, Lock } from 'lucide-react';
-import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
+import { Checkbox } from '@/components/ui/checkbox';
+import { getSupabaseClient } from '@/integrations/supabase/authClient';
 
 const Login = () => {
   const [formData, setFormData] = useState({
@@ -15,13 +17,42 @@ const Login = () => {
   });
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [rememberMe, setRememberMe] = useState(
+    localStorage.getItem("rememberMe") === "true"
+  );
   const navigate = useNavigate();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
 
+    // Persist "Remember Me" choice
+    if (rememberMe) {
+      localStorage.setItem('rememberMe', 'true');
+    } else {
+      localStorage.removeItem('rememberMe');
+    }
+
     try {
+      // Use appropriate storage and persistence
+      const supabase = getSupabaseClient(rememberMe);
+
+      // Clean up auth state and force sign out before new sign in
+      // (See Supabase best practices)
+      try {
+        Object.keys(localStorage).forEach(key => {
+          if (key.startsWith('supabase.auth.') || key.includes('sb-')) {
+            localStorage.removeItem(key);
+          }
+        });
+        Object.keys(sessionStorage).forEach(key => {
+          if (key.startsWith('supabase.auth.') || key.includes('sb-')) {
+            sessionStorage.removeItem(key);
+          }
+        });
+        await supabase.auth.signOut({ scope: 'global' });
+      } catch {}
+
       const { data, error } = await supabase.auth.signInWithPassword({
         email: formData.email,
         password: formData.password,
@@ -33,7 +64,6 @@ const Login = () => {
 
       if (data.user) {
         toast.success('Signed in successfully!');
-        // Use window.location.href for a complete page refresh to ensure clean state
         window.location.href = '/dashboard';
       }
     } catch (error: any) {
@@ -123,6 +153,16 @@ const Login = () => {
                   )}
                 </Button>
               </div>
+            </div>
+
+            <div className="flex items-center gap-2">
+              <Checkbox id="rememberMe"
+                checked={rememberMe}
+                onCheckedChange={checked => setRememberMe(!!checked)}
+              />
+              <Label htmlFor="rememberMe" className="cursor-pointer select-none">
+                Remember Me
+              </Label>
             </div>
 
             <Button 
