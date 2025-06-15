@@ -173,6 +173,14 @@ const translations = {
     creating: "Creating...",
     errorFillAllFields: "Please fill in all required fields",
     errorCompleteMilestoneDetails: "Please complete all milestone details",
+    // New keys for ProjectCard
+    totalValue: "Total Value",
+    milestonesCompletedRatio: "{completed}/{total} completed",
+    paymentPendingReview_one: "{count} payment pending review",
+    paymentPendingReview_other: "{count} payments pending review",
+    recentMilestones: "Recent Milestones:",
+    manageProject: "Manage Project",
+    clientPage: "Client Page",
   },
   ar: {
     dashboard: "لوحة التحكم",
@@ -345,6 +353,14 @@ const translations = {
     creating: "جارٍ الإنشاء...",
     errorFillAllFields: "يرجى ملء جميع الحقول المطلوبة",
     errorCompleteMilestoneDetails: "يرجى إكمال جميع تفاصيل المراحل",
+    // New keys for ProjectCard
+    totalValue: "القيمة الإجمالية",
+    milestonesCompletedRatio: "{completed}/{total} مكتمل",
+    paymentPendingReview_one: "دفعة واحدة قيد المراجعة",
+    paymentPendingReview_other: "{count} دفعات قيد المراجعة",
+    recentMilestones: "أحدث المراحل:",
+    manageProject: "إدارة المشروع",
+    clientPage: "صفحة العميل",
   },
 };
 

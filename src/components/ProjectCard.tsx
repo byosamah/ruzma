@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -5,6 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Edit, Trash2, ExternalLink, Clock, CheckCircle, XCircle } from 'lucide-react';
 import { formatCurrency, CurrencyCode } from '@/lib/currency';
+import { useT, TranslationKey } from '@/lib/i18n';
 
 export interface Milestone {
   id: string;
@@ -34,6 +36,7 @@ interface ProjectCardProps {
 
 const ProjectCard: React.FC<ProjectCardProps> = ({ project, onEdit, onDelete, currency = 'USD' }) => {
   const navigate = useNavigate();
+  const t = useT();
   const totalMilestones = project.milestones.length;
   const completedMilestones = project.milestones.filter(m => m.status === 'approved').length;
   const pendingPayments = project.milestones.filter(m => m.status === 'payment_submitted').length;
@@ -90,7 +93,7 @@ const ProjectCard: React.FC<ProjectCardProps> = ({ project, onEdit, onDelete, cu
             <CardTitle className="text-lg font-semibold text-slate-800">{project.name}</CardTitle>
             <p className="text-sm text-slate-600 mt-1 line-clamp-2">{project.brief}</p>
             <p className="text-sm font-medium text-slate-700 mt-2">
-              Total Value: {formatCurrency(totalValue, currency)}
+              {t('totalValue')}: {formatCurrency(totalValue, currency)}
             </p>
           </div>
           <div className="flex space-x-2">
@@ -106,8 +109,8 @@ const ProjectCard: React.FC<ProjectCardProps> = ({ project, onEdit, onDelete, cu
       <CardContent>
         <div className="space-y-4">
           <div className="flex justify-between items-center">
-            <span className="text-sm text-slate-600">Progress</span>
-            <span className="text-sm font-medium">{completedMilestones}/{totalMilestones} completed</span>
+            <span className="text-sm text-slate-600">{t('progress')}</span>
+            <span className="text-sm font-medium">{t('milestonesCompletedRatio', { completed: completedMilestones.toString(), total: totalMilestones.toString() })}</span>
           </div>
           
           <div className="w-full bg-slate-200 rounded-full h-2">
@@ -120,13 +123,13 @@ const ProjectCard: React.FC<ProjectCardProps> = ({ project, onEdit, onDelete, cu
           {pendingPayments > 0 && (
             <div className="flex items-center space-x-2">
               <Badge className="bg-orange-100 text-orange-800">
-                {pendingPayments} payment{pendingPayments > 1 ? 's' : ''} pending review
+                {t(pendingPayments > 1 ? 'paymentPendingReview_other' : 'paymentPendingReview_one', { count: pendingPayments.toString() })}
               </Badge>
             </div>
           )}
 
           <div className="space-y-2">
-            <p className="text-sm font-medium text-slate-700">Recent Milestones:</p>
+            <p className="text-sm font-medium text-slate-700">{t('recentMilestones')}</p>
             {project.milestones.slice(0, 3).map((milestone) => (
               <div key={milestone.id} className="flex items-center justify-between py-1">
                 <span className="text-sm text-slate-600 truncate">{milestone.title}</span>
@@ -134,7 +137,7 @@ const ProjectCard: React.FC<ProjectCardProps> = ({ project, onEdit, onDelete, cu
                   <span className="text-xs text-slate-500">{formatCurrency(milestone.price, currency)}</span>
                   <Badge className={`text-xs flex items-center space-x-1 ${getStatusColor(milestone.status)}`}>
                     {getStatusIcon(milestone.status)}
-                    <span className="capitalize">{milestone.status.replace('_', ' ')}</span>
+                    <span className="capitalize">{t(`status_${milestone.status}` as TranslationKey)}</span>
                   </Badge>
                 </div>
               </div>
@@ -150,7 +153,7 @@ const ProjectCard: React.FC<ProjectCardProps> = ({ project, onEdit, onDelete, cu
             >
               <Link to={`/project/${project.id}`}>
                 <ExternalLink className="w-4 h-4 mr-2" />
-                Manage Project
+                {t('manageProject')}
               </Link>
             </Button>
             <Button 
@@ -162,7 +165,7 @@ const ProjectCard: React.FC<ProjectCardProps> = ({ project, onEdit, onDelete, cu
             >
               <a href={project.clientUrl} target="_blank" rel="noopener noreferrer">
                 <ExternalLink className="w-4 h-4 mr-2" />
-                Client Page
+                {t('clientPage')}
               </a>
             </Button>
           </div>
