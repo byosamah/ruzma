@@ -5,14 +5,26 @@ import { Badge } from '@/components/ui/badge';
 import MilestoneCard from '@/components/MilestoneCard';
 import { CheckCircle, Clock, Briefcase } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
-import { DatabaseProject } from '@/hooks/useProjects';
+import { DatabaseProject, useProjects } from '@/hooks/useProjects';
 import { toast } from 'sonner';
+import { User } from '@supabase/supabase-js';
 
 const ClientProject = () => {
   const { projectId } = useParams();
   const [project, setProject] = useState<DatabaseProject | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [user, setUser] = useState<User | null>(null);
+
+  const { uploadPaymentProof } = useProjects(user);
+
+  useEffect(() => {
+    const getUser = async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      setUser(user);
+    };
+    getUser();
+  }, []);
 
   useEffect(() => {
     const fetchProject = async () => {
@@ -68,25 +80,9 @@ const ClientProject = () => {
   const handlePaymentUpload = async (milestoneId: string, file: File) => {
     console.log('Payment proof uploaded for milestone:', milestoneId, file);
     
-    try {
-      // Update milestone status to payment_submitted
-      const { error } = await supabase
-        .from('milestones')
-        .update({ 
-          status: 'payment_submitted',
-          payment_proof_url: `temp-payment-url-${milestoneId}`, // This would be the actual storage URL
-          updated_at: new Date().toISOString()
-        })
-        .eq('id', milestoneId);
-
-      if (error) {
-        console.error('Error updating milestone status:', error);
-        toast.error('Failed to upload payment proof');
-        return;
-      }
-
-      toast.success('Payment proof uploaded successfully');
-
+    const success = await uploadPaymentProof(milestoneId, file);
+    
+    if (success) {
       // Update local state
       setProject(prev => {
         if (!prev) return prev;
@@ -97,9 +93,6 @@ const ClientProject = () => {
           )
         };
       });
-    } catch (error) {
-      console.error('Error updating milestone:', error);
-      toast.error('Failed to upload payment proof');
     }
   };
 

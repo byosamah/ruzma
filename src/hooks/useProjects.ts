@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
@@ -274,6 +273,74 @@ export const useProjects = (user: User | null) => {
     }
   };
 
+  const uploadPaymentProof = async (milestoneId: string, file: File) => {
+    if (!user) {
+      toast.error('You must be logged in to upload payment proof');
+      return false;
+    }
+
+    try {
+      console.log('Uploading payment proof for milestone:', milestoneId, 'File:', file.name, 'Size:', file.size);
+      
+      // Create file path with user ID folder structure
+      const fileName = `${Date.now()}-${file.name}`;
+      const filePath = `${user.id}/${milestoneId}/${fileName}`;
+      
+      // Upload file to Supabase Storage
+      const { data: uploadData, error: uploadError } = await supabase.storage
+        .from('payment-proofs')
+        .upload(filePath, file, {
+          upsert: false,
+          contentType: file.type
+        });
+
+      if (uploadError) {
+        console.error('Error uploading payment proof to storage:', uploadError);
+        toast.error('Failed to upload payment proof');
+        return false;
+      }
+
+      console.log('Payment proof uploaded successfully to storage:', uploadData);
+
+      // Get public URL for the uploaded file
+      const { data: { publicUrl } } = supabase.storage
+        .from('payment-proofs')
+        .getPublicUrl(filePath);
+
+      console.log('Generated public URL for payment proof:', publicUrl);
+
+      // Update milestone with payment proof URL and status in database
+      const { data: updatedMilestone, error: updateError } = await supabase
+        .from('milestones')
+        .update({
+          payment_proof_url: publicUrl,
+          status: 'payment_submitted',
+          updated_at: new Date().toISOString()
+        })
+        .eq('id', milestoneId)
+        .select()
+        .single();
+
+      if (updateError) {
+        console.error('Error updating milestone with payment proof:', updateError);
+        toast.error('Failed to update milestone in database');
+        // Clean up uploaded file if database update fails
+        await supabase.storage.from('payment-proofs').remove([filePath]);
+        return false;
+      }
+
+      console.log('Milestone updated successfully with payment proof:', updatedMilestone);
+
+      toast.success('Payment proof uploaded successfully');
+      await fetchProjects(); // Refresh the list
+      return true;
+    } catch (error) {
+      console.error('Error uploading payment proof:', error);
+      toast.error('Failed to upload payment proof');
+      return false;
+    }
+  };
+
   const uploadDeliverable = async (milestoneId: string, file: File) => {
     if (!user) {
       toast.error('You must be logged in to upload deliverables');
@@ -459,6 +526,7 @@ export const useProjects = (user: User | null) => {
     updateProject,
     deleteProject,
     updateMilestoneStatus,
+    uploadPaymentProof,
     uploadDeliverable,
     downloadDeliverable,
   };

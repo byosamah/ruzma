@@ -18,7 +18,7 @@ const ProjectManagement: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
-  const { projects, updateMilestoneStatus, uploadDeliverable, downloadDeliverable } = useProjects(user);
+  const { projects, updateMilestoneStatus, uploadPaymentProof, uploadDeliverable, downloadDeliverable } = useProjects(user);
   const userCurrency = useUserCurrency(user);
 
   useEffect(() => {
@@ -58,6 +58,10 @@ const ProjectManagement: React.FC = () => {
 
   const handleUpdateMilestoneStatus = async (milestoneId: string, newStatus: Milestone["status"]) => {
     await updateMilestoneStatus(milestoneId, newStatus);
+  };
+
+  const handlePaymentUpload = async (milestoneId: string, file: File) => {
+    await uploadPaymentProof(milestoneId, file);
   };
 
   const handleDeliverableUpload = async (milestoneId: string, file: File) => {
@@ -161,6 +165,7 @@ const ProjectManagement: React.FC = () => {
                   }
                   onDeliverableUpload={handleDeliverableUpload}
                   onDeliverableDownload={handleDeliverableDownload}
+                  onPaymentUpload={handlePaymentUpload}
                   currency={userCurrency}
                 />
               ))}
