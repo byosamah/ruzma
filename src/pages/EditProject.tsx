@@ -3,21 +3,13 @@ import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import Layout from '@/components/Layout';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { ArrowLeft, Plus, Trash2 } from 'lucide-react';
+import { ArrowLeft } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { User } from '@supabase/supabase-js';
 import { useProjects, DatabaseProject } from '@/hooks/useProjects';
-
-interface MilestoneFormData {
-  id?: string;
-  title: string;
-  description: string;
-  price: number;
-  status: 'pending' | 'payment_submitted' | 'approved' | 'rejected';
-}
+import { MilestoneFormData } from '@/components/EditProject/types';
+import { ProjectForm } from '@/components/EditProject/ProjectForm';
 
 const EditProject: React.FC = () => {
   const { projectId } = useParams<{ projectId: string }>();
@@ -182,96 +174,18 @@ const EditProject: React.FC = () => {
             <CardTitle>Edit Project</CardTitle>
           </CardHeader>
           <CardContent>
-            <form onSubmit={handleSubmit} className="space-y-6">
-              <div className="space-y-2">
-                <label htmlFor="name" className="text-sm font-medium text-slate-700">Project Name</label>
-                <Input
-                  id="name"
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
-                  placeholder="e.g. E-commerce Website Design"
-                  required
-                />
-              </div>
-              <div className="space-y-2">
-                <label htmlFor="brief" className="text-sm font-medium text-slate-700">Project Brief</label>
-                <Textarea
-                  id="brief"
-                  value={brief}
-                  onChange={(e) => setBrief(e.target.value)}
-                  placeholder="A short description of the project."
-                  required
-                  rows={4}
-                />
-              </div>
-
-              <div className="space-y-4 pt-6 border-t">
-                <h3 className="text-lg font-medium text-slate-800">Milestones</h3>
-                <div className="space-y-4">
-                  {milestones.map((milestone, index) => (
-                    <div key={index} className="p-4 border rounded-md space-y-3 bg-slate-50 relative">
-                       <Button
-                        type="button"
-                        variant="ghost"
-                        size="icon"
-                        className="absolute top-2 right-2 h-7 w-7 text-slate-500 hover:bg-red-100 hover:text-red-600"
-                        onClick={() => handleDeleteMilestone(index)}
-                      >
-                        <Trash2 className="w-4 h-4" />
-                      </Button>
-                      <div className="space-y-2">
-                        <label htmlFor={`milestone-title-${index}`} className="text-sm font-medium text-slate-700">Title</label>
-                        <Input
-                          id={`milestone-title-${index}`}
-                          value={milestone.title}
-                          onChange={(e) => handleMilestoneChange(index, 'title', e.target.value)}
-                          placeholder="e.g. Phase 1: Discovery"
-                          required
-                        />
-                      </div>
-                      <div className="space-y-2">
-                        <label htmlFor={`milestone-desc-${index}`} className="text-sm font-medium text-slate-700">Description</label>
-                        <Textarea
-                          id={`milestone-desc-${index}`}
-                          value={milestone.description}
-                          onChange={(e) => handleMilestoneChange(index, 'description', e.target.value)}
-                          placeholder="Briefly describe this milestone"
-                          required
-                          rows={2}
-                        />
-                      </div>
-                      <div className="space-y-2">
-                        <label htmlFor={`milestone-price-${index}`} className="text-sm font-medium text-slate-700">Price ($)</label>
-                        <Input
-                          id={`milestone-price-${index}`}
-                          type="number"
-                          value={milestone.price}
-                          onChange={(e) => handleMilestoneChange(index, 'price', e.target.value)}
-                          placeholder="e.g. 500"
-                          required
-                          min="0"
-                        />
-                      </div>
-                    </div>
-                  ))}
-                </div>
-                <Button
-                  type="button"
-                  variant="outline"
-                  onClick={handleAddMilestone}
-                  className="w-full flex items-center"
-                >
-                  <Plus className="w-4 h-4 mr-2" />
-                  Add Milestone
-                </Button>
-              </div>
-
-              <div className="flex justify-end">
-                <Button type="submit" disabled={updating}>
-                  {updating ? 'Saving...' : 'Save Changes'}
-                </Button>
-              </div>
-            </form>
+            <ProjectForm
+              name={name}
+              brief={brief}
+              milestones={milestones}
+              updating={updating}
+              onNameChange={setName}
+              onBriefChange={setBrief}
+              onMilestoneChange={handleMilestoneChange}
+              onAddMilestone={handleAddMilestone}
+              onDeleteMilestone={handleDeleteMilestone}
+              onSubmit={handleSubmit}
+            />
           </CardContent>
         </Card>
       </div>
