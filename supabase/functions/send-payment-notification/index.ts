@@ -27,6 +27,10 @@ const handler = async (req: Request): Promise<Response> => {
   try {
     const { clientEmail, projectName, projectId, clientToken, isApproved, milestoneName }: EmailRequest = await req.json();
 
+    console.log("Sending email with verified domain: notifications@ruzma.co");
+    console.log("Recipient:", clientEmail);
+    console.log("Project:", projectName);
+
     const clientProjectUrl = `${Deno.env.get("SUPABASE_URL")?.replace('supabase.co', 'lovable.app')}/client/${projectId}?token=${clientToken}`;
     
     let subject: string;
@@ -74,6 +78,12 @@ const handler = async (req: Request): Promise<Response> => {
     });
   } catch (error: any) {
     console.error("Error in send-payment-notification function:", error);
+    console.error("Error details:", {
+      message: error.message,
+      name: error.name,
+      statusCode: error.statusCode,
+      stack: error.stack
+    });
     return new Response(
       JSON.stringify({ error: error.message }),
       {

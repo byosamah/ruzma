@@ -10,4 +10,5 @@ verify_jwt = false
 [functions.submit-payment-proof]
 verify_jwt = false
 
-# Add any additional function configs here if needed
+[functions.send-payment-notification]
+verify_jwt = false
