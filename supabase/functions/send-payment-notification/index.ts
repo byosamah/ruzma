@@ -39,7 +39,12 @@ const handler = async (req: Request): Promise<Response> => {
     console.log("Project:", projectName);
     console.log("Resend API Key configured:", !!resendApiKey);
 
-    const clientProjectUrl = `${Deno.env.get("SUPABASE_URL")?.replace('supabase.co', 'lovable.app')}/client/${projectId}?token=${clientToken}`;
+    // Fix the client project URL to use the correct route structure
+    const supabaseUrl = Deno.env.get("SUPABASE_URL");
+    const baseUrl = supabaseUrl?.replace('.supabase.co', '.lovable.app') || 'https://your-app.lovable.app';
+    const clientProjectUrl = `${baseUrl}/client/project/${clientToken}`;
+    
+    console.log("Generated client project URL:", clientProjectUrl);
     
     let subject: string;
     let htmlContent: string;
