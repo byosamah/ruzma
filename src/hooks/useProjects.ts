@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
@@ -314,7 +313,6 @@ export const useProjects = (user: User | null) => {
       if (uploadError) {
         console.error('Upload error details:', {
           message: uploadError.message,
-          statusCode: uploadError.statusCode,
           error: uploadError
         });
         toast.error(`Failed to upload payment proof: ${uploadError.message}`);
