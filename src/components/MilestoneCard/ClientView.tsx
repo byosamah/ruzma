@@ -1,5 +1,4 @@
-
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { Button } from '@/components/ui/button';
 import { Upload, Download, ExternalLink, Eye } from 'lucide-react';
 import { Milestone } from './types';
@@ -19,7 +18,14 @@ const ClientView: React.FC<ClientViewProps> = ({
   const [showPreview, setShowPreview] = useState(false);
   const [uploading, setUploading] = useState(false);
 
-  const handlePaymentFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
+  // We need two refs to reset the file input for both "pending" and "rejected" states.
+  const paymentInputRef = React.useRef<HTMLInputElement>(null);
+  const paymentResubmitInputRef = React.useRef<HTMLInputElement>(null);
+
+  const handlePaymentFileUpload = async (
+    event: React.ChangeEvent<HTMLInputElement>,
+    variant: "pending" | "rejected"
+  ) => {
     const file = event.target.files?.[0];
     if (file && onPaymentUpload) {
       setUploading(true);
@@ -27,8 +33,13 @@ const ClientView: React.FC<ClientViewProps> = ({
         await onPaymentUpload(milestone.id, file);
       } finally {
         setUploading(false);
-        // Reset the input so the same file can be selected again if needed
-        event.target.value = '';
+        // Reset the correct input after upload
+        if (variant === 'pending' && paymentInputRef.current) {
+          paymentInputRef.current.value = '';
+        }
+        if (variant === 'rejected' && paymentResubmitInputRef.current) {
+          paymentResubmitInputRef.current.value = '';
+        }
       }
     }
   };
@@ -98,9 +109,10 @@ const ClientView: React.FC<ClientViewProps> = ({
           <p className="text-sm font-medium text-slate-700">Upload Payment Proof:</p>
           <div className="flex items-center space-x-2">
             <input
+              ref={paymentInputRef}
               type="file"
               accept="image/*,.pdf"
-              onChange={handlePaymentFileUpload}
+              onChange={e => handlePaymentFileUpload(e, 'pending')}
               className="hidden"
               id={`payment-${milestone.id}`}
               disabled={uploading}
@@ -145,9 +157,10 @@ const ClientView: React.FC<ClientViewProps> = ({
           <p className="text-sm text-red-600">Payment was rejected. Please resubmit with correct details.</p>
           <div className="flex items-center space-x-2">
             <input
+              ref={paymentResubmitInputRef}
               type="file"
               accept="image/*,.pdf"
-              onChange={handlePaymentFileUpload}
+              onChange={e => handlePaymentFileUpload(e, 'rejected')}
               className="hidden"
               id={`payment-resubmit-${milestone.id}`}
               disabled={uploading}
