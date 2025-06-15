@@ -20,7 +20,6 @@ export function useMilestoneActions(
     if (success) {
       await fetchProjects();
     }
-    return success;
   };
 
   const updateMilestoneWatermark = async (milestoneId: string, watermarkText: string) => {
@@ -28,7 +27,6 @@ export function useMilestoneActions(
     if (success) {
       await fetchProjects();
     }
-    return success;
   };
 
   const uploadPaymentProof = async (milestoneId: string, file: File) => {
@@ -36,7 +34,6 @@ export function useMilestoneActions(
     if (success) {
       await fetchProjects();
     }
-    return success;
   };
 
   const uploadDeliverable = async (milestoneId: string, file: File, watermarkText?: string) => {
@@ -44,11 +41,10 @@ export function useMilestoneActions(
     if (success) {
       await fetchProjects();
     }
-    return success;
   };
 
   const downloadDeliverable = async (milestoneId: string) => {
-    return await downloadDeliverableAction(projects, milestoneId);
+    await downloadDeliverableAction(projects, milestoneId);
   };
 
   return {
