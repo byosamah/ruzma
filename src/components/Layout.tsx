@@ -1,10 +1,11 @@
+
 import React from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { LogOut, User, Briefcase } from 'lucide-react';
-import { useLanguage } from '@/contexts/LanguageContext';
 import { useT } from '@/lib/i18n';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
+import LanguageSelector from './LanguageSelector';
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -12,20 +13,6 @@ interface LayoutProps {
   onSignOut?: () => void;
 }
 
-// Language Selector Dropdown component
-const LanguageSelector = () => {
-  const {
-    language,
-    setLanguage
-  } = useLanguage();
-
-  return <select value={language} onChange={e => setLanguage(e.target.value as "en" | "ar")} style={{
-    minWidth: 80
-  }} aria-label="Choose language" className="rounded border py-1 text-sm bg-white text-gray-700 focus:outline-none focus:ring-2 focus:ring-primary mx-[17px] px-[2px]">
-      <option value="en">English</option>
-      <option value="ar">العربية</option>
-    </select>;
-};
 const Layout: React.FC<LayoutProps> = ({
   children,
   user,
