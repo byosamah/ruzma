@@ -5,7 +5,9 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
-import { User, Mail, Save } from 'lucide-react';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { User, Mail, Save, DollarSign } from 'lucide-react';
+import { CURRENCIES, CurrencyCode } from '@/lib/currency';
 
 interface PersonalInformationFormProps {
   formData: {
@@ -14,12 +16,14 @@ interface PersonalInformationFormProps {
     company: string;
     website: string;
     bio: string;
+    currency?: string;
   };
   isLoading: boolean;
   isSaved: boolean;
   onFormChange: (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => void;
   onFormSubmit: (e: React.FormEvent) => void;
   onCancel: () => void;
+  onCurrencyChange?: (currency: string) => void;
 }
 
 export const PersonalInformationForm = ({
@@ -29,7 +33,14 @@ export const PersonalInformationForm = ({
   onFormChange,
   onFormSubmit,
   onCancel,
+  onCurrencyChange,
 }: PersonalInformationFormProps) => {
+  const handleCurrencyChange = (value: string) => {
+    if (onCurrencyChange) {
+      onCurrencyChange(value);
+    }
+  };
+
   return (
     <Card className="lg:col-span-2 bg-white/80 backdrop-blur-sm">
       <CardHeader>
@@ -92,6 +103,25 @@ export const PersonalInformationForm = ({
                 value={formData.website}
                 onChange={onFormChange}
               />
+            </div>
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="currency">Preferred Currency</Label>
+            <div className="relative">
+              <DollarSign className="absolute left-3 top-3 h-4 w-4 text-slate-400 z-10" />
+              <Select value={formData.currency || 'USD'} onValueChange={handleCurrencyChange}>
+                <SelectTrigger className="pl-10">
+                  <SelectValue placeholder="Select currency" />
+                </SelectTrigger>
+                <SelectContent>
+                  {Object.entries(CURRENCIES).map(([code, { symbol, name }]) => (
+                    <SelectItem key={code} value={code}>
+                      {symbol} {name} ({code})
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
             </div>
           </div>
 

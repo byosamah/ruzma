@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
@@ -10,6 +9,8 @@ import { supabase } from '@/integrations/supabase/client';
 import { User } from '@supabase/supabase-js';
 import { toast } from 'sonner';
 import { useProjects } from '@/hooks/useProjects';
+import { useUserCurrency } from '@/hooks/useUserCurrency';
+import { formatCurrency, getCurrencySymbol } from '@/lib/currency';
 
 const Dashboard = () => {
   const [user, setUser] = useState<User | null>(null);
@@ -18,6 +19,7 @@ const Dashboard = () => {
   const navigate = useNavigate();
   
   const { projects, loading: projectsLoading, deleteProject } = useProjects(user);
+  const userCurrency = useUserCurrency(user);
 
   useEffect(() => {
     const fetchUserAndProfile = async () => {
@@ -159,10 +161,10 @@ const Dashboard = () => {
           <Card className="bg-primary text-primary-foreground">
             <CardHeader className="flex flex-row items-center justify-between pb-2">
               <CardTitle className="text-sm font-medium">Total Earnings</CardTitle>
-              <DollarSign className="w-4 h-4" />
+              <span className="text-sm font-medium">{getCurrencySymbol(userCurrency)}</span>
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">${totalEarnings.toLocaleString()}</div>
+              <div className="text-2xl font-bold">{formatCurrency(totalEarnings, userCurrency)}</div>
               <p className="text-xs">From completed milestones</p>
             </CardContent>
           </Card>
@@ -222,6 +224,7 @@ const Dashboard = () => {
                   project={project}
                   onEdit={handleEditProject}
                   onDelete={handleDeleteProject}
+                  currency={userCurrency}
                 />
               ))}
             </div>

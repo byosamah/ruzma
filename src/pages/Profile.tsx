@@ -20,7 +20,8 @@ const Profile = () => {
     email: '',
     company: '',
     website: '',
-    bio: ''
+    bio: '',
+    currency: 'USD'
   });
   const [isLoading, setIsLoading] = useState(false);
   const [isSaved, setIsSaved] = useState(false);
@@ -48,7 +49,8 @@ const Profile = () => {
             email: user.email || '',
             company: profile.company || '',
             website: profile.website || '',
-            bio: profile.bio || ''
+            bio: profile.bio || '',
+            currency: profile.currency || 'USD'
           });
           setProfilePicture(profile.avatar_url || null);
         }
@@ -67,6 +69,14 @@ const Profile = () => {
     setIsSaved(false);
   };
 
+  const handleCurrencyChange = (currency: string) => {
+    setFormData(prev => ({
+      ...prev,
+      currency
+    }));
+    setIsSaved(false);
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!user) return;
@@ -79,6 +89,7 @@ const Profile = () => {
         company: formData.company,
         website: formData.website,
         bio: formData.bio,
+        currency: formData.currency,
       })
       .eq('id', user.id);
     
@@ -184,6 +195,7 @@ const Profile = () => {
             onFormChange={handleChange}
             onFormSubmit={handleSubmit}
             onCancel={() => navigate('/dashboard')}
+            onCurrencyChange={handleCurrencyChange}
           />
         </div>
 

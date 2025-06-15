@@ -1,9 +1,9 @@
-
 import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { CheckCircle, XCircle, Clock, Download, Upload, DollarSign, FileUp } from 'lucide-react';
+import { CheckCircle, XCircle, Clock, Download, Upload, FileUp } from 'lucide-react';
+import { formatCurrency, CurrencyCode } from '@/lib/currency';
 
 export interface Milestone {
   id: string;
@@ -26,6 +26,7 @@ interface MilestoneCardProps {
   onPaymentUpload?: (milestoneId: string, file: File) => void;
   onDeliverableUpload?: (milestoneId: string, file: File) => void;
   onDeliverableDownload?: (milestoneId: string) => void;
+  currency?: CurrencyCode;
 }
 
 const MilestoneCard: React.FC<MilestoneCardProps> = ({ 
@@ -35,7 +36,8 @@ const MilestoneCard: React.FC<MilestoneCardProps> = ({
   isClient = false,
   onPaymentUpload,
   onDeliverableUpload,
-  onDeliverableDownload
+  onDeliverableDownload,
+  currency = 'USD'
 }) => {
   const getStatusColor = (status: string) => {
     switch (status) {
@@ -80,9 +82,8 @@ const MilestoneCard: React.FC<MilestoneCardProps> = ({
             <p className="text-sm text-slate-600 mt-1">{milestone.description}</p>
           </div>
           <div className="text-right">
-            <div className="flex items-center text-lg font-bold text-slate-800">
-              <DollarSign className="w-5 h-5" />
-              {milestone.price.toFixed(2)}
+            <div className="text-lg font-bold text-slate-800">
+              {formatCurrency(milestone.price, currency)}
             </div>
             <Badge className={`mt-1 ${getStatusColor(milestone.status)} flex items-center space-x-1`}>
               {getStatusIcon(milestone.status)}
