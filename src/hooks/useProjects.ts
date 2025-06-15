@@ -311,7 +311,7 @@ export const useProjects = (user: User | null) => {
       }
 
       // Retrieve the public URL
-      const { data: publicUrlData, error: publicUrlError } = supabase.storage
+      const { data: publicUrlData } = supabase.storage
         .from('payment-proofs')
         .getPublicUrl(filePath);
 
@@ -319,7 +319,7 @@ export const useProjects = (user: User | null) => {
 
       // Validate URL format
       if (!paymentProofUrl || !paymentProofUrl.startsWith('http')) {
-        console.error('Could not get a valid public URL for uploaded file:', publicUrlData, publicUrlError);
+        console.error('Could not get a valid public URL for uploaded file:', publicUrlData);
         toast.error('Upload succeeded but failed to get file URL');
         // Optionally: Remove failed upload
         await supabase.storage.from('payment-proofs').remove([filePath]);
