@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
@@ -11,13 +12,15 @@ import { toast } from 'sonner';
 import { useProjects } from '@/hooks/useProjects';
 import { useUserCurrency } from '@/hooks/useUserCurrency';
 import { formatCurrency, getCurrencySymbol } from '@/lib/currency';
+import { useT } from '@/lib/i18n';
 
 const Dashboard = () => {
   const [user, setUser] = useState<User | null>(null);
   const [profile, setProfile] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
-  
+  const t = useT();
+
   const { projects, loading: projectsLoading, deleteProject } = useProjects(user);
   const userCurrency = useUserCurrency(user);
 
@@ -35,7 +38,6 @@ const Dashboard = () => {
 
       setUser(user);
       
-      // Try to fetch profile, but don't fail if it doesn't exist
       const { data: profileData, error: profileError } = await supabase
         .from('profiles')
         .select('*')
@@ -44,7 +46,6 @@ const Dashboard = () => {
 
       if (profileError) {
         console.error("Error fetching profile:", profileError);
-        // Create a default profile if none exists
         const { data: newProfile, error: createError } = await supabase
           .from('profiles')
           .insert({
@@ -80,12 +81,11 @@ const Dashboard = () => {
   };
 
   const handleDeleteProject = async (projectId: string) => {
-    if (confirm('Are you sure you want to delete this project?')) {
+    if (confirm(t('areYouSureDeleteProject'))) {
       await deleteProject(projectId);
     }
   };
 
-  // Convert database projects to the format expected by ProjectCard
   const convertedProjects = projects.map(project => ({
     id: project.id,
     name: project.name,
@@ -101,7 +101,6 @@ const Dashboard = () => {
     clientUrl: `/client/project/${project.id}`,
   }));
 
-  // Calculate stats
   const totalProjects = convertedProjects.length;
   const totalMilestones = convertedProjects.reduce((sum, project) => sum + project.milestones.length, 0);
   const completedMilestones = convertedProjects.reduce((sum, project) => 
@@ -117,7 +116,7 @@ const Dashboard = () => {
         <div className="flex items-center justify-center min-h-[400px]">
           <div className="text-center">
             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
-            <p className="text-slate-600">Loading your dashboard...</p>
+            <p className="text-slate-600">{t('loadingDashboard')}</p>
           </div>
         </div>
       </Layout>
@@ -125,7 +124,7 @@ const Dashboard = () => {
   }
 
   if (!user) {
-    return <div>Loading...</div>;
+    return <div>{t('loadingDashboard')}</div>;
   }
 
   const displayName = profile?.full_name || user.user_metadata?.full_name || user.email?.split('@')[0] || 'User';
@@ -136,12 +135,12 @@ const Dashboard = () => {
         {/* Header */}
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
           <div>
-            <h1 className="text-3xl font-bold text-slate-800">Welcome back, {displayName}!</h1>
-            <p className="text-slate-600 mt-1">Manage your freelance projects and track payments</p>
+            <h1 className="text-3xl font-bold text-slate-800">{t('welcomeBack', { name: displayName })}</h1>
+            <p className="text-slate-600 mt-1">{t('manageProjects')}</p>
           </div>
           <Button onClick={() => navigate('/create-project')} size="lg">
             <Plus className="w-5 h-5 mr-2" />
-            New Project
+            {t('newProject')}
           </Button>
         </div>
 
@@ -149,45 +148,45 @@ const Dashboard = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           <Card className="bg-secondary text-secondary-foreground">
             <CardHeader className="flex flex-row items-center justify-between pb-2">
-              <CardTitle className="text-sm font-medium">Total Projects</CardTitle>
+              <CardTitle className="text-sm font-medium">{t('totalProjects')}</CardTitle>
               <Briefcase className="w-4 h-4" />
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold">{totalProjects}</div>
-              <p className="text-xs">Active projects</p>
+              <p className="text-xs">{t('activeProjects')}</p>
             </CardContent>
           </Card>
 
           <Card className="bg-primary text-primary-foreground">
             <CardHeader className="flex flex-row items-center justify-between pb-2">
-              <CardTitle className="text-sm font-medium">Total Earnings</CardTitle>
+              <CardTitle className="text-sm font-medium">{t('totalEarnings')}</CardTitle>
               <DollarSign className="w-4 h-4" />
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold">{formatCurrency(totalEarnings, userCurrency)}</div>
-              <p className="text-xs">From completed milestones</p>
+              <p className="text-xs">{t('fromCompletedMilestones')}</p>
             </CardContent>
           </Card>
 
           <Card className="bg-accent text-accent-foreground">
             <CardHeader className="flex flex-row items-center justify-between pb-2">
-              <CardTitle className="text-sm font-medium">Pending Payments</CardTitle>
+              <CardTitle className="text-sm font-medium">{t('pendingPayments')}</CardTitle>
               <Clock className="w-4 h-4" />
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold">{pendingPayments}</div>
-              <p className="text-xs">Awaiting approval</p>
+              <p className="text-xs">{t('awaitingApproval')}</p>
             </CardContent>
           </Card>
 
           <Card className="bg-secondary text-secondary-foreground">
             <CardHeader className="flex flex-row items-center justify-between pb-2">
-              <CardTitle className="text-sm font-medium">Completed</CardTitle>
+              <CardTitle className="text-sm font-medium">{t('completed')}</CardTitle>
               <CheckCircle className="w-4 h-4" />
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold">{completedMilestones}/{totalMilestones}</div>
-              <p className="text-xs">Milestones completed</p>
+              <p className="text-xs">{t('milestonesCompleted')}</p>
             </CardContent>
           </Card>
         </div>
@@ -195,11 +194,11 @@ const Dashboard = () => {
         {/* Projects Grid */}
         <div className="space-y-6">
           <div className="flex justify-between items-center">
-            <h2 className="text-2xl font-bold text-slate-800">Your Projects</h2>
+            <h2 className="text-2xl font-bold text-slate-800">{t('yourProjects')}</h2>
             {convertedProjects.length === 0 && (
               <Button onClick={() => navigate('/create-project')} variant="outline">
                 <Plus className="w-4 h-4 mr-2" />
-                Create Your First Project
+                {t('createFirstProject')}
               </Button>
             )}
           </div>
@@ -208,11 +207,11 @@ const Dashboard = () => {
             <Card className="text-center py-12 bg-white/80 backdrop-blur-sm">
               <CardContent>
                 <Briefcase className="w-16 h-16 text-slate-400 mx-auto mb-4" />
-                <h3 className="text-xl font-semibold text-slate-700 mb-2">No Projects Yet</h3>
-                <p className="text-slate-600 mb-6">Create your first project to start managing client deliverables</p>
+                <h3 className="text-xl font-semibold text-slate-700 mb-2">{t('noProjectsYet')}</h3>
+                <p className="text-slate-600 mb-6">{t('createFirstProjectDesc')}</p>
                 <Button onClick={() => navigate('/create-project')}>
                   <Plus className="w-4 h-4 mr-2" />
-                  Create Project
+                  {t('createProject')}
                 </Button>
               </CardContent>
             </Card>
@@ -236,3 +235,4 @@ const Dashboard = () => {
 };
 
 export default Dashboard;
+
