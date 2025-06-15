@@ -20,7 +20,7 @@ export default {
 		},
 		extend: {
 			fontFamily: {
-        sans: ['Inter', 'system-ui', 'sans-serif'],
+        sans: ['"IBM Plex Sans Arabic"', 'system-ui', 'sans-serif'],
       },
 			colors: {
 				'brand-blue': '#4B72E5',
