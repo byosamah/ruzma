@@ -1,3 +1,4 @@
+
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import Layout from "@/components/Layout";
@@ -131,7 +132,7 @@ const ProjectManagement: React.FC = () => {
               className="text-blue-600 border-blue-200 hover:bg-blue-50"
             >
               <a
-                href={`/client/project/${project.id}`}
+                href={`/client/project/${project.client_access_token}`}
                 target="_blank"
                 rel="noopener noreferrer"
                 tabIndex={0}
