@@ -1,1 +1,10 @@
+
 project_id = "***REMOVED***"
+
+[functions.upload-client-payment-proof]
+verify_jwt = false
+
+[functions.get-client-project]
+verify_jwt = false
+
+# Add any additional function configs here if needed
