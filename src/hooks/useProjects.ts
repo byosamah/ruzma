@@ -281,13 +281,27 @@ export const useProjects = (user: User | null) => {
     }
 
     try {
-      console.log('Uploading payment proof for milestone:', milestoneId, 'File:', file.name, 'Size:', file.size);
+      console.log('Starting payment proof upload:', {
+        milestoneId,
+        fileName: file.name,
+        fileSize: file.size,
+        fileType: file.type,
+        userId: user.id
+      });
       
       // Create file path with user ID folder structure
       const fileName = `${Date.now()}-${file.name.replace(/[^a-zA-Z0-9.-]/g, '_')}`;
       const filePath = `${user.id}/${milestoneId}/${fileName}`;
       
       console.log('Upload path:', filePath);
+      
+      // First, check if bucket exists and is accessible
+      const { data: buckets, error: bucketsError } = await supabase.storage.listBuckets();
+      console.log('Available buckets:', buckets);
+      
+      if (bucketsError) {
+        console.error('Error listing buckets:', bucketsError);
+      }
       
       // Upload file to Supabase Storage
       const { data: uploadData, error: uploadError } = await supabase.storage
@@ -298,14 +312,18 @@ export const useProjects = (user: User | null) => {
         });
 
       if (uploadError) {
-        console.error('Error uploading payment proof to storage:', uploadError);
+        console.error('Upload error details:', {
+          message: uploadError.message,
+          statusCode: uploadError.statusCode,
+          error: uploadError
+        });
         toast.error(`Failed to upload payment proof: ${uploadError.message}`);
         return false;
       }
 
-      console.log('Payment proof uploaded successfully to storage:', uploadData);
+      console.log('Payment proof uploaded successfully:', uploadData);
 
-      // Get public URL for the uploaded file using the correct method
+      // Get public URL for the uploaded file
       const { data: publicUrlData } = supabase.storage
         .from('payment-proofs')
         .getPublicUrl(filePath);
@@ -313,15 +331,26 @@ export const useProjects = (user: User | null) => {
       const publicUrl = publicUrlData.publicUrl;
       console.log('Generated public URL for payment proof:', publicUrl);
 
-      // Verify the file exists by trying to create a signed URL as well
-      const { data: signedUrlData, error: signedUrlError } = await supabase.storage
+      // Verify the upload by trying to list the file
+      const { data: listData, error: listError } = await supabase.storage
         .from('payment-proofs')
-        .createSignedUrl(filePath, 3600); // 1 hour expiry
+        .list(user.id + '/' + milestoneId);
+      
+      console.log('Files in directory after upload:', listData);
+      if (listError) {
+        console.error('Error listing files:', listError);
+      }
 
-      if (signedUrlError) {
-        console.warn('Could not create signed URL, but continuing with public URL:', signedUrlError);
-      } else {
-        console.log('Signed URL created successfully:', signedUrlData.signedUrl);
+      // Test if the URL is accessible
+      try {
+        const response = await fetch(publicUrl, { method: 'HEAD' });
+        console.log('URL accessibility test:', {
+          url: publicUrl,
+          status: response.status,
+          accessible: response.ok
+        });
+      } catch (fetchError) {
+        console.warn('Could not test URL accessibility:', fetchError);
       }
 
       // Update milestone with payment proof URL and status in database
