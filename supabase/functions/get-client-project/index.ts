@@ -1,26 +1,46 @@
 
 import { createClient } from '@supabase/supabase-js'
-import { corsHeaders } from '../_shared/cors.ts'
+
+const corsHeaders = {
+  'Access-Control-Allow-Origin': '*',
+  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
+}
 
 Deno.serve(async (req) => {
+  // Handle CORS preflight requests
   if (req.method === 'OPTIONS') {
     return new Response('ok', { headers: corsHeaders })
   }
 
   try {
+    console.log('get-client-project function called')
+    
     const { token } = await req.json()
+    console.log('Received token:', token)
+    
     if (!token) {
+      console.error('No token provided')
       return new Response(JSON.stringify({ error: 'Token is required' }), {
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
         status: 400,
       })
     }
 
-    const supabaseAdmin = createClient(
-      Deno.env.get('SUPABASE_URL')!,
-      Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!
-    )
+    const supabaseUrl = Deno.env.get('SUPABASE_URL')
+    const supabaseServiceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')
+    
+    if (!supabaseUrl || !supabaseServiceKey) {
+      console.error('Missing Supabase environment variables')
+      return new Response(JSON.stringify({ error: 'Server configuration error' }), {
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        status: 500,
+      })
+    }
 
+    const supabaseAdmin = createClient(supabaseUrl, supabaseServiceKey)
+
+    console.log('Searching for project with token:', token)
+    
     const { data: projectData, error: projectError } = await supabaseAdmin
       .from('projects')
       .select('*, milestones (*)')
@@ -35,6 +55,8 @@ Deno.serve(async (req) => {
       })
     }
 
+    console.log('Project found:', projectData)
+
     return new Response(JSON.stringify(projectData), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       status: 200,
@@ -47,4 +69,3 @@ Deno.serve(async (req) => {
     })
   }
 })
-
