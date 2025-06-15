@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
@@ -308,26 +307,16 @@ export const useProjects = (user: User | null) => {
         fileType: file.type
       });
 
-      // Step 1: Verify the milestone exists and belongs to the current user
+      // Step 1: Verify the milestone exists
       const { data: milestoneCheck, error: checkError } = await supabase
         .from('milestones')
-        .select(`
-          id,
-          project_id,
-          projects!inner(user_id)
-        `)
+        .select('id, project_id')
         .eq('id', milestoneId)
         .single();
 
       if (checkError || !milestoneCheck) {
         console.error('Milestone verification failed:', checkError);
-        toast.error('Milestone not found or access denied');
-        return false;
-      }
-
-      if (milestoneCheck.projects.user_id !== user?.id) {
-        console.error('User does not own this milestone');
-        toast.error('Access denied');
+        toast.error('Milestone not found');
         return false;
       }
 
