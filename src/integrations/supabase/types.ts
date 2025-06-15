@@ -101,6 +101,7 @@ export type Database = {
       projects: {
         Row: {
           brief: string
+          client_access_token: string
           created_at: string
           id: string
           name: string
@@ -109,6 +110,7 @@ export type Database = {
         }
         Insert: {
           brief: string
+          client_access_token?: string
           created_at?: string
           id?: string
           name: string
@@ -117,6 +119,7 @@ export type Database = {
         }
         Update: {
           brief?: string
+          client_access_token?: string
           created_at?: string
           id?: string
           name?: string

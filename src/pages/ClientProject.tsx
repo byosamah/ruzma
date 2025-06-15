@@ -5,9 +5,8 @@ import { Badge } from '@/components/ui/badge';
 import MilestoneCard from '@/components/MilestoneCard';
 import { CheckCircle, Clock, Briefcase } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
-import { DatabaseProject, useProjects } from '@/hooks/useProjects';
+import { DatabaseProject } from '@/hooks/useProjects';
 import { toast } from 'sonner';
-import { User } from '@supabase/supabase-js';
 import DeliverableWatermarkedPreview from '@/components/MilestoneCard/DeliverableWatermarkedPreview';
 import MilestoneDeliverablePreview from "@/components/ProjectClient/MilestoneDeliverablePreview";
 import ProjectOverviewCard from "@/components/ProjectClient/ProjectOverviewCard";
@@ -16,99 +15,83 @@ import ProjectMilestonesList from "@/components/ProjectClient/ProjectMilestonesL
 import ProjectFooter from "@/components/ProjectClient/ProjectFooter";
 
 const ClientProject = () => {
-  const { projectId } = useParams();
+  const { token } = useParams();
   const [project, setProject] = useState<DatabaseProject | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [user, setUser] = useState<User | null>(null);
 
-  const { uploadPaymentProof } = useProjects(user);
-
-  useEffect(() => {
-    const getUser = async () => {
-      const { data: { user } } = await supabase.auth.getUser();
-      setUser(user);
-    };
-    getUser();
-  }, []);
-
-  useEffect(() => {
-    const fetchProject = async () => {
-      console.log('ClientProject: URL projectId:', projectId);
-      if (!projectId) {
-        setError('No project ID provided');
-        setIsLoading(false);
+  const fetchProject = async () => {
+    if (!token) {
+      setError('No project token provided');
+      setIsLoading(false);
+      return;
+    }
+  
+    try {
+      const { data, error: invokeError } = await supabase.functions.invoke('get-client-project', {
+        body: { token },
+      });
+  
+      if (invokeError || !data) {
+        console.error('Error fetching project from edge function:', invokeError);
+        setError(invokeError?.message || data?.error || 'Project not found');
         return;
       }
+  
+      const projectData = data;
+  
+      const typedProject = {
+        ...projectData,
+        milestones: projectData.milestones.map((milestone: any) => ({
+          ...milestone,
+          status: milestone.status as 'pending' | 'payment_submitted' | 'approved' | 'rejected'
+        }))
+      } as DatabaseProject;
+  
+      setProject(typedProject);
+    } catch (err) {
+      console.error('Error:', err);
+      setError('Failed to load project');
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
-      try {
-        setIsLoading(true);
-
-        const { data: projectData, error: projectError } = await supabase
-          .from('projects')
-          .select(`
-            *,
-            milestones (*)
-          `)
-          .eq('id', projectId)
-          .single();
-
-        console.log('ClientProject: Supabase data:', projectData);
-        console.log('ClientProject: Supabase error:', projectError);
-
-        if (projectError || !projectData) {
-          console.error('Error fetching project:', projectError);
-          setError('Project not found');
-          setIsLoading(false);
-          return;
-        }
-
-        const typedProject = {
-          ...projectData,
-          milestones: projectData.milestones.map((milestone: any) => ({
-            ...milestone,
-            status: milestone.status as 'pending' | 'payment_submitted' | 'approved' | 'rejected'
-          }))
-        } as DatabaseProject;
-
-        setProject(typedProject);
-      } catch (error) {
-        console.error('Error:', error);
-        setError('Failed to load project');
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
+  useEffect(() => {
+    setIsLoading(true);
     fetchProject();
-  }, [projectId]);
+  }, [token]);
 
   const handlePaymentUpload = async (milestoneId: string, file: File) => {
     console.log('Payment proof upload initiated for milestone:', milestoneId, file);
     
-    const success = await uploadPaymentProof(milestoneId, file);
-    
-    if (success) {
-      // Refresh project data to show updated status
-      const { data: projectData } = await supabase
-        .from('projects')
-        .select(`
-          *,
-          milestones (*)
-        `)
-        .eq('id', projectId)
-        .single();
+    try {
+      const formData = new FormData();
+      formData.append('file', file);
+      formData.append('milestoneId', milestoneId);
 
-      if (projectData) {
-        const typedProject = {
-          ...projectData,
-          milestones: projectData.milestones.map((milestone: any) => ({
-            ...milestone,
-            status: milestone.status as 'pending' | 'payment_submitted' | 'approved' | 'rejected'
-          }))
-        } as DatabaseProject;
-        setProject(typedProject);
+      toast.loading('Uploading payment proof...');
+      const { data, error } = await supabase.functions.invoke('upload-client-payment-proof', {
+        body: formData,
+      });
+
+      toast.dismiss();
+
+      if (error || !data.success) {
+        console.error("Upload error:", error, data?.error);
+        toast.error(data?.error || 'Failed to upload payment proof.');
+        return;
       }
+
+      toast.success('Payment proof uploaded successfully!');
+      
+      // Refresh project data to show updated status
+      await fetchProject();
+
+    } catch (e) {
+      toast.dismiss();
+      console.error("Upload exception:", e);
+      toast.error('An unexpected error occurred during upload.');
     }
   };
 
