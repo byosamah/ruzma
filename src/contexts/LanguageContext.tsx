@@ -18,9 +18,11 @@ export const LanguageProvider = ({ children }: { children: ReactNode }) => {
     if (language === "ar") {
       document.documentElement.dir = "rtl";
       document.body.style.fontFamily = '"IBM Plex Sans Arabic", system-ui, sans-serif';
+      document.title = "رزمة - نظام إدارة للأعمال الحرة";
     } else {
       document.documentElement.dir = "ltr";
       document.body.style.fontFamily = '"IBM Plex Sans Arabic", system-ui, sans-serif';
+      document.title = "Ruzma - Freelancers management system";
     }
   }, [language]);
 
