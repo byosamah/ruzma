@@ -350,9 +350,32 @@ export const useProjects = (user: User | null) => {
         return false;
       }
 
-      // Create a temporary anchor element to trigger download
+      // Since the bucket is private, generate a signed URL
+      // Assume the file path is everything after 'https://.../object/deliverables/' in the deliverable_url
+      let filePath = '';
+      try {
+        const urlParts = milestone.deliverable_url.split('/object/deliverables/');
+        if (urlParts.length > 1) {
+          filePath = decodeURIComponent(urlParts[1]);
+        }
+      } catch (e) {
+        toast.error('Could not locate file path for download');
+        return false;
+      }
+
+      const { data, error } = await supabase
+        .storage
+        .from('deliverables')
+        .createSignedUrl(filePath, 60); // Signed URL valid for 60 seconds
+
+      if (error || !data?.signedUrl) {
+        toast.error('Could not generate download link');
+        return false;
+      }
+
+      // Download using the signed URL
       const link = document.createElement('a');
-      link.href = milestone.deliverable_url;
+      link.href = data.signedUrl;
       link.download = milestone.deliverable_name;
       link.target = '_blank';
       document.body.appendChild(link);
