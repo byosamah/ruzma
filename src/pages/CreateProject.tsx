@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
@@ -34,7 +35,16 @@ const CreateProject = () => {
 
   const form = useForm<CreateProjectFormData>({
     resolver: zodResolver(createProjectSchema),
-    defaultValues: templateData || {
+    defaultValues: templateData ? {
+      name: templateData.name || '',
+      brief: templateData.brief || '',
+      clientEmail: '',
+      milestones: templateData.milestones?.map((milestone: any) => ({
+        title: milestone.title || '',
+        description: milestone.description || '',
+        price: milestone.price || 0,
+      })) || [{ title: '', description: '', price: 0 }],
+    } : {
       name: '',
       brief: '',
       clientEmail: '',
@@ -76,10 +86,14 @@ const CreateProject = () => {
   useEffect(() => {
     if (templateData) {
       form.reset({
-        name: templateData.name,
-        brief: templateData.brief,
+        name: templateData.name || '',
+        brief: templateData.brief || '',
         clientEmail: '',
-        milestones: templateData.milestones,
+        milestones: templateData.milestones?.map((milestone: any) => ({
+          title: milestone.title || '',
+          description: milestone.description || '',
+          price: milestone.price || 0,
+        })) || [{ title: '', description: '', price: 0 }],
       });
     }
   }, [templateData, form]);

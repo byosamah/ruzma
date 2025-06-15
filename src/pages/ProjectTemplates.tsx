@@ -1,32 +1,21 @@
+
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import Layout from '@/components/Layout';
-import { ArrowLeft, Plus, FileText, Edit, Trash2 } from 'lucide-react';
+import { ArrowLeft, Plus, FileText, Trash2 } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { User } from '@supabase/supabase-js';
 import { useT } from '@/lib/i18n';
-import { toast } from 'sonner';
 import { useProjectTemplates } from '@/hooks/useProjectTemplates';
-
-interface ProjectTemplate {
-  id: string;
-  name: string;
-  brief: string;
-  milestones: {
-    title: string;
-    description: string;
-    price: number;
-  }[];
-  created_at: string;
-}
 
 const ProjectTemplates = () => {
   const t = useT();
   const navigate = useNavigate();
   const [user, setUser] = useState<User | null>(null);
   const [profile, setProfile] = useState<any>(null);
+  const [authLoading, setAuthLoading] = useState(true);
 
   // Use the custom hook instead of local state
   const {
@@ -37,7 +26,7 @@ const ProjectTemplates = () => {
 
   useEffect(() => {
     const checkAuthAndLoadData = async () => {
-      setLoading(true);
+      setAuthLoading(true);
       
       const { data: { user }, error: userError } = await supabase.auth.getUser();
       
@@ -56,11 +45,7 @@ const ProjectTemplates = () => {
         .maybeSingle();
       
       setProfile(profileData);
-      
-      // Load templates (we'll implement this after creating the table)
-      // For now, we'll use mock data
-      setTemplates([]);
-      setLoading(false);
+      setAuthLoading(false);
     };
 
     checkAuthAndLoadData();
@@ -89,7 +74,7 @@ const ProjectTemplates = () => {
     await deleteTemplate(templateId);
   };
 
-  if (loading) {
+  if (authLoading || loading) {
     return (
       <Layout>
         <div className="flex items-center justify-center min-h-[400px]">
