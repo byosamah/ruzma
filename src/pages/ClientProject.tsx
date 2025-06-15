@@ -282,6 +282,7 @@ const ClientProject = () => {
                         size: milestone.deliverable_size || 0,
                         url: milestone.deliverable_url
                       } : undefined,
+                      paymentProofUrl: milestone.payment_proof_url,
                     }}
                     isClient={true}
                     onPaymentUpload={handlePaymentUpload}

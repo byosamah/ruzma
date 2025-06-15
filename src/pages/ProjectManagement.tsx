@@ -147,6 +147,7 @@ const ProjectManagement: React.FC = () => {
                       size: milestone.deliverable_size || 0,
                       url: milestone.deliverable_url
                     } : undefined,
+                    paymentProofUrl: milestone.payment_proof_url,
                   }}
                   onApprove={
                     milestone.status === "payment_submitted"
