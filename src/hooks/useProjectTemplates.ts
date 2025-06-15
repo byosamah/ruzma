@@ -31,9 +31,23 @@ export const useProjectTemplates = (user: User | null) => {
 
     try {
       setLoading(true);
-      // TODO: Implement after creating the templates table
-      // For now, return empty array
-      setTemplates([]);
+      const { data, error } = await supabase
+        .from('project_templates')
+        .select('*')
+        .eq('user_id', user.id)
+        .order('created_at', { ascending: false });
+
+      if (error) {
+        throw error;
+      }
+
+      // Parse milestones jsonb field
+      setTemplates(
+        (data || []).map((t: any) => ({
+          ...t,
+          milestones: Array.isArray(t.milestones) ? t.milestones : [],
+        }))
+      );
     } catch (error) {
       console.error('Error fetching templates:', error);
       toast.error('Failed to load templates');
@@ -57,7 +71,15 @@ export const useProjectTemplates = (user: User | null) => {
     }
 
     try {
-      // TODO: Implement after creating the templates table
+      const { error } = await supabase
+        .from('project_templates')
+        .insert({
+          user_id: user.id,
+          name: templateData.name,
+          brief: templateData.brief,
+          milestones: templateData.milestones,
+        });
+      if (error) throw error;
       toast.success('Template saved successfully');
       await fetchTemplates();
       return true;
@@ -75,7 +97,12 @@ export const useProjectTemplates = (user: User | null) => {
     }
 
     try {
-      // TODO: Implement after creating the templates table
+      const { error } = await supabase
+        .from('project_templates')
+        .delete()
+        .eq('id', templateId)
+        .eq('user_id', user.id);
+      if (error) throw error;
       toast.success('Template deleted successfully');
       await fetchTemplates();
       return true;
@@ -88,6 +115,7 @@ export const useProjectTemplates = (user: User | null) => {
 
   useEffect(() => {
     fetchTemplates();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user]);
 
   return {

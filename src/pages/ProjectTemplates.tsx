@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
@@ -9,6 +8,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { User } from '@supabase/supabase-js';
 import { useT } from '@/lib/i18n';
 import { toast } from 'sonner';
+import { useProjectTemplates } from '@/hooks/useProjectTemplates';
 
 interface ProjectTemplate {
   id: string;
@@ -27,8 +27,13 @@ const ProjectTemplates = () => {
   const navigate = useNavigate();
   const [user, setUser] = useState<User | null>(null);
   const [profile, setProfile] = useState<any>(null);
-  const [templates, setTemplates] = useState<ProjectTemplate[]>([]);
-  const [loading, setLoading] = useState(true);
+
+  // Use the custom hook instead of local state
+  const {
+    templates,
+    loading,
+    deleteTemplate,
+  } = useProjectTemplates(user);
 
   useEffect(() => {
     const checkAuthAndLoadData = async () => {
@@ -66,7 +71,7 @@ const ProjectTemplates = () => {
     navigate('/');
   };
 
-  const handleCreateFromTemplate = (template: ProjectTemplate) => {
+  const handleCreateFromTemplate = (template: any) => {
     // Navigate to create project with template data
     navigate('/create-project', { 
       state: { 
@@ -81,9 +86,7 @@ const ProjectTemplates = () => {
 
   const handleDeleteTemplate = async (templateId: string) => {
     if (!confirm('Are you sure you want to delete this template?')) return;
-    
-    // TODO: Implement delete functionality after creating the table
-    toast.success('Template deleted successfully');
+    await deleteTemplate(templateId);
   };
 
   if (loading) {
@@ -166,7 +169,7 @@ const ProjectTemplates = () => {
                       <span className="font-medium">{template.milestones.length}</span> milestones
                     </div>
                     <div className="text-sm text-slate-600">
-                      Total: ${template.milestones.reduce((sum, m) => sum + m.price, 0).toFixed(2)}
+                      Total: ${template.milestones.reduce((sum: number, m: any) => sum + m.price, 0).toFixed(2)}
                     </div>
                     <Button 
                       onClick={() => handleCreateFromTemplate(template)}

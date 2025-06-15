@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
@@ -16,6 +15,7 @@ import { createProjectSchema, CreateProjectFormData } from '@/lib/validators/pro
 import ProjectDetailsForm from '@/components/CreateProject/ProjectDetailsForm';
 import MilestonesList from '@/components/CreateProject/MilestonesList';
 import { toast } from 'sonner';
+import { useProjectTemplates } from '@/hooks/useProjectTemplates';
 
 const CreateProject = () => {
   const t = useT();
@@ -27,6 +27,7 @@ const CreateProject = () => {
   const location = useLocation();
   
   const { createProject } = useProjects(user);
+  const { saveTemplate } = useProjectTemplates(user);
 
   // Get template data from navigation state
   const templateData = location.state?.template;
@@ -90,14 +91,17 @@ const CreateProject = () => {
 
   const saveProjectAsTemplate = async (data: CreateProjectFormData) => {
     if (!user || !saveAsTemplate) return;
-
     try {
-      // TODO: Implement saving to templates table after creating it
-      // For now, just show a success message
-      toast.success('Project saved as template!');
+      // Save to Supabase
+      await saveTemplate({
+        name: data.name,
+        brief: data.brief,
+        milestones: data.milestones,
+      });
+      // toast is handled in hook
     } catch (error) {
       console.error('Error saving template:', error);
-      toast.error('Failed to save template');
+      // error toast is handled in hook
     }
   };
 

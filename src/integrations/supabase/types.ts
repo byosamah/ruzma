@@ -101,6 +101,36 @@ export type Database = {
         }
         Relationships: []
       }
+      project_templates: {
+        Row: {
+          brief: string | null
+          created_at: string
+          id: string
+          milestones: Json
+          name: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          brief?: string | null
+          created_at?: string
+          id?: string
+          milestones: Json
+          name: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          brief?: string | null
+          created_at?: string
+          id?: string
+          milestones?: Json
+          name?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       projects: {
         Row: {
           brief: string
