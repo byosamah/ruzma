@@ -1,5 +1,5 @@
 
-import React, { createContext, useContext, useState, ReactNode } from "react";
+import React, { createContext, useContext, useState, ReactNode, useEffect } from "react";
 
 type Language = "en" | "ar";
 
@@ -13,6 +13,16 @@ const LanguageContext = createContext<LanguageContextProps | undefined>(undefine
 export const LanguageProvider = ({ children }: { children: ReactNode }) => {
   // Default to English; optionally auto-detect here
   const [language, setLanguage] = useState<Language>("en");
+
+  useEffect(() => {
+    if (language === "ar") {
+      document.documentElement.dir = "rtl";
+      document.body.style.fontFamily = '"IBM Plex Sans Arabic", system-ui, sans-serif';
+    } else {
+      document.documentElement.dir = "ltr";
+      document.body.style.fontFamily = '"IBM Plex Sans Arabic", system-ui, sans-serif';
+    }
+  }, [language]);
 
   return (
     <LanguageContext.Provider value={{ language, setLanguage }}>

@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
@@ -18,16 +17,6 @@ const LanguageSelector = () => {
     setLanguage
   } = useLanguage();
 
-  // For RTL in Arabic
-  React.useEffect(() => {
-    if (language === "ar") {
-      document.documentElement.dir = "rtl";
-      document.body.style.fontFamily = '"IBM Plex Sans Arabic", system-ui, sans-serif';
-    } else {
-      document.documentElement.dir = "ltr";
-      document.body.style.fontFamily = '"IBM Plex Sans Arabic", system-ui, sans-serif';
-    }
-  }, [language]);
   return <select value={language} onChange={e => setLanguage(e.target.value as "en" | "ar")} style={{
     minWidth: 80
   }} aria-label="Choose language" className="rounded border py-1 text-sm bg-white text-gray-700 focus:outline-none focus:ring-2 focus:ring-primary mx-[17px] px-[2px]">

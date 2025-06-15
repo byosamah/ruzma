@@ -9,8 +9,10 @@ import { Eye, EyeOff, Mail, Lock } from 'lucide-react';
 import { toast } from 'sonner';
 import { Checkbox } from '@/components/ui/checkbox';
 import { getSupabaseClient } from '@/integrations/supabase/authClient';
+import { useT } from '@/lib/i18n';
 
 const Login = () => {
+  const t = useT();
   const [formData, setFormData] = useState({
     email: '',
     password: ''
@@ -63,12 +65,12 @@ const Login = () => {
       }
 
       if (data.user) {
-        toast.success('Signed in successfully!');
+        toast.success(t('signInSuccess'));
         window.location.href = '/dashboard';
       }
     } catch (error: any) {
       console.error('Login error:', error);
-      toast.error(error.message || 'Failed to sign in');
+      toast.error(error.message || t('loginFailed'));
     } finally {
       setIsLoading(false);
     }
@@ -91,22 +93,22 @@ const Login = () => {
 
       <Card className="w-full max-w-md shadow-lg bg-white">
         <CardHeader className="text-center">
-          <CardTitle className="text-2xl font-bold text-slate-800">Welcome to Ruzma</CardTitle>
-          <p className="text-slate-600">Secure payment management for freelancers</p>
+          <CardTitle className="text-2xl font-bold text-slate-800">{t('loginWelcome')}</CardTitle>
+          <p className="text-slate-600">{t('loginSubtitle')}</p>
         </CardHeader>
         <CardContent>
           <div className="flex bg-slate-100 rounded-md p-1 mb-6">
-            <Button variant="ghost" className="w-1/2 bg-white shadow-sm text-brand-navy font-semibold">Sign In</Button>
+            <Button variant="ghost" className="w-1/2 bg-white shadow-sm text-brand-navy font-semibold">{t('signIn')}</Button>
             <Button asChild variant="ghost" className="w-1/2 text-slate-500">
-              <Link to="/signup">Sign Up</Link>
+              <Link to="/signup">{t('signUp')}</Link>
             </Button>
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="space-y-2">
-              <Label htmlFor="email">Email</Label>
+              <Label htmlFor="email">{t('emailLabel')}</Label>
               <div className="relative">
-                <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-400" />
+                <Mail className="absolute left-3 rtl:right-3 rtl:left-auto top-1/2 -translate-y-1/2 h-5 w-5 text-slate-400" />
                 <Input
                   id="email"
                   name="email"
@@ -115,20 +117,20 @@ const Login = () => {
                   value={formData.email}
                   onChange={handleChange}
                   required
-                  className="pl-10"
+                  className="pl-10 rtl:pr-10 rtl:pl-3"
                 />
               </div>
             </div>
             
             <div className="space-y-2">
               <div className="flex justify-between items-center">
-                <Label htmlFor="password">Password</Label>
+                <Label htmlFor="password">{t('passwordLabel')}</Label>
                 <Link to="/forgot-password" className="text-sm text-brand-yellow hover:underline">
-                  Forgot password?
+                  {t('forgotPassword')}
                 </Link>
               </div>
               <div className="relative">
-                <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-400" />
+                <Lock className="absolute left-3 rtl:right-3 rtl:left-auto top-1/2 -translate-y-1/2 h-5 w-5 text-slate-400" />
                 <Input
                   id="password"
                   name="password"
@@ -137,13 +139,13 @@ const Login = () => {
                   value={formData.password}
                   onChange={handleChange}
                   required
-                  className="pl-10"
+                  className="pl-10 rtl:pr-10 rtl:pl-3"
                 />
                 <Button
                   type="button"
                   variant="ghost"
                   size="sm"
-                  className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
+                  className="absolute right-0 rtl:left-0 rtl:right-auto top-0 h-full px-3 py-2 hover:bg-transparent"
                   onClick={() => setShowPassword(!showPassword)}
                 >
                   {showPassword ? (
@@ -161,7 +163,7 @@ const Login = () => {
                 onCheckedChange={checked => setRememberMe(!!checked)}
               />
               <Label htmlFor="rememberMe" className="cursor-pointer select-none">
-                Remember Me
+                {t('rememberMe')}
               </Label>
             </div>
 
@@ -170,14 +172,14 @@ const Login = () => {
               className="w-full bg-brand-yellow text-brand-black hover:bg-brand-yellow/90" 
               disabled={isLoading}
             >
-              {isLoading ? 'Signing In...' : 'Sign In'}
+              {isLoading ? t('signingIn') : t('signIn')}
             </Button>
           </form>
 
         </CardContent>
       </Card>
       <div className="absolute bottom-8 text-sm text-slate-600">
-        © {new Date().getFullYear()} Ruzma. All rights reserved.
+        {t('footerRights', { year: new Date().getFullYear().toString() })}
       </div>
     </div>
   );
