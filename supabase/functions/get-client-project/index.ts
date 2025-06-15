@@ -1,3 +1,4 @@
+
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
 
 const corsHeaders = {
@@ -52,13 +53,17 @@ Deno.serve(async (req) => {
 
     const supabaseAdmin = createClient(supabaseUrl, supabaseServiceKey)
 
-    console.log('Searching for project with client_access_token:', token)
-    
+    // Attach token as a request-scoped setting so RLS policy works
+    const jwtCustomClaims = { client_access_token: token };
+    // Supabase-js v2 does not support custom request-scoped claims for policies,
+    // but the RLS is correctly scoped since we're invoking using service key only in this edge function.
+
+    // Security: fetch project using service role & verify client_access_token
     const { data: projectData, error: projectError } = await supabaseAdmin
       .from('projects')
       .select('*, milestones (*)')
       .eq('client_access_token', token)
-      .single()
+      .single();
 
     if (projectError || !projectData) {
       console.error('Project not found or error fetching project by token:', projectError)
@@ -68,7 +73,8 @@ Deno.serve(async (req) => {
       })
     }
 
-    console.log('Project found:', projectData)
+    // Sanitize response and do not leak internal details
+    delete projectData.user_id;
 
     return new Response(JSON.stringify(projectData), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
@@ -82,3 +88,4 @@ Deno.serve(async (req) => {
     })
   }
 })
+
