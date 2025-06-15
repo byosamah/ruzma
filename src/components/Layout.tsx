@@ -45,7 +45,7 @@ const Layout: React.FC<LayoutProps> = ({
   };
 
   return <div className="min-h-screen bg-background">
-      <nav className="bg-brand-black text-white border-b border-brand-navy sticky top-0 z-50">
+      <nav className="bg-background text-foreground border-b border-border sticky top-0 z-50">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             <LogoComponent />
@@ -53,24 +53,24 @@ const Layout: React.FC<LayoutProps> = ({
             <div className="flex items-center space-x-4">
               {user ? <>
                   <Link to="/dashboard">
-                    <Button variant={isActive('/dashboard') ? 'secondary' : 'ghost'} size="sm" className="hover:bg-white/10">
-                      <Briefcase className="w-4 h-4" />
+                    <Button variant={isActive('/dashboard') ? 'secondary' : 'ghost'} size="sm">
+                      <Briefcase className="w-4 h-4 mr-2" />
                       <span>Dashboard</span>
                     </Button>
                   </Link>
                   <Link to="/profile">
-                    <Button variant={isActive('/profile') ? 'secondary' : 'ghost'} size="sm" className="hover:bg-white/10">
-                      <User className="w-4 h-4" />
+                    <Button variant={isActive('/profile') ? 'secondary' : 'ghost'} size="sm">
+                      <User className="w-4 h-4 mr-2" />
                       <span>Profile</span>
                     </Button>
                   </Link>
                   <Button variant="ghost" size="sm" onClick={handleSignOut} className="text-red-500 hover:text-red-400 hover:bg-red-500/10">
-                    <LogOut className="w-4 h-4" />
+                    <LogOut className="w-4 h-4 mr-2" />
                     <span>Sign Out</span>
                   </Button>
                 </> : <>
                   <Link to="/login">
-                    <Button variant="ghost" size="sm" className="hover:bg-white/10">Login</Button>
+                    <Button variant="ghost" size="sm">Login</Button>
                   </Link>
                   <Link to="/signup">
                     <Button size="sm" variant="secondary">Sign Up</Button>
