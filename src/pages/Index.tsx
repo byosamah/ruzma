@@ -1,10 +1,10 @@
-
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { CheckCircle, ArrowRight, Briefcase, DollarSign, FileCheck, Shield, Zap, Users } from 'lucide-react';
 import { useLanguage } from '@/contexts/LanguageContext';
+import { useT } from '@/lib/i18n';
 
 // Language Selector component for landing page
 const LanguageSelector = () => {
@@ -33,46 +33,48 @@ const LanguageSelector = () => {
 };
 
 const Index = () => {
+  const t = useT();
+
   const features = [
     {
       icon: Briefcase,
-      title: 'Project Management',
-      description: 'Ditch the messy spreadsheets. Visualize your project\'s progress with clear milestones, tasks, and deadlines that keep both you and your client on the same page.'
+      title: t('featureProjectManagementTitle'),
+      description: t('featureProjectManagementDesc')
     },
     {
       icon: DollarSign,
-      title: 'Payment Verification',
-      description: 'Our secure escrow-like system holds client funds and automatically releases them to you when a milestone is approved. Get paid on time, every time.'
+      title: t('featurePaymentVerificationTitle'),
+      description: t('featurePaymentVerificationDesc')
     },
     {
       icon: FileCheck,
-      title: 'Secure Delivery',
-      description: 'Stop worrying about unauthorized access. Deliver files through encrypted, one-time-use links, ensuring your hard work is only seen after payment is confirmed.'
+      title: t('featureSecureDeliveryTitle'),
+      description: t('featureSecureDeliveryDesc')
     },
     {
       icon: Shield,
-      title: 'Professional Presentation',
-      description: 'Impress clients from day one with a dedicated, beautifully designed project portal. Your brand, your logo—a premium experience they\'ll love.'
+      title: t('featureProfessionalPresentationTitle'),
+      description: t('featureProfessionalPresentationDesc')
     },
     {
       icon: Zap,
-      title: 'Streamlined Workflow',
-      description: 'Cut down on endless email chains. Clients can review work, leave feedback, and approve milestones directly in their portal, creating a clear, single source of truth.'
+      title: t('featureStreamlinedWorkflowTitle'),
+      description: t('featureStreamlinedWorkflowDesc')
     },
     {
       icon: Users,
-      title: 'Client-Friendly',
-      description: 'Onboarding clients has never been easier. A simple, intuitive interface means your clients can get started in minutes, no training required.'
+      title: t('featureClientFriendlyTitle'),
+      description: t('featureClientFriendlyDesc')
     }
   ];
 
   const benefits = [
-    'Automated payment security',
-    'Milestone-based fund release',
-    'Branded client portals',
-    'Clear progress and deadline tracking',
-    'Encrypted deliverable links',
-    'Simplified project dashboard'
+    t('benefit1'),
+    t('benefit2'),
+    t('benefit3'),
+    t('benefit4'),
+    t('benefit5'),
+    t('benefit6')
   ];
 
   return (
@@ -85,10 +87,10 @@ const Index = () => {
           <div className="flex items-center space-x-2">
             <LanguageSelector />
             <Link to="/login">
-              <Button variant="ghost" className="text-brand-navy font-semibold hover:text-brand-blue">Login</Button>
+              <Button variant="ghost" className="text-brand-navy font-semibold hover:text-brand-blue">{t('login')}</Button>
             </Link>
             <Link to="/signup">
-              <Button className="bg-brand-navy text-white font-semibold hover:bg-brand-black rounded-lg">Sign Up Free</Button>
+              <Button className="bg-brand-navy text-white font-semibold hover:bg-brand-black rounded-lg">{t('signUpFree')}</Button>
             </Link>
           </div>
         </div>
@@ -100,14 +102,14 @@ const Index = () => {
           <div className="grid md:grid-cols-2 gap-12 items-center">
             <div className="text-left">
               <h1 className="text-4xl md:text-5xl font-extrabold text-brand-black leading-tight tracking-tight">
-                The Smartest Way to Manage Your Freelance Business
+                {t('landingHeroTitle')}
               </h1>
               <p className="mt-4 mb-8 text-lg text-brand-navy opacity-80 max-w-lg">
-                Ruzma helps you manage projects, secure payments, and deliver exceptional work—all from one beautiful client portal. Stop juggling tools and start focusing on what you do best.
+                {t('landingHeroSubtitle')}
               </p>
               <Link to="/signup">
                 <Button size="lg" className="bg-brand-yellow text-brand-black font-bold rounded-lg px-8 h-14 text-base hover:bg-brand-yellow/90">
-                  Get Started Free
+                  {t('getStartedFree')}
                   <ArrowRight className="w-5 h-5 ml-2" />
                 </Button>
               </Link>
@@ -116,7 +118,7 @@ const Index = () => {
             <div className="p-4 bg-slate-50 rounded-2xl hidden md:block">
               <div className="bg-white p-6 rounded-xl shadow-lg border border-slate-100">
                 <div className="flex items-center justify-between mb-4">
-                  <p className="font-bold text-base text-brand-black">Project Dashboard</p>
+                  <p className="font-bold text-base text-brand-black">{t('projectDashboard')}</p>
                   <div className="flex space-x-1.5">
                     <div className="w-3 h-3 bg-slate-200 rounded-full"></div>
                     <div className="w-3 h-3 bg-slate-200 rounded-full"></div>
@@ -125,7 +127,7 @@ const Index = () => {
                 </div>
                 <div className="space-y-3">
                   <div className="h-12 bg-slate-100 rounded-lg flex items-center px-4">
-                    <p className="text-sm font-medium text-slate-500">New Website Design</p>
+                    <p className="text-sm font-medium text-slate-500">{t('newWebsiteDesign')}</p>
                   </div>
                   <div className="h-4 bg-slate-100 rounded w-5/6"></div>
                   <div className="h-4 bg-slate-100 rounded"></div>
@@ -142,9 +144,9 @@ const Index = () => {
         {/* Features Section */}
         <section className="py-20 bg-slate-50/70">
           <div className="container mx-auto px-6 text-center">
-            <h2 className="text-3xl md:text-4xl font-bold text-brand-black mb-4">Everything You Need, All in One Place</h2>
+            <h2 className="text-3xl md:text-4xl font-bold text-brand-black mb-4">{t('landingFeaturesTitle')}</h2>
             <p className="text-lg text-brand-navy/80 mb-12 max-w-3xl mx-auto">
-              Ruzma is packed with powerful features to streamline your entire freelance workflow, from first contact to final payment.
+              {t('landingFeaturesSubtitle')}
             </p>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 text-left">
               {features.map((feature) => {
@@ -173,23 +175,23 @@ const Index = () => {
             <div className="bg-brand-navy p-8 rounded-2xl">
               <div className="rounded-xl bg-brand-black p-8 text-white flex flex-col gap-4 shadow-2xl">
                 <div>
-                  <span className="block text-sm font-semibold text-brand-yellow tracking-wider">EXAMPLE PROJECT</span>
-                  <h3 className="text-xl font-bold mt-1 mb-3">Website Design</h3>
+                  <span className="block text-sm font-semibold text-brand-yellow tracking-wider">{t('exampleProject')}</span>
+                  <h3 className="text-xl font-bold mt-1 mb-3">{t('websiteDesign')}</h3>
                 </div>
                 <div className="bg-white/10 rounded-full h-2.5 w-full shadow-inner">
                   <div className="rounded-full h-2.5 bg-gradient-to-r from-brand-yellow to-brand-blue w-2/3" />
                 </div>
                 <div className="space-y-3 text-white/90 text-sm pt-2">
                   <div className="flex justify-between items-center">
-                    <span>Design Mockup</span>
+                    <span>{t('designMockup')}</span>
                     <CheckCircle className="w-5 h-5 text-brand-yellow" />
                   </div>
                   <div className="flex justify-between items-center">
-                    <span>Development</span>
+                    <span>{t('development')}</span>
                     <CheckCircle className="w-5 h-5 text-brand-yellow" />
                   </div>
                   <div className="flex justify-between items-center">
-                    <span>Final Delivery</span>
+                    <span>{t('finalDelivery')}</span>
                     <div className="w-5 h-5 flex items-center justify-center">
                       <div className="w-3.5 h-3.5 rounded-full border-2 border-brand-yellow/80"></div>
                     </div>
@@ -199,10 +201,10 @@ const Index = () => {
             </div>
             <div className="text-left">
               <h2 className="text-3xl md:text-4xl font-bold text-brand-black">
-                Gain Peace of Mind, Not More Paperwork
+                {t('landingWhyTitle')}
               </h2>
               <p className="mt-4 mb-6 text-lg text-brand-navy/80">
-                We handle the administrative headaches so you can focus on creative work. Ruzma is your automated project manager, accountant, and delivery assistant, rolled into one.
+                {t('landingWhySubtitle')}
               </p>
               <ul className="space-y-4">
                 {benefits.map((benefit, i) => (
@@ -220,14 +222,14 @@ const Index = () => {
         <section className="bg-brand-navy">
           <div className="container mx-auto px-6 py-20 text-center">
             <h2 className="text-4xl font-extrabold tracking-tight text-white mb-5">
-              Ready to Transform Your Freelance Business?
+              {t('landingCtaTitle')}
             </h2>
             <p className="text-xl max-w-2xl mx-auto mb-9 text-white/80">
-              Join hundreds of successful freelancers who use Ruzma to get paid faster, reduce admin, and deliver work that wows clients. Your first project is on us.
+              {t('landingCtaSubtitle')}
             </p>
             <Link to="/signup">
               <Button size="lg" className="px-8 h-14 text-lg font-bold rounded-lg bg-brand-yellow text-brand-black hover:bg-white">
-                Start Your First Project
+                {t('startYourFirstProject')}
                 <ArrowRight className="w-5 h-5 ml-2" />
               </Button>
             </Link>
@@ -240,7 +242,7 @@ const Index = () => {
           <div className="flex items-center">
             <img src="/lovable-uploads/bca9fbc0-5ee9-455b-91b3-b7eff1f56169.png" alt="Ruzma Logo" className="h-7 opacity-80" />
           </div>
-          <p className="text-sm text-white/50">&copy; {new Date().getFullYear()} Ruzma. All rights reserved.</p>
+          <p className="text-sm text-white/50">{t('footerRights', { year: new Date().getFullYear().toString() })}</p>
         </div>
       </footer>
     </div>
