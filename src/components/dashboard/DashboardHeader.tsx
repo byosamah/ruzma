@@ -1,7 +1,7 @@
 
 import React from "react";
 import { Button } from "@/components/ui/button";
-import { Plus, Template } from "lucide-react";
+import { Plus, FileText } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useT } from "@/lib/i18n";
 
@@ -23,7 +23,7 @@ const DashboardHeader: React.FC<DashboardHeaderProps> = ({
         <h1 className="text-3xl font-bold text-slate-800">
           {t("welcomeBack", { name: displayName })}
         </h1>
-        <p className="text-slate-600 mt-1">{t("dashboardSubtitle")}</p>
+        <p className="text-slate-600 mt-1">{t("manageProjects")}</p>
       </div>
       <div className="flex gap-3">
         <Button 
@@ -31,7 +31,7 @@ const DashboardHeader: React.FC<DashboardHeaderProps> = ({
           variant="outline"
           className="flex items-center"
         >
-          <Template className="w-4 h-4 mr-2" />
+          <FileText className="w-4 h-4 mr-2" />
           Templates
         </Button>
         <Button onClick={onNewProject} className="flex items-center">

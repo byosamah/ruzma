@@ -113,6 +113,10 @@ const CreateProject = () => {
     }
   };
 
+  const handleSaveAsTemplateChange = (checked: boolean | "indeterminate") => {
+    setSaveAsTemplate(checked === true);
+  };
+
   if (loading) {
     return (
       <Layout>
@@ -162,7 +166,7 @@ const CreateProject = () => {
                 <Checkbox
                   id="saveAsTemplate"
                   checked={saveAsTemplate}
-                  onCheckedChange={setSaveAsTemplate}
+                  onCheckedChange={handleSaveAsTemplateChange}
                 />
                 <label
                   htmlFor="saveAsTemplate"

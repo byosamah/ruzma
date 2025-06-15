@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import Layout from '@/components/Layout';
-import { ArrowLeft, Plus, Template, Edit, Trash2 } from 'lucide-react';
+import { ArrowLeft, Plus, FileText, Edit, Trash2 } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { User } from '@supabase/supabase-js';
 import { useT } from '@/lib/i18n';
@@ -122,7 +122,7 @@ const ProjectTemplates = () => {
         {templates.length === 0 ? (
           <Card className="text-center py-12 bg-white/80 backdrop-blur-sm">
             <CardContent>
-              <Template className="w-16 h-16 text-slate-400 mx-auto mb-4" />
+              <FileText className="w-16 h-16 text-slate-400 mx-auto mb-4" />
               <h3 className="text-xl font-semibold text-slate-700 mb-2">
                 No Templates Yet
               </h3>
