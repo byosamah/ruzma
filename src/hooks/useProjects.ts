@@ -337,7 +337,6 @@ export const useProjects = (user: User | null) => {
         .from('payment-proofs')
         .getPublicUrl(filePath);
 
-      // Always use only the .publicUrl if and only if it's a real HTTP URL
       const paymentProofUrl: string | null =
         publicUrlData?.publicUrl && publicUrlData.publicUrl.startsWith('http')
           ? publicUrlData.publicUrl
@@ -346,33 +345,23 @@ export const useProjects = (user: User | null) => {
       if (!paymentProofUrl) {
         console.error('Could not get a valid public URL for uploaded file:', publicUrlData);
         toast.error('Upload succeeded but failed to get file URL');
-        // Clean up failed upload if possible
         await supabase.storage.from('payment-proofs').remove([filePath]);
         return false;
       }
       console.log('Generated public URL for payment proof:', paymentProofUrl);
 
-      // Update the milestone in the database
-      const { data: updatedMilestone, error: updateError } = await supabase
-        .from('milestones')
-        .update({
-          payment_proof_url: paymentProofUrl,
-          status: 'payment_submitted',
-          updated_at: new Date().toISOString()
-        })
-        .eq('id', milestoneId)
-        .select()
-        .single();
+      // Invoke edge function to update the milestone securely
+      const { error: functionError } = await supabase.functions.invoke('submit-payment-proof', {
+        body: { milestoneId, paymentProofUrl },
+      });
 
-      if (updateError) {
-        console.error('Error updating milestone with payment proof:', updateError);
+      if (functionError) {
+        console.error('Error updating milestone via function:', functionError);
         toast.error('Failed to update milestone in database');
         // Remove uploaded file to prevent orphan files
         await supabase.storage.from('payment-proofs').remove([filePath]);
         return false;
       }
-
-      console.log('Milestone updated successfully with payment proof:', updatedMilestone);
 
       toast.success('Payment proof uploaded successfully');
       await fetchProjects();
