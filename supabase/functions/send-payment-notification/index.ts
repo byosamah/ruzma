@@ -39,19 +39,20 @@ const handler = async (req: Request): Promise<Response> => {
     console.log("Project:", projectName);
     console.log("Resend API Key configured:", !!resendApiKey);
 
-    // Generate the correct client project URL
-    const supabaseUrl = Deno.env.get("SUPABASE_URL");
-    console.log("Original Supabase URL:", supabaseUrl);
+    // Generate the correct client project URL using the request origin
+    const origin = req.headers.get('origin') || req.headers.get('referer');
+    console.log("Request origin:", origin);
     
-    // Extract the project ID from the Supabase URL and construct the Lovable app URL
-    let baseUrl = 'https://your-app.lovable.app'; // fallback
+    // Use the origin if available, otherwise construct from environment
+    let baseUrl = 'https://lovable.app'; // default fallback
     
-    if (supabaseUrl) {
-      // Supabase URL format: https://projectid.supabase.co
-      const projectIdMatch = supabaseUrl.match(/https:\/\/([^.]+)\.supabase\.co/);
-      if (projectIdMatch) {
-        const projectId = projectIdMatch[1];
-        baseUrl = `https://${projectId}.lovable.app`;
+    if (origin) {
+      // Extract the base URL from the origin
+      try {
+        const url = new URL(origin);
+        baseUrl = url.origin;
+      } catch (e) {
+        console.warn("Could not parse origin:", origin);
       }
     }
     
@@ -59,6 +60,7 @@ const handler = async (req: Request): Promise<Response> => {
     
     console.log("Generated client project URL:", clientProjectUrl);
     console.log("Client token:", clientToken);
+    console.log("Base URL used:", baseUrl);
     
     let subject: string;
     let htmlContent: string;
