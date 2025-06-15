@@ -26,6 +26,7 @@ export interface DatabaseMilestone {
   deliverable_url?: string;
   deliverable_size?: number;
   payment_proof_url?: string;
+  watermark_text?: string;
 }
 
 export const useProjects = (user: User | null) => {
@@ -63,7 +64,8 @@ export const useProjects = (user: User | null) => {
         ...project,
         milestones: project.milestones.map((milestone: any) => ({
           ...milestone,
-          status: milestone.status as 'pending' | 'payment_submitted' | 'approved' | 'rejected'
+          status: milestone.status as 'pending' | 'payment_submitted' | 'approved' | 'rejected',
+          watermark_text: milestone.watermark_text ?? null,
         }))
       })) as DatabaseProject[];
 

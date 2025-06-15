@@ -156,7 +156,7 @@ const ProjectManagement: React.FC = () => {
                       url: milestone.deliverable_url
                     } : undefined,
                     paymentProofUrl: milestone.payment_proof_url,
-                    watermarkText: milestone.watermark_text, // forward watermark
+                    watermarkText: milestone.watermark_text ?? undefined, // Pass the value camelCase
                   }}
                   onApprove={
                     milestone.status === "payment_submitted"

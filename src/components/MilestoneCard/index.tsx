@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { MilestoneCardProps } from './types';
@@ -17,7 +18,7 @@ const MilestoneCard = ({
   onDeliverableDownload,
   currency = 'USD',
   onUpdateWatermark
-}) => {
+}: MilestoneCardProps) => {
   const [showPaymentProofPreview, setShowPaymentProofPreview] = useState(false);
 
   return (

@@ -1,4 +1,3 @@
-
 export interface Milestone {
   id: string;
   title: string;
@@ -11,6 +10,7 @@ export interface Milestone {
     url?: string;
   };
   paymentProofUrl?: string;
+  watermarkText?: string; // Add camelCase property to Milestone interface
 }
 
 export interface MilestoneCardProps {
