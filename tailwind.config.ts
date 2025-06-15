@@ -27,6 +27,7 @@ export default {
         'brand-navy': '#1D3770',
         'brand-black': '#070E1B',
         'brand-yellow': '#FFD424',
+        'auth-background': '#FDFBF5',
 				border: 'hsl(var(--border))',
 				input: 'hsl(var(--input))',
 				ring: 'hsl(var(--ring))',

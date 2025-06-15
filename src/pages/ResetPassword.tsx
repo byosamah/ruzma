@@ -1,10 +1,10 @@
+
 import React, { useState, useEffect } from 'react';
-import { useNavigate, useSearchParams } from 'react-router-dom';
+import { useNavigate, useSearchParams, Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import Layout from '@/components/Layout';
 import { Eye, EyeOff } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
@@ -20,17 +20,24 @@ const ResetPassword = () => {
 
   useEffect(() => {
     // Check if user came from a valid reset link
-    const accessToken = searchParams.get('access_token');
-    const refreshToken = searchParams.get('refresh_token');
-    
+    const hash = window.location.hash;
+    const params = new URLSearchParams(hash.substring(1)); // remove #
+    const accessToken = params.get('access_token');
+    const refreshToken = params.get('refresh_token');
+
     if (accessToken && refreshToken) {
-      // Set the session with the tokens from the URL
       supabase.auth.setSession({
         access_token: accessToken,
         refresh_token: refreshToken,
+      }).then(({ error }) => {
+        if(error) {
+            console.error("Error setting session:", error);
+            toast.error("Invalid or expired password reset link.");
+            navigate('/login');
+        }
       });
     }
-  }, [searchParams]);
+  }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -67,8 +74,13 @@ const ResetPassword = () => {
   };
 
   return (
-    <Layout>
-      <div className="max-w-md mx-auto">
+    <div className="min-h-screen bg-auth-background flex flex-col items-center justify-center p-4">
+      <div className="absolute top-10 sm:top-16">
+        <Link to="/">
+          <img src="/lovable-uploads/bca9fbc0-5ee9-455b-91b3-b7eff1f56169.png" alt="Ruzma Logo" className="h-10" />
+        </Link>
+      </div>
+      <div className="w-full max-w-md">
         <Card>
           <CardHeader className="text-center">
             <CardTitle className="text-2xl font-bold text-slate-800">Set New Password</CardTitle>
@@ -134,7 +146,7 @@ const ResetPassword = () => {
 
               <Button 
                 type="submit" 
-                className="w-full" 
+                className="w-full bg-brand-yellow text-brand-black hover:bg-brand-yellow/90" 
                 disabled={isLoading}
               >
                 {isLoading ? 'Updating...' : 'Update Password'}
@@ -143,7 +155,10 @@ const ResetPassword = () => {
           </CardContent>
         </Card>
       </div>
-    </Layout>
+      <div className="absolute bottom-8 text-sm text-slate-600">
+        © {new Date().getFullYear()} Ruzma. All rights reserved.
+      </div>
+    </div>
   );
 };
 

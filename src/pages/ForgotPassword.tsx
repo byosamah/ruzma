@@ -1,10 +1,10 @@
+
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import Layout from '@/components/Layout';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 
@@ -38,8 +38,13 @@ const ForgotPassword = () => {
 
   if (emailSent) {
     return (
-      <Layout>
-        <div className="max-w-md mx-auto">
+      <div className="min-h-screen bg-auth-background flex flex-col items-center justify-center p-4">
+        <div className="absolute top-10 sm:top-16">
+          <Link to="/">
+            <img src="/lovable-uploads/bca9fbc0-5ee9-455b-91b3-b7eff1f56169.png" alt="Ruzma Logo" className="h-10" />
+          </Link>
+        </div>
+        <div className="w-full max-w-md">
           <Card>
             <CardHeader className="text-center">
               <CardTitle className="text-2xl font-bold text-slate-800">Check Your Email</CardTitle>
@@ -51,19 +56,27 @@ const ForgotPassword = () => {
               <p className="text-sm text-slate-600 mb-4">
                 Click the link in the email to reset your password. If you don't see it, check your spam folder.
               </p>
-              <Link to="/login" className="text-blue-600 hover:text-blue-700 font-medium">
+              <Link to="/login" className="text-brand-yellow hover:underline font-medium">
                 Back to Login
               </Link>
             </CardContent>
           </Card>
         </div>
-      </Layout>
+        <div className="absolute bottom-8 text-sm text-slate-600">
+          © {new Date().getFullYear()} Ruzma. All rights reserved.
+        </div>
+      </div>
     );
   }
 
   return (
-    <Layout>
-      <div className="max-w-md mx-auto">
+    <div className="min-h-screen bg-auth-background flex flex-col items-center justify-center p-4">
+      <div className="absolute top-10 sm:top-16">
+        <Link to="/">
+          <img src="/lovable-uploads/bca9fbc0-5ee9-455b-91b3-b7eff1f56169.png" alt="Ruzma Logo" className="h-10" />
+        </Link>
+      </div>
+      <div className="w-full max-w-md">
         <Card>
           <CardHeader className="text-center">
             <CardTitle className="text-2xl font-bold text-slate-800">Reset Password</CardTitle>
@@ -86,7 +99,7 @@ const ForgotPassword = () => {
 
               <Button 
                 type="submit" 
-                className="w-full" 
+                className="w-full bg-brand-yellow text-brand-black hover:bg-brand-yellow/90" 
                 disabled={isLoading}
               >
                 {isLoading ? 'Sending...' : 'Send Reset Link'}
@@ -94,14 +107,17 @@ const ForgotPassword = () => {
             </form>
 
             <div className="mt-6 text-center">
-              <Link to="/login" className="text-sm text-blue-600 hover:text-blue-700">
+              <Link to="/login" className="text-sm text-brand-yellow hover:underline">
                 Back to Login
               </Link>
             </div>
           </CardContent>
         </Card>
       </div>
-    </Layout>
+       <div className="absolute bottom-8 text-sm text-slate-600">
+          © {new Date().getFullYear()} Ruzma. All rights reserved.
+        </div>
+    </div>
   );
 };
 
