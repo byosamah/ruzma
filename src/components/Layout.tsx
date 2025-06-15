@@ -1,7 +1,10 @@
+
 import React from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
-import { LogOut, User, Briefcase, Settings } from 'lucide-react';
+import { LogOut, User, Briefcase } from 'lucide-react';
+import { LanguageProvider, useLanguage } from '@/contexts/LanguageContext';
+import { useT } from '@/lib/i18n';
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -9,7 +12,36 @@ interface LayoutProps {
   onSignOut?: () => void;
 }
 
-const Layout: React.FC<LayoutProps> = ({
+// Language Selector Dropdown component
+const LanguageSelector = () => {
+  const { language, setLanguage } = useLanguage();
+
+  // For RTL in Arabic
+  React.useEffect(() => {
+    if (language === "ar") {
+      document.body.dir = "rtl";
+      document.body.style.fontFamily = '"IBM Plex Sans Arabic", system-ui, sans-serif';
+    } else {
+      document.body.dir = "ltr";
+      document.body.style.fontFamily = '"IBM Plex Sans Arabic", system-ui, sans-serif';
+    }
+  }, [language]);
+
+  return (
+    <select
+      value={language}
+      onChange={e => setLanguage(e.target.value as "en" | "ar")}
+      className="rounded border px-2 py-1 text-sm bg-white text-gray-700 focus:outline-none focus:ring-2 focus:ring-primary"
+      style={{ minWidth: 80 }}
+      aria-label="Choose language"
+    >
+      <option value="en">English</option>
+      <option value="ar">العربية</option>
+    </select>
+  );
+};
+
+const LayoutContent: React.FC<LayoutProps> = ({
   children,
   user,
   onSignOut
@@ -18,7 +50,8 @@ const Layout: React.FC<LayoutProps> = ({
   const navigate = useNavigate();
   const isActive = (path: string) => location.pathname === path;
   const isLandingPage = location.pathname === '/';
-  
+  const t = useT();
+
   const handleSignOut = () => {
     if (onSignOut) {
       onSignOut();
@@ -44,46 +77,59 @@ const Layout: React.FC<LayoutProps> = ({
     }
   };
 
-  return <div className="min-h-screen bg-auth-background">
+  return (
+    <div className="min-h-screen bg-auth-background">
       <nav className="bg-background text-foreground border-b border-border sticky top-0 z-50">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             <LogoComponent />
-
             <div className="flex items-center space-x-4">
-              {user ? <>
+              <LanguageSelector />
+              {user ? (
+                <>
                   <Link to="/dashboard">
                     <Button variant={isActive('/dashboard') ? 'secondary' : 'ghost'} size="sm">
                       <Briefcase className="w-4 h-4 mr-2" />
-                      <span>Dashboard</span>
+                      <span>{t("dashboard")}</span>
                     </Button>
                   </Link>
                   <Link to="/profile">
                     <Button variant={isActive('/profile') ? 'secondary' : 'ghost'} size="sm">
                       <User className="w-4 h-4 mr-2" />
-                      <span>Profile</span>
+                      <span>{t("profile")}</span>
                     </Button>
                   </Link>
                   <Button variant="ghost" size="sm" onClick={handleSignOut} className="text-red-500 hover:text-red-400 hover:bg-red-500/10">
                     <LogOut className="w-4 h-4 mr-2" />
-                    <span>Sign Out</span>
+                    <span>{t("signOut")}</span>
                   </Button>
-                </> : <>
+                </>
+              ) : (
+                <>
                   <Link to="/login">
-                    <Button variant="ghost" size="sm">Login</Button>
+                    <Button variant="ghost" size="sm">{t("login")}</Button>
                   </Link>
                   <Link to="/signup">
-                    <Button size="sm" variant="secondary">Sign Up</Button>
+                    <Button size="sm" variant="secondary">{t("signUp")}</Button>
                   </Link>
-                </>}
+                </>
+              )}
             </div>
           </div>
         </div>
       </nav>
-
       <main className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {children}
       </main>
-    </div>;
+    </div>
+  );
 };
+
+// Export Layout wrapped with LanguageProvider so all children have access
+const Layout: React.FC<LayoutProps> = (props) => (
+  <LanguageProvider>
+    <LayoutContent {...props} />
+  </LanguageProvider>
+);
+
 export default Layout;
