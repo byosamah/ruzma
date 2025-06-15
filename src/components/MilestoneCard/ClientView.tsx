@@ -1,9 +1,8 @@
 
-import React, { useState } from 'react';
+import React from 'react';
 import { Button } from '@/components/ui/button';
-import { Upload, Download, ExternalLink, Eye } from 'lucide-react';
+import { Upload, Download, ExternalLink } from 'lucide-react';
 import { Milestone } from './types';
-import DeliverablePreviewDialog from './DeliverablePreviewDialog';
 
 interface ClientViewProps {
   milestone: Milestone;
@@ -16,8 +15,6 @@ const ClientView: React.FC<ClientViewProps> = ({
   onPaymentUpload,
   onDeliverableDownload
 }) => {
-  const [previewOpen, setPreviewOpen] = useState(false);
-
   const handlePaymentFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file && onPaymentUpload) {
@@ -50,8 +47,6 @@ const ClientView: React.FC<ClientViewProps> = ({
       </div>
     );
   };
-
-  const hasDeliverable = milestone.deliverable && milestone.deliverable.url && milestone.deliverable.name;
 
   return (
     <div className="space-y-3">
@@ -87,36 +82,16 @@ const ClientView: React.FC<ClientViewProps> = ({
       
       {milestone.status === 'approved' && (
         <div className="space-y-2">
-          <div className="flex gap-2 flex-wrap">
-            {hasDeliverable && (
-              <>
-                <Button 
-                  className="w-full md:w-auto mb-1"
-                  size="sm"
-                  onClick={() => onDeliverableDownload?.(milestone.id)}
-                >
-                  <Download className="w-4 h-4 mr-2" />
-                  Download {milestone.deliverable?.name}
-                </Button>
-                <Button 
-                  className="w-full md:w-auto mb-1"
-                  size="sm"
-                  variant="secondary"
-                  onClick={() => setPreviewOpen(true)}
-                >
-                  <Eye className="w-4 h-4 mr-2" />
-                  Preview (watermarked)
-                </Button>
-              </>
-            )}
-          </div>
-          <DeliverablePreviewDialog
-            open={previewOpen}
-            onClose={() => setPreviewOpen(false)}
-            fileUrl={milestone.deliverable?.url || ""}
-            fileName={milestone.deliverable?.name || ""}
-            defaultWatermarkText="Delivered for review"
-          />
+          {milestone.deliverable && (
+            <Button 
+              className="w-full" 
+              size="sm"
+              onClick={() => onDeliverableDownload?.(milestone.id)}
+            >
+              <Download className="w-4 h-4 mr-2" />
+              Download {milestone.deliverable.name}
+            </Button>
+          )}
           {renderPaymentProofLink()}
         </div>
       )}
