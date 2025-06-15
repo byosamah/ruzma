@@ -21,10 +21,10 @@ const LanguageSelector = () => {
   // For RTL in Arabic
   React.useEffect(() => {
     if (language === "ar") {
-      document.body.dir = "rtl";
+      document.documentElement.dir = "rtl";
       document.body.style.fontFamily = '"IBM Plex Sans Arabic", system-ui, sans-serif';
     } else {
-      document.body.dir = "ltr";
+      document.documentElement.dir = "ltr";
       document.body.style.fontFamily = '"IBM Plex Sans Arabic", system-ui, sans-serif';
     }
   }, [language]);

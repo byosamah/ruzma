@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
@@ -11,10 +12,10 @@ const LanguageSelector = () => {
   const { language, setLanguage } = useLanguage();
   React.useEffect(() => {
     if (language === "ar") {
-      document.body.dir = "rtl";
+      document.documentElement.dir = "rtl";
       document.body.style.fontFamily = '"IBM Plex Sans Arabic", system-ui, sans-serif';
     } else {
-      document.body.dir = "ltr";
+      document.documentElement.dir = "ltr";
       document.body.style.fontFamily = '"IBM Plex Sans Arabic", system-ui, sans-serif';
     }
   }, [language]);
