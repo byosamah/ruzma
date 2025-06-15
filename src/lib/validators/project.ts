@@ -4,6 +4,7 @@ import { z } from 'zod';
 const required_error = "This field is required";
 const positive_number_error = "Price must be a positive number";
 const at_least_one_milestone_error = "At least one milestone is required";
+const invalid_email_error = "Please enter a valid email address";
 
 export const milestoneSchema = z.object({
   title: z.string().min(1, { message: required_error }),
@@ -14,6 +15,7 @@ export const milestoneSchema = z.object({
 export const createProjectSchema = z.object({
   name: z.string().min(1, { message: required_error }),
   brief: z.string().min(1, { message: required_error }),
+  clientEmail: z.string().email({ message: invalid_email_error }),
   milestones: z.array(milestoneSchema).min(1, { message: at_least_one_milestone_error }),
 });
 

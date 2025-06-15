@@ -18,6 +18,7 @@ export function useProjectActions(user: User | null, fetchProjects: () => Promis
           user_id: user.id,
           name: projectData.name,
           brief: projectData.brief,
+          client_email: projectData.clientEmail,
         })
         .select()
         .single();

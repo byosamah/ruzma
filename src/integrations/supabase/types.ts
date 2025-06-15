@@ -102,6 +102,7 @@ export type Database = {
         Row: {
           brief: string
           client_access_token: string
+          client_email: string | null
           created_at: string
           id: string
           name: string
@@ -111,6 +112,7 @@ export type Database = {
         Insert: {
           brief: string
           client_access_token?: string
+          client_email?: string | null
           created_at?: string
           id?: string
           name: string
@@ -120,6 +122,7 @@ export type Database = {
         Update: {
           brief?: string
           client_access_token?: string
+          client_email?: string | null
           created_at?: string
           id?: string
           name?: string

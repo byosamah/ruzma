@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
@@ -29,6 +28,7 @@ const CreateProject = () => {
     defaultValues: {
       name: '',
       brief: '',
+      clientEmail: '',
       milestones: [{ title: '', description: '', price: 0 }],
     },
     mode: 'onChange',

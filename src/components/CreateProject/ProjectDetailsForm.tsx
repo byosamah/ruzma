@@ -47,6 +47,23 @@ const ProjectDetailsForm = () => {
             </FormItem>
           )}
         />
+        <FormField
+          control={control}
+          name="clientEmail"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Client Email</FormLabel>
+              <FormControl>
+                <Input 
+                  type="email"
+                  placeholder="client@example.com" 
+                  {...field} 
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
       </CardContent>
     </Card>
   );

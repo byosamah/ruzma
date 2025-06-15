@@ -7,6 +7,7 @@ export interface DatabaseProject {
   created_at: string;
   updated_at: string;
   client_access_token: string;
+  client_email?: string;
   milestones: DatabaseMilestone[];
 }
 
