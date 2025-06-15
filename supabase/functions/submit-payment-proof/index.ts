@@ -43,6 +43,27 @@ Deno.serve(async (req) => {
 
     console.log('Attempting to update milestone:', milestoneId)
 
+    // First check if milestone exists
+    const { data: existingMilestone, error: selectError } = await supabaseAdmin
+      .from('milestones')
+      .select('id, status')
+      .eq('id', milestoneId)
+      .single()
+
+    if (selectError || !existingMilestone) {
+      console.error('Milestone not found:', { milestoneId, error: selectError })
+      return new Response(JSON.stringify({ 
+        error: 'Milestone not found', 
+        details: selectError?.message || 'No milestone with this ID exists'
+      }), {
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        status: 404,
+      })
+    }
+
+    console.log('Found milestone:', existingMilestone)
+
+    // Update the milestone
     const { data: updatedMilestone, error: updateError } = await supabaseAdmin
       .from('milestones')
       .update({
@@ -52,7 +73,6 @@ Deno.serve(async (req) => {
       })
       .eq('id', milestoneId)
       .select()
-      .single()
 
     if (updateError) {
       console.error('Database update error:', updateError)
@@ -65,9 +85,21 @@ Deno.serve(async (req) => {
       })
     }
 
-    console.log('Successfully updated milestone:', updatedMilestone)
+    // Check if update actually happened
+    if (!updatedMilestone || updatedMilestone.length === 0) {
+      console.error('No rows were updated')
+      return new Response(JSON.stringify({ 
+        error: 'Update failed - no rows affected',
+        details: 'The milestone update did not affect any rows'
+      }), {
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        status: 500,
+      })
+    }
 
-    return new Response(JSON.stringify(updatedMilestone), {
+    console.log('Successfully updated milestone:', updatedMilestone[0])
+
+    return new Response(JSON.stringify(updatedMilestone[0]), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       status: 200,
     })
