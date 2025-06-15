@@ -288,21 +288,12 @@ export const useProjects = (user: User | null) => {
         userId: user.id
       });
       
-      // Create file path with user ID folder structure
+      // Compose file path with user id
       const fileName = `${Date.now()}-${file.name.replace(/[^a-zA-Z0-9.-]/g, '_')}`;
       const filePath = `${user.id}/${milestoneId}/${fileName}`;
-      
       console.log('Upload path:', filePath);
-      
-      // First, check if bucket exists and is accessible
-      const { data: buckets, error: bucketsError } = await supabase.storage.listBuckets();
-      console.log('Available buckets:', buckets);
-      
-      if (bucketsError) {
-        console.error('Error listing buckets:', bucketsError);
-      }
-      
-      // Upload file to Supabase Storage
+
+      // Upload to bucket
       const { data: uploadData, error: uploadError } = await supabase.storage
         .from('payment-proofs')
         .upload(filePath, file, {
@@ -319,43 +310,28 @@ export const useProjects = (user: User | null) => {
         return false;
       }
 
-      console.log('Payment proof uploaded successfully:', uploadData);
-
-      // Get public URL for the uploaded file
-      const { data: publicUrlData } = supabase.storage
+      // Retrieve the public URL
+      const { data: publicUrlData, error: publicUrlError } = supabase.storage
         .from('payment-proofs')
         .getPublicUrl(filePath);
 
-      const publicUrl = publicUrlData.publicUrl;
-      console.log('Generated public URL for payment proof:', publicUrl);
+      let paymentProofUrl: string | undefined = publicUrlData?.publicUrl;
 
-      // Verify the upload by trying to list the file
-      const { data: listData, error: listError } = await supabase.storage
-        .from('payment-proofs')
-        .list(user.id + '/' + milestoneId);
-      
-      console.log('Files in directory after upload:', listData);
-      if (listError) {
-        console.error('Error listing files:', listError);
+      // Validate URL format
+      if (!paymentProofUrl || !paymentProofUrl.startsWith('http')) {
+        console.error('Could not get a valid public URL for uploaded file:', publicUrlData, publicUrlError);
+        toast.error('Upload succeeded but failed to get file URL');
+        // Optionally: Remove failed upload
+        await supabase.storage.from('payment-proofs').remove([filePath]);
+        return false;
       }
+      console.log('Generated public URL for payment proof:', paymentProofUrl);
 
-      // Test if the URL is accessible
-      try {
-        const response = await fetch(publicUrl, { method: 'HEAD' });
-        console.log('URL accessibility test:', {
-          url: publicUrl,
-          status: response.status,
-          accessible: response.ok
-        });
-      } catch (fetchError) {
-        console.warn('Could not test URL accessibility:', fetchError);
-      }
-
-      // Update milestone with payment proof URL and status in database
+      // Update the milestone in the database
       const { data: updatedMilestone, error: updateError } = await supabase
         .from('milestones')
         .update({
-          payment_proof_url: publicUrl,
+          payment_proof_url: paymentProofUrl,
           status: 'payment_submitted',
           updated_at: new Date().toISOString()
         })
@@ -366,7 +342,7 @@ export const useProjects = (user: User | null) => {
       if (updateError) {
         console.error('Error updating milestone with payment proof:', updateError);
         toast.error('Failed to update milestone in database');
-        // Clean up uploaded file if database update fails
+        // Remove uploaded file to prevent orphan files
         await supabase.storage.from('payment-proofs').remove([filePath]);
         return false;
       }
@@ -374,7 +350,7 @@ export const useProjects = (user: User | null) => {
       console.log('Milestone updated successfully with payment proof:', updatedMilestone);
 
       toast.success('Payment proof uploaded successfully');
-      await fetchProjects(); // Refresh the list
+      await fetchProjects();
       return true;
     } catch (error) {
       console.error('Error uploading payment proof:', error);
