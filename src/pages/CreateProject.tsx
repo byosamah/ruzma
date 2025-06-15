@@ -1,44 +1,40 @@
 
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Textarea } from '@/components/ui/textarea';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Form } from '@/components/ui/form';
 import Layout from '@/components/Layout';
-import { Plus, Trash2, ArrowLeft } from 'lucide-react';
+import { ArrowLeft } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { User } from '@supabase/supabase-js';
 import { useProjects } from '@/hooks/useProjects';
 import { useT } from '@/lib/i18n';
-
-interface MilestoneFormData {
-  id: string;
-  title: string;
-  description: string;
-  price: number;
-}
+import { createProjectSchema, CreateProjectFormData } from '@/lib/validators/project';
+import ProjectDetailsForm from '@/components/CreateProject/ProjectDetailsForm';
+import MilestonesList from '@/components/CreateProject/MilestonesList';
 
 const CreateProject = () => {
   const t = useT();
   const [user, setUser] = useState<User | null>(null);
   const [profile, setProfile] = useState<any>(null);
   const [loading, setLoading] = useState(true);
-  const [formData, setFormData] = useState({
-    name: '',
-    brief: ''
-  });
-  const [milestones, setMilestones] = useState<MilestoneFormData[]>([{
-    id: '1',
-    title: '',
-    description: '',
-    price: 0
-  }]);
-  const [isSubmitting, setIsSubmitting] = useState(false);
   const navigate = useNavigate();
   
   const { createProject } = useProjects(user);
+
+  const form = useForm<CreateProjectFormData>({
+    resolver: zodResolver(createProjectSchema),
+    defaultValues: {
+      name: '',
+      brief: '',
+      milestones: [{ title: '', description: '', price: 0 }],
+    },
+    mode: 'onChange',
+  });
+
+  const { formState: { isSubmitting } } = form;
 
   useEffect(() => {
     const checkAuthAndLoadData = async () => {
@@ -54,7 +50,6 @@ const CreateProject = () => {
 
       setUser(user);
       
-      // Fetch profile
       const { data: profileData } = await supabase
         .from('profiles')
         .select('*')
@@ -73,72 +68,12 @@ const CreateProject = () => {
     navigate('/');
   };
 
-  const handleFormChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    setFormData(prev => ({
-      ...prev,
-      [e.target.name]: e.target.value
-    }));
-  };
-
-  const handleMilestoneChange = (index: number, field: keyof MilestoneFormData, value: any) => {
-    setMilestones(prev => prev.map((milestone, i) => 
-      i === index ? { ...milestone, [field]: value } : milestone
-    ));
-  };
-
-  const addMilestone = () => {
-    const newMilestone: MilestoneFormData = {
-      id: Date.now().toString(),
-      title: '',
-      description: '',
-      price: 0
-    };
-    setMilestones(prev => [...prev, newMilestone]);
-  };
-
-  const removeMilestone = (index: number) => {
-    if (milestones.length > 1) {
-      setMilestones(prev => prev.filter((_, i) => i !== index));
-    }
-  };
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    
-    if (!user) {
-      return;
-    }
-
-    // Validate form
-    if (!formData.name.trim() || !formData.brief.trim()) {
-      alert(t('errorFillAllFields'));
-      return;
-    }
-
-    if (milestones.some(m => !m.title.trim() || !m.description.trim() || m.price <= 0)) {
-      alert(t('errorCompleteMilestoneDetails'));
-      return;
-    }
-
-    setIsSubmitting(true);
-
-    const projectData = {
-      name: formData.name,
-      brief: formData.brief,
-      milestones: milestones.map(m => ({
-        title: m.title,
-        description: m.description,
-        price: m.price
-      }))
-    };
-
-    const result = await createProject(projectData);
-    
+  const onSubmit = async (data: CreateProjectFormData) => {
+    if (!user) return;
+    const result = await createProject(data);
     if (result) {
       navigate('/dashboard');
     }
-    
-    setIsSubmitting(false);
   };
 
   if (loading) {
@@ -176,118 +111,21 @@ const CreateProject = () => {
           <p className="text-slate-600 mt-2">{t('setupProjectMilestones')}</p>
         </div>
 
-        <form onSubmit={handleSubmit} className="space-y-8">
-          {/* Project Details */}
-          <Card className="bg-white/80 backdrop-blur-sm">
-            <CardHeader>
-              <CardTitle>{t('projectDetails')}</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="space-y-2">
-                <Label htmlFor="name">{t('projectNameLabel')}</Label>
-                <Input
-                  id="name"
-                  name="name"
-                  placeholder={t('projectNamePlaceholder')}
-                  value={formData.name}
-                  onChange={handleFormChange}
-                  required
-                />
-              </div>
+        <Form {...form}>
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+            <ProjectDetailsForm />
+            <MilestonesList />
 
-              <div className="space-y-2">
-                <Label htmlFor="brief">{t('projectBriefLabel')}</Label>
-                <Textarea
-                  id="brief"
-                  name="brief"
-                  placeholder={t('projectBriefPlaceholder')}
-                  value={formData.brief}
-                  onChange={handleFormChange}
-                  rows={4}
-                  required
-                />
-              </div>
-            </CardContent>
-          </Card>
-
-          {/* Milestones */}
-          <Card className="bg-white/80 backdrop-blur-sm">
-            <CardHeader>
-              <div className="flex justify-between items-center">
-                <CardTitle>{t('projectMilestones')}</CardTitle>
-                <Button type="button" onClick={addMilestone} variant="outline" size="sm">
-                  <Plus className="w-4 h-4 mr-2" />
-                  {t('addMilestone')}
-                </Button>
-              </div>
-            </CardHeader>
-            <CardContent className="space-y-6">
-              {milestones.map((milestone, index) => (
-                <div key={milestone.id} className="p-4 border border-slate-200 rounded-lg space-y-4">
-                  <div className="flex justify-between items-center">
-                    <h3 className="font-medium text-slate-800">{t('milestoneLabel', { index: (index + 1).toString() })}</h3>
-                    {milestones.length > 1 && (
-                      <Button
-                        type="button"
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => removeMilestone(index)}
-                        className="text-red-600 hover:text-red-700"
-                      >
-                        <Trash2 className="w-4 h-4" />
-                      </Button>
-                    )}
-                  </div>
-
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div className="space-y-2">
-                      <Label>{t('milestoneTitleLabel')}</Label>
-                      <Input
-                        placeholder={t('milestoneTitlePlaceholder')}
-                        value={milestone.title}
-                        onChange={(e) => handleMilestoneChange(index, 'title', e.target.value)}
-                        required
-                      />
-                    </div>
-
-                    <div className="space-y-2">
-                      <Label>{t('priceLabel')}</Label>
-                      <Input
-                        type="number"
-                        min="0"
-                        step="0.01"
-                        placeholder="0.00"
-                        value={milestone.price || ''}
-                        onChange={(e) => handleMilestoneChange(index, 'price', parseFloat(e.target.value) || 0)}
-                        required
-                      />
-                    </div>
-                  </div>
-
-                  <div className="space-y-2">
-                    <Label>{t('descriptionLabel')}</Label>
-                    <Textarea
-                      placeholder={t('milestoneDescriptionPlaceholder')}
-                      value={milestone.description}
-                      onChange={(e) => handleMilestoneChange(index, 'description', e.target.value)}
-                      rows={3}
-                      required
-                    />
-                  </div>
-                </div>
-              ))}
-            </CardContent>
-          </Card>
-
-          <div className="flex justify-end space-x-4">
-            <Button type="button" variant="outline" onClick={() => navigate('/dashboard')}>
-              {t('cancel')}
-            </Button>
-            <Button type="submit" disabled={isSubmitting}>
-              {isSubmitting ? t('creating') : t('createProject')}
-            </Button>
-          </div>
-        </form>
+            <div className="flex justify-end space-x-4">
+              <Button type="button" variant="outline" onClick={() => navigate('/dashboard')}>
+                {t('cancel')}
+              </Button>
+              <Button type="submit" disabled={isSubmitting}>
+                {isSubmitting ? t('creating') : t('createProject')}
+              </Button>
+            </div>
+          </form>
+        </Form>
       </div>
     </Layout>
   );
