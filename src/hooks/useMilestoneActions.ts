@@ -1,7 +1,6 @@
-
 import { User } from '@supabase/supabase-js';
 import { DatabaseProject } from './projectTypes';
-import { updateMilestoneStatusAction } from './milestone-actions/updateStatus';
+import { updateMilestoneStatus as updateMilestoneStatusAction } from './milestone-actions/updateStatus';
 import { updateMilestoneWatermarkAction } from './milestone-actions/updateWatermark';
 import { uploadPaymentProofAction } from './milestone-actions/uploadPaymentProof';
 import { uploadDeliverableAction } from './milestone-actions/uploadDeliverable';
@@ -16,7 +15,7 @@ export function useMilestoneActions(
     milestoneId: string,
     status: 'pending' | 'payment_submitted' | 'approved' | 'rejected'
   ) => {
-    const success = await updateMilestoneStatusAction(user, milestoneId, status);
+    const success = await updateMilestoneStatusAction(user, projects, milestoneId, status);
     if (success) {
       await fetchProjects();
     }
