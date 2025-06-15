@@ -6,7 +6,10 @@ import { useT } from '@/lib/i18n';
 import DashboardHeader from "@/components/dashboard/DashboardHeader";
 import DashboardStats from "@/components/dashboard/DashboardStats";
 import DashboardProjectList from "@/components/dashboard/DashboardProjectList";
+import DashboardAnalytics from "@/components/dashboard/DashboardAnalytics";
 import { useDashboard } from '@/hooks/useDashboard';
+import { useDashboardAnalytics } from '@/hooks/useDashboardAnalytics';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 const Dashboard = () => {
   const t = useT();
@@ -24,6 +27,20 @@ const Dashboard = () => {
     handleEditProject,
     handleDeleteProject,
   } = useDashboard();
+
+  const analyticsData = useDashboardAnalytics(projects.map(p => ({
+    ...p,
+    user_id: user?.id || '',
+    created_at: p.createdAt,
+    updated_at: p.createdAt,
+    client_access_token: '',
+    milestones: p.milestones.map(m => ({
+      ...m,
+      project_id: p.id,
+      created_at: new Date().toISOString(),
+      updated_at: new Date().toISOString(),
+    }))
+  })));
 
   if (loading) {
     return (
@@ -50,21 +67,38 @@ const Dashboard = () => {
           displayName={displayName}
           onNewProject={() => navigate("/create-project")}
         />
-        <DashboardStats
-          totalProjects={stats.totalProjects}
-          totalEarnings={stats.totalEarnings}
-          completedMilestones={stats.completedMilestones}
-          totalMilestones={stats.totalMilestones}
-          pendingPayments={stats.pendingPayments}
-          userCurrency={userCurrency}
-        />
-        <DashboardProjectList
-          projects={projects}
-          userCurrency={userCurrency}
-          onEdit={handleEditProject}
-          onDelete={handleDeleteProject}
-          onNewProject={() => navigate("/create-project")}
-        />
+        
+        <Tabs defaultValue="overview" className="w-full">
+          <TabsList className="grid w-full grid-cols-2">
+            <TabsTrigger value="overview">Overview</TabsTrigger>
+            <TabsTrigger value="analytics">Analytics</TabsTrigger>
+          </TabsList>
+          
+          <TabsContent value="overview" className="space-y-8">
+            <DashboardStats
+              totalProjects={stats.totalProjects}
+              totalEarnings={stats.totalEarnings}
+              completedMilestones={stats.completedMilestones}
+              totalMilestones={stats.totalMilestones}
+              pendingPayments={stats.pendingPayments}
+              userCurrency={userCurrency}
+            />
+            <DashboardProjectList
+              projects={projects}
+              userCurrency={userCurrency}
+              onEdit={handleEditProject}
+              onDelete={handleDeleteProject}
+              onNewProject={() => navigate("/create-project")}
+            />
+          </TabsContent>
+          
+          <TabsContent value="analytics" className="space-y-8">
+            <DashboardAnalytics
+              data={analyticsData}
+              userCurrency={userCurrency}
+            />
+          </TabsContent>
+        </Tabs>
       </div>
     </Layout>
   );
