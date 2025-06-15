@@ -1,83 +1,32 @@
 
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import Layout from "@/components/Layout";
 import { Button } from "@/components/ui/button";
-import MilestoneCard from "@/components/MilestoneCard";
-import { Milestone } from "@/components/ProjectCard";
 import { ArrowLeft } from "lucide-react";
-import { supabase } from '@/integrations/supabase/client';
-import { User } from '@supabase/supabase-js';
-import { useProjects, DatabaseProject } from '@/hooks/useProjects';
-import { useUserCurrency } from '@/hooks/useUserCurrency';
 import { useT, TranslationKey } from "@/lib/i18n";
+import { useProjectManagement } from "@/hooks/useProjectManagement";
+import ProjectHeader from "@/components/ProjectManagement/ProjectHeader";
+import MilestoneList from "@/components/ProjectManagement/MilestoneList";
 
 const ProjectManagement: React.FC = () => {
   const { projectId } = useParams<{ projectId: string }>();
-  const [user, setUser] = useState<User | null>(null);
-  const [profile, setProfile] = useState<any>(null);
-  const [project, setProject] = useState<DatabaseProject | null>(null);
-  const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
   const t = useT();
 
-  const { projects, updateMilestoneStatus, uploadPaymentProof, uploadDeliverable, downloadDeliverable, updateMilestoneWatermark } = useProjects(user);
-  const userCurrency = useUserCurrency(user);
+  const {
+    user,
+    profile,
+    project,
+    loading,
+    userCurrency,
+    updateMilestoneStatus,
+    uploadPaymentProof,
+    uploadDeliverable,
+    downloadDeliverable,
+    updateMilestoneWatermark,
+  } = useProjectManagement(projectId);
 
-  useEffect(() => {
-    const checkAuthAndLoadData = async () => {
-      setLoading(true);
-      
-      const { data: { user }, error: userError } = await supabase.auth.getUser();
-      
-      if (userError || !user) {
-        console.log('No user found, redirecting to login');
-        navigate('/login');
-        return;
-      }
-
-      setUser(user);
-      
-      // Fetch profile
-      const { data: profileData } = await supabase
-        .from('profiles')
-        .select('*')
-        .eq('id', user.id)
-        .maybeSingle();
-      
-      setProfile(profileData);
-      setLoading(false);
-    };
-
-    checkAuthAndLoadData();
-  }, [projectId, navigate]);
-
-  useEffect(() => {
-    if (projects.length > 0 && projectId) {
-      const found = projects.find((p) => p.id === projectId);
-      setProject(found || null);
-    }
-  }, [projects, projectId]);
-
-  const handleUpdateMilestoneStatus = async (milestoneId: string, newStatus: Milestone["status"]) => {
-    await updateMilestoneStatus(milestoneId, newStatus);
-  };
-
-  const handlePaymentUpload = async (milestoneId: string, file: File) => {
-    await uploadPaymentProof(milestoneId, file);
-  };
-
-  const handleDeliverableUpload = async (milestoneId: string, file: File, watermarkText?: string) => {
-    await uploadDeliverable(milestoneId, file, watermarkText);
-  };
-
-  const handleDeliverableDownload = async (milestoneId: string) => {
-    await downloadDeliverable(milestoneId);
-  };
-
-  const handleUpdateWatermark = async (milestoneId: string, watermarkText: string) => {
-    await updateMilestoneWatermark(milestoneId, watermarkText);
-  };
 
   if (loading) {
     return (
@@ -92,7 +41,7 @@ const ProjectManagement: React.FC = () => {
     );
   }
 
-  if (!user) return <div>Loading...</div>;
+  if (!user) return <div>{t('loading')}</div>;
   
   if (!project) {
     return (
@@ -117,77 +66,16 @@ const ProjectManagement: React.FC = () => {
         {t('backToDashboard')}
       </Button>
       <div className="max-w-2xl mx-auto space-y-8">
-        <div className="p-5 rounded-lg bg-white/80 shadow-sm">
-          <h1 className="text-3xl font-bold text-slate-800 mb-2">{project.name}</h1>
-          <p className="text-slate-600 mb-4">{project.brief}</p>
-          <div className="flex items-center justify-between text-sm">
-            <span className="text-slate-500">{t('projectId')}: {project.id}</span>
-            <span className="text-slate-500">
-              {t('created')}: {new Date(project.created_at).toLocaleDateString()}
-            </span>
-          </div>
-          <div className="mt-4">
-            <Button
-              asChild
-              variant="outline"
-              size="sm"
-              className="text-blue-600 border-blue-200 hover:bg-blue-50"
-            >
-              <a
-                href={`/client/project/${project.client_access_token}`}
-                target="_blank"
-                rel="noopener noreferrer"
-                tabIndex={0}
-              >
-                {t('openClientPage')}
-              </a>
-            </Button>
-          </div>
-        </div>
-
-        <div className="space-y-6">
-          <h2 className="text-2xl font-semibold">{t('milestones')}</h2>
-          {project.milestones.length === 0 ? (
-            <div className="text-slate-500 text-center">{t('noMilestonesYet')}</div>
-          ) : (
-            <div className="space-y-5">
-              {project.milestones.map((milestone) => (
-                <MilestoneCard
-                  key={milestone.id}
-                  milestone={{
-                    id: milestone.id,
-                    title: milestone.title,
-                    description: milestone.description,
-                    price: milestone.price,
-                    status: milestone.status,
-                    deliverable: milestone.deliverable_name ? {
-                      name: milestone.deliverable_name,
-                      size: milestone.deliverable_size || 0,
-                      url: milestone.deliverable_url
-                    } : undefined,
-                    paymentProofUrl: milestone.payment_proof_url,
-                    watermarkText: milestone.watermark_text || undefined,
-                  }}
-                  onApprove={
-                    milestone.status === "payment_submitted"
-                      ? (mId) => handleUpdateMilestoneStatus(mId, "approved")
-                      : undefined
-                  }
-                  onReject={
-                    milestone.status === "payment_submitted"
-                      ? (mId) => handleUpdateMilestoneStatus(mId, "rejected")
-                      : undefined
-                  }
-                  onDeliverableUpload={handleDeliverableUpload}
-                  onDeliverableDownload={handleDeliverableDownload}
-                  onPaymentUpload={handlePaymentUpload}
-                  currency={userCurrency}
-                  onUpdateWatermark={handleUpdateWatermark}
-                />
-              ))}
-            </div>
-          )}
-        </div>
+        <ProjectHeader project={project} />
+        <MilestoneList
+          milestones={project.milestones}
+          userCurrency={userCurrency}
+          onUpdateMilestoneStatus={updateMilestoneStatus}
+          onPaymentUpload={uploadPaymentProof}
+          onDeliverableUpload={uploadDeliverable}
+          onDeliverableDownload={downloadDeliverable}
+          onUpdateWatermark={updateMilestoneWatermark}
+        />
       </div>
     </Layout>
   );
