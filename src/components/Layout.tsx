@@ -4,6 +4,8 @@ import { Button } from '@/components/ui/button';
 import { LogOut, User, Briefcase } from 'lucide-react';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useT } from '@/lib/i18n';
+import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
+
 interface LayoutProps {
   children: React.ReactNode;
   user?: any;
@@ -73,10 +75,16 @@ const Layout: React.FC<LayoutProps> = ({
                       <span>{t("profile")}</span>
                     </Button>
                   </Link>
-                  <Button variant="ghost" size="sm" onClick={handleSignOut} className="text-red-500 hover:text-red-400 hover:bg-red-500/10">
-                    <LogOut className="w-4 h-4 mr-2" />
-                    <span>{t("signOut")}</span>
-                  </Button>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <Button variant="ghost" size="icon" onClick={handleSignOut} className="text-red-500 hover:text-red-400 hover:bg-red-500/10">
+                        <LogOut className="w-4 h-4" />
+                      </Button>
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      <p>{t("signOut")}</p>
+                    </TooltipContent>
+                  </Tooltip>
                 </> : <>
                   <Link to="/login">
                     <Button variant="ghost" size="sm">{t("login")}</Button>
