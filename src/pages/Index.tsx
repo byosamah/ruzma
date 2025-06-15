@@ -1,4 +1,3 @@
-
 import React from 'react';
 import HeroSection from "@/components/landing/HeroSection";
 import TrustedLogos from "@/components/landing/TrustedLogos";
@@ -18,11 +17,9 @@ const Index = () => (
           <img src="/lovable-uploads/bca9fbc0-5ee9-455b-91b3-b7eff1f56169.png" alt="Zaplytic Logo" className="h-8" />
           <span className="font-bold text-lg text-brand-black">Zaplytic</span>
         </div>
+        {/* Remove nav links here */}
         <nav className="hidden md:flex gap-7 text-brand-black font-medium text-base">
-          <a href="#" className="hover:underline">Home</a>
-          <a href="#" className="hover:underline">Features</a>
-          <a href="#" className="hover:underline">Pricing</a>
-          <a href="#" className="hover:underline">About</a>
+          {/* Links removed as requested */}
         </nav>
         <div className="flex gap-3">
           <a href="#" className="text-brand-black font-medium hover:underline">Sign in</a>
