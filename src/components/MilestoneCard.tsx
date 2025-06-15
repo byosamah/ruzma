@@ -1,5 +1,4 @@
-
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -43,6 +42,13 @@ const MilestoneCard: React.FC<MilestoneCardProps> = ({
 }) => {
   const [showPaymentProofPreview, setShowPaymentProofPreview] = useState(false);
   const [imageLoadError, setImageLoadError] = useState(false);
+
+  // Always log the paymentProofUrl for debugging
+  React.useEffect(() => {
+    if (milestone.paymentProofUrl) {
+      console.log('[MilestoneCard] paymentProofUrl:', milestone.paymentProofUrl);
+    }
+  }, [milestone.paymentProofUrl]);
 
   const getStatusColor = (status: string) => {
     switch (status) {
@@ -114,6 +120,25 @@ const MilestoneCard: React.FC<MilestoneCardProps> = ({
         </CardHeader>
         <CardContent>
           <div className="space-y-4">
+            {/* ALWAYS display raw payment proof URL for debug */}
+            {milestone.paymentProofUrl && (
+              <div className="mb-2 text-xs text-blue-500 break-all">
+                <span>Payment Proof Raw URL: </span>
+                <a href={milestone.paymentProofUrl} target="_blank" rel="noopener noreferrer" className="underline mr-2">
+                  {milestone.paymentProofUrl}
+                </a>
+                <Button
+                  variant="ghost"
+                  size="xs"
+                  className="px-2 py-1"
+                  onClick={() => {
+                    navigator.clipboard.writeText(milestone.paymentProofUrl);
+                  }}
+                >
+                  Copy URL
+                </Button>
+              </div>
+            )}
             {isClient ? (
               // Client view
               <div className="space-y-3">
@@ -154,6 +179,14 @@ const MilestoneCard: React.FC<MilestoneCardProps> = ({
                           <ExternalLink className="w-4 h-4" />
                           <span>View Uploaded Proof</span>
                         </Button>
+                        <a
+                          href={milestone.paymentProofUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-blue-500 ml-2 underline"
+                        >
+                          Direct Link
+                        </a>
                       </div>
                     )}
                   </div>
@@ -182,6 +215,14 @@ const MilestoneCard: React.FC<MilestoneCardProps> = ({
                           <ExternalLink className="w-4 h-4" />
                           <span>View Payment Proof</span>
                         </Button>
+                        <a
+                          href={milestone.paymentProofUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-blue-500 ml-2 underline"
+                        >
+                          Direct Link
+                        </a>
                       </div>
                     )}
                   </div>
@@ -201,6 +242,14 @@ const MilestoneCard: React.FC<MilestoneCardProps> = ({
                           <ExternalLink className="w-4 h-4" />
                           <span>View Previous Proof</span>
                         </Button>
+                        <a
+                          href={milestone.paymentProofUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-blue-500 ml-2 underline"
+                        >
+                          Direct Link
+                        </a>
                       </div>
                     )}
                   </div>
@@ -397,6 +446,29 @@ const MilestoneCard: React.FC<MilestoneCardProps> = ({
                   </>
                 )}
               </div>
+              {/* Show the raw Payment Proof URL for copy/debug in modal too */}
+              <div className="text-xs mt-3 text-blue-500 break-words">
+                <span>Direct file URL: </span>
+                <a
+                  href={milestone.paymentProofUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="underline"
+                >
+                  {milestone.paymentProofUrl}
+                </a>
+                <Button
+                  variant="ghost"
+                  size="xs"
+                  className="px-2 py-1 ml-2"
+                  onClick={() => {
+                    navigator.clipboard.writeText(milestone.paymentProofUrl);
+                  }}
+                >
+                  Copy URL
+                </Button>
+              </div>
+              {/* ... keep approve/reject buttons code ... */}
               <div className="flex justify-center space-x-2 mt-4">
                 {onApprove && (
                   <Button 
