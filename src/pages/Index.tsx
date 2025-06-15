@@ -4,8 +4,35 @@ import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { CheckCircle, ArrowRight, Briefcase, DollarSign, FileCheck, Shield, Zap, Users } from 'lucide-react';
+import { LanguageProvider, useLanguage } from '@/contexts/LanguageContext';
 
-const Index = () => {
+// Language Selector component for landing page
+const LanguageSelector = () => {
+  const { language, setLanguage } = useLanguage();
+  React.useEffect(() => {
+    if (language === "ar") {
+      document.body.dir = "rtl";
+      document.body.style.fontFamily = '"IBM Plex Sans Arabic", system-ui, sans-serif';
+    } else {
+      document.body.dir = "ltr";
+      document.body.style.fontFamily = '"IBM Plex Sans Arabic", system-ui, sans-serif';
+    }
+  }, [language]);
+  return (
+    <select
+      value={language}
+      onChange={e => setLanguage(e.target.value as "en" | "ar")}
+      style={{ minWidth: 80 }}
+      aria-label="Choose language"
+      className="rounded border py-1 text-sm bg-white text-gray-700 focus:outline-none focus:ring-2 focus:ring-primary mx-4 px-2"
+    >
+      <option value="en">English</option>
+      <option value="ar">العربية</option>
+    </select>
+  );
+};
+
+const IndexContent = () => {
   const features = [
     {
       icon: Briefcase,
@@ -56,6 +83,7 @@ const Index = () => {
             <img src="/lovable-uploads/bca9fbc0-5ee9-455b-91b3-b7eff1f56169.png" alt="Ruzma Logo" className="h-7" />
           </Link>
           <div className="flex items-center space-x-2">
+            <LanguageSelector />
             <Link to="/login">
               <Button variant="ghost" className="text-brand-navy font-semibold hover:text-brand-blue">Login</Button>
             </Link>
@@ -219,4 +247,11 @@ const Index = () => {
   );
 };
 
+const Index = () => (
+  <LanguageProvider>
+    <IndexContent />
+  </LanguageProvider>
+);
+
 export default Index;
+
