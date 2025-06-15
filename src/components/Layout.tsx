@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
@@ -45,8 +44,8 @@ const Layout: React.FC<LayoutProps> = ({
     }
   };
 
-  return <div className="min-h-screen bg-background">
-      <nav className="bg-white/80 backdrop-blur-sm border-b border-slate-200 sticky top-0 z-50">
+  return <div className="min-h-screen bg-slate-50">
+      <nav className="bg-brand-black text-white border-b border-brand-navy sticky top-0 z-50">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             <LogoComponent />
@@ -54,27 +53,27 @@ const Layout: React.FC<LayoutProps> = ({
             <div className="flex items-center space-x-4">
               {user ? <>
                   <Link to="/dashboard">
-                    <Button variant={isActive('/dashboard') ? 'default' : 'ghost'} size="sm" className="flex items-center space-x-2">
+                    <Button variant={isActive('/dashboard') ? 'secondary' : 'ghost'} size="sm" className="hover:bg-white/10">
                       <Briefcase className="w-4 h-4" />
                       <span>Dashboard</span>
                     </Button>
                   </Link>
                   <Link to="/profile">
-                    <Button variant={isActive('/profile') ? 'default' : 'ghost'} size="sm" className="flex items-center space-x-2">
+                    <Button variant={isActive('/profile') ? 'secondary' : 'ghost'} size="sm" className="hover:bg-white/10">
                       <User className="w-4 h-4" />
                       <span>Profile</span>
                     </Button>
                   </Link>
-                  <Button variant="ghost" size="sm" onClick={handleSignOut} className="flex items-center space-x-2 text-red-600 hover:text-red-700">
+                  <Button variant="ghost" size="sm" onClick={handleSignOut} className="text-red-500 hover:text-red-400 hover:bg-red-500/10">
                     <LogOut className="w-4 h-4" />
                     <span>Sign Out</span>
                   </Button>
                 </> : <>
                   <Link to="/login">
-                    <Button variant="ghost" size="sm">Login</Button>
+                    <Button variant="ghost" size="sm" className="hover:bg-white/10">Login</Button>
                   </Link>
                   <Link to="/signup">
-                    <Button size="sm">Sign Up</Button>
+                    <Button size="sm" variant="secondary">Sign Up</Button>
                   </Link>
                 </>}
             </div>

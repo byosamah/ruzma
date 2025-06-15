@@ -19,6 +19,9 @@ export default {
 			}
 		},
 		extend: {
+			fontFamily: {
+        sans: ['Inter', 'system-ui', 'sans-serif'],
+      },
 			colors: {
 				'brand-blue': '#4B72E5',
         'brand-navy': '#1D3770',
