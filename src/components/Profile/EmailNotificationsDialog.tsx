@@ -20,9 +20,16 @@ interface EmailNotificationsDialogProps {
   onOpenChange: (open: boolean) => void;
 }
 
+interface NotificationSettings {
+  projectUpdates: boolean;
+  paymentReminders: boolean;
+  milestoneUpdates: boolean;
+  marketing: boolean;
+}
+
 export const EmailNotificationsDialog = ({ open, onOpenChange }: EmailNotificationsDialogProps) => {
   const t = useT();
-  const [notifications, setNotifications] = useState({
+  const [notifications, setNotifications] = useState<NotificationSettings>({
     projectUpdates: true,
     paymentReminders: true,
     milestoneUpdates: true,
@@ -35,14 +42,19 @@ export const EmailNotificationsDialog = ({ open, onOpenChange }: EmailNotificati
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) return;
 
-      const { data: profile } = await supabase
+      const { data: profile, error } = await supabase
         .from('profiles')
         .select('notification_settings')
         .eq('id', user.id)
         .single();
 
-      if (profile?.notification_settings) {
-        setNotifications(profile.notification_settings);
+      if (error) {
+        console.error('Error fetching notification settings:', error);
+        return;
+      }
+
+      if (profile && profile.notification_settings) {
+        setNotifications(profile.notification_settings as NotificationSettings);
       }
     };
 

@@ -74,6 +74,7 @@ export type Database = {
           currency: string | null
           full_name: string | null
           id: string
+          notification_settings: Json | null
           website: string | null
         }
         Insert: {
@@ -84,6 +85,7 @@ export type Database = {
           currency?: string | null
           full_name?: string | null
           id: string
+          notification_settings?: Json | null
           website?: string | null
         }
         Update: {
@@ -94,6 +96,7 @@ export type Database = {
           currency?: string | null
           full_name?: string | null
           id?: string
+          notification_settings?: Json | null
           website?: string | null
         }
         Relationships: []
