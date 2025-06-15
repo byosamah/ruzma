@@ -350,25 +350,58 @@ export const useProjects = (user: User | null) => {
         return false;
       }
 
-      // Since the bucket is private, generate a signed URL
-      // Assume the file path is everything after 'https://.../object/deliverables/' in the deliverable_url
+      console.log('Attempting to download deliverable:', {
+        milestoneId,
+        deliverable_name: milestone.deliverable_name,
+        deliverable_url: milestone.deliverable_url
+      });
+
+      // Extract file path from the deliverable_url
       let filePath = '';
       try {
-        const urlParts = milestone.deliverable_url.split('/object/deliverables/');
-        if (urlParts.length > 1) {
-          filePath = decodeURIComponent(urlParts[1]);
+        // Handle both public URL format and storage paths
+        if (milestone.deliverable_url.includes('/object/deliverables/')) {
+          const urlParts = milestone.deliverable_url.split('/object/deliverables/');
+          if (urlParts.length > 1) {
+            filePath = decodeURIComponent(urlParts[1]);
+          }
+        } else if (milestone.deliverable_url.includes('/storage/v1/object/public/deliverables/')) {
+          const urlParts = milestone.deliverable_url.split('/storage/v1/object/public/deliverables/');
+          if (urlParts.length > 1) {
+            filePath = decodeURIComponent(urlParts[1]);
+          }
+        } else {
+          // Assume the URL is the file path itself if it doesn't match expected formats
+          filePath = milestone.deliverable_url;
         }
+
+        console.log('Extracted file path:', filePath);
       } catch (e) {
+        console.error('Error extracting file path:', e);
         toast.error('Could not locate file path for download');
         return false;
       }
 
+      if (!filePath) {
+        toast.error('Invalid file path');
+        return false;
+      }
+
+      // Generate signed URL for download
       const { data, error } = await supabase
         .storage
         .from('deliverables')
         .createSignedUrl(filePath, 60); // Signed URL valid for 60 seconds
 
-      if (error || !data?.signedUrl) {
+      console.log('Signed URL response:', { data, error });
+
+      if (error) {
+        console.error('Error generating signed URL:', error);
+        toast.error(`Download failed: ${error.message}`);
+        return false;
+      }
+
+      if (!data?.signedUrl) {
         toast.error('Could not generate download link');
         return false;
       }
@@ -385,7 +418,7 @@ export const useProjects = (user: User | null) => {
       toast.success(`Downloaded ${milestone.deliverable_name}`);
       return true;
     } catch (error) {
-      console.error('Error:', error);
+      console.error('Error downloading deliverable:', error);
       toast.error('Failed to download deliverable');
       return false;
     }
