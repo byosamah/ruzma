@@ -301,34 +301,19 @@ export const useProjects = (user: User | null) => {
 
   const uploadPaymentProof = async (milestoneId: string, file: File) => {
     try {
-      console.log('Starting payment proof upload:', {
+      console.log('Starting payment proof upload (via edge function):', {
         milestoneId,
         fileName: file.name,
         fileSize: file.size,
         fileType: file.type
       });
 
-      // Step 1: Verify the milestone exists
-      const { data: milestoneCheck, error: checkError } = await supabase
-        .from('milestones')
-        .select('id, project_id')
-        .eq('id', milestoneId)
-        .single();
-
-      if (checkError || !milestoneCheck) {
-        console.error('Milestone verification failed:', checkError);
-        toast.error('Milestone not found');
-        return false;
-      }
-
-      // Step 2: Generate unique file path
+      // Step 1: Generate unique file path
       const fileExt = file.name.split('.').pop();
       const fileName = `${milestoneId}-${Date.now()}.${fileExt}`;
       const filePath = `${milestoneId}/${fileName}`;
 
-      console.log('Upload path:', filePath);
-
-      // Step 3: Upload file to Supabase Storage
+      // Step 2: Upload file to Supabase Storage
       const { data: uploadData, error: uploadError } = await supabase.storage
         .from('payment-proofs')
         .upload(filePath, file, {
@@ -342,9 +327,7 @@ export const useProjects = (user: User | null) => {
         return false;
       }
 
-      console.log('File uploaded successfully:', uploadData);
-
-      // Step 4: Get public URL for the uploaded file
+      // Step 3: Get public URL for the uploaded file
       const { data: urlData } = supabase.storage
         .from('payment-proofs')
         .getPublicUrl(filePath);
@@ -358,31 +341,24 @@ export const useProjects = (user: User | null) => {
       const publicUrl = urlData.publicUrl;
       console.log('Generated public URL:', publicUrl);
 
-      // Step 5: Update milestone in database - using update without select to avoid the JSON error
-      const { error: updateError } = await supabase
-        .from('milestones')
-        .update({
-          payment_proof_url: publicUrl,
-          status: 'payment_submitted',
-          updated_at: new Date().toISOString()
-        })
-        .eq('id', milestoneId);
+      // Step 4: Call the Edge Function to update the milestone record
+      const { data: edgeData, error: edgeError } = await supabase.functions.invoke('submit-payment-proof', {
+        body: {
+          milestoneId,
+          paymentProofUrl: publicUrl,
+        },
+      });
 
-      if (updateError) {
-        console.error('Database update error:', updateError);
-        // Clean up uploaded file if database update fails
-        await supabase.storage
-          .from('payment-proofs')
-          .remove([filePath]);
-        toast.error(`Failed to update milestone: ${updateError.message}`);
+      if (edgeError || (edgeData && edgeData.error)) {
+        console.error("Edge Function error:", edgeError, edgeData?.error || "");
+        // Clean up uploaded file if edge function fails
+        await supabase.storage.from('payment-proofs').remove([filePath]);
+        toast.error(edgeData?.error || edgeError?.message || 'Payment proof submission failed.');
         return false;
       }
 
-      console.log('Milestone updated successfully');
-
-      // Step 6: Refresh projects to show updated status
+      toast.success('Payment proof submitted successfully!');
       await fetchProjects();
-      toast.success('Payment proof uploaded successfully');
       return true;
 
     } catch (error) {
