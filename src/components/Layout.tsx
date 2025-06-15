@@ -1,8 +1,9 @@
+
 import React from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { LogOut, User, Briefcase } from 'lucide-react';
-import { LanguageProvider, useLanguage } from '@/contexts/LanguageContext';
+import { useLanguage } from '@/contexts/LanguageContext';
 import { useT } from '@/lib/i18n';
 interface LayoutProps {
   children: React.ReactNode;
@@ -34,7 +35,7 @@ const LanguageSelector = () => {
       <option value="ar">العربية</option>
     </select>;
 };
-const LayoutContent: React.FC<LayoutProps> = ({
+const Layout: React.FC<LayoutProps> = ({
   children,
   user,
   onSignOut
@@ -105,8 +106,4 @@ const LayoutContent: React.FC<LayoutProps> = ({
     </div>;
 };
 
-// Export Layout wrapped with LanguageProvider so all children have access
-const Layout: React.FC<LayoutProps> = props => <LanguageProvider>
-    <LayoutContent {...props} />
-  </LanguageProvider>;
 export default Layout;

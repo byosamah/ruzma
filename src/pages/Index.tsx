@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { CheckCircle, ArrowRight, Briefcase, DollarSign, FileCheck, Shield, Zap, Users } from 'lucide-react';
-import { LanguageProvider, useLanguage } from '@/contexts/LanguageContext';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 // Language Selector component for landing page
 const LanguageSelector = () => {
@@ -32,7 +32,7 @@ const LanguageSelector = () => {
   );
 };
 
-const IndexContent = () => {
+const Index = () => {
   const features = [
     {
       icon: Briefcase,
@@ -247,11 +247,4 @@ const IndexContent = () => {
   );
 };
 
-const Index = () => (
-  <LanguageProvider>
-    <IndexContent />
-  </LanguageProvider>
-);
-
 export default Index;
-
