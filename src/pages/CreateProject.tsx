@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
@@ -39,10 +38,10 @@ const CreateProject = () => {
       name: templateData.name || '',
       brief: templateData.brief || '',
       clientEmail: '',
-      milestones: templateData.milestones?.map((milestone: any): { title: string; description: string; price: number } => ({
-        title: milestone.title || '',
-        description: milestone.description || '',
-        price: milestone.price || 0,
+      milestones: templateData.milestones?.map((milestone: any) => ({
+        title: String(milestone.title || ''),
+        description: String(milestone.description || ''),
+        price: Number(milestone.price || 0),
       })) || [{ title: '', description: '', price: 0 }],
     } : {
       name: '',
@@ -89,10 +88,10 @@ const CreateProject = () => {
         name: templateData.name || '',
         brief: templateData.brief || '',
         clientEmail: '',
-        milestones: templateData.milestones?.map((milestone: any): { title: string; description: string; price: number } => ({
-          title: milestone.title || '',
-          description: milestone.description || '',
-          price: milestone.price || 0,
+        milestones: templateData.milestones?.map((milestone: any) => ({
+          title: String(milestone.title || ''),
+          description: String(milestone.description || ''),
+          price: Number(milestone.price || 0),
         })) || [{ title: '', description: '', price: 0 }],
       });
     }
@@ -211,4 +210,3 @@ const CreateProject = () => {
 };
 
 export default CreateProject;
-
