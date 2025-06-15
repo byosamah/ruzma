@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
@@ -70,7 +69,7 @@ const ResetPassword = () => {
   return (
     <Layout>
       <div className="max-w-md mx-auto">
-        <Card className="bg-white/80 backdrop-blur-sm">
+        <Card>
           <CardHeader className="text-center">
             <CardTitle className="text-2xl font-bold text-slate-800">Set New Password</CardTitle>
             <p className="text-slate-600">Enter your new password below</p>

@@ -44,7 +44,7 @@ const Layout: React.FC<LayoutProps> = ({
     }
   };
 
-  return <div className="min-h-screen bg-slate-50">
+  return <div className="min-h-screen bg-background">
       <nav className="bg-brand-black text-white border-b border-brand-navy sticky top-0 z-50">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">

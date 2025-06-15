@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
@@ -56,7 +55,7 @@ const Login = () => {
   return (
     <Layout>
       <div className="max-w-md mx-auto">
-        <Card className="bg-white/80 backdrop-blur-sm">
+        <Card>
           <CardHeader className="text-center">
             <CardTitle className="text-2xl font-bold text-slate-800">Welcome Back</CardTitle>
             <p className="text-slate-600">Sign in to your Ruzma account</p>

@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
@@ -41,7 +40,7 @@ const ForgotPassword = () => {
     return (
       <Layout>
         <div className="max-w-md mx-auto">
-          <Card className="bg-white/80 backdrop-blur-sm">
+          <Card>
             <CardHeader className="text-center">
               <CardTitle className="text-2xl font-bold text-slate-800">Check Your Email</CardTitle>
               <p className="text-slate-600">
@@ -65,7 +64,7 @@ const ForgotPassword = () => {
   return (
     <Layout>
       <div className="max-w-md mx-auto">
-        <Card className="bg-white/80 backdrop-blur-sm">
+        <Card>
           <CardHeader className="text-center">
             <CardTitle className="text-2xl font-bold text-slate-800">Reset Password</CardTitle>
             <p className="text-slate-600">Enter your email to receive a password reset link</p>
