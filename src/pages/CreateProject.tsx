@@ -39,7 +39,7 @@ const CreateProject = () => {
       name: templateData.name || '',
       brief: templateData.brief || '',
       clientEmail: '',
-      milestones: templateData.milestones?.map((milestone: any) => ({
+      milestones: templateData.milestones?.map((milestone: any): { title: string; description: string; price: number } => ({
         title: milestone.title || '',
         description: milestone.description || '',
         price: milestone.price || 0,
@@ -89,7 +89,7 @@ const CreateProject = () => {
         name: templateData.name || '',
         brief: templateData.brief || '',
         clientEmail: '',
-        milestones: templateData.milestones?.map((milestone: any) => ({
+        milestones: templateData.milestones?.map((milestone: any): { title: string; description: string; price: number } => ({
           title: milestone.title || '',
           description: milestone.description || '',
           price: milestone.price || 0,
@@ -211,3 +211,4 @@ const CreateProject = () => {
 };
 
 export default CreateProject;
+
