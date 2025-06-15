@@ -1,3 +1,4 @@
+
 import { useLanguage } from "@/contexts/LanguageContext";
 
 const translations = {
@@ -153,6 +154,25 @@ const translations = {
     pendingPayment: "Pending Payment",
     projectNotFoundError: "Project Not Found",
     projectNotFoundDesc: "The project you're looking for doesn't exist or has been removed.",
+    // Create Project
+    loading: "Loading...",
+    createNewProject: "Create New Project",
+    setupProjectMilestones: "Set up your project milestones and deliverables",
+    projectDetails: "Project Details",
+    projectNameLabel: "Project Name *",
+    projectNamePlaceholder: "Enter project name",
+    projectBriefLabel: "Project Brief *",
+    projectBriefPlaceholder: "Describe the project scope and objectives",
+    addMilestone: "Add Milestone",
+    milestoneLabel: "Milestone {index}",
+    milestoneTitleLabel: "Milestone Title *",
+    milestoneTitlePlaceholder: "Enter milestone title",
+    priceLabel: "Price (USD) *",
+    descriptionLabel: "Description *",
+    milestoneDescriptionPlaceholder: "Describe what will be delivered in this milestone",
+    creating: "Creating...",
+    errorFillAllFields: "Please fill in all required fields",
+    errorCompleteMilestoneDetails: "Please complete all milestone details",
   },
   ar: {
     dashboard: "لوحة التحكم",
@@ -306,6 +326,25 @@ const translations = {
     pendingPayment: "بانتظار الدفع",
     projectNotFoundError: "المشروع غير موجود",
     projectNotFoundDesc: "المشروع الذي تبحث عنه غير موجود أو تم حذفه.",
+    // Create Project
+    loading: "جاري التحميل...",
+    createNewProject: "إنشاء مشروع جديد",
+    setupProjectMilestones: "قم بإعداد مراحل مشروعك وتسليماته",
+    projectDetails: "تفاصيل المشروع",
+    projectNameLabel: "اسم المشروع *",
+    projectNamePlaceholder: "أدخل اسم المشروع",
+    projectBriefLabel: "موجز المشروع *",
+    projectBriefPlaceholder: "صف نطاق المشروع وأهدافه",
+    addMilestone: "إضافة مرحلة",
+    milestoneLabel: "المرحلة {index}",
+    milestoneTitleLabel: "عنوان المرحلة *",
+    milestoneTitlePlaceholder: "أدخل عنوان المرحلة",
+    priceLabel: "السعر (بالدولار الأمريكي) *",
+    descriptionLabel: "الوصف *",
+    milestoneDescriptionPlaceholder: "صف ما سيتم تسليمه في هذه المرحلة",
+    creating: "جارٍ الإنشاء...",
+    errorFillAllFields: "يرجى ملء جميع الحقول المطلوبة",
+    errorCompleteMilestoneDetails: "يرجى إكمال جميع تفاصيل المراحل",
   },
 };
 

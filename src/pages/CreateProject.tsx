@@ -11,6 +11,7 @@ import { Plus, Trash2, ArrowLeft } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { User } from '@supabase/supabase-js';
 import { useProjects } from '@/hooks/useProjects';
+import { useT } from '@/lib/i18n';
 
 interface MilestoneFormData {
   id: string;
@@ -20,6 +21,7 @@ interface MilestoneFormData {
 }
 
 const CreateProject = () => {
+  const t = useT();
   const [user, setUser] = useState<User | null>(null);
   const [profile, setProfile] = useState<any>(null);
   const [loading, setLoading] = useState(true);
@@ -109,12 +111,12 @@ const CreateProject = () => {
 
     // Validate form
     if (!formData.name.trim() || !formData.brief.trim()) {
-      alert('Please fill in all required fields');
+      alert(t('errorFillAllFields'));
       return;
     }
 
     if (milestones.some(m => !m.title.trim() || !m.description.trim() || m.price <= 0)) {
-      alert('Please complete all milestone details');
+      alert(t('errorCompleteMilestoneDetails'));
       return;
     }
 
@@ -145,7 +147,7 @@ const CreateProject = () => {
         <div className="flex items-center justify-center min-h-[400px]">
           <div className="text-center">
             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
-            <p className="text-slate-600">Loading...</p>
+            <p className="text-slate-600">{t('loading')}</p>
           </div>
         </div>
       </Layout>
@@ -153,7 +155,7 @@ const CreateProject = () => {
   }
 
   if (!user) {
-    return <div>Loading...</div>;
+    return <div>{t('loading')}</div>;
   }
 
   return (
@@ -165,28 +167,28 @@ const CreateProject = () => {
         onClick={() => navigate("/dashboard")}
       >
         <ArrowLeft className="w-4 h-4 mr-1" />
-        Back to Dashboard
+        {t('backToDashboard')}
       </Button>
       
       <div className="max-w-4xl mx-auto space-y-8">
         <div>
-          <h1 className="text-3xl font-bold text-slate-800">Create New Project</h1>
-          <p className="text-slate-600 mt-2">Set up your project milestones and deliverables</p>
+          <h1 className="text-3xl font-bold text-slate-800">{t('createNewProject')}</h1>
+          <p className="text-slate-600 mt-2">{t('setupProjectMilestones')}</p>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-8">
           {/* Project Details */}
           <Card className="bg-white/80 backdrop-blur-sm">
             <CardHeader>
-              <CardTitle>Project Details</CardTitle>
+              <CardTitle>{t('projectDetails')}</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="space-y-2">
-                <Label htmlFor="name">Project Name *</Label>
+                <Label htmlFor="name">{t('projectNameLabel')}</Label>
                 <Input
                   id="name"
                   name="name"
-                  placeholder="Enter project name"
+                  placeholder={t('projectNamePlaceholder')}
                   value={formData.name}
                   onChange={handleFormChange}
                   required
@@ -194,11 +196,11 @@ const CreateProject = () => {
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="brief">Project Brief *</Label>
+                <Label htmlFor="brief">{t('projectBriefLabel')}</Label>
                 <Textarea
                   id="brief"
                   name="brief"
-                  placeholder="Describe the project scope and objectives"
+                  placeholder={t('projectBriefPlaceholder')}
                   value={formData.brief}
                   onChange={handleFormChange}
                   rows={4}
@@ -212,10 +214,10 @@ const CreateProject = () => {
           <Card className="bg-white/80 backdrop-blur-sm">
             <CardHeader>
               <div className="flex justify-between items-center">
-                <CardTitle>Project Milestones</CardTitle>
+                <CardTitle>{t('projectMilestones')}</CardTitle>
                 <Button type="button" onClick={addMilestone} variant="outline" size="sm">
                   <Plus className="w-4 h-4 mr-2" />
-                  Add Milestone
+                  {t('addMilestone')}
                 </Button>
               </div>
             </CardHeader>
@@ -223,7 +225,7 @@ const CreateProject = () => {
               {milestones.map((milestone, index) => (
                 <div key={milestone.id} className="p-4 border border-slate-200 rounded-lg space-y-4">
                   <div className="flex justify-between items-center">
-                    <h3 className="font-medium text-slate-800">Milestone {index + 1}</h3>
+                    <h3 className="font-medium text-slate-800">{t('milestoneLabel', { index: (index + 1).toString() })}</h3>
                     {milestones.length > 1 && (
                       <Button
                         type="button"
@@ -239,9 +241,9 @@ const CreateProject = () => {
 
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div className="space-y-2">
-                      <Label>Milestone Title *</Label>
+                      <Label>{t('milestoneTitleLabel')}</Label>
                       <Input
-                        placeholder="Enter milestone title"
+                        placeholder={t('milestoneTitlePlaceholder')}
                         value={milestone.title}
                         onChange={(e) => handleMilestoneChange(index, 'title', e.target.value)}
                         required
@@ -249,7 +251,7 @@ const CreateProject = () => {
                     </div>
 
                     <div className="space-y-2">
-                      <Label>Price (USD) *</Label>
+                      <Label>{t('priceLabel')}</Label>
                       <Input
                         type="number"
                         min="0"
@@ -263,9 +265,9 @@ const CreateProject = () => {
                   </div>
 
                   <div className="space-y-2">
-                    <Label>Description *</Label>
+                    <Label>{t('descriptionLabel')}</Label>
                     <Textarea
-                      placeholder="Describe what will be delivered in this milestone"
+                      placeholder={t('milestoneDescriptionPlaceholder')}
                       value={milestone.description}
                       onChange={(e) => handleMilestoneChange(index, 'description', e.target.value)}
                       rows={3}
@@ -279,10 +281,10 @@ const CreateProject = () => {
 
           <div className="flex justify-end space-x-4">
             <Button type="button" variant="outline" onClick={() => navigate('/dashboard')}>
-              Cancel
+              {t('cancel')}
             </Button>
             <Button type="submit" disabled={isSubmitting}>
-              {isSubmitting ? 'Creating...' : 'Create Project'}
+              {isSubmitting ? t('creating') : t('createProject')}
             </Button>
           </div>
         </form>
