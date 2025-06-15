@@ -1,14 +1,11 @@
+
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import MilestoneCard from '@/components/MilestoneCard';
-import { CheckCircle, Clock, Briefcase } from 'lucide-react';
+import { Card, CardContent } from '@/components/ui/card';
+import { Briefcase } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { DatabaseProject } from '@/hooks/useProjects';
 import { toast } from 'sonner';
-import DeliverableWatermarkedPreview from '@/components/MilestoneCard/DeliverableWatermarkedPreview';
-import MilestoneDeliverablePreview from "@/components/ProjectClient/MilestoneDeliverablePreview";
 import ProjectOverviewCard from "@/components/ProjectClient/ProjectOverviewCard";
 import ProjectInstructionsCard from "@/components/ProjectClient/ProjectInstructionsCard";
 import ProjectMilestonesList from "@/components/ProjectClient/ProjectMilestonesList";
@@ -128,17 +125,6 @@ const ClientProject = () => {
       console.error('Error downloading deliverable:', error);
       toast.error('Failed to download deliverable');
     }
-  };
-
-  // Track which milestone's preview (if any) is open, with a mapping of milestoneId -> boolean
-  const [previewOpen, setPreviewOpen] = useState<{ [mid: string]: boolean }>({});
-
-  const getDeliverableFileType = (deliverable?: { name: string, url?: string }) => {
-    if (!deliverable || !deliverable.url) return '';
-    const name = deliverable.name.toLowerCase();
-    if (name.endsWith('.pdf')) return 'application/pdf';
-    if (name.endsWith('.jpg') || name.endsWith('.jpeg') || name.endsWith('.png')) return 'image/jpeg';
-    return '';
   };
 
   if (isLoading) {
