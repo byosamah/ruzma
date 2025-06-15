@@ -29,7 +29,7 @@ export const useCreateProjectForm = (templateData?: TemplateData) => {
   // Update form when template data changes
   useEffect(() => {
     if (templateData) {
-      const mappedMilestones = (templateData.milestones || []).map(m => ({
+      const mappedMilestones: CreateProjectFormData['milestones'] = (templateData.milestones || []).map(m => ({
         title: m.title || '',
         description: m.description || '',
         price: m.price || 0,

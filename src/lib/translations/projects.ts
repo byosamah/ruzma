@@ -71,6 +71,16 @@ export const projectTranslations = {
     milestoneTitlePlaceholder_edit: "e.g. Phase 1: Discovery",
     milestoneDescriptionPlaceholder_edit: "Briefly describe this milestone",
     milestonePricePlaceholder_edit: "e.g. 500",
+    // New keys for Project Templates page
+    projectTemplatesTitle: "Project Templates",
+    projectTemplatesSubtitle: "Save time by creating projects from templates",
+    noTemplatesYet: "No Templates Yet",
+    noTemplatesDesc: "Create your first project template to speed up your workflow",
+    noTemplatesHint: "Templates will be automatically created when you save a project as a template",
+    milestoneCount: "{count} milestones",
+    total: "Total",
+    useTemplate: "Use Template",
+    deleteTemplateConfirmation: "Are you sure you want to delete this template?",
   },
   ar: {
     loadingProject: "جاري تحميل المشروع...",
@@ -143,5 +153,15 @@ export const projectTranslations = {
     milestoneTitlePlaceholder_edit: "مثال: المرحلة الأولى: الاستكشاف",
     milestoneDescriptionPlaceholder_edit: "صف هذه المرحلة باختصار",
     milestonePricePlaceholder_edit: "مثال: 500",
+    // New keys for Project Templates page
+    projectTemplatesTitle: "قوالب المشاريع",
+    projectTemplatesSubtitle: "وفّر الوقت بإنشاء مشاريع من القوالب",
+    noTemplatesYet: "لا توجد قوالب بعد",
+    noTemplatesDesc: "أنشئ أول قالب مشروع لتسريع سير عملك",
+    noTemplatesHint: "سيتم إنشاء القوالب تلقائيًا عند حفظ مشروع كقالب",
+    milestoneCount: "{count} مراحل",
+    total: "الإجمالي",
+    useTemplate: "استخدام القالب",
+    deleteTemplateConfirmation: "هل أنت متأكد من أنك تريد حذف هذا القالب؟",
   },
 };

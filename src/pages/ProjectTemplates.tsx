@@ -70,7 +70,7 @@ const ProjectTemplates = () => {
   };
 
   const handleDeleteTemplate = async (templateId: string) => {
-    if (!confirm('Are you sure you want to delete this template?')) return;
+    if (!confirm(t('deleteTemplateConfirmation'))) return;
     await deleteTemplate(templateId);
   };
 
@@ -98,11 +98,11 @@ const ProjectTemplates = () => {
               onClick={() => navigate("/dashboard")}
             >
               <ArrowLeft className="w-4 h-4 mr-1" />
-              Back to Dashboard
+              {t('backToDashboard')}
             </Button>
             <div>
-              <h1 className="text-3xl font-bold text-slate-800">Project Templates</h1>
-              <p className="text-slate-600 mt-2">Save time by creating projects from templates</p>
+              <h1 className="text-3xl font-bold text-slate-800">{t('projectTemplatesTitle')}</h1>
+              <p className="text-slate-600 mt-2">{t('projectTemplatesSubtitle')}</p>
             </div>
           </div>
         </div>
@@ -112,13 +112,13 @@ const ProjectTemplates = () => {
             <CardContent>
               <FileText className="w-16 h-16 text-slate-400 mx-auto mb-4" />
               <h3 className="text-xl font-semibold text-slate-700 mb-2">
-                No Templates Yet
+                {t('noTemplatesYet')}
               </h3>
               <p className="text-slate-600 mb-6">
-                Create your first project template to speed up your workflow
+                {t('noTemplatesDesc')}
               </p>
               <p className="text-sm text-slate-500 mb-4">
-                Templates will be automatically created when you save a project as a template
+                {t('noTemplatesHint')}
               </p>
             </CardContent>
           </Card>
@@ -151,17 +151,17 @@ const ProjectTemplates = () => {
                 <CardContent>
                   <div className="space-y-3">
                     <div className="text-sm text-slate-600">
-                      <span className="font-medium">{template.milestones.length}</span> milestones
+                      {t('milestoneCount', { count: String(template.milestones.length) })}
                     </div>
                     <div className="text-sm text-slate-600">
-                      Total: ${template.milestones.reduce((sum: number, m: any) => sum + m.price, 0).toFixed(2)}
+                      {t('total')}: ${template.milestones.reduce((sum: number, m: any) => sum + m.price, 0).toFixed(2)}
                     </div>
                     <Button 
                       onClick={() => handleCreateFromTemplate(template)}
                       className="w-full"
                     >
                       <Plus className="w-4 h-4 mr-2" />
-                      Use Template
+                      {t('useTemplate')}
                     </Button>
                   </div>
                 </CardContent>
