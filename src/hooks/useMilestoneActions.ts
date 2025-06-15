@@ -1,3 +1,4 @@
+
 import { User } from '@supabase/supabase-js';
 import { DatabaseProject } from './projectTypes';
 import { updateMilestoneStatus as updateMilestoneStatusAction } from './milestone-actions/updateStatus';
@@ -13,7 +14,7 @@ export function useMilestoneActions(
 ) {
   const updateMilestoneStatus = async (
     milestoneId: string,
-    status: 'pending' | 'payment_submitted' | 'approved' | 'rejected'
+    status: 'approved' | 'rejected'
   ) => {
     const success = await updateMilestoneStatusAction(user, projects, milestoneId, status);
     if (success) {
