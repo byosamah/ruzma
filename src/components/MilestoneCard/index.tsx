@@ -1,5 +1,4 @@
-
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { MilestoneCardProps } from './types';
 import { getStatusColor } from './utils';
@@ -8,7 +7,7 @@ import ClientView from './ClientView';
 import FreelancerView from './FreelancerView';
 import PaymentProofModal from './PaymentProofModal';
 
-const MilestoneCard: React.FC<MilestoneCardProps> = ({ 
+const MilestoneCard = ({
   milestone, 
   onApprove, 
   onReject, 
@@ -16,7 +15,8 @@ const MilestoneCard: React.FC<MilestoneCardProps> = ({
   onPaymentUpload,
   onDeliverableUpload,
   onDeliverableDownload,
-  currency = 'USD'
+  currency = 'USD',
+  onUpdateWatermark
 }) => {
   const [showPaymentProofPreview, setShowPaymentProofPreview] = useState(false);
 
@@ -45,6 +45,7 @@ const MilestoneCard: React.FC<MilestoneCardProps> = ({
                 onReject={onReject}
                 onDeliverableUpload={onDeliverableUpload}
                 onShowPaymentProofPreview={() => setShowPaymentProofPreview(true)}
+                onUpdateWatermark={onUpdateWatermark}
               />
             )}
           </div>

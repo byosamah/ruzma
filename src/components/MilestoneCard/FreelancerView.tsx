@@ -1,15 +1,16 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
-import { CheckCircle, XCircle, Eye, ExternalLink, Download, FileUp, Upload } from 'lucide-react';
+import { CheckCircle, XCircle, Eye, ExternalLink, Download, FileUp, Upload, Pencil } from 'lucide-react';
 import { Milestone } from './types';
 
 interface FreelancerViewProps {
   milestone: Milestone;
   onApprove?: (milestoneId: string) => void;
   onReject?: (milestoneId: string) => void;
-  onDeliverableUpload?: (milestoneId: string, file: File) => void;
+  onDeliverableUpload?: (milestoneId: string, file: File, watermarkText?: string) => void;
   onShowPaymentProofPreview: () => void;
+  onUpdateWatermark?: (milestoneId: string, watermarkText: string) => void;
 }
 
 const FreelancerView: React.FC<FreelancerViewProps> = ({
@@ -17,13 +18,22 @@ const FreelancerView: React.FC<FreelancerViewProps> = ({
   onApprove,
   onReject,
   onDeliverableUpload,
-  onShowPaymentProofPreview
+  onShowPaymentProofPreview,
+  onUpdateWatermark
 }) => {
+  const [watermark, setWatermark] = useState(milestone.watermarkText ?? '');
+  const [editing, setEditing] = useState(false);
+
   const handleDeliverableFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file && onDeliverableUpload) {
-      onDeliverableUpload(milestone.id, file);
+      onDeliverableUpload(milestone.id, file, watermark);
     }
+  };
+
+  const handleWatermarkSave = () => {
+    onUpdateWatermark?.(milestone.id, watermark);
+    setEditing(false);
   };
 
   const renderPaymentProofSection = () => {
@@ -82,7 +92,34 @@ const FreelancerView: React.FC<FreelancerViewProps> = ({
 
   const renderDeliverableSection = () => (
     <div className="pt-2 border-t">
-      <p className="text-sm font-medium text-slate-700 mb-2">Deliverable:</p>
+      <p className="text-sm font-medium text-slate-700 mb-2 flex items-center gap-2">
+        Deliverable: 
+        <Button variant="ghost" size="sm" onClick={() => setEditing(e => !e)}>
+          <Pencil className="w-4 h-4 mr-1" />
+          {editing ? "Cancel" : "Edit Watermark"}
+        </Button>
+      </p>
+      {editing && (
+        <div className="mb-2 flex gap-2 items-center">
+          <input
+            className="w-52 border rounded px-2 py-1 text-sm"
+            value={watermark}
+            onChange={e => setWatermark(e.target.value)}
+            placeholder="e.g. Pending Payment"
+          />
+          <Button size="sm" onClick={handleWatermarkSave}>
+            Save
+          </Button>
+        </div>
+      )}
+      {!editing && (
+        <div className="mb-2 text-xs text-slate-600">
+          <span className="bg-slate-50 px-2 py-1 rounded">
+            Watermark: <b>{watermark || '[none]'}</b>
+          </span>
+        </div>
+      )}
+
       {milestone.deliverable ? (
         <div className="flex items-center justify-between bg-slate-50 p-2 rounded">
           <div className="flex items-center space-x-2 text-sm text-slate-600">
@@ -133,15 +170,12 @@ const FreelancerView: React.FC<FreelancerViewProps> = ({
   return (
     <div className="space-y-3">
       {renderPaymentProofSection()}
-      
       {milestone.status === 'pending' && (
         <p className="text-sm text-slate-600">Waiting for client payment...</p>
       )}
-      
       {milestone.status === 'approved' && (
         <p className="text-sm text-green-600">Payment approved. Client can download deliverable.</p>
       )}
-      
       {renderDeliverableSection()}
     </div>
   );

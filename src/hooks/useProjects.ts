@@ -273,6 +273,29 @@ export const useProjects = (user: User | null) => {
     }
   };
 
+  const updateMilestoneWatermark = async (milestoneId: string, watermarkText: string) => {
+    if (!user) {
+      toast.error('You must be logged in to update watermark');
+      return false;
+    }
+    try {
+      const { error } = await supabase
+        .from('milestones')
+        .update({ watermark_text: watermarkText, updated_at: new Date().toISOString() })
+        .eq('id', milestoneId);
+      if (error) {
+        toast.error('Failed to update watermark');
+        return false;
+      }
+      await fetchProjects();
+      toast.success('Watermark updated');
+      return true;
+    } catch (e) {
+      toast.error('Update failed');
+      return false;
+    }
+  };
+
   const uploadPaymentProof = async (milestoneId: string, file: File) => {
     try {
       console.log('Starting payment proof upload:', {
@@ -359,7 +382,7 @@ export const useProjects = (user: User | null) => {
     }
   };
 
-  const uploadDeliverable = async (milestoneId: string, file: File) => {
+  const uploadDeliverable = async (milestoneId: string, file: File, watermarkText?: string) => {
     if (!user) {
       toast.error('You must be logged in to upload deliverables');
       return false;
@@ -367,11 +390,10 @@ export const useProjects = (user: User | null) => {
 
     try {
       console.log('Uploading deliverable for milestone:', milestoneId, 'File:', file.name, 'Size:', file.size);
-      
-      // Create file path with user ID folder structure
+
       const fileName = `${Date.now()}-${file.name}`;
       const filePath = `${user.id}/${milestoneId}/${fileName}`;
-      
+
       // Upload file to Supabase Storage
       const { data: uploadData, error: uploadError } = await supabase.storage
         .from('deliverables')
@@ -386,23 +408,20 @@ export const useProjects = (user: User | null) => {
         return false;
       }
 
-      console.log('File uploaded successfully to storage:', uploadData);
-
       // Get public URL for the uploaded file
       const { data: { publicUrl } } = supabase.storage
         .from('deliverables')
         .getPublicUrl(filePath);
 
-      console.log('Generated public URL:', publicUrl);
-
-      // Update milestone with deliverable info in database
+      // Update milestone with deliverable info in database, including watermark text
       const { data: updatedMilestone, error: updateError } = await supabase
         .from('milestones')
         .update({
           deliverable_name: file.name,
           deliverable_size: file.size,
           deliverable_url: publicUrl,
-          updated_at: new Date().toISOString()
+          updated_at: new Date().toISOString(),
+          watermark_text: watermarkText || null
         })
         .eq('id', milestoneId)
         .select()
@@ -415,8 +434,6 @@ export const useProjects = (user: User | null) => {
         await supabase.storage.from('deliverables').remove([filePath]);
         return false;
       }
-
-      console.log('Milestone updated successfully in database:', updatedMilestone);
 
       // Verify the data was saved by fetching it back
       const { data: verifyData, error: verifyError } = await supabase
@@ -547,5 +564,6 @@ export const useProjects = (user: User | null) => {
     uploadPaymentProof,
     uploadDeliverable,
     downloadDeliverable,
+    updateMilestoneWatermark,
   };
 };

@@ -18,7 +18,7 @@ const ProjectManagement: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
-  const { projects, updateMilestoneStatus, uploadPaymentProof, uploadDeliverable, downloadDeliverable } = useProjects(user);
+  const { projects, updateMilestoneStatus, uploadPaymentProof, uploadDeliverable, downloadDeliverable, updateMilestoneWatermark } = useProjects(user);
   const userCurrency = useUserCurrency(user);
 
   useEffect(() => {
@@ -64,12 +64,16 @@ const ProjectManagement: React.FC = () => {
     await uploadPaymentProof(milestoneId, file);
   };
 
-  const handleDeliverableUpload = async (milestoneId: string, file: File) => {
-    await uploadDeliverable(milestoneId, file);
+  const handleDeliverableUpload = async (milestoneId: string, file: File, watermarkText?: string) => {
+    await uploadDeliverable(milestoneId, file, watermarkText);
   };
 
   const handleDeliverableDownload = async (milestoneId: string) => {
     await downloadDeliverable(milestoneId);
+  };
+
+  const handleUpdateWatermark = async (milestoneId: string, watermarkText: string) => {
+    await updateMilestoneWatermark(milestoneId, watermarkText);
   };
 
   if (loading) {
@@ -152,6 +156,7 @@ const ProjectManagement: React.FC = () => {
                       url: milestone.deliverable_url
                     } : undefined,
                     paymentProofUrl: milestone.payment_proof_url,
+                    watermarkText: milestone.watermark_text, // forward watermark
                   }}
                   onApprove={
                     milestone.status === "payment_submitted"
@@ -167,6 +172,7 @@ const ProjectManagement: React.FC = () => {
                   onDeliverableDownload={handleDeliverableDownload}
                   onPaymentUpload={handlePaymentUpload}
                   currency={userCurrency}
+                  onUpdateWatermark={handleUpdateWatermark}
                 />
               ))}
             </div>
