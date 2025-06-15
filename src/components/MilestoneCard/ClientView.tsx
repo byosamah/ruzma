@@ -44,6 +44,19 @@ const ClientView: React.FC<ClientViewProps> = ({
     }
   };
 
+  const triggerFileUpload = (inputRef: React.RefObject<HTMLInputElement>) => {
+    inputRef.current?.click();
+  };
+
+  // Helper for getting file type based on url or name
+  const getDeliverableFileType = (deliverable?: { name: string, url?: string }) => {
+    if (!deliverable || !deliverable.url) return '';
+    const name = deliverable.name.toLowerCase();
+    if (name.endsWith('.pdf')) return 'application/pdf';
+    if (name.endsWith('.jpg') || name.endsWith('.jpeg') || name.endsWith('.png')) return 'image/jpeg';
+    return '';
+  };
+
   const renderPaymentProofLink = () => {
     if (!milestone.paymentProofUrl) return null;
     return (
@@ -59,15 +72,6 @@ const ClientView: React.FC<ClientViewProps> = ({
         </Button>
       </div>
     );
-  };
-
-  // Helper for getting file type based on url or name
-  const getDeliverableFileType = (deliverable?: { name: string, url?: string }) => {
-    if (!deliverable || !deliverable.url) return '';
-    const name = deliverable.name.toLowerCase();
-    if (name.endsWith('.pdf')) return 'application/pdf';
-    if (name.endsWith('.jpg') || name.endsWith('.jpeg') || name.endsWith('.png')) return 'image/jpeg';
-    return '';
   };
 
   const showDeliverablePreview =
@@ -117,14 +121,14 @@ const ClientView: React.FC<ClientViewProps> = ({
               id={`payment-${milestone.id}`}
               disabled={uploading}
             />
-            <label htmlFor={`payment-${milestone.id}`}>
-              <Button asChild size="sm" disabled={uploading}>
-                <span className="cursor-pointer flex items-center">
-                  <Upload className="w-4 h-4 mr-2" />
-                  {uploading ? 'Uploading...' : 'Upload Proof'}
-                </span>
-              </Button>
-            </label>
+            <Button 
+              size="sm" 
+              disabled={uploading}
+              onClick={() => triggerFileUpload(paymentInputRef)}
+            >
+              <Upload className="w-4 h-4 mr-2" />
+              {uploading ? 'Uploading...' : 'Upload Proof'}
+            </Button>
           </div>
         </div>
       )}
@@ -165,12 +169,14 @@ const ClientView: React.FC<ClientViewProps> = ({
               id={`payment-resubmit-${milestone.id}`}
               disabled={uploading}
             />
-            <label htmlFor={`payment-resubmit-${milestone.id}`}>
-              <Button size="sm" disabled={uploading}>
-                <Upload className="w-4 h-4 mr-2" />
-                {uploading ? 'Uploading...' : 'Resubmit Proof'}
-              </Button>
-            </label>
+            <Button 
+              size="sm" 
+              disabled={uploading}
+              onClick={() => triggerFileUpload(paymentResubmitInputRef)}
+            >
+              <Upload className="w-4 h-4 mr-2" />
+              {uploading ? 'Uploading...' : 'Resubmit Proof'}
+            </Button>
           </div>
           {renderPaymentProofLink()}
         </div>
