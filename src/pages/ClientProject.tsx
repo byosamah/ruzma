@@ -8,6 +8,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { DatabaseProject, useProjects } from '@/hooks/useProjects';
 import { toast } from 'sonner';
 import { User } from '@supabase/supabase-js';
+import DeliverableWatermarkedPreview from '@/components/MilestoneCard/DeliverableWatermarkedPreview';
 
 const ClientProject = () => {
   const { projectId } = useParams();
@@ -129,6 +130,17 @@ const ClientProject = () => {
       console.error('Error downloading deliverable:', error);
       toast.error('Failed to download deliverable');
     }
+  };
+
+  // Track which milestone's preview (if any) is open, with a mapping of milestoneId -> boolean
+  const [previewOpen, setPreviewOpen] = useState<{ [mid: string]: boolean }>({});
+
+  const getDeliverableFileType = (deliverable?: { name: string, url?: string }) => {
+    if (!deliverable || !deliverable.url) return '';
+    const name = deliverable.name.toLowerCase();
+    if (name.endsWith('.pdf')) return 'application/pdf';
+    if (name.endsWith('.jpg') || name.endsWith('.jpeg') || name.endsWith('.png')) return 'image/jpeg';
+    return '';
   };
 
   if (isLoading) {
@@ -258,31 +270,75 @@ const ClientProject = () => {
                 </CardContent>
               </Card>
             ) : (
-              project.milestones.map((milestone, index) => (
-                <div key={milestone.id} className="relative">
-                  {index > 0 && (
-                    <div className="absolute -top-4 left-6 w-0.5 h-4 bg-slate-300"></div>
-                  )}
-                  <MilestoneCard
-                    milestone={{
-                      id: milestone.id,
-                      title: milestone.title,
-                      description: milestone.description,
-                      price: milestone.price,
-                      status: milestone.status,
-                      deliverable: milestone.deliverable_name ? {
-                        name: milestone.deliverable_name,
-                        size: milestone.deliverable_size || 0,
-                        url: milestone.deliverable_url
-                      } : undefined,
-                      paymentProofUrl: milestone.payment_proof_url,
-                    }}
-                    isClient={true}
-                    onPaymentUpload={handlePaymentUpload}
-                    onDeliverableDownload={handleDeliverableDownload}
-                  />
-                </div>
-              ))
+              project.milestones.map((milestone, index) => {
+                // Determine if we should show the preview section (if deliverable exists, milestone.status !== 'approved')
+                const showDeliverablePreview =
+                  milestone.deliverable_name &&
+                  milestone.deliverable_url &&
+                  milestone.status !== 'approved';
+
+                return (
+                  <div key={milestone.id} className="relative">
+                    {index > 0 && (
+                      <div className="absolute -top-4 left-6 w-0.5 h-4 bg-slate-300"></div>
+                    )}
+                    <div className="mb-2">
+                      {showDeliverablePreview && (
+                        <div>
+                          <div className="flex items-center mb-1 gap-2">
+                            <button
+                              className="flex items-center text-blue-700 text-sm border border-slate-300 rounded px-3 py-1 hover:bg-blue-50 transition"
+                              onClick={() =>
+                                setPreviewOpen(prev => ({
+                                  ...prev,
+                                  [milestone.id]: !prev[milestone.id],
+                                }))
+                              }
+                            >
+                              <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0zm7.5 0a9.004 9.004 0 01-15 6.364M12 21V3m8.485 8.485l.707-.707a9.004 9.004 0 00-12.728 0l.707.707M3 12a9.004 9.004 0 0015 6.364M12 21V3" />
+                              </svg>
+                              <span>{previewOpen[milestone.id] ? "Hide" : "Show"} Preview</span>
+                            </button>
+                            <span className="text-xs text-slate-600 select-none">
+                              {milestone.watermark_text ? `(Watermarked)` : ""}
+                            </span>
+                          </div>
+                          {previewOpen[milestone.id] && (
+                            <DeliverableWatermarkedPreview
+                              fileUrl={milestone.deliverable_url}
+                              watermarkText={milestone.watermark_text || "Pending Payment"}
+                              fileType={getDeliverableFileType({
+                                name: milestone.deliverable_name,
+                                url: milestone.deliverable_url,
+                              })}
+                            />
+                          )}
+                        </div>
+                      )}
+                    </div>
+                    <MilestoneCard
+                      milestone={{
+                        id: milestone.id,
+                        title: milestone.title,
+                        description: milestone.description,
+                        price: milestone.price,
+                        status: milestone.status,
+                        deliverable: milestone.deliverable_name ? {
+                          name: milestone.deliverable_name,
+                          size: milestone.deliverable_size || 0,
+                          url: milestone.deliverable_url
+                        } : undefined,
+                        paymentProofUrl: milestone.payment_proof_url,
+                        watermarkText: milestone.watermark_text ?? undefined,
+                      }}
+                      isClient={true}
+                      onPaymentUpload={handlePaymentUpload}
+                      onDeliverableDownload={handleDeliverableDownload}
+                    />
+                  </div>
+                );
+              })
             )}
           </div>
         </div>
