@@ -1,3 +1,4 @@
+
 export interface Milestone {
   id: string;
   title: string;
@@ -10,7 +11,7 @@ export interface Milestone {
     url?: string;
   };
   paymentProofUrl?: string;
-  watermarkText?: string; // Add camelCase property to Milestone interface
+  watermarkText?: string;
 }
 
 export interface MilestoneCardProps {
@@ -19,7 +20,8 @@ export interface MilestoneCardProps {
   onReject?: (milestoneId: string) => void;
   isClient?: boolean;
   onPaymentUpload?: (milestoneId: string, file: File) => void;
-  onDeliverableUpload?: (milestoneId: string, file: File) => void;
+  onDeliverableUpload?: (milestoneId: string, file: File, watermarkText?: string) => void;
   onDeliverableDownload?: (milestoneId: string) => void;
   currency?: import('@/lib/currency').CurrencyCode;
+  onUpdateWatermark?: (milestoneId: string, watermarkText: string) => void;
 }
