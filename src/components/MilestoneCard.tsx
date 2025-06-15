@@ -129,7 +129,7 @@ const MilestoneCard: React.FC<MilestoneCardProps> = ({
                 </a>
                 <Button
                   variant="ghost"
-                  size="xs"
+                  size="sm"
                   className="px-2 py-1"
                   onClick={() => {
                     navigator.clipboard.writeText(milestone.paymentProofUrl);
@@ -459,7 +459,7 @@ const MilestoneCard: React.FC<MilestoneCardProps> = ({
                 </a>
                 <Button
                   variant="ghost"
-                  size="xs"
+                  size="sm"
                   className="px-2 py-1 ml-2"
                   onClick={() => {
                     navigator.clipboard.writeText(milestone.paymentProofUrl);
@@ -468,7 +468,6 @@ const MilestoneCard: React.FC<MilestoneCardProps> = ({
                   Copy URL
                 </Button>
               </div>
-              {/* ... keep approve/reject buttons code ... */}
               <div className="flex justify-center space-x-2 mt-4">
                 {onApprove && (
                   <Button 
