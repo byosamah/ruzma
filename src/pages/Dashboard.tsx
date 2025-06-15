@@ -161,7 +161,7 @@ const Dashboard = () => {
           <Card className="bg-primary text-primary-foreground">
             <CardHeader className="flex flex-row items-center justify-between pb-2">
               <CardTitle className="text-sm font-medium">Total Earnings</CardTitle>
-              <span className="text-sm font-medium">{getCurrencySymbol(userCurrency)}</span>
+              <DollarSign className="w-4 h-4" />
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold">{formatCurrency(totalEarnings, userCurrency)}</div>
