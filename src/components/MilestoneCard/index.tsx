@@ -4,7 +4,6 @@ import { Card, CardContent } from '@/components/ui/card';
 import { MilestoneCardProps } from './types';
 import { getStatusColor } from './utils';
 import MilestoneHeader from './MilestoneHeader';
-import PaymentProofDebugInfo from './PaymentProofDebugInfo';
 import ClientView from './ClientView';
 import FreelancerView from './FreelancerView';
 import PaymentProofModal from './PaymentProofModal';
@@ -21,13 +20,6 @@ const MilestoneCard: React.FC<MilestoneCardProps> = ({
 }) => {
   const [showPaymentProofPreview, setShowPaymentProofPreview] = useState(false);
 
-  // Always log the paymentProofUrl for debugging
-  useEffect(() => {
-    if (milestone.paymentProofUrl) {
-      console.log('[MilestoneCard] paymentProofUrl:', milestone.paymentProofUrl);
-    }
-  }, [milestone.paymentProofUrl]);
-
   return (
     <>
       <Card className={`transition-all duration-200 ${getStatusColor(milestone.status)} border-l-4`}>
@@ -40,11 +32,6 @@ const MilestoneCard: React.FC<MilestoneCardProps> = ({
         />
         <CardContent>
           <div className="space-y-4">
-            {/* ALWAYS display raw payment proof URL for debug */}
-            {milestone.paymentProofUrl && (
-              <PaymentProofDebugInfo paymentProofUrl={milestone.paymentProofUrl} />
-            )}
-            
             {isClient ? (
               <ClientView
                 milestone={milestone}
