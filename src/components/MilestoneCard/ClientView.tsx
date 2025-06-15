@@ -17,11 +17,19 @@ const ClientView: React.FC<ClientViewProps> = ({
   onDeliverableDownload
 }) => {
   const [showPreview, setShowPreview] = useState(false);
+  const [uploading, setUploading] = useState(false);
 
-  const handlePaymentFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handlePaymentFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file && onPaymentUpload) {
-      onPaymentUpload(milestone.id, file);
+      setUploading(true);
+      try {
+        await onPaymentUpload(milestone.id, file);
+      } finally {
+        setUploading(false);
+        // Reset the input so the same file can be selected again if needed
+        event.target.value = '';
+      }
     }
   };
 
@@ -38,14 +46,6 @@ const ClientView: React.FC<ClientViewProps> = ({
           <ExternalLink className="w-4 h-4" />
           <span>View Uploaded Proof</span>
         </Button>
-        <a
-          href={milestone.paymentProofUrl}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="text-blue-500 ml-2 underline"
-        >
-          Direct Link
-        </a>
       </div>
     );
   };
@@ -103,12 +103,13 @@ const ClientView: React.FC<ClientViewProps> = ({
               onChange={handlePaymentFileUpload}
               className="hidden"
               id={`payment-${milestone.id}`}
+              disabled={uploading}
             />
             <label htmlFor={`payment-${milestone.id}`}>
-              <Button asChild size="sm">
+              <Button asChild size="sm" disabled={uploading}>
                 <span className="cursor-pointer flex items-center">
                   <Upload className="w-4 h-4 mr-2" />
-                  Upload Proof
+                  {uploading ? 'Uploading...' : 'Upload Proof'}
                 </span>
               </Button>
             </label>
@@ -142,6 +143,22 @@ const ClientView: React.FC<ClientViewProps> = ({
       {milestone.status === 'rejected' && (
         <div className="space-y-2">
           <p className="text-sm text-red-600">Payment was rejected. Please resubmit with correct details.</p>
+          <div className="flex items-center space-x-2">
+            <input
+              type="file"
+              accept="image/*,.pdf"
+              onChange={handlePaymentFileUpload}
+              className="hidden"
+              id={`payment-resubmit-${milestone.id}`}
+              disabled={uploading}
+            />
+            <label htmlFor={`payment-resubmit-${milestone.id}`}>
+              <Button size="sm" disabled={uploading}>
+                <Upload className="w-4 h-4 mr-2" />
+                {uploading ? 'Uploading...' : 'Resubmit Proof'}
+              </Button>
+            </label>
+          </div>
           {renderPaymentProofLink()}
         </div>
       )}

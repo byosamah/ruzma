@@ -84,21 +84,31 @@ const ClientProject = () => {
   }, [projectId]);
 
   const handlePaymentUpload = async (milestoneId: string, file: File) => {
-    console.log('Payment proof uploaded for milestone:', milestoneId, file);
+    console.log('Payment proof upload initiated for milestone:', milestoneId, file);
     
     const success = await uploadPaymentProof(milestoneId, file);
     
     if (success) {
-      // Update local state
-      setProject(prev => {
-        if (!prev) return prev;
-        return {
-          ...prev,
-          milestones: prev.milestones.map(m =>
-            m.id === milestoneId ? { ...m, status: 'payment_submitted' as const } : m
-          )
-        };
-      });
+      // Refresh project data to show updated status
+      const { data: projectData } = await supabase
+        .from('projects')
+        .select(`
+          *,
+          milestones (*)
+        `)
+        .eq('id', projectId)
+        .single();
+
+      if (projectData) {
+        const typedProject = {
+          ...projectData,
+          milestones: projectData.milestones.map((milestone: any) => ({
+            ...milestone,
+            status: milestone.status as 'pending' | 'payment_submitted' | 'approved' | 'rejected'
+          }))
+        } as DatabaseProject;
+        setProject(typedProject);
+      }
     }
   };
 

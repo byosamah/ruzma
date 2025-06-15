@@ -304,74 +304,77 @@ export const useProjects = (user: User | null) => {
         milestoneId,
         fileName: file.name,
         fileSize: file.size,
-        fileType: file.type,
-        userId: user?.id || 'anonymous'
+        fileType: file.type
       });
 
-      // Compose file path - use milestoneId as primary folder for anonymous uploads
-      const fileName = `${Date.now()}-${file.name.replace(/[^a-zA-Z0-9.-]/g, '_')}`;
-      const filePath = user?.id 
-        ? `${user.id}/${milestoneId}/${fileName}` 
-        : `anonymous/${milestoneId}/${fileName}`;
+      // Step 1: Generate unique file path
+      const fileExt = file.name.split('.').pop();
+      const fileName = `${milestoneId}-${Date.now()}.${fileExt}`;
+      const filePath = `${milestoneId}/${fileName}`;
+
       console.log('Upload path:', filePath);
 
-      // Upload to bucket
+      // Step 2: Upload file to Supabase Storage
       const { data: uploadData, error: uploadError } = await supabase.storage
         .from('payment-proofs')
         .upload(filePath, file, {
-          upsert: false,
-          contentType: file.type
+          cacheControl: '3600',
+          upsert: false
         });
 
       if (uploadError) {
-        console.error('Upload error details:', {
-          message: uploadError.message,
-          error: uploadError
-        });
-        toast.error(`Failed to upload payment proof: ${uploadError.message}`);
+        console.error('Storage upload error:', uploadError);
+        toast.error(`Failed to upload file: ${uploadError.message}`);
         return false;
       }
 
-      // Retrieve the public URL
-      const { data: publicUrlData } = supabase.storage
+      console.log('File uploaded successfully:', uploadData);
+
+      // Step 3: Get public URL for the uploaded file
+      const { data: urlData } = supabase.storage
         .from('payment-proofs')
         .getPublicUrl(filePath);
 
-      const paymentProofUrl: string | null =
-        publicUrlData?.publicUrl && publicUrlData.publicUrl.startsWith('http')
-          ? publicUrlData.publicUrl
-          : null;
-
-      if (!paymentProofUrl) {
-        console.error('Could not get a valid public URL for uploaded file:', publicUrlData);
-        toast.error('Upload succeeded but failed to get file URL');
-        await supabase.storage.from('payment-proofs').remove([filePath]);
-        return false;
-      }
-      console.log('Generated public URL for payment proof:', paymentProofUrl);
-
-      // Invoke edge function to update the milestone securely
-      console.log('Invoking submit-payment-proof function with:', { milestoneId, paymentProofUrl });
-      
-      const { data: functionData, error: functionError } = await supabase.functions.invoke('submit-payment-proof', {
-        body: { milestoneId, paymentProofUrl },
-      });
-
-      console.log('Function response:', { data: functionData, error: functionError });
-
-      if (functionError) {
-        console.error('Error updating milestone via function:', functionError);
-        toast.error(`Failed to update milestone in database: ${functionError.message}`);
-        // Remove uploaded file to prevent orphan files
-        await supabase.storage.from('payment-proofs').remove([filePath]);
+      if (!urlData?.publicUrl) {
+        console.error('Failed to get public URL');
+        toast.error('Failed to get file URL');
         return false;
       }
 
-      toast.success('Payment proof uploaded successfully');
+      const publicUrl = urlData.publicUrl;
+      console.log('Generated public URL:', publicUrl);
+
+      // Step 4: Update milestone in database with payment proof URL
+      const { data: updateData, error: updateError } = await supabase
+        .from('milestones')
+        .update({
+          payment_proof_url: publicUrl,
+          status: 'payment_submitted',
+          updated_at: new Date().toISOString()
+        })
+        .eq('id', milestoneId)
+        .select()
+        .single();
+
+      if (updateError) {
+        console.error('Database update error:', updateError);
+        // Clean up uploaded file if database update fails
+        await supabase.storage
+          .from('payment-proofs')
+          .remove([filePath]);
+        toast.error(`Failed to update milestone: ${updateError.message}`);
+        return false;
+      }
+
+      console.log('Milestone updated successfully:', updateData);
+
+      // Step 5: Refresh projects to show updated status
       await fetchProjects();
+      toast.success('Payment proof uploaded successfully');
       return true;
+
     } catch (error) {
-      console.error('Error uploading payment proof:', error);
+      console.error('Unexpected error during payment proof upload:', error);
       toast.error('Failed to upload payment proof');
       return false;
     }
