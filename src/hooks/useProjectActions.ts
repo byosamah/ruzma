@@ -1,20 +1,12 @@
-
 import { useState } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import { User } from '@supabase/supabase-js';
 import { DatabaseProject } from './projectTypes';
+import { type CreateProjectFormData } from '@/lib/validators/project';
 
 export function useProjectActions(user: User | null, fetchProjects: () => Promise<void>) {
-  const createProject = async (projectData: {
-    name: string;
-    brief: string;
-    milestones: Array<{
-      title: string;
-      description: string;
-      price: number;
-    }>;
-  }) => {
+  const createProject = async (projectData: CreateProjectFormData) => {
     if (!user) {
       toast.error('You must be logged in to create a project');
       return null;
