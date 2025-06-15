@@ -3,19 +3,19 @@ import React from "react";
 
 const insights = [
   {
-    stat: "87%",
-    label: "Quicker resolution rate",
-    desc: "Customers receive faster answers thanks to real-time task assignment and smart queues."
+    stat: "2x",
+    label: "Faster client approvals",
+    desc: "Clients sign off on work quickly with transparent milestones and real-time updates."
   },
   {
-    stat: "18%",
-    label: "Fewer emails, work-arounds",
-    desc: "Centralized support means less back-and-forth, lower context switching, and more focus."
+    stat: "98%",
+    label: "On-time deliverables",
+    desc: "Keep every project on track—no more missed deadlines or scattered handoffs."
   },
   {
-    stat: "26%",
-    label: "Boost your team's efficiency",
-    desc: "Automatic follow-ups and easy hand-offs let agents deliver more value in less time."
+    stat: "3x",
+    label: "Fewer payment issues",
+    desc: "Automated payment protection gives clients peace of mind and you reliable cash flow."
   },
 ];
 
@@ -23,7 +23,7 @@ const InsightsCards = () => (
   <section className="py-16 px-3 bg-white">
     <div className="container mx-auto">
       <h2 className="text-2xl sm:text-3xl font-extrabold text-brand-black text-center mb-12">
-        Performance insights for your productivity
+        Project results your clients (and bottom line) will notice
       </h2>
       <div className="grid grid-cols-1 md:grid-cols-3 gap-7">
         {insights.map((insight, i) => (
