@@ -283,21 +283,43 @@ export const useProjects = (user: User | null) => {
     try {
       console.log('Uploading deliverable for milestone:', milestoneId, 'File:', file.name, 'Size:', file.size);
       
-      // For now, we'll store the file info in the database
-      // In a real app, you'd upload to Supabase Storage first
-      const { error } = await supabase
+      // Create file path with user ID folder structure
+      const fileName = `${Date.now()}-${file.name}`;
+      const filePath = `${user.id}/${milestoneId}/${fileName}`;
+      
+      // Upload file to Supabase Storage
+      const { data: uploadData, error: uploadError } = await supabase.storage
+        .from('deliverables')
+        .upload(filePath, file, {
+          upsert: false,
+          contentType: file.type
+        });
+
+      if (uploadError) {
+        console.error('Error uploading file to storage:', uploadError);
+        toast.error('Failed to upload file');
+        return false;
+      }
+
+      // Get public URL for the uploaded file
+      const { data: { publicUrl } } = supabase.storage
+        .from('deliverables')
+        .getPublicUrl(filePath);
+
+      // Update milestone with deliverable info
+      const { error: updateError } = await supabase
         .from('milestones')
         .update({
           deliverable_name: file.name,
           deliverable_size: file.size,
-          deliverable_url: `temp-url-${milestoneId}`, // This would be the actual storage URL
+          deliverable_url: publicUrl,
           updated_at: new Date().toISOString()
         })
         .eq('id', milestoneId);
 
-      if (error) {
-        console.error('Error uploading deliverable:', error);
-        toast.error('Failed to upload deliverable');
+      if (updateError) {
+        console.error('Error updating milestone with deliverable info:', updateError);
+        toast.error('Failed to update milestone');
         return false;
       }
 
@@ -318,7 +340,7 @@ export const useProjects = (user: User | null) => {
         .flatMap(p => p.milestones)
         .find(m => m.id === milestoneId);
 
-      if (!milestone || !milestone.deliverable_name) {
+      if (!milestone || !milestone.deliverable_name || !milestone.deliverable_url) {
         toast.error('Deliverable not found');
         return false;
       }
@@ -328,9 +350,16 @@ export const useProjects = (user: User | null) => {
         return false;
       }
 
-      // In a real app, this would download from Supabase Storage
-      console.log('Downloading deliverable:', milestone.deliverable_name);
-      toast.success(`Downloading ${milestone.deliverable_name}`);
+      // Create a temporary anchor element to trigger download
+      const link = document.createElement('a');
+      link.href = milestone.deliverable_url;
+      link.download = milestone.deliverable_name;
+      link.target = '_blank';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+
+      toast.success(`Downloaded ${milestone.deliverable_name}`);
       return true;
     } catch (error) {
       console.error('Error:', error);

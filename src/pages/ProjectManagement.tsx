@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import Layout from "@/components/Layout";
@@ -9,6 +8,7 @@ import { ArrowLeft } from "lucide-react";
 import { supabase } from '@/integrations/supabase/client';
 import { User } from '@supabase/supabase-js';
 import { useProjects, DatabaseProject } from '@/hooks/useProjects';
+import { useUserCurrency } from '@/hooks/useUserCurrency';
 
 const ProjectManagement: React.FC = () => {
   const { projectId } = useParams<{ projectId: string }>();
@@ -18,7 +18,8 @@ const ProjectManagement: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
-  const { projects, updateMilestoneStatus } = useProjects(user);
+  const { projects, updateMilestoneStatus, uploadDeliverable, downloadDeliverable } = useProjects(user);
+  const userCurrency = useUserCurrency(user);
 
   useEffect(() => {
     const checkAuthAndLoadData = async () => {
@@ -57,6 +58,14 @@ const ProjectManagement: React.FC = () => {
 
   const handleUpdateMilestoneStatus = async (milestoneId: string, newStatus: Milestone["status"]) => {
     await updateMilestoneStatus(milestoneId, newStatus);
+  };
+
+  const handleDeliverableUpload = async (milestoneId: string, file: File) => {
+    await uploadDeliverable(milestoneId, file);
+  };
+
+  const handleDeliverableDownload = async (milestoneId: string) => {
+    await downloadDeliverable(milestoneId);
   };
 
   if (loading) {
@@ -133,6 +142,11 @@ const ProjectManagement: React.FC = () => {
                     description: milestone.description,
                     price: milestone.price,
                     status: milestone.status,
+                    deliverable: milestone.deliverable_name ? {
+                      name: milestone.deliverable_name,
+                      size: milestone.deliverable_size || 0,
+                      url: milestone.deliverable_url
+                    } : undefined,
                   }}
                   onApprove={
                     milestone.status === "payment_submitted"
@@ -144,6 +158,9 @@ const ProjectManagement: React.FC = () => {
                       ? (mId) => handleUpdateMilestoneStatus(mId, "rejected")
                       : undefined
                   }
+                  onDeliverableUpload={handleDeliverableUpload}
+                  onDeliverableDownload={handleDeliverableDownload}
+                  currency={userCurrency}
                 />
               ))}
             </div>

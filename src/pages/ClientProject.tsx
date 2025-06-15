@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -118,13 +117,21 @@ const ClientProject = () => {
         return;
       }
 
-      if (!milestone.deliverable_name) {
+      if (!milestone.deliverable_name || !milestone.deliverable_url) {
         toast.error('No deliverable available');
         return;
       }
 
-      // In a real app, this would download from Supabase Storage
-      toast.success(`Downloading ${milestone.deliverable_name}`);
+      // Create a temporary anchor element to trigger download
+      const link = document.createElement('a');
+      link.href = milestone.deliverable_url;
+      link.download = milestone.deliverable_name;
+      link.target = '_blank';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+
+      toast.success(`Downloaded ${milestone.deliverable_name}`);
     } catch (error) {
       console.error('Error downloading deliverable:', error);
       toast.error('Failed to download deliverable');
@@ -272,7 +279,8 @@ const ClientProject = () => {
                       status: milestone.status,
                       deliverable: milestone.deliverable_name ? {
                         name: milestone.deliverable_name,
-                        size: milestone.deliverable_size || 0
+                        size: milestone.deliverable_size || 0,
+                        url: milestone.deliverable_url
                       } : undefined,
                     }}
                     isClient={true}
