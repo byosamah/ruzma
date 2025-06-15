@@ -1,4 +1,3 @@
-
 import React from "react";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
@@ -18,6 +17,7 @@ import Profile from "./pages/Profile";
 import NotFound from "./pages/NotFound";
 import ProjectManagement from "./pages/ProjectManagement";
 import EditProject from "./pages/EditProject";
+import ProjectTemplates from "./pages/ProjectTemplates";
 
 const App = () => {
   // Create QueryClient inside the component to avoid potential initialization issues
@@ -47,6 +47,7 @@ const App = () => {
               <Route path="/create-project" element={<CreateProject />} />
               <Route path="/project/:projectId" element={<ProjectManagement />} />
               <Route path="/edit-project/:projectId" element={<EditProject />} />
+              <Route path="/templates" element={<ProjectTemplates />} />
               <Route path="/client/project/:token" element={<ClientProject />} />
               <Route path="/profile" element={<Profile />} />
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
