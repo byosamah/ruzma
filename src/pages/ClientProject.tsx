@@ -10,6 +10,10 @@ import { toast } from 'sonner';
 import { User } from '@supabase/supabase-js';
 import DeliverableWatermarkedPreview from '@/components/MilestoneCard/DeliverableWatermarkedPreview';
 import MilestoneDeliverablePreview from "@/components/ProjectClient/MilestoneDeliverablePreview";
+import ProjectOverviewCard from "@/components/ProjectClient/ProjectOverviewCard";
+import ProjectInstructionsCard from "@/components/ProjectClient/ProjectInstructionsCard";
+import ProjectMilestonesList from "@/components/ProjectClient/ProjectMilestonesList";
+import ProjectFooter from "@/components/ProjectClient/ProjectFooter";
 
 const ClientProject = () => {
   const { projectId } = useParams();
@@ -190,137 +194,20 @@ const ClientProject = () => {
       </div>
 
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
-        {/* Project Overview */}
-        <Card className="bg-white/80 backdrop-blur-sm">
-          <CardHeader>
-            <div className="flex flex-col md:flex-row justify-between items-start md:items-center space-y-4 md:space-y-0">
-              <div>
-                <CardTitle className="text-2xl text-slate-800">{project.name}</CardTitle>
-                <p className="text-slate-600 mt-2">{project.brief}</p>
-              </div>
-              <div className="text-right">
-                <div className="text-3xl font-bold text-slate-800">${totalValue.toLocaleString()}</div>
-                <div className="text-sm text-slate-600">Total Project Value</div>
-              </div>
-            </div>
-          </CardHeader>
-          <CardContent>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              <div className="text-center">
-                <div className="text-2xl font-bold text-blue-600">{totalMilestones}</div>
-                <div className="text-sm text-slate-600">Total Milestones</div>
-              </div>
-              <div className="text-center">
-                <div className="text-2xl font-bold text-green-600">{completedMilestones}</div>
-                <div className="text-sm text-slate-600">Completed</div>
-              </div>
-              <div className="text-center">
-                <div className="text-2xl font-bold text-slate-800">
-                  {totalMilestones > 0 ? Math.round((completedMilestones / totalMilestones) * 100) : 0}%
-                </div>
-                <div className="text-sm text-slate-600">Progress</div>
-              </div>
-            </div>
-            
-            <div className="mt-6">
-              <div className="flex justify-between items-center mb-2">
-                <span className="text-sm font-medium text-slate-700">Project Progress</span>
-                <span className="text-sm text-slate-600">{completedMilestones}/{totalMilestones} milestones</span>
-              </div>
-              <div className="w-full bg-slate-200 rounded-full h-3">
-                <div 
-                  className="bg-gradient-to-r from-blue-500 to-purple-500 h-3 rounded-full transition-all duration-300"
-                  style={{ width: `${totalMilestones > 0 ? (completedMilestones / totalMilestones) * 100 : 0}%` }}
-                ></div>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-
-        {/* Instructions */}
-        <Card className="bg-gradient-to-r from-blue-50 to-purple-50 border-blue-200">
-          <CardContent className="pt-6">
-            <div className="flex items-start space-x-3">
-              <div className="flex-shrink-0">
-                <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
-                  <CheckCircle className="w-5 h-5 text-blue-600" />
-                </div>
-              </div>
-              <div>
-                <h3 className="font-semibold text-slate-800 mb-2">How it works:</h3>
-                <ol className="text-sm text-slate-700 space-y-1 list-decimal list-inside">
-                  <li>Review each milestone below with its description and price</li>
-                  <li>Upload proof of payment (screenshot, receipt, or transaction ID) for each milestone</li>
-                  <li>Once payment is verified, you'll be able to download the deliverable</li>
-                  <li>Milestones must be completed in order</li>
-                </ol>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-
-        {/* Milestones */}
-        <div className="space-y-6">
-          <h2 className="text-2xl font-bold text-slate-800">Project Milestones</h2>
-          
-          <div className="space-y-4">
-            {project.milestones.length === 0 ? (
-              <Card className="text-center py-8">
-                <CardContent>
-                  <p className="text-slate-500">No milestones have been set up for this project yet.</p>
-                </CardContent>
-              </Card>
-            ) : (
-              project.milestones.map((milestone, index) => (
-                <div key={milestone.id} className="relative">
-                  {index > 0 && (
-                    <div className="absolute -top-4 left-6 w-0.5 h-4 bg-slate-300"></div>
-                  )}
-                  <div className="mb-2">
-                    <MilestoneDeliverablePreview
-                      milestoneId={milestone.id}
-                      deliverableUrl={milestone.deliverable_url}
-                      deliverableName={milestone.deliverable_name}
-                      status={milestone.status}
-                      watermarkText={milestone.watermark_text ?? undefined}
-                    />
-                  </div>
-                  <MilestoneCard
-                    milestone={{
-                      id: milestone.id,
-                      title: milestone.title,
-                      description: milestone.description,
-                      price: milestone.price,
-                      status: milestone.status,
-                      deliverable: milestone.deliverable_name ? {
-                        name: milestone.deliverable_name,
-                        size: milestone.deliverable_size || 0,
-                        url: milestone.deliverable_url
-                      } : undefined,
-                      paymentProofUrl: milestone.payment_proof_url,
-                      watermarkText: milestone.watermark_text ?? undefined,
-                    }}
-                    isClient={true}
-                    onPaymentUpload={handlePaymentUpload}
-                    onDeliverableDownload={handleDeliverableDownload}
-                  />
-                </div>
-              ))
-            )}
-          </div>
-        </div>
-
-        {/* Footer */}
-        <Card className="bg-slate-100 border-slate-200">
-          <CardContent className="pt-6 text-center">
-            <p className="text-sm text-slate-600">
-              Questions about this project? Contact your freelancer directly.
-            </p>
-            <p className="text-xs text-slate-500 mt-2">
-              Powered by Ruzma - Professional Freelance Project Management
-            </p>
-          </CardContent>
-        </Card>
+        <ProjectOverviewCard
+          projectName={project.name}
+          projectBrief={project.brief}
+          totalValue={totalValue}
+          totalMilestones={totalMilestones}
+          completedMilestones={completedMilestones}
+        />
+        <ProjectInstructionsCard />
+        <ProjectMilestonesList
+          milestones={project.milestones}
+          onPaymentUpload={handlePaymentUpload}
+          onDeliverableDownload={handleDeliverableDownload}
+        />
+        <ProjectFooter />
       </div>
     </div>
   );
