@@ -27,6 +27,15 @@ interface NotificationSettings {
   marketing: boolean;
 }
 
+// Make sure this is compatible with JSON for Supabase
+type Json =
+  | string
+  | number
+  | boolean
+  | null
+  | { [key: string]: Json }
+  | Json[];
+
 export const EmailNotificationsDialog = ({ open, onOpenChange }: EmailNotificationsDialogProps) => {
   const t = useT();
   const [notifications, setNotifications] = useState<NotificationSettings>({
@@ -53,8 +62,9 @@ export const EmailNotificationsDialog = ({ open, onOpenChange }: EmailNotificati
         return;
       }
 
+      // Type-safe cast for Supabase JSON -> NotificationSettings
       if (profile && profile.notification_settings) {
-        setNotifications(profile.notification_settings as NotificationSettings);
+        setNotifications(profile.notification_settings as unknown as NotificationSettings);
       }
     };
 
@@ -70,9 +80,10 @@ export const EmailNotificationsDialog = ({ open, onOpenChange }: EmailNotificati
     setIsLoading(true);
 
     try {
+      // Explicitly cast notifications to Json
       const { error } = await supabase
         .from('profiles')
-        .update({ notification_settings: notifications })
+        .update({ notification_settings: notifications as Json })
         .eq('id', user.id);
 
       if (error) throw error;
