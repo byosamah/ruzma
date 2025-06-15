@@ -1,5 +1,5 @@
 
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useMemo, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 import { User } from '@supabase/supabase-js';
@@ -12,6 +12,7 @@ export const useDashboard = () => {
   const [user, setUser] = useState<User | null>(null);
   const [profile, setProfile] = useState<any>(null);
   const [loading, setLoading] = useState(true);
+  const [authChecked, setAuthChecked] = useState(false);
   const navigate = useNavigate();
   const t = useT();
 
@@ -19,7 +20,9 @@ export const useDashboard = () => {
   const userCurrency = useUserCurrency(user);
 
   useEffect(() => {
-    let isMounted = true; // Prevent state updates if component unmounts
+    if (authChecked) return; // Prevent multiple auth checks
+    
+    let isMounted = true;
     
     const fetchUserAndProfile = async () => {
       if (!isMounted) return;
@@ -39,6 +42,7 @@ export const useDashboard = () => {
         if (userError || !user) {
           console.log('Dashboard: No authenticated user, redirecting to login');
           setLoading(false);
+          setAuthChecked(true);
           navigate('/login');
           return;
         }
@@ -65,7 +69,7 @@ export const useDashboard = () => {
             .from('profiles')
             .insert({
               id: user.id,
-              full_name: user.user_metadata?.full_name || user.email?.split('@')[0] || t('defaultUser')
+              full_name: user.user_metadata?.full_name || user.email?.split('@')[0] || 'User'
             })
             .select()
             .single();
@@ -74,7 +78,7 @@ export const useDashboard = () => {
           
           if (createError) {
             console.error("Dashboard: Profile creation failed:", createError);
-            toast.error(t("profileSetupError"));
+            toast.error("Profile setup error");
           } else {
             console.log('Dashboard: New profile created');
             setProfile(newProfile);
@@ -87,11 +91,13 @@ export const useDashboard = () => {
         console.error('Dashboard: Unexpected error:', error);
         if (isMounted) {
           setLoading(false);
+          setAuthChecked(true);
           navigate('/login');
         }
       } finally {
         if (isMounted) {
           setLoading(false);
+          setAuthChecked(true);
           console.log('Dashboard: Loading complete');
         }
       }
@@ -102,22 +108,22 @@ export const useDashboard = () => {
     return () => {
       isMounted = false;
     };
-  }, [navigate, t]);
+  }, [authChecked]); // Only depend on authChecked to prevent infinite loops
 
-  const handleSignOut = async () => {
+  const handleSignOut = useCallback(async () => {
     await supabase.auth.signOut();
     navigate('/');
-  };
+  }, [navigate]);
 
-  const handleEditProject = (project: any) => {
+  const handleEditProject = useCallback((project: any) => {
     navigate(`/edit-project/${project.id}`);
-  };
+  }, [navigate]);
 
-  const handleDeleteProject = async (projectId: string) => {
-    if (confirm(t('areYouSureDeleteProject'))) {
+  const handleDeleteProject = useCallback(async (projectId: string) => {
+    if (confirm('Are you sure you want to delete this project?')) {
       await deleteProject(projectId);
     }
-  };
+  }, [deleteProject]);
 
   const convertedProjects = useMemo(() => projects.map(project => ({
     id: project.id,
@@ -150,7 +156,7 @@ export const useDashboard = () => {
     profile?.full_name ||
     user?.user_metadata?.full_name ||
     user?.email?.split("@")[0] ||
-    t("defaultUser"), [profile, user, t]);
+    "User", [profile, user]);
 
   return {
     user,
