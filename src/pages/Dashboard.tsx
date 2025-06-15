@@ -29,25 +29,31 @@ const Dashboard = () => {
   useEffect(() => {
     const fetchUserAndProfile = async () => {
       setLoading(true);
+      console.log('Dashboard: fetchUserAndProfile start');
       
       const { data: { user }, error: userError } = await supabase.auth.getUser();
+      console.log('Dashboard: supabase.auth.getUser result', { user, userError });
       
       if (userError || !user) {
-        console.log('No user found, redirecting to login');
+        console.log('Dashboard: No user found, redirecting to login');
+        setLoading(false);
         navigate('/login');
         return;
       }
 
       setUser(user);
-      
+      console.log('Dashboard: User set', user);
+
       const { data: profileData, error: profileError } = await supabase
         .from('profiles')
         .select('*')
         .eq('id', user.id)
         .maybeSingle();
 
+      console.log('Dashboard: profile fetch result', { profileData, profileError });
+
       if (profileError) {
-        console.error("Error fetching profile:", profileError);
+        console.error("Dashboard: Error fetching profile:", profileError);
         const { data: newProfile, error: createError } = await supabase
           .from('profiles')
           .insert({
@@ -56,18 +62,21 @@ const Dashboard = () => {
           })
           .select()
           .single();
-          
+        console.log('Dashboard: profile insert attempt', { newProfile, createError });
         if (createError) {
-          console.error("Error creating profile:", createError);
+          console.error("Dashboard: Error creating profile:", createError);
           toast.error(t("profileSetupError"));
         } else {
           setProfile(newProfile);
+          console.log('Dashboard: New profile set', newProfile);
         }
       } else {
         setProfile(profileData);
+        console.log('Dashboard: Existing profile set', profileData);
       }
-      
+
       setLoading(false);
+      console.log('Dashboard: Finished loading');
     };
 
     fetchUserAndProfile();
