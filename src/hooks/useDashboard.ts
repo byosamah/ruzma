@@ -1,4 +1,3 @@
-
 import { useState, useEffect, useMemo, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
@@ -30,6 +29,32 @@ export const useDashboard = () => {
       console.log('Dashboard: Starting auth check...');
       
       try {
+        // Handle auth tokens from URL hash (email confirmation)
+        const hash = window.location.hash;
+        if (hash && hash.includes('access_token=')) {
+          console.log('Dashboard: Processing auth tokens from URL hash');
+          const params = new URLSearchParams(hash.substring(1));
+          const accessToken = params.get('access_token');
+          const refreshToken = params.get('refresh_token');
+          
+          if (accessToken && refreshToken) {
+            const { error } = await supabase.auth.setSession({
+              access_token: accessToken,
+              refresh_token: refreshToken,
+            });
+            
+            if (error) {
+              console.error('Dashboard: Error setting session from URL:', error);
+              toast.error('Authentication failed. Please try logging in again.');
+            } else {
+              console.log('Dashboard: Session set successfully from URL tokens');
+              toast.success('Email confirmed successfully! Welcome to Ruzma.');
+              // Clear the hash from URL
+              window.history.replaceState(null, '', window.location.pathname);
+            }
+          }
+        }
+
         const { data: { user }, error: userError } = await supabase.auth.getUser();
         console.log('Dashboard: Auth result -', { 
           hasUser: !!user, 
@@ -108,7 +133,7 @@ export const useDashboard = () => {
     return () => {
       isMounted = false;
     };
-  }, [authChecked]); // Only depend on authChecked to prevent infinite loops
+  }, [authChecked, navigate]); // Added navigate to dependencies
 
   const handleSignOut = useCallback(async () => {
     await supabase.auth.signOut();
