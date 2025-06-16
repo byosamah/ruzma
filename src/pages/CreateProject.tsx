@@ -7,16 +7,14 @@ import Layout from '@/components/Layout';
 import { ArrowLeft } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { User } from '@supabase/supabase-js';
-import { useProjects } from '@/hooks/useProjects';
 import { useT } from '@/lib/i18n';
-import { CreateProjectFormData } from '@/lib/validators/project';
 import ProjectDetailsForm from '@/components/CreateProject/ProjectDetailsForm';
 import MilestonesList from '@/components/CreateProject/MilestonesList';
 import TemplateHeader from '@/components/CreateProject/TemplateHeader';
 import SaveAsTemplateCheckbox from '@/components/CreateProject/SaveAsTemplateCheckbox';
 import FormActions from '@/components/CreateProject/FormActions';
-import { useProjectTemplates } from '@/hooks/useProjectTemplates';
 import { useCreateProjectForm } from '@/hooks/useCreateProjectForm';
+import { useProjectTemplates } from '@/hooks/useProjectTemplates';
 
 const CreateProject = () => {
   const t = useT();
@@ -27,12 +25,10 @@ const CreateProject = () => {
   const navigate = useNavigate();
   const location = useLocation();
   
-  const { createProject } = useProjects(user);
-  const { saveTemplate } = useProjectTemplates(user);
-
   // Get template data from navigation state
   const templateData = location.state?.template;
-  const { form } = useCreateProjectForm(templateData);
+  const { form, addMilestone, removeMilestone, loadFromTemplate, handleSubmit } = useCreateProjectForm(templateData);
+  const { saveTemplate } = useProjectTemplates(user);
 
   const { formState: { isSubmitting } } = form;
 
@@ -68,28 +64,25 @@ const CreateProject = () => {
     navigate('/');
   };
 
-  const saveProjectAsTemplate = async (data: CreateProjectFormData) => {
-    if (!user || !saveAsTemplate) return;
-    try {
-      await saveTemplate({
-        name: data.name,
-        brief: data.brief,
-        milestones: data.milestones,
-      });
-    } catch (error) {
-      console.error('Error saving template:', error);
-    }
-  };
-
-  const onSubmit = async (data: CreateProjectFormData) => {
+  const onSubmit = async (data: any) => {
     if (!user) return;
     
-    await saveProjectAsTemplate(data);
-    
-    const result = await createProject(data);
-    if (result) {
-      navigate('/dashboard');
+    // Save as template if requested
+    if (saveAsTemplate && data.name) {
+      try {
+        await saveTemplate({
+          name: data.name,
+          brief: data.brief,
+          milestones: data.milestones as any,
+        });
+        toast.success('Template saved successfully!');
+      } catch (error) {
+        console.error('Error saving template:', error);
+        toast.error('Failed to save template');
+      }
     }
+    
+    await handleSubmit(data);
   };
 
   const handleSaveAsTemplateChange = (checked: boolean | "indeterminate") => {
