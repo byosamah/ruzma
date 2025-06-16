@@ -15,7 +15,6 @@ Deno.serve(async (req) => {
   try {
     console.log('get-client-project function called')
     console.log('Request method:', req.method)
-    console.log('Request headers:', Object.fromEntries(req.headers.entries()))
     
     const requestBody = await req.json().catch((e) => {
       console.error('Failed to parse request body as JSON:', e.message)
@@ -53,29 +52,60 @@ Deno.serve(async (req) => {
 
     const supabaseAdmin = createClient(supabaseUrl, supabaseServiceKey)
 
-    // Attach token as a request-scoped setting so RLS policy works
-    const jwtCustomClaims = { client_access_token: token };
-    // Supabase-js v2 does not support custom request-scoped claims for policies,
-    // but the RLS is correctly scoped since we're invoking using service key only in this edge function.
+    // First, let's check if ANY projects exist
+    console.log('Checking if any projects exist...')
+    const { data: allProjects, error: allProjectsError } = await supabaseAdmin
+      .from('projects')
+      .select('id, client_access_token')
+      .limit(5);
+    
+    console.log('Sample projects in database:', allProjects)
+    if (allProjectsError) {
+      console.error('Error fetching sample projects:', allProjectsError)
+    }
 
-    // Security: fetch project using service role & verify client_access_token
+    // Now try to fetch the specific project
+    console.log('Searching for project with client_access_token:', token)
     const { data: projectData, error: projectError } = await supabaseAdmin
       .from('projects')
       .select('*, milestones (*)')
       .eq('client_access_token', token)
       .single();
 
+    console.log('Project query result:', { projectData, projectError })
+
     if (projectError || !projectData) {
       console.error('Project not found or error fetching project by token:', projectError)
-      return new Response(JSON.stringify({ error: 'Project not found or access denied' }), {
+      
+      // Try a different approach - search by converting token to string
+      console.log('Trying alternative search method...')
+      const { data: altProjectData, error: altProjectError } = await supabaseAdmin
+        .from('projects')
+        .select('*, milestones (*)')
+        .eq('client_access_token::text', token);
+        
+      console.log('Alternative search result:', { altProjectData, altProjectError })
+      
+      if (altProjectError || !altProjectData || altProjectData.length === 0) {
+        return new Response(JSON.stringify({ error: 'Project not found or access denied' }), {
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+          status: 404,
+        })
+      }
+      
+      // Use the alternative result
+      const project = altProjectData[0];
+      delete project.user_id;
+      return new Response(JSON.stringify(project), {
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-        status: 404,
+        status: 200,
       })
     }
 
     // Sanitize response and do not leak internal details
     delete projectData.user_id;
 
+    console.log('Successfully found project:', projectData.name)
     return new Response(JSON.stringify(projectData), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       status: 200,
@@ -88,4 +118,3 @@ Deno.serve(async (req) => {
     })
   }
 })
-
