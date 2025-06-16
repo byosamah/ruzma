@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
@@ -55,24 +56,45 @@ const SignUp = () => {
     
     setIsLoading(true);
     
-    const { error } = await supabase.auth.signUp({
-      email: formData.email,
-      password: formData.password,
-      options: {
-        data: {
-          full_name: formData.name,
-        },
-        emailRedirectTo: `${window.location.origin}/dashboard`
+    try {
+      console.log('Attempting to sign up with email:', formData.email);
+      
+      const { data, error } = await supabase.auth.signUp({
+        email: formData.email,
+        password: formData.password,
+        options: {
+          data: {
+            full_name: formData.name,
+          },
+          emailRedirectTo: `${window.location.origin}/dashboard`
+        }
+      });
+
+      console.log('SignUp response:', { data, error });
+
+      if (error) {
+        console.error('SignUp error:', error);
+        toast.error(error.message);
+        return;
       }
-    });
 
-    setIsLoading(false);
-
-    if (error) {
-      toast.error(error.message);
-    } else {
-      toast.success('Account created! Please check your email to verify your account.');
+      if (data.user && !data.session) {
+        // User created but needs email confirmation
+        toast.success('Account created! Please check your email to verify your account.');
+        console.log('User created, email confirmation required');
+      } else if (data.session) {
+        // User created and automatically signed in (email confirmation disabled)
+        toast.success('Account created and signed in successfully!');
+        console.log('User created and signed in automatically');
+        navigate('/dashboard');
+      }
+      
       setFormData({ name: '', email: '', password: '', confirmPassword: '' });
+    } catch (error) {
+      console.error('Unexpected error during signup:', error);
+      toast.error('An unexpected error occurred. Please try again.');
+    } finally {
+      setIsLoading(false);
     }
   };
 
