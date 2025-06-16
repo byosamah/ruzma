@@ -8,6 +8,7 @@ import { ArrowLeft } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { User } from '@supabase/supabase-js';
 import { useT } from '@/lib/i18n';
+import { toast } from 'sonner';
 import ProjectDetailsForm from '@/components/CreateProject/ProjectDetailsForm';
 import MilestonesList from '@/components/CreateProject/MilestonesList';
 import TemplateHeader from '@/components/CreateProject/TemplateHeader';
