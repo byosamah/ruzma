@@ -7,26 +7,27 @@ import { format, isValid, parseISO } from 'date-fns';
 import { DatabaseProject } from '@/hooks/projectTypes';
 import { useT } from '@/lib/i18n';
 import { toast } from 'sonner';
-import { useUserCurrency } from '@/hooks/useUserCurrency';
-import { useUser } from '@supabase/auth-helpers-react';
+import { formatCurrency, CurrencyCode } from '@/lib/currency';
+
 interface ProjectCardProps {
   project: DatabaseProject;
   onViewClick: (projectId: string) => void;
   onEditClick: (projectId: string) => void;
+  currency: CurrencyCode;
 }
+
 const ProjectCard: React.FC<ProjectCardProps> = ({
   project,
   onViewClick,
-  onEditClick
+  onEditClick,
+  currency
 }) => {
   const t = useT();
-  const user = useUser();
-  const {
-    formatCurrency
-  } = useUserCurrency(user);
+  
   const totalValue = project.milestones.reduce((sum, milestone) => sum + milestone.price, 0);
   const completedMilestones = project.milestones.filter(m => m.status === 'approved').length;
   const totalMilestones = project.milestones.length;
+  
   const getStatusColor = (status: string) => {
     switch (status) {
       case 'approved':
@@ -39,11 +40,13 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
         return 'bg-gray-500';
     }
   };
+  
   const handleCopyClientLink = () => {
     const clientUrl = `${window.location.origin}/client/project/${project.client_access_token}`;
     navigator.clipboard.writeText(clientUrl);
     toast.success('Client link copied to clipboard');
   };
+  
   const handleViewClientPage = () => {
     const clientUrl = `${window.location.origin}/client/project/${project.client_access_token}`;
     window.open(clientUrl, '_blank');
@@ -70,7 +73,9 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
       return 'Invalid Date';
     }
   };
-  return <Card className="hover:shadow-lg transition-shadow duration-200">
+  
+  return (
+    <Card className="hover:shadow-lg transition-shadow duration-200">
       <CardHeader>
         <div className="flex justify-between items-start">
           <CardTitle className="text-lg font-semibold text-slate-800 line-clamp-2">
@@ -94,7 +99,7 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
         <div className="grid grid-cols-2 gap-4">
           <div className="flex items-center gap-2">
             <DollarSign className="w-4 h-4 text-green-600" />
-            <span className="text-sm font-medium">{formatCurrency(totalValue)}</span>
+            <span className="text-sm font-medium">{formatCurrency(totalValue, currency)}</span>
           </div>
           <div className="flex items-center gap-2">
             <Calendar className="w-4 h-4 text-blue-600" />
@@ -117,12 +122,16 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
         </div>
 
         <div className="flex flex-wrap gap-2">
-          {project.milestones.slice(0, 3).map(milestone => <Badge key={milestone.id} variant="secondary" className={`text-xs ${getStatusColor(milestone.status)} text-white`}>
+          {project.milestones.slice(0, 3).map(milestone => (
+            <Badge key={milestone.id} variant="secondary" className={`text-xs ${getStatusColor(milestone.status)} text-white`}>
               {milestone.title}
-            </Badge>)}
-          {project.milestones.length > 3 && <Badge variant="outline" className="text-xs">
+            </Badge>
+          ))}
+          {project.milestones.length > 3 && (
+            <Badge variant="outline" className="text-xs">
               +{project.milestones.length - 3} More
-            </Badge>}
+            </Badge>
+          )}
         </div>
 
         <div className="flex gap-2 pt-2 border-t">
@@ -136,6 +145,8 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
           </Button>
         </div>
       </CardContent>
-    </Card>;
+    </Card>
+  );
 };
+
 export default ProjectCard;

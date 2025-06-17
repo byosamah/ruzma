@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import Layout from '@/components/Layout';
@@ -89,6 +88,7 @@ const Dashboard = () => {
               onEdit={handleEditProject}
               onDelete={handleDeleteProject}
               onNewProject={() => navigate("/create-project")}
+              currency={userCurrency.currency}
             />
           </TabsContent>
           

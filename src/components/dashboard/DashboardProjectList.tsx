@@ -6,12 +6,14 @@ import ProjectCard from "@/components/ProjectCard";
 import { Plus, Briefcase } from "lucide-react";
 import { DatabaseProject } from "@/hooks/projectTypes";
 import { useT } from "@/lib/i18n";
+import { CurrencyCode } from "@/lib/currency";
 
 interface DashboardProjectListProps {
   projects: DatabaseProject[];
   onEdit: (projectId: string) => void;
   onDelete: (projectId: string) => void;
   onNewProject: () => void;
+  currency: CurrencyCode;
 }
 
 const DashboardProjectList: React.FC<DashboardProjectListProps> = ({
@@ -19,6 +21,7 @@ const DashboardProjectList: React.FC<DashboardProjectListProps> = ({
   onEdit,
   onDelete,
   onNewProject,
+  currency,
 }) => {
   const t = useT();
   
@@ -67,6 +70,7 @@ const DashboardProjectList: React.FC<DashboardProjectListProps> = ({
                 project={project}
                 onViewClick={handleViewProject}
                 onEditClick={onEdit}
+                currency={currency}
               />
             </div>
           ))}
