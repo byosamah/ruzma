@@ -52,53 +52,47 @@ Deno.serve(async (req) => {
 
     const supabaseAdmin = createClient(supabaseUrl, supabaseServiceKey)
 
-    // First, let's check if ANY projects exist
-    console.log('Checking if any projects exist...')
-    const { data: allProjects, error: allProjectsError } = await supabaseAdmin
-      .from('projects')
-      .select('id, client_access_token')
-      .limit(5);
+    console.log('Searching for project...')
     
-    console.log('Sample projects in database:', allProjects)
-    if (allProjectsError) {
-      console.error('Error fetching sample projects:', allProjectsError)
-    }
-
-    // Now try to fetch the specific project
-    console.log('Searching for project with client_access_token:', token)
-    const { data: projectData, error: projectError } = await supabaseAdmin
+    // Try to find project by client_access_token first
+    let { data: projectData, error: projectError } = await supabaseAdmin
       .from('projects')
       .select('*, milestones (*)')
       .eq('client_access_token', token)
-      .single();
+      .maybeSingle();
 
-    console.log('Project query result:', { projectData, projectError })
+    console.log('Search by client_access_token result:', { projectData, projectError })
 
-    if (projectError || !projectData) {
-      console.error('Project not found or error fetching project by token:', projectError)
-      
-      // Try a different approach - search by converting token to string
-      console.log('Trying alternative search method...')
-      const { data: altProjectData, error: altProjectError } = await supabaseAdmin
+    // If not found by client_access_token, try by project ID (for backward compatibility)
+    if (!projectData && !projectError) {
+      console.log('Not found by client_access_token, trying by project ID...')
+      const { data: projectByIdData, error: projectByIdError } = await supabaseAdmin
         .from('projects')
         .select('*, milestones (*)')
-        .eq('client_access_token::text', token);
+        .eq('id', token)
+        .maybeSingle();
         
-      console.log('Alternative search result:', { altProjectData, altProjectError })
+      console.log('Search by project ID result:', { projectByIdData, projectByIdError })
       
-      if (altProjectError || !altProjectData || altProjectData.length === 0) {
-        return new Response(JSON.stringify({ error: 'Project not found or access denied' }), {
-          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-          status: 404,
-        })
+      if (projectByIdData) {
+        projectData = projectByIdData;
+        projectError = projectByIdError;
       }
-      
-      // Use the alternative result
-      const project = altProjectData[0];
-      delete project.user_id;
-      return new Response(JSON.stringify(project), {
+    }
+
+    if (projectError) {
+      console.error('Database error:', projectError)
+      return new Response(JSON.stringify({ error: 'Database error occurred' }), {
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-        status: 200,
+        status: 500,
+      })
+    }
+
+    if (!projectData) {
+      console.error('Project not found with token:', token)
+      return new Response(JSON.stringify({ error: 'Project not found or access denied' }), {
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        status: 404,
       })
     }
 

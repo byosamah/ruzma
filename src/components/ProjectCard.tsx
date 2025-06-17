@@ -1,174 +1,144 @@
 
 import React from 'react';
-import { Link, useNavigate } from 'react-router-dom';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Edit, Trash2, ExternalLink, Clock, CheckCircle, XCircle } from 'lucide-react';
-import { formatCurrency, CurrencyCode } from '@/lib/currency';
-import { useT, TranslationKey } from '@/lib/i18n';
-
-export interface Milestone {
-  id: string;
-  title: string;
-  description: string;
-  price: number;
-  status: 'pending' | 'payment_submitted' | 'approved' | 'rejected';
-  deliverable?: File;
-  paymentProof?: File;
-}
-
-export interface Project {
-  id: string;
-  name: string;
-  brief: string;
-  milestones: Milestone[];
-  createdAt: string;
-  clientUrl: string;
-}
+import { Button } from '@/components/ui/button';
+import { Calendar, DollarSign, CheckCircle, Clock, Eye, Edit, Link, Copy } from 'lucide-react';
+import { format } from 'date-fns';
+import { useUserCurrency } from '@/hooks/useUserCurrency';
+import { DatabaseProject } from '@/hooks/projectTypes';
+import { useT } from '@/lib/i18n';
+import { toast } from 'sonner';
 
 interface ProjectCardProps {
-  project: Project;
-  onEdit: (project: Project) => void;
-  onDelete: (projectId: string) => void;
-  currency?: CurrencyCode;
+  project: DatabaseProject;
+  onViewClick: (projectId: string) => void;
+  onEditClick: (projectId: string) => void;
 }
 
-const ProjectCard: React.FC<ProjectCardProps> = ({ project, onEdit, onDelete, currency = 'USD' }) => {
-  const navigate = useNavigate();
+const ProjectCard: React.FC<ProjectCardProps> = ({ project, onViewClick, onEditClick }) => {
+  const { formatCurrency } = useUserCurrency();
   const t = useT();
-  const totalMilestones = project.milestones.length;
+
+  const totalValue = project.milestones.reduce((sum, milestone) => sum + milestone.price, 0);
   const completedMilestones = project.milestones.filter(m => m.status === 'approved').length;
-  const pendingPayments = project.milestones.filter(m => m.status === 'payment_submitted').length;
-  const totalValue = project.milestones.reduce((sum, m) => sum + m.price, 0);
+  const totalMilestones = project.milestones.length;
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case 'pending': return 'bg-yellow-100 text-yellow-800';
-      case 'payment_submitted': return 'bg-blue-100 text-blue-800';
-      case 'approved': return 'bg-green-100 text-green-800';
-      case 'rejected': return 'bg-red-100 text-red-800';
-      default: return 'bg-gray-100 text-gray-800';
+      case 'approved': return 'bg-green-500';
+      case 'payment_submitted': return 'bg-yellow-500';
+      case 'rejected': return 'bg-red-500';
+      default: return 'bg-gray-500';
     }
   };
 
-  const getStatusIcon = (status: string) => {
-    switch (status) {
-      case 'pending': return <Clock className="w-3 h-3" />;
-      case 'payment_submitted': return <Clock className="w-3 h-3" />;
-      case 'approved': return <CheckCircle className="w-3 h-3" />;
-      case 'rejected': return <XCircle className="w-3 h-3" />;
-      default: return <Clock className="w-3 h-3" />;
-    }
+  const handleCopyClientLink = () => {
+    // Use client_access_token for the client URL
+    const clientUrl = `${window.location.origin}/client/project/${project.client_access_token}`;
+    navigator.clipboard.writeText(clientUrl);
+    toast.success(t('clientLinkCopied'));
   };
 
-  const handleCardClick = (e: React.MouseEvent) => {
-    // Don't navigate if clicking on buttons or links
-    if (e.target instanceof HTMLElement) {
-      const isInteractiveElement = e.target.closest('button, a, [role="button"]');
-      if (!isInteractiveElement) {
-        navigate(`/project/${project.id}`);
-      }
-    }
-  };
-
-  const handleEditClick = (e: React.MouseEvent) => {
-    e.stopPropagation();
-    onEdit(project);
-  };
-
-  const handleDeleteClick = (e: React.MouseEvent) => {
-    e.stopPropagation();
-    onDelete(project.id);
+  const handleViewClientPage = () => {
+    // Use client_access_token for the client URL
+    const clientUrl = `${window.location.origin}/client/project/${project.client_access_token}`;
+    window.open(clientUrl, '_blank');
   };
 
   return (
-    <Card 
-      className="hover:shadow-lg transition-shadow duration-200 bg-white/80 backdrop-blur-sm cursor-pointer"
-      onClick={handleCardClick}
-    >
+    <Card className="hover:shadow-lg transition-shadow duration-200">
       <CardHeader>
         <div className="flex justify-between items-start">
-          <div>
-            <CardTitle className="text-lg font-semibold text-slate-800">{project.name}</CardTitle>
-            <p className="text-sm text-slate-600 mt-1 line-clamp-2">{project.brief}</p>
-            <p className="text-sm font-medium text-slate-700 mt-2">
-              {t('totalValue')}: {formatCurrency(totalValue, currency)}
-            </p>
-          </div>
-          <div className="flex space-x-2">
-            <Button variant="ghost" size="sm" onClick={handleEditClick}>
+          <CardTitle className="text-lg font-semibold text-slate-800 line-clamp-2">
+            {project.name}
+          </CardTitle>
+          <div className="flex gap-2">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => onEditClick(project.id)}
+              className="flex items-center gap-1"
+            >
               <Edit className="w-4 h-4" />
+              {t('edit')}
             </Button>
-            <Button variant="ghost" size="sm" onClick={handleDeleteClick} className="text-red-600 hover:text-red-700">
-              <Trash2 className="w-4 h-4" />
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => onViewClick(project.id)}
+              className="flex items-center gap-1"
+            >
+              <Eye className="w-4 h-4" />
+              {t('view')}
             </Button>
           </div>
         </div>
       </CardHeader>
-      <CardContent>
-        <div className="space-y-4">
-          <div className="flex justify-between items-center">
-            <span className="text-sm text-slate-600">{t('progress')}</span>
-            <span className="text-sm font-medium">{t('milestonesCompletedRatio', { completed: completedMilestones.toString(), total: totalMilestones.toString() })}</span>
+      <CardContent className="space-y-4">
+        <p className="text-slate-600 text-sm line-clamp-3">{project.brief}</p>
+        
+        <div className="grid grid-cols-2 gap-4">
+          <div className="flex items-center gap-2">
+            <DollarSign className="w-4 h-4 text-green-600" />
+            <span className="text-sm font-medium">{formatCurrency(totalValue)}</span>
           </div>
-          
-          <div className="w-full bg-slate-200 rounded-full h-2">
-            <div 
-              className="bg-primary h-2 rounded-full transition-all duration-300"
-              style={{ width: `${(completedMilestones / totalMilestones) * 100}%` }}
-            ></div>
+          <div className="flex items-center gap-2">
+            <Calendar className="w-4 h-4 text-blue-600" />
+            <span className="text-sm text-slate-600">
+              {format(new Date(project.created_at), 'MMM d, yyyy')}
+            </span>
           </div>
+        </div>
 
-          {pendingPayments > 0 && (
-            <div className="flex items-center space-x-2">
-              <Badge className="bg-orange-100 text-orange-800">
-                {t(pendingPayments > 1 ? 'paymentPendingReview_other' : 'paymentPendingReview_one', { count: pendingPayments.toString() })}
-              </Badge>
-            </div>
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <CheckCircle className="w-4 h-4 text-green-600" />
+            <span className="text-sm">
+              {completedMilestones}/{totalMilestones} {t('milestones')}
+            </span>
+          </div>
+          <div className="text-sm text-slate-500">
+            {Math.round((completedMilestones / totalMilestones) * 100)}% {t('complete')}
+          </div>
+        </div>
+
+        <div className="flex flex-wrap gap-2">
+          {project.milestones.slice(0, 3).map((milestone) => (
+            <Badge
+              key={milestone.id}
+              variant="secondary"
+              className={`text-xs ${getStatusColor(milestone.status)} text-white`}
+            >
+              {milestone.title}
+            </Badge>
+          ))}
+          {project.milestones.length > 3 && (
+            <Badge variant="outline" className="text-xs">
+              +{project.milestones.length - 3} {t('more')}
+            </Badge>
           )}
+        </div>
 
-          <div className="space-y-2">
-            <p className="text-sm font-medium text-slate-700">{t('recentMilestones')}</p>
-            {project.milestones.slice(0, 3).map((milestone) => (
-              <div key={milestone.id} className="flex items-center justify-between py-1">
-                <span className="text-sm text-slate-600 truncate">{milestone.title}</span>
-                <div className="flex items-center space-x-2">
-                  <span className="text-xs text-slate-500">{formatCurrency(milestone.price, currency)}</span>
-                  <Badge className={`text-xs flex items-center space-x-1 ${getStatusColor(milestone.status)}`}>
-                    {getStatusIcon(milestone.status)}
-                    <span className="capitalize">{t(`status_${milestone.status}` as TranslationKey)}</span>
-                  </Badge>
-                </div>
-              </div>
-            ))}
-          </div>
-
-          <div className="flex space-x-2 pt-2">
-            <Button 
-              asChild 
-              size="sm" 
-              className="flex-1"
-              onClick={(e: React.MouseEvent) => e.stopPropagation()}
-            >
-              <Link to={`/project/${project.id}`}>
-                <ExternalLink className="w-4 h-4 mr-2" />
-                {t('manageProject')}
-              </Link>
-            </Button>
-            <Button 
-              asChild 
-              variant="outline" 
-              size="sm" 
-              className="flex-1"
-              onClick={(e: React.MouseEvent) => e.stopPropagation()}
-            >
-              <a href={project.clientUrl} target="_blank" rel="noopener noreferrer">
-                <ExternalLink className="w-4 h-4 mr-2" />
-                {t('clientPage')}
-              </a>
-            </Button>
-          </div>
+        <div className="flex gap-2 pt-2 border-t">
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={handleCopyClientLink}
+            className="flex items-center gap-1 flex-1"
+          >
+            <Copy className="w-4 h-4" />
+            {t('copyClientLink')}
+          </Button>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={handleViewClientPage}
+            className="flex items-center gap-1 flex-1"
+          >
+            <Link className="w-4 h-4" />
+            {t('viewClientPage')}
+          </Button>
         </div>
       </CardContent>
     </Card>

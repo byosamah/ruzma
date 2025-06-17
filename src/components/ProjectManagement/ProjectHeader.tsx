@@ -1,57 +1,134 @@
 
 import React from 'react';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
+import { Calendar, DollarSign, Users, ArrowLeft, Link, Copy, Edit } from 'lucide-react';
+import { format } from 'date-fns';
+import { useUserCurrency } from '@/hooks/useUserCurrency';
 import { DatabaseProject } from '@/hooks/projectTypes';
 import { useT } from '@/lib/i18n';
-import { Edit } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
+import { toast } from 'sonner';
 
 interface ProjectHeaderProps {
   project: DatabaseProject;
+  onBackClick: () => void;
+  onEditClick: () => void;
 }
 
-const ProjectHeader: React.FC<ProjectHeaderProps> = ({ project }) => {
+const ProjectHeader: React.FC<ProjectHeaderProps> = ({ project, onBackClick, onEditClick }) => {
+  const { formatCurrency } = useUserCurrency();
   const t = useT();
-  const navigate = useNavigate();
+
+  const totalValue = project.milestones.reduce((sum, milestone) => sum + milestone.price, 0);
+  const completedMilestones = project.milestones.filter(m => m.status === 'approved').length;
+  const pendingPayments = project.milestones.filter(m => m.status === 'payment_submitted').length;
+
+  const handleCopyClientLink = () => {
+    // Use client_access_token for the client URL
+    const clientUrl = `${window.location.origin}/client/project/${project.client_access_token}`;
+    navigator.clipboard.writeText(clientUrl);
+    toast.success(t('clientLinkCopied'));
+  };
+
+  const handleViewClientPage = () => {
+    // Use client_access_token for the client URL
+    const clientUrl = `${window.location.origin}/client/project/${project.client_access_token}`;
+    window.open(clientUrl, '_blank');
+  };
 
   return (
-    <div className="p-5 rounded-lg bg-white/80 shadow-sm">
-      <div className="flex justify-between items-start mb-2">
-        <h1 className="text-3xl font-bold text-slate-800">{project.name}</h1>
+    <div className="space-y-6">
+      <div className="flex items-center justify-between">
         <Button
-          onClick={() => navigate(`/edit-project/${project.id}`)}
-          variant="outline"
+          variant="ghost"
           size="sm"
           className="flex items-center gap-2"
+          onClick={onBackClick}
         >
-          <Edit className="w-4 h-4" />
-          {t('editProject')}
+          <ArrowLeft className="w-4 h-4" />
+          {t('backToDashboard')}
         </Button>
-      </div>
-      <p className="text-slate-600 mb-4">{project.brief}</p>
-      <div className="flex items-center justify-between text-sm">
-        <span className="text-slate-500">{t('projectId')}: {project.id}</span>
-        <span className="text-slate-500">
-          {t('created')}: {new Date(project.created_at).toLocaleDateString()}
-        </span>
-      </div>
-      <div className="mt-4">
-        <Button
-          asChild
-          variant="outline"
-          size="sm"
-          className="text-blue-600 border-blue-200 hover:bg-blue-50"
-        >
-          <a
-            href={`/client/project/${project.client_access_token}`}
-            target="_blank"
-            rel="noopener noreferrer"
-            tabIndex={0}
+        <div className="flex gap-2">
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={handleCopyClientLink}
+            className="flex items-center gap-1"
           >
-            {t('openClientPage')}
-          </a>
-        </Button>
+            <Copy className="w-4 h-4" />
+            {t('copyClientLink')}
+          </Button>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={handleViewClientPage}
+            className="flex items-center gap-1"
+          >
+            <Link className="w-4 h-4" />
+            {t('viewClientPage')}
+          </Button>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={onEditClick}
+            className="flex items-center gap-1"
+          >
+            <Edit className="w-4 h-4" />
+            {t('editProject')}
+          </Button>
+        </div>
       </div>
+
+      <Card>
+        <CardHeader>
+          <div className="flex justify-between items-start">
+            <div>
+              <CardTitle className="text-2xl font-bold text-slate-800 mb-2">
+                {project.name}
+              </CardTitle>
+              <p className="text-slate-600">{project.brief}</p>
+            </div>
+            <div className="flex gap-2">
+              {pendingPayments > 0 && (
+                <Badge variant="secondary" className="bg-yellow-100 text-yellow-800">
+                  {pendingPayments} {t('pendingPayments')}
+                </Badge>
+              )}
+              <Badge variant="secondary" className="bg-green-100 text-green-800">
+                {completedMilestones}/{project.milestones.length} {t('completed')}
+              </Badge>
+            </div>
+          </div>
+        </CardHeader>
+        <CardContent>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div className="flex items-center gap-3">
+              <DollarSign className="w-5 h-5 text-green-600" />
+              <div>
+                <p className="text-sm text-slate-600">{t('totalValue')}</p>
+                <p className="text-lg font-semibold">{formatCurrency(totalValue)}</p>
+              </div>
+            </div>
+            <div className="flex items-center gap-3">
+              <Calendar className="w-5 h-5 text-blue-600" />
+              <div>
+                <p className="text-sm text-slate-600">{t('startDate')}</p>
+                <p className="text-lg font-semibold">
+                  {format(new Date(project.created_at), 'MMM d, yyyy')}
+                </p>
+              </div>
+            </div>
+            <div className="flex items-center gap-3">
+              <Users className="w-5 h-5 text-purple-600" />
+              <div>
+                <p className="text-sm text-slate-600">{t('clientEmail')}</p>
+                <p className="text-lg font-semibold">{project.client_email || t('notSpecified')}</p>
+              </div>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
     </div>
   );
 };
