@@ -1,3 +1,4 @@
+
 import React from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -57,12 +58,17 @@ const DashboardProjectList: React.FC<DashboardProjectListProps> = ({
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {projects.map((project) => (
-            <ProjectCard
+            <div
               key={project.id}
-              project={project}
-              onViewClick={handleViewProject}
-              onEditClick={onEdit}
-            />
+              onClick={() => handleViewProject(project.id)}
+              className="cursor-pointer transition-transform hover:scale-105"
+            >
+              <ProjectCard
+                project={project}
+                onViewClick={handleViewProject}
+                onEditClick={onEdit}
+              />
+            </div>
           ))}
         </div>
       )}

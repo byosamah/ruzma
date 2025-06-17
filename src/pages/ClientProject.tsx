@@ -18,6 +18,7 @@ const ClientProject = () => {
     error,
     handlePaymentUpload,
     handleDeliverableDownload,
+    userCurrency,
   } = useClientProject(token);
 
   if (isLoading) {
@@ -42,12 +43,14 @@ const ClientProject = () => {
           totalValue={totalValue}
           totalMilestones={totalMilestones}
           completedMilestones={completedMilestones}
+          currency={userCurrency}
         />
         <ProjectInstructionsCard />
         <ProjectMilestonesList
           milestones={project.milestones}
           onPaymentUpload={handlePaymentUpload}
           onDeliverableDownload={handleDeliverableDownload}
+          currency={userCurrency}
         />
       </main>
       <ProjectFooter />
