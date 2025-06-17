@@ -71,7 +71,7 @@ const ProjectManagement: React.FC = () => {
         />
         <MilestoneList
           milestones={project.milestones}
-          userCurrency={userCurrency}
+          userCurrency={userCurrency.currency}
           onUpdateMilestoneStatus={updateMilestoneStatus}
           onPaymentUpload={uploadPaymentProof}
           onDeliverableUpload={uploadDeliverable}

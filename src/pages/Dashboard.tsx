@@ -28,6 +28,7 @@ const Dashboard = () => {
     handleDeleteProject,
   } = useDashboard();
 
+  // Use original projects for analytics (they are already DatabaseProject type)
   const analyticsData = useDashboardAnalytics(projects.map(p => ({
     ...p,
     user_id: user?.id || '',
@@ -81,7 +82,7 @@ const Dashboard = () => {
               completedMilestones={stats.completedMilestones}
               totalMilestones={stats.totalMilestones}
               pendingPayments={stats.pendingPayments}
-              userCurrency={userCurrency}
+              userCurrency={userCurrency.currency}
             />
             <DashboardProjectList
               projects={projects}
@@ -94,7 +95,7 @@ const Dashboard = () => {
           <TabsContent value="analytics" className="space-y-8">
             <DashboardAnalytics
               data={analyticsData}
-              userCurrency={userCurrency}
+              userCurrency={userCurrency.currency}
             />
           </TabsContent>
         </Tabs>

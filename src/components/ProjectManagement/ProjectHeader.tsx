@@ -9,7 +9,7 @@ import { DatabaseProject } from '@/hooks/projectTypes';
 import { useT } from '@/lib/i18n';
 import { toast } from 'sonner';
 import { useUserCurrency } from '@/hooks/useUserCurrency';
-import { useAuth } from '@supabase/auth-helpers-react';
+import { useUser } from '@supabase/auth-helpers-react';
 
 interface ProjectHeaderProps {
   project: DatabaseProject;
@@ -19,7 +19,7 @@ interface ProjectHeaderProps {
 
 const ProjectHeader: React.FC<ProjectHeaderProps> = ({ project, onBackClick, onEditClick }) => {
   const t = useT();
-  const user = useAuth()?.user;
+  const user = useUser();
   const { formatCurrency } = useUserCurrency(user);
 
   const totalValue = project.milestones.reduce((sum, milestone) => sum + milestone.price, 0);
@@ -27,33 +27,34 @@ const ProjectHeader: React.FC<ProjectHeaderProps> = ({ project, onBackClick, onE
   const pendingPayments = project.milestones.filter(m => m.status === 'payment_submitted').length;
 
   const handleCopyClientLink = () => {
-    // Use client_access_token for the client URL
     const clientUrl = `${window.location.origin}/client/project/${project.client_access_token}`;
     navigator.clipboard.writeText(clientUrl);
     toast.success('Client link copied to clipboard');
   };
 
   const handleViewClientPage = () => {
-    // Use client_access_token for the client URL
     const clientUrl = `${window.location.origin}/client/project/${project.client_access_token}`;
     window.open(clientUrl, '_blank');
   };
 
-  // Safe date formatting
+  // Safe date formatting with better error handling
   const formatProjectDate = (dateString: string) => {
+    if (!dateString) return 'No Date';
+    
     try {
-      const date = new Date(dateString);
+      let date = new Date(dateString);
       if (isValid(date)) {
         return format(date, 'MMM d, yyyy');
       }
-      // Try parsing as ISO string if direct parsing fails
-      const isoDate = parseISO(dateString);
-      if (isValid(isoDate)) {
-        return format(isoDate, 'MMM d, yyyy');
+      
+      date = parseISO(dateString);
+      if (isValid(date)) {
+        return format(date, 'MMM d, yyyy');
       }
+      
       return 'Invalid Date';
     } catch (error) {
-      console.error('Date formatting error:', error);
+      console.error('Date formatting error:', error, 'for date:', dateString);
       return 'Invalid Date';
     }
   };

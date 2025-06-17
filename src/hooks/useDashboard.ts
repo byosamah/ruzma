@@ -1,3 +1,4 @@
+
 import { useState, useEffect, useMemo, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
@@ -150,32 +151,17 @@ export const useDashboard = () => {
     }
   }, [deleteProject]);
 
-  const convertedProjects = useMemo(() => projects.map(project => ({
-    id: project.id,
-    name: project.name,
-    brief: project.brief,
-    milestones: project.milestones.map(milestone => ({
-      id: milestone.id,
-      title: milestone.title,
-      description: milestone.description,
-      price: milestone.price,
-      status: milestone.status,
-    })),
-    createdAt: new Date(project.created_at).toLocaleDateString(),
-    clientUrl: `/client/project/${project.id}`,
-  })), [projects]);
-
   const stats = useMemo(() => {
-    const totalProjects = convertedProjects.length;
-    const totalMilestones = convertedProjects.reduce((sum, project) => sum + project.milestones.length, 0);
-    const completedMilestones = convertedProjects.reduce((sum, project) => 
+    const totalProjects = projects.length;
+    const totalMilestones = projects.reduce((sum, project) => sum + project.milestones.length, 0);
+    const completedMilestones = projects.reduce((sum, project) => 
       sum + project.milestones.filter(m => m.status === 'approved').length, 0);
-    const pendingPayments = convertedProjects.reduce((sum, project) => 
+    const pendingPayments = projects.reduce((sum, project) => 
       sum + project.milestones.filter(m => m.status === 'payment_submitted').length, 0);
-    const totalEarnings = convertedProjects.reduce((sum, project) => 
+    const totalEarnings = projects.reduce((sum, project) => 
       sum + project.milestones.filter(m => m.status === 'approved').reduce((mSum, m) => mSum + m.price, 0), 0);
     return { totalProjects, totalMilestones, completedMilestones, pendingPayments, totalEarnings };
-  }, [convertedProjects]);
+  }, [projects]);
 
   const displayName = useMemo(() =>
     profile?.full_name ||
@@ -187,7 +173,7 @@ export const useDashboard = () => {
     user,
     profile,
     loading: loading || projectsLoading,
-    projects: convertedProjects,
+    projects,
     userCurrency,
     stats,
     displayName,
