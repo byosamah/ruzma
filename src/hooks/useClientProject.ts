@@ -1,10 +1,12 @@
 
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { getClientProject, uploadPaymentProof } from '@/api/clientProject';
+import { useUserCurrency } from '@/hooks/useUserCurrency';
 import { toast } from 'sonner';
 
 export const useClientProject = (token?: string) => {
   const queryClient = useQueryClient();
+  const userCurrency = useUserCurrency();
 
   const { data: project, isLoading, error: queryError } = useQuery({
     queryKey: ['clientProject', token],
@@ -90,5 +92,6 @@ export const useClientProject = (token?: string) => {
     error,
     handlePaymentUpload,
     handleDeliverableDownload,
+    userCurrency: userCurrency.currency,
   };
 };

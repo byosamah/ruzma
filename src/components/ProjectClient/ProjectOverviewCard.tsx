@@ -1,6 +1,7 @@
 
 import React from "react";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
+import { formatCurrency, CurrencyCode } from "@/lib/currency";
 import { useT } from "@/lib/i18n";
 
 interface ProjectOverviewCardProps {
@@ -9,6 +10,7 @@ interface ProjectOverviewCardProps {
   totalValue: number;
   totalMilestones: number;
   completedMilestones: number;
+  currency: CurrencyCode;
 }
 
 const ProjectOverviewCard: React.FC<ProjectOverviewCardProps> = ({
@@ -17,6 +19,7 @@ const ProjectOverviewCard: React.FC<ProjectOverviewCardProps> = ({
   totalValue,
   totalMilestones,
   completedMilestones,
+  currency,
 }) => {
   const t = useT();
   return (
@@ -28,7 +31,7 @@ const ProjectOverviewCard: React.FC<ProjectOverviewCardProps> = ({
             <p className="text-slate-600 mt-2">{projectBrief}</p>
           </div>
           <div className="text-right">
-            <div className="text-3xl font-bold text-slate-800">${totalValue.toLocaleString()}</div>
+            <div className="text-3xl font-bold text-slate-800">{formatCurrency(totalValue, currency)}</div>
             <div className="text-sm text-slate-600">{t('totalProjectValue')}</div>
           </div>
         </div>

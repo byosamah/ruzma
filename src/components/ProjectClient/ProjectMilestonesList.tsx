@@ -4,18 +4,21 @@ import { Card, CardContent } from "@/components/ui/card";
 import MilestoneCard from "@/components/MilestoneCard";
 import MilestoneDeliverablePreview from "@/components/ProjectClient/MilestoneDeliverablePreview";
 import { DatabaseMilestone } from "@/hooks/useProjects";
+import { CurrencyCode } from "@/lib/currency";
 import { useT } from "@/lib/i18n";
 
 interface ProjectMilestonesListProps {
   milestones: DatabaseMilestone[];
   onPaymentUpload: (milestoneId: string, file: File) => void;
   onDeliverableDownload: (milestoneId: string) => void;
+  currency: CurrencyCode;
 }
 
 const ProjectMilestonesList: React.FC<ProjectMilestonesListProps> = ({
   milestones,
   onPaymentUpload,
   onDeliverableDownload,
+  currency,
 }) => {
   const t = useT();
   return (
@@ -61,6 +64,7 @@ const ProjectMilestonesList: React.FC<ProjectMilestonesListProps> = ({
                 isClient={true}
                 onPaymentUpload={onPaymentUpload}
                 onDeliverableDownload={onDeliverableDownload}
+                currency={currency}
               />
             </div>
           ))
