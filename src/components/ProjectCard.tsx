@@ -93,7 +93,7 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
             <DollarSign className="w-4 h-4 text-green-600" />
             <span className="text-sm font-medium">{formatCurrency(totalValue, currency)}</span>
           </div>
-          <div className="flex items-center gap-2 mx-[18px]">
+          <div className="flex items-center gap-2 mx-0">
             <Calendar className="w-4 h-4 text-blue-600" />
             <span className="text-sm text-slate-600">
               {formatProjectDate(project.created_at)}
