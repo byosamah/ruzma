@@ -4,11 +4,12 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Calendar, DollarSign, CheckCircle, Clock, Eye, Edit, Link, Copy } from 'lucide-react';
-import { format } from 'date-fns';
-import { formatCurrency } from '@/lib/currency';
+import { format, isValid, parseISO } from 'date-fns';
 import { DatabaseProject } from '@/hooks/projectTypes';
 import { useT } from '@/lib/i18n';
 import { toast } from 'sonner';
+import { useUserCurrency } from '@/hooks/useUserCurrency';
+import { useAuth } from '@supabase/auth-helpers-react';
 
 interface ProjectCardProps {
   project: DatabaseProject;
@@ -18,6 +19,8 @@ interface ProjectCardProps {
 
 const ProjectCard: React.FC<ProjectCardProps> = ({ project, onViewClick, onEditClick }) => {
   const t = useT();
+  const user = useAuth()?.user;
+  const { formatCurrency } = useUserCurrency(user);
 
   const totalValue = project.milestones.reduce((sum, milestone) => sum + milestone.price, 0);
   const completedMilestones = project.milestones.filter(m => m.status === 'approved').length;
@@ -43,6 +46,25 @@ const ProjectCard: React.FC<ProjectCardProps> = ({ project, onViewClick, onEditC
     // Use client_access_token for the client URL
     const clientUrl = `${window.location.origin}/client/project/${project.client_access_token}`;
     window.open(clientUrl, '_blank');
+  };
+
+  // Safe date formatting
+  const formatProjectDate = (dateString: string) => {
+    try {
+      const date = new Date(dateString);
+      if (isValid(date)) {
+        return format(date, 'MMM d, yyyy');
+      }
+      // Try parsing as ISO string if direct parsing fails
+      const isoDate = parseISO(dateString);
+      if (isValid(isoDate)) {
+        return format(isoDate, 'MMM d, yyyy');
+      }
+      return 'Invalid Date';
+    } catch (error) {
+      console.error('Date formatting error:', error);
+      return 'Invalid Date';
+    }
   };
 
   return (
@@ -85,7 +107,7 @@ const ProjectCard: React.FC<ProjectCardProps> = ({ project, onViewClick, onEditC
           <div className="flex items-center gap-2">
             <Calendar className="w-4 h-4 text-blue-600" />
             <span className="text-sm text-slate-600">
-              {format(new Date(project.created_at), 'MMM d, yyyy')}
+              {formatProjectDate(project.created_at)}
             </span>
           </div>
         </div>
@@ -94,11 +116,11 @@ const ProjectCard: React.FC<ProjectCardProps> = ({ project, onViewClick, onEditC
           <div className="flex items-center gap-2">
             <CheckCircle className="w-4 h-4 text-green-600" />
             <span className="text-sm">
-              {completedMilestones}/{totalMilestones} {t('milestones')}
+              {completedMilestones}/{totalMilestones} Milestones
             </span>
           </div>
           <div className="text-sm text-slate-500">
-            {Math.round((completedMilestones / totalMilestones) * 100)}% Complete
+            {totalMilestones > 0 ? Math.round((completedMilestones / totalMilestones) * 100) : 0}% Complete
           </div>
         </div>
 

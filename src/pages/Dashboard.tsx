@@ -31,14 +31,14 @@ const Dashboard = () => {
   const analyticsData = useDashboardAnalytics(projects.map(p => ({
     ...p,
     user_id: user?.id || '',
-    created_at: p.createdAt,
-    updated_at: p.createdAt,
-    client_access_token: '',
+    created_at: p.created_at || new Date().toISOString(),
+    updated_at: p.updated_at || new Date().toISOString(),
+    client_access_token: p.client_access_token || '',
     milestones: p.milestones.map(m => ({
       ...m,
       project_id: p.id,
-      created_at: new Date().toISOString(),
-      updated_at: new Date().toISOString(),
+      created_at: m.created_at || new Date().toISOString(),
+      updated_at: m.updated_at || new Date().toISOString(),
     }))
   })));
 
@@ -85,7 +85,6 @@ const Dashboard = () => {
             />
             <DashboardProjectList
               projects={projects}
-              userCurrency={userCurrency}
               onEdit={handleEditProject}
               onDelete={handleDeleteProject}
               onNewProject={() => navigate("/create-project")}
