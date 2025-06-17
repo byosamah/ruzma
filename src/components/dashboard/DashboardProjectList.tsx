@@ -1,4 +1,3 @@
-
 import React from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -23,8 +22,8 @@ const DashboardProjectList: React.FC<DashboardProjectListProps> = ({
   const t = useT();
   
   const handleViewProject = (projectId: string) => {
-    // Navigate to project management page
-    window.location.href = `/project-management/${projectId}`;
+    // Navigate to correct project management route
+    window.location.href = `/project/${projectId}`;
   };
 
   return (
