@@ -5,7 +5,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Calendar, DollarSign, CheckCircle, Clock, Eye, Edit, Link, Copy } from 'lucide-react';
 import { format } from 'date-fns';
-import { useUserCurrency } from '@/hooks/useUserCurrency';
+import { formatCurrency } from '@/lib/currency';
 import { DatabaseProject } from '@/hooks/projectTypes';
 import { useT } from '@/lib/i18n';
 import { toast } from 'sonner';
@@ -17,7 +17,6 @@ interface ProjectCardProps {
 }
 
 const ProjectCard: React.FC<ProjectCardProps> = ({ project, onViewClick, onEditClick }) => {
-  const { formatCurrency } = useUserCurrency();
   const t = useT();
 
   const totalValue = project.milestones.reduce((sum, milestone) => sum + milestone.price, 0);
@@ -37,7 +36,7 @@ const ProjectCard: React.FC<ProjectCardProps> = ({ project, onViewClick, onEditC
     // Use client_access_token for the client URL
     const clientUrl = `${window.location.origin}/client/project/${project.client_access_token}`;
     navigator.clipboard.writeText(clientUrl);
-    toast.success(t('clientLinkCopied'));
+    toast.success('Client link copied to clipboard');
   };
 
   const handleViewClientPage = () => {
@@ -61,7 +60,7 @@ const ProjectCard: React.FC<ProjectCardProps> = ({ project, onViewClick, onEditC
               className="flex items-center gap-1"
             >
               <Edit className="w-4 h-4" />
-              {t('edit')}
+              Edit
             </Button>
             <Button
               variant="outline"
@@ -70,7 +69,7 @@ const ProjectCard: React.FC<ProjectCardProps> = ({ project, onViewClick, onEditC
               className="flex items-center gap-1"
             >
               <Eye className="w-4 h-4" />
-              {t('view')}
+              View
             </Button>
           </div>
         </div>
@@ -99,7 +98,7 @@ const ProjectCard: React.FC<ProjectCardProps> = ({ project, onViewClick, onEditC
             </span>
           </div>
           <div className="text-sm text-slate-500">
-            {Math.round((completedMilestones / totalMilestones) * 100)}% {t('complete')}
+            {Math.round((completedMilestones / totalMilestones) * 100)}% Complete
           </div>
         </div>
 
@@ -115,7 +114,7 @@ const ProjectCard: React.FC<ProjectCardProps> = ({ project, onViewClick, onEditC
           ))}
           {project.milestones.length > 3 && (
             <Badge variant="outline" className="text-xs">
-              +{project.milestones.length - 3} {t('more')}
+              +{project.milestones.length - 3} More
             </Badge>
           )}
         </div>
@@ -128,7 +127,7 @@ const ProjectCard: React.FC<ProjectCardProps> = ({ project, onViewClick, onEditC
             className="flex items-center gap-1 flex-1"
           >
             <Copy className="w-4 h-4" />
-            {t('copyClientLink')}
+            Copy Client Link
           </Button>
           <Button
             variant="outline"
@@ -137,7 +136,7 @@ const ProjectCard: React.FC<ProjectCardProps> = ({ project, onViewClick, onEditC
             className="flex items-center gap-1 flex-1"
           >
             <Link className="w-4 h-4" />
-            {t('viewClientPage')}
+            View Client Page
           </Button>
         </div>
       </CardContent>

@@ -4,40 +4,29 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import ProjectCard from "@/components/ProjectCard";
 import { Plus, Briefcase } from "lucide-react";
-import { CurrencyCode } from "@/lib/currency";
+import { DatabaseProject } from "@/hooks/projectTypes";
 import { useT } from "@/lib/i18n";
 
-interface Milestone {
-  id: string;
-  title: string;
-  description: string;
-  price: number;
-  status: "pending" | "payment_submitted" | "approved" | "rejected";
-}
-interface Project {
-  id: string;
-  name: string;
-  brief: string;
-  milestones: Milestone[];
-  createdAt: string;
-  clientUrl: string;
-}
 interface DashboardProjectListProps {
-  projects: Project[];
-  userCurrency: CurrencyCode;
-  onEdit: (project: Project) => void;
+  projects: DatabaseProject[];
+  onEdit: (projectId: string) => void;
   onDelete: (projectId: string) => void;
   onNewProject: () => void;
 }
 
 const DashboardProjectList: React.FC<DashboardProjectListProps> = ({
   projects,
-  userCurrency,
   onEdit,
   onDelete,
   onNewProject,
 }) => {
   const t = useT();
+  
+  const handleViewProject = (projectId: string) => {
+    // Navigate to project management page
+    window.location.href = `/project-management/${projectId}`;
+  };
+
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center">
@@ -72,9 +61,8 @@ const DashboardProjectList: React.FC<DashboardProjectListProps> = ({
             <ProjectCard
               key={project.id}
               project={project}
-              onEdit={onEdit}
-              onDelete={onDelete}
-              currency={userCurrency}
+              onViewClick={handleViewProject}
+              onEditClick={onEdit}
             />
           ))}
         </div>

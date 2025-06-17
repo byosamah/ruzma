@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Calendar, DollarSign, Users, ArrowLeft, Link, Copy, Edit } from 'lucide-react';
 import { format } from 'date-fns';
-import { useUserCurrency } from '@/hooks/useUserCurrency';
+import { formatCurrency } from '@/lib/currency';
 import { DatabaseProject } from '@/hooks/projectTypes';
 import { useT } from '@/lib/i18n';
 import { toast } from 'sonner';
@@ -17,7 +17,6 @@ interface ProjectHeaderProps {
 }
 
 const ProjectHeader: React.FC<ProjectHeaderProps> = ({ project, onBackClick, onEditClick }) => {
-  const { formatCurrency } = useUserCurrency();
   const t = useT();
 
   const totalValue = project.milestones.reduce((sum, milestone) => sum + milestone.price, 0);
@@ -28,7 +27,7 @@ const ProjectHeader: React.FC<ProjectHeaderProps> = ({ project, onBackClick, onE
     // Use client_access_token for the client URL
     const clientUrl = `${window.location.origin}/client/project/${project.client_access_token}`;
     navigator.clipboard.writeText(clientUrl);
-    toast.success(t('clientLinkCopied'));
+    toast.success('Client link copied to clipboard');
   };
 
   const handleViewClientPage = () => {
@@ -57,7 +56,7 @@ const ProjectHeader: React.FC<ProjectHeaderProps> = ({ project, onBackClick, onE
             className="flex items-center gap-1"
           >
             <Copy className="w-4 h-4" />
-            {t('copyClientLink')}
+            Copy Client Link
           </Button>
           <Button
             variant="outline"
@@ -66,7 +65,7 @@ const ProjectHeader: React.FC<ProjectHeaderProps> = ({ project, onBackClick, onE
             className="flex items-center gap-1"
           >
             <Link className="w-4 h-4" />
-            {t('viewClientPage')}
+            View Client Page
           </Button>
           <Button
             variant="outline"
@@ -113,7 +112,7 @@ const ProjectHeader: React.FC<ProjectHeaderProps> = ({ project, onBackClick, onE
             <div className="flex items-center gap-3">
               <Calendar className="w-5 h-5 text-blue-600" />
               <div>
-                <p className="text-sm text-slate-600">{t('startDate')}</p>
+                <p className="text-sm text-slate-600">Start Date</p>
                 <p className="text-lg font-semibold">
                   {format(new Date(project.created_at), 'MMM d, yyyy')}
                 </p>
@@ -122,8 +121,8 @@ const ProjectHeader: React.FC<ProjectHeaderProps> = ({ project, onBackClick, onE
             <div className="flex items-center gap-3">
               <Users className="w-5 h-5 text-purple-600" />
               <div>
-                <p className="text-sm text-slate-600">{t('clientEmail')}</p>
-                <p className="text-lg font-semibold">{project.client_email || t('notSpecified')}</p>
+                <p className="text-sm text-slate-600">Client Email</p>
+                <p className="text-lg font-semibold">{project.client_email || 'Not Specified'}</p>
               </div>
             </div>
           </div>

@@ -2,9 +2,9 @@
 import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { User } from '@supabase/supabase-js';
-import { CurrencyCode } from '@/lib/currency';
+import { CurrencyCode, formatCurrency as formatCurrencyUtil } from '@/lib/currency';
 
-export const useUserCurrency = (user: User | null): CurrencyCode => {
+export const useUserCurrency = (user: User | null = null) => {
   const [currency, setCurrency] = useState<CurrencyCode>('USD');
 
   useEffect(() => {
@@ -25,5 +25,9 @@ export const useUserCurrency = (user: User | null): CurrencyCode => {
     fetchUserCurrency();
   }, [user]);
 
-  return currency;
+  const formatCurrency = (amount: number) => {
+    return formatCurrencyUtil(amount, currency);
+  };
+
+  return { currency, formatCurrency };
 };

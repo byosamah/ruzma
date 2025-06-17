@@ -27,6 +27,13 @@ const ProjectManagement: React.FC = () => {
     updateMilestoneWatermark,
   } = useProjectManagement(projectId);
 
+  const handleBackClick = () => {
+    navigate("/dashboard");
+  };
+
+  const handleEditClick = () => {
+    navigate(`/edit-project/${projectId}`);
+  };
 
   if (loading) {
     return (
@@ -56,17 +63,12 @@ const ProjectManagement: React.FC = () => {
 
   return (
     <Layout user={profile || user}>
-      <Button
-        variant="ghost"
-        size="sm"
-        className="mb-6 flex items-center"
-        onClick={() => navigate("/dashboard")}
-      >
-        <ArrowLeft className="w-4 h-4 mr-1" />
-        {t('backToDashboard')}
-      </Button>
-      <div className="max-w-2xl mx-auto space-y-8">
-        <ProjectHeader project={project} />
+      <div className="max-w-4xl mx-auto space-y-8">
+        <ProjectHeader 
+          project={project} 
+          onBackClick={handleBackClick}
+          onEditClick={handleEditClick}
+        />
         <MilestoneList
           milestones={project.milestones}
           userCurrency={userCurrency}
