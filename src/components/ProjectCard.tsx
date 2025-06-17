@@ -8,14 +8,12 @@ import { DatabaseProject } from '@/hooks/projectTypes';
 import { useT } from '@/lib/i18n';
 import { toast } from 'sonner';
 import { formatCurrency, CurrencyCode } from '@/lib/currency';
-
 interface ProjectCardProps {
   project: DatabaseProject;
   onViewClick: (projectId: string) => void;
   onEditClick: (projectId: string) => void;
   currency: CurrencyCode;
 }
-
 const ProjectCard: React.FC<ProjectCardProps> = ({
   project,
   onViewClick,
@@ -23,11 +21,9 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
   currency
 }) => {
   const t = useT();
-  
   const totalValue = project.milestones.reduce((sum, milestone) => sum + milestone.price, 0);
   const completedMilestones = project.milestones.filter(m => m.status === 'approved').length;
   const totalMilestones = project.milestones.length;
-  
   const getStatusColor = (status: string) => {
     switch (status) {
       case 'approved':
@@ -40,13 +36,11 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
         return 'bg-gray-500';
     }
   };
-  
   const handleCopyClientLink = () => {
     const clientUrl = `${window.location.origin}/client/project/${project.client_access_token}`;
     navigator.clipboard.writeText(clientUrl);
     toast.success('Client link copied to clipboard');
   };
-  
   const handleViewClientPage = () => {
     const clientUrl = `${window.location.origin}/client/project/${project.client_access_token}`;
     window.open(clientUrl, '_blank');
@@ -73,9 +67,7 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
       return 'Invalid Date';
     }
   };
-  
-  return (
-    <Card className="hover:shadow-lg transition-shadow duration-200">
+  return <Card className="hover:shadow-lg transition-shadow duration-200">
       <CardHeader>
         <div className="flex justify-between items-start">
           <CardTitle className="text-lg font-semibold text-slate-800 line-clamp-2">
@@ -96,12 +88,12 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
       <CardContent className="space-y-4">
         <p className="text-slate-600 text-sm line-clamp-3">{project.brief}</p>
         
-        <div className="grid grid-cols-2 gap-4">
+        <div className="grid grid-cols-2 gap-20 mx-px">
           <div className="flex items-center gap-2">
             <DollarSign className="w-4 h-4 text-green-600" />
             <span className="text-sm font-medium">{formatCurrency(totalValue, currency)}</span>
           </div>
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 mx-[18px]">
             <Calendar className="w-4 h-4 text-blue-600" />
             <span className="text-sm text-slate-600">
               {formatProjectDate(project.created_at)}
@@ -116,22 +108,18 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
               {completedMilestones}/{totalMilestones} Milestones
             </span>
           </div>
-          <div className="text-sm text-slate-500">
+          <div className="text-sm text-slate-500 px-[21px]">
             {totalMilestones > 0 ? Math.round(completedMilestones / totalMilestones * 100) : 0}% Complete
           </div>
         </div>
 
         <div className="flex flex-wrap gap-2">
-          {project.milestones.slice(0, 3).map(milestone => (
-            <Badge key={milestone.id} variant="secondary" className={`text-xs ${getStatusColor(milestone.status)} text-white`}>
+          {project.milestones.slice(0, 3).map(milestone => <Badge key={milestone.id} variant="secondary" className={`text-xs ${getStatusColor(milestone.status)} text-white`}>
               {milestone.title}
-            </Badge>
-          ))}
-          {project.milestones.length > 3 && (
-            <Badge variant="outline" className="text-xs">
+            </Badge>)}
+          {project.milestones.length > 3 && <Badge variant="outline" className="text-xs">
               +{project.milestones.length - 3} More
-            </Badge>
-          )}
+            </Badge>}
         </div>
 
         <div className="flex gap-2 pt-2 border-t">
@@ -145,8 +133,6 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
           </Button>
         </div>
       </CardContent>
-    </Card>
-  );
+    </Card>;
 };
-
 export default ProjectCard;
