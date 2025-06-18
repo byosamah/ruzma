@@ -46,7 +46,10 @@ const Layout: React.FC<LayoutProps> = ({
       <nav className="bg-background text-foreground border-b border-border sticky top-0 z-50">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
-            <LogoComponent />
+            <div className="flex items-center space-x-4">
+              <LogoComponent />
+              <LanguageSelector className="border-0 shadow-none p-1" />
+            </div>
             <div className="flex items-center space-x-4">
               {user && (
                 <Link to="/plans">
@@ -56,7 +59,6 @@ const Layout: React.FC<LayoutProps> = ({
                   </Button>
                 </Link>
               )}
-              <LanguageSelector />
               {user ? <>
                   <Link to="/dashboard">
                     <Button variant={isActive('/dashboard') ? 'secondary' : 'ghost'} size="sm">
