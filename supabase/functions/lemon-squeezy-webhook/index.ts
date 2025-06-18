@@ -62,38 +62,74 @@ serve(async (req) => {
 
       console.log('Determined user type:', userType)
 
-      // Update or insert subscription record
-      const { error: subError } = await supabase
-        .from('subscriptions')
-        .upsert({
-          lemon_squeezy_id: subscription.id,
-          user_id: userId,
-          status: status,
-          product_id: subscription.attributes?.product_id?.toString(),
-          variant_id: variantId,
-          expires_at: subscription.attributes?.renews_at ? new Date(subscription.attributes.renews_at) : null,
-          updated_at: new Date().toISOString()
-        })
-
-      if (subError) {
-        console.error('Error updating subscription:', subError)
-      } else {
-        console.log('Subscription record updated successfully')
+      // Update or insert subscription record with better error handling
+      const subscriptionData = {
+        lemon_squeezy_id: subscription.id,
+        user_id: userId,
+        status: status,
+        product_id: subscription.attributes?.product_id?.toString(),
+        variant_id: variantId,
+        expires_at: subscription.attributes?.renews_at ? new Date(subscription.attributes.renews_at) : null,
+        updated_at: new Date().toISOString()
       }
 
-      // Update user profile
+      // Try insert first, then update if duplicate
+      const { error: insertError } = await supabase
+        .from('subscriptions')
+        .insert(subscriptionData)
+
+      if (insertError) {
+        if (insertError.code === '23505') { // Duplicate key error
+          console.log('Subscription already exists, updating instead')
+          const { error: updateError } = await supabase
+            .from('subscriptions')
+            .update({
+              status: status,
+              expires_at: subscription.attributes?.renews_at ? new Date(subscription.attributes.renews_at) : null,
+              updated_at: new Date().toISOString()
+            })
+            .eq('lemon_squeezy_id', subscription.id)
+
+          if (updateError) {
+            console.error('Error updating existing subscription:', updateError)
+          } else {
+            console.log('Existing subscription record updated successfully')
+          }
+        } else {
+          console.error('Error inserting subscription:', insertError)
+        }
+      } else {
+        console.log('New subscription record created successfully')
+      }
+
+      // Update user profile with proper error handling
+      const profileData = {
+        user_type: userType,
+        subscription_status: status,
+        subscription_id: subscription.id,
+        updated_at: new Date().toISOString()
+      }
+
       const { error: profileError } = await supabase
         .from('profiles')
-        .update({
-          user_type: userType,
-          subscription_status: status,
-          subscription_id: subscription.id,
-          updated_at: new Date().toISOString()
-        })
+        .update(profileData)
         .eq('id', userId)
 
       if (profileError) {
         console.error('Error updating profile:', profileError)
+        // Try to create profile if it doesn't exist
+        const { error: insertProfileError } = await supabase
+          .from('profiles')
+          .insert({
+            id: userId,
+            ...profileData
+          })
+        
+        if (insertProfileError) {
+          console.error('Error creating profile:', insertProfileError)
+        } else {
+          console.log('Profile created successfully')
+        }
       } else {
         console.log(`Successfully updated user ${userId} to ${userType} plan with status ${status}`)
       }
@@ -121,6 +157,8 @@ serve(async (req) => {
 
         if (subError) {
           console.error('Error updating cancelled subscription:', subError)
+        } else {
+          console.log('Subscription marked as cancelled')
         }
 
         // Update user profile back to free

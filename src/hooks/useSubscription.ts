@@ -82,14 +82,12 @@ export const useSubscription = () => {
       }
 
       console.log('Create-checkout response:', data);
-      console.log('Response type:', typeof data);
 
       // Handle both string and object responses
       let responseData = data;
       if (typeof data === 'string') {
         try {
           responseData = JSON.parse(data);
-          console.log('Parsed response data:', responseData);
         } catch (parseError) {
           console.error('Failed to parse response as JSON:', parseError);
           throw new Error('Invalid response format from payment provider');
@@ -102,7 +100,12 @@ export const useSubscription = () => {
 
       if (checkoutUrl && typeof checkoutUrl === 'string' && checkoutUrl.trim()) {
         console.log('Redirecting to checkout:', checkoutUrl);
-        window.location.href = checkoutUrl;
+        // Show success message before redirect
+        toast.success('Redirecting to checkout...');
+        // Small delay to ensure toast is visible
+        setTimeout(() => {
+          window.location.href = checkoutUrl;
+        }, 500);
       } else {
         console.error('No valid checkout URL found in response:', responseData);
         throw new Error('No checkout URL received from payment provider');
@@ -117,8 +120,27 @@ export const useSubscription = () => {
     }
   };
 
+  const checkSubscriptionStatus = async () => {
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return null;
+
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('user_type, subscription_status, subscription_id')
+        .eq('id', user.id)
+        .single();
+
+      return profile;
+    } catch (error) {
+      console.error('Error checking subscription status:', error);
+      return null;
+    }
+  };
+
   return {
     createCheckout,
+    checkSubscriptionStatus,
     isLoading,
     error,
     plans: SUBSCRIPTION_PLANS,

@@ -80,6 +80,7 @@ export type Database = {
           storage_used: number | null
           subscription_id: string | null
           subscription_status: string | null
+          updated_at: string
           user_type: string | null
           website: string | null
         }
@@ -97,6 +98,7 @@ export type Database = {
           storage_used?: number | null
           subscription_id?: string | null
           subscription_status?: string | null
+          updated_at?: string
           user_type?: string | null
           website?: string | null
         }
@@ -114,6 +116,7 @@ export type Database = {
           storage_used?: number | null
           subscription_id?: string | null
           subscription_status?: string | null
+          updated_at?: string
           user_type?: string | null
           website?: string | null
         }
