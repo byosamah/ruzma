@@ -48,8 +48,8 @@ const handler = async (req: Request): Promise<Response> => {
       }
     }
 
-    // Use the actual app URL instead of Supabase URL
-    const clientUrl = `${new URL(req.url).origin}/client/project/${clientToken}`;
+    // Use the correct app domain
+    const clientUrl = `https://ruzma-app.lovable.app/client/project/${clientToken}`;
 
     const emailResponse = await resend.emails.send({
       from: "Ruzma <notifications@ruzma.co>",
