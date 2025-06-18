@@ -1,15 +1,17 @@
 
 import React from 'react';
 import Layout from '@/components/Layout';
-import { DashboardHeader } from '@/components/dashboard/DashboardHeader';
-import { DashboardStats } from '@/components/dashboard/DashboardStats';
-import { DashboardProjectList } from '@/components/dashboard/DashboardProjectList';
-import { DashboardAnalytics } from '@/components/dashboard/DashboardAnalytics';
+import DashboardHeader from '@/components/dashboard/DashboardHeader';
+import DashboardStats from '@/components/dashboard/DashboardStats';
+import DashboardProjectList from '@/components/dashboard/DashboardProjectList';
+import DashboardAnalytics from '@/components/dashboard/DashboardAnalytics';
 import { UsageIndicators } from '@/components/dashboard/UsageIndicators';
 import { useDashboard } from '@/hooks/useDashboard';
 import { useDashboardAnalytics } from '@/hooks/useDashboardAnalytics';
+import { useNavigate } from 'react-router-dom';
 
 const Dashboard = () => {
+  const navigate = useNavigate();
   const {
     user,
     profile,
@@ -25,6 +27,10 @@ const Dashboard = () => {
 
   const analyticsData = useDashboardAnalytics(projects);
 
+  const handleNewProject = () => {
+    navigate('/create-project');
+  };
+
   if (loading) {
     return (
       <Layout user={user} onSignOut={handleSignOut}>
@@ -38,29 +44,33 @@ const Dashboard = () => {
   return (
     <Layout user={user} onSignOut={handleSignOut}>
       <div className="space-y-8">
-        <DashboardHeader displayName={displayName} />
+        <DashboardHeader displayName={displayName} onNewProject={handleNewProject} />
         
         {/* Usage Indicators */}
         <UsageIndicators userProfile={profile} projects={projects} />
         
         <DashboardStats 
-          stats={stats} 
+          totalProjects={stats.totalProjects}
+          totalEarnings={stats.totalEarnings}
+          completedMilestones={stats.completedMilestones}
+          totalMilestones={stats.totalMilestones}
+          pendingPayments={stats.pendingPayments}
           userCurrency={userCurrency}
-          analyticsData={analyticsData}
         />
         
         <div className="grid grid-cols-1 xl:grid-cols-3 gap-8">
           <div className="xl:col-span-2">
             <DashboardProjectList
               projects={projects}
-              userCurrency={userCurrency}
-              onEditProject={handleEditProject}
-              onDeleteProject={handleDeleteProject}
+              onEdit={handleEditProject}
+              onDelete={handleDeleteProject}
+              onNewProject={handleNewProject}
+              currency={userCurrency}
             />
           </div>
           
           <div className="xl:col-span-1">
-            <DashboardAnalytics analyticsData={analyticsData} />
+            <DashboardAnalytics data={analyticsData} userCurrency={userCurrency} />
           </div>
         </div>
       </div>
