@@ -13,6 +13,7 @@ import { useNavigate } from 'react-router-dom';
 import { Mail } from 'lucide-react';
 import { useT } from '@/lib/i18n';
 import { useDashboard } from '@/hooks/useDashboard';
+import { supabase } from '@/integrations/supabase/client';
 
 const contactFormSchema = z.object({
   name: z.string().min(2, 'Name must be at least 2 characters'),
