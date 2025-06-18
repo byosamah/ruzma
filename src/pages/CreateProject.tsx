@@ -16,9 +16,11 @@ import SaveAsTemplateCheckbox from '@/components/CreateProject/SaveAsTemplateChe
 import FormActions from '@/components/CreateProject/FormActions';
 import { useCreateProjectForm } from '@/hooks/useCreateProjectForm';
 import { useProjectTemplates } from '@/hooks/useProjectTemplates';
+import { useIsMobile } from '@/hooks/use-mobile';
 
 const CreateProject = () => {
   const t = useT();
+  const isMobile = useIsMobile();
   const [user, setUser] = useState<User | null>(null);
   const [profile, setProfile] = useState<any>(null);
   const [loading, setLoading] = useState(true);
@@ -119,23 +121,31 @@ const CreateProject = () => {
         {t('backToDashboard')}
       </Button>
       
-      <div className="max-w-4xl mx-auto space-y-8">
+      <div className={`${isMobile ? 'max-w-full' : 'max-w-4xl'} mx-auto space-y-6 sm:space-y-8`}>
         <TemplateHeader hasTemplate={!!templateData} />
 
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-            <ProjectDetailsForm />
-            <MilestonesList />
-            
-            <SaveAsTemplateCheckbox
-              checked={saveAsTemplate}
-              onCheckedChange={handleSaveAsTemplateChange}
-            />
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6 sm:space-y-8">
+            <div className={isMobile ? 'px-2' : ''}>
+              <ProjectDetailsForm />
+              <div className="mt-6 sm:mt-8">
+                <MilestonesList />
+              </div>
+              
+              <div className="mt-6">
+                <SaveAsTemplateCheckbox
+                  checked={saveAsTemplate}
+                  onCheckedChange={handleSaveAsTemplateChange}
+                />
+              </div>
 
-            <FormActions
-              isSubmitting={isSubmitting}
-              onCancel={() => navigate('/dashboard')}
-            />
+              <div className="mt-6 sm:mt-8">
+                <FormActions
+                  isSubmitting={isSubmitting}
+                  onCancel={() => navigate('/dashboard')}
+                />
+              </div>
+            </div>
           </form>
         </Form>
       </div>

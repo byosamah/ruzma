@@ -29,7 +29,7 @@ const DashboardStats: React.FC<DashboardStatsProps> = ({
 }) => {
   const t = useT();
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+    <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4 sm:gap-6">
       <Card className="bg-secondary text-secondary-foreground">
         <CardHeader className="flex flex-row items-center justify-between pb-2">
           <CardTitle className="text-sm font-medium">
@@ -51,7 +51,7 @@ const DashboardStats: React.FC<DashboardStatsProps> = ({
           <DollarSign className="w-4 h-4" />
         </CardHeader>
         <CardContent>
-          <div className="text-2xl font-bold">
+          <div className="text-xl sm:text-2xl font-bold break-words">
             {formatCurrency(totalEarnings, userCurrency)}
           </div>
           <p className="text-xs">{t("fromCompletedMilestones")}</p>

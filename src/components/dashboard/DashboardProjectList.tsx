@@ -7,6 +7,7 @@ import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip
 import { Plus, Calendar, DollarSign, FileText, Edit, Trash2 } from 'lucide-react';
 import { useT } from '@/lib/i18n';
 import { DatabaseProject } from '@/hooks/projectTypes';
+import { useIsMobile } from '@/hooks/use-mobile';
 
 interface DashboardProjectListProps {
   projects: DatabaseProject[];
@@ -26,6 +27,7 @@ const DashboardProjectList: React.FC<DashboardProjectListProps> = ({
   canCreateProject,
 }) => {
   const t = useT();
+  const isMobile = useIsMobile();
 
   const getStatusColor = (status: string) => {
     switch (status) {
@@ -47,7 +49,7 @@ const DashboardProjectList: React.FC<DashboardProjectListProps> = ({
       <Button 
         onClick={onNewProject} 
         size="lg" 
-        className="mt-4"
+        className="mt-4 w-full sm:w-auto"
         disabled={!canCreateProject}
       >
         <Plus className="w-5 h-5 mr-2" />
@@ -74,7 +76,7 @@ const DashboardProjectList: React.FC<DashboardProjectListProps> = ({
   return (
     <Card>
       <CardHeader>
-        <CardTitle className="flex items-center justify-between">
+        <CardTitle className="flex flex-col space-y-4 sm:flex-row sm:items-center sm:justify-between sm:space-y-0">
           <span>{t('recentProjects')}</span>
           {projects.length > 0 && (
             <Tooltip>
@@ -84,7 +86,7 @@ const DashboardProjectList: React.FC<DashboardProjectListProps> = ({
                   size="sm" 
                   onClick={onNewProject}
                   disabled={!canCreateProject}
-                  className={!canCreateProject ? 'opacity-50 cursor-not-allowed' : ''}
+                  className={`${!canCreateProject ? 'opacity-50 cursor-not-allowed' : ''} w-full sm:w-auto`}
                 >
                   <Plus className="w-4 h-4 mr-2" />
                   {t('newProject')}
@@ -106,7 +108,7 @@ const DashboardProjectList: React.FC<DashboardProjectListProps> = ({
             <h3 className="text-lg font-medium text-slate-600 mb-2">
               {t('noProjectsYet')}
             </h3>
-            <p className="text-slate-400 mb-4">{t('createFirstProjectDesc')}</p>
+            <p className="text-slate-400 mb-4 text-sm sm:text-base">{t('createFirstProjectDesc')}</p>
             <EmptyProjectsButton />
           </div>
         ) : (
@@ -126,52 +128,61 @@ const DashboardProjectList: React.FC<DashboardProjectListProps> = ({
                   key={project.id}
                   className="border border-slate-200 rounded-lg p-4 hover:bg-slate-50 transition-colors"
                 >
-                  <div className="flex items-start justify-between">
+                  <div className={`${isMobile ? 'space-y-3' : 'flex items-start justify-between'}`}>
                     <div className="flex-1">
-                      <h4 className="font-medium text-slate-800 mb-1">
+                      <h4 className="font-medium text-slate-800 mb-1 text-sm sm:text-base">
                         {project.name}
                       </h4>
                       <p className="text-sm text-slate-600 mb-3 line-clamp-2">
                         {project.brief}
                       </p>
-                      <div className="flex items-center space-x-4 text-sm text-slate-500">
+                      <div className={`${isMobile ? 'grid grid-cols-1 gap-2' : 'flex items-center space-x-4'} text-sm text-slate-500`}>
                         <div className="flex items-center">
                           <Calendar className="w-4 h-4 mr-1" />
-                          {new Date(project.created_at).toLocaleDateString()}
+                          <span className="text-xs sm:text-sm">
+                            {new Date(project.created_at).toLocaleDateString()}
+                          </span>
                         </div>
                         <div className="flex items-center">
                           <FileText className="w-4 h-4 mr-1" />
-                          {completedMilestones}/{totalMilestones} {t('completed')}
+                          <span className="text-xs sm:text-sm">
+                            {completedMilestones}/{totalMilestones} {t('completed')}
+                          </span>
                         </div>
                         <div className="flex items-center">
                           <DollarSign className="w-4 h-4 mr-1" />
-                          {totalValue.toFixed(2)} {currency}
+                          <span className="text-xs sm:text-sm">
+                            {totalValue.toFixed(2)} {currency}
+                          </span>
                         </div>
                       </div>
                     </div>
-                    <div className="flex items-center space-x-2 ml-4">
+                    <div className={`${isMobile ? 'flex justify-between items-center pt-2 border-t' : 'flex items-center space-x-2 ml-4'}`}>
                       <Badge
-                        className={getStatusColor(
+                        className={`${getStatusColor(
                           project.milestones[0]?.status || 'pending'
-                        )}
+                        )} text-xs`}
                       >
                         {project.milestones[0]?.status || 'pending'}
                       </Badge>
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => onEdit(project.id)}
-                      >
-                        <Edit className="w-4 h-4" />
-                      </Button>
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => onDelete(project.id)}
-                        className="text-red-500 hover:text-red-700"
-                      >
-                        <Trash2 className="w-4 h-4" />
-                      </Button>
+                      <div className="flex items-center space-x-2">
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => onEdit(project.id)}
+                          className="h-8 w-8 p-0"
+                        >
+                          <Edit className="w-4 h-4" />
+                        </Button>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => onDelete(project.id)}
+                          className="text-red-500 hover:text-red-700 h-8 w-8 p-0"
+                        >
+                          <Trash2 className="w-4 h-4" />
+                        </Button>
+                      </div>
                     </div>
                   </div>
                 </div>

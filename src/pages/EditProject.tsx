@@ -8,11 +8,13 @@ import { ArrowLeft } from 'lucide-react';
 import { ProjectForm } from '@/components/EditProject/ProjectForm';
 import { useEditProject } from '@/hooks/useEditProject';
 import { useT } from '@/lib/i18n';
+import { useIsMobile } from '@/hooks/use-mobile';
 
 const EditProject: React.FC = () => {
   const { id: projectId } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const t = useT();
+  const isMobile = useIsMobile();
 
   const {
     user,
@@ -69,12 +71,12 @@ const EditProject: React.FC = () => {
         <ArrowLeft className="w-4 h-4 mr-1" />
         {t('backToDashboard')}
       </Button>
-      <div className="max-w-2xl mx-auto">
+      <div className={`${isMobile ? 'max-w-full' : 'max-w-2xl'} mx-auto`}>
         <Card>
           <CardHeader>
-            <CardTitle>{t('editProject')}</CardTitle>
+            <CardTitle className={`${isMobile ? 'text-xl' : 'text-2xl'}`}>{t('editProject')}</CardTitle>
           </CardHeader>
-          <CardContent>
+          <CardContent className={isMobile ? 'px-4' : ''}>
             <ProjectForm
               name={name}
               brief={brief}

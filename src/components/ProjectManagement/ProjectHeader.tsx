@@ -1,11 +1,20 @@
-import React from 'react';
+
+import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
-import { ArrowLeft, Edit, Trash2, Copy, ExternalLink, Send } from 'lucide-react';
+import { ArrowLeft, Edit, Trash2, Copy, ExternalLink, Send, MoreVertical } from 'lucide-react';
 import { useT } from '@/lib/i18n';
 import { DatabaseProject } from '@/hooks/projectTypes';
 import { toast } from 'sonner';
 import { sendClientLink } from '@/services/clientLinkService';
 import { supabase } from '@/integrations/supabase/client';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
+import { useIsMobile } from '@/hooks/use-mobile';
 
 interface ProjectHeaderProps {
   project: DatabaseProject;
@@ -21,16 +30,20 @@ const ProjectHeader: React.FC<ProjectHeaderProps> = ({
   onDeleteClick
 }) => {
   const t = useT();
+  const isMobile = useIsMobile();
+  const [isActionsOpen, setIsActionsOpen] = useState(false);
 
   const handleCopyClientLink = () => {
     const clientUrl = `${window.location.origin}/client/project/${project.client_access_token}`;
     navigator.clipboard.writeText(clientUrl);
     toast.success('Client link copied to clipboard');
+    setIsActionsOpen(false);
   };
 
   const handleViewClientPage = () => {
     const clientUrl = `${window.location.origin}/client/project/${project.client_access_token}`;
     window.open(clientUrl, '_blank');
+    setIsActionsOpen(false);
   };
 
   const handleSendClientLink = async () => {
@@ -55,6 +68,7 @@ const ProjectHeader: React.FC<ProjectHeaderProps> = ({
 
       toast.dismiss();
       toast.success('Client link sent successfully!');
+      setIsActionsOpen(false);
     } catch (error: any) {
       toast.dismiss();
       
@@ -67,6 +81,72 @@ const ProjectHeader: React.FC<ProjectHeaderProps> = ({
       console.error('Error sending client link:', error);
     }
   };
+
+  const handleEdit = () => {
+    onEditClick();
+    setIsActionsOpen(false);
+  };
+
+  const handleDelete = () => {
+    if (onDeleteClick) {
+      onDeleteClick();
+    }
+    setIsActionsOpen(false);
+  };
+
+  if (isMobile) {
+    return (
+      <div className="space-y-4">
+        <div className="flex items-center justify-between">
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={onBackClick}
+            className="flex items-center gap-2"
+          >
+            <ArrowLeft className="w-4 h-4" />
+            {t('backToDashboard')}
+          </Button>
+          <DropdownMenu open={isActionsOpen} onOpenChange={setIsActionsOpen}>
+            <DropdownMenuTrigger asChild>
+              <Button variant="outline" size="icon">
+                <MoreVertical className="w-4 h-4" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className="w-56">
+              <DropdownMenuItem onClick={handleCopyClientLink}>
+                <Copy className="w-4 h-4 mr-2" />
+                Copy Client Link
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={handleSendClientLink}>
+                <Send className="w-4 h-4 mr-2" />
+                Send Client Link
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={handleViewClientPage}>
+                <ExternalLink className="w-4 h-4 mr-2" />
+                View Client Page
+              </DropdownMenuItem>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem onClick={handleEdit}>
+                <Edit className="w-4 h-4 mr-2" />
+                Edit Project
+              </DropdownMenuItem>
+              {onDeleteClick && (
+                <DropdownMenuItem onClick={handleDelete} className="text-red-600">
+                  <Trash2 className="w-4 h-4 mr-2" />
+                  Delete Project
+                </DropdownMenuItem>
+              )}
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </div>
+        <div>
+          <h1 className="text-2xl font-bold text-slate-800 leading-tight">{project.name}</h1>
+          <p className="text-slate-600 mt-1 text-sm leading-relaxed">{project.brief}</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="flex items-center justify-between">
