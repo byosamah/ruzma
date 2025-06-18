@@ -1,11 +1,11 @@
-
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
-import { LogOut, User, Briefcase, TrendingUp, MessageCircle } from 'lucide-react';
+import { LogOut, User, Briefcase, TrendingUp } from 'lucide-react';
 import { useT } from '@/lib/i18n';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 import LanguageSelector from './LanguageSelector';
+import FloatingContactButton from './FloatingContactButton';
 import { supabase } from '@/integrations/supabase/client';
 
 interface LayoutProps {
@@ -100,18 +100,6 @@ const Layout: React.FC<LayoutProps> = ({
                       {t("dashboard")}
                     </Button>
                   </Link>
-                  <Link to="/contact">
-                    <Tooltip>
-                      <TooltipTrigger asChild>
-                        <Button variant={isActive('/contact') ? 'secondary' : 'ghost'} size="icon">
-                          <MessageCircle className="w-4 h-4" />
-                        </Button>
-                      </TooltipTrigger>
-                      <TooltipContent>
-                        <p>Contact Us</p>
-                      </TooltipContent>
-                    </Tooltip>
-                  </Link>
                   <Link to="/profile">
                     <Button variant={isActive('/profile') ? 'secondary' : 'ghost'} size="icon">
                       <User className="w-4 h-4" />
@@ -142,6 +130,7 @@ const Layout: React.FC<LayoutProps> = ({
       <main className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {children}
       </main>
+      <FloatingContactButton />
     </div>;
 };
 
