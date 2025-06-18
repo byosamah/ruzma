@@ -37,7 +37,13 @@ export const useSubscription = (user: User | null) => {
 
       if (error) throw error;
       
-      setSubscription(data);
+      // Type assertion to ensure user_type is properly typed
+      const typedData: UserSubscription = {
+        ...data,
+        user_type: (data.user_type as 'free' | 'plus') || 'free'
+      };
+      
+      setSubscription(typedData);
     } catch (error) {
       console.error('Error fetching subscription:', error);
       toast.error('Failed to load subscription information');
