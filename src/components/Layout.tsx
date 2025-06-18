@@ -53,7 +53,11 @@ const Layout: React.FC<LayoutProps> = ({
             <div className="flex items-center space-x-4">
               {user && (
                 <Link to="/plans">
-                  <Button variant="outline" size="sm" className="text-blue-600 border-blue-600 hover:bg-blue-50">
+                  <Button 
+                    variant="outline" 
+                    size="sm" 
+                    className="bg-gradient-to-r from-blue-500 to-purple-600 text-white border-0 hover:from-blue-600 hover:to-purple-700 hover:scale-105 transition-all duration-200 shadow-lg hover:shadow-xl font-semibold"
+                  >
                     <TrendingUp className="w-4 h-4 mr-2" />
                     Upgrade
                   </Button>
