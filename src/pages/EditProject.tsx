@@ -10,7 +10,7 @@ import { useEditProject } from '@/hooks/useEditProject';
 import { useT } from '@/lib/i18n';
 
 const EditProject: React.FC = () => {
-  const { projectId } = useParams<{ projectId: string }>();
+  const { id: projectId } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const t = useT();
 
@@ -31,7 +31,6 @@ const EditProject: React.FC = () => {
     setName,
     setBrief,
   } = useEditProject(projectId);
-
 
   if (loading) {
     return (

@@ -5,6 +5,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { User } from '@supabase/supabase-js';
 import { useProjects, DatabaseProject } from '@/hooks/useProjects';
 import { MilestoneFormData } from '@/components/EditProject/types';
+import { toast } from 'sonner';
 
 export const useEditProject = (projectId: string | undefined) => {
   const navigate = useNavigate();
@@ -102,26 +103,42 @@ export const useEditProject = (projectId: string | undefined) => {
     e.preventDefault();
     if (!project || !projectId) return;
 
+    // Validate milestones
     for (const milestone of milestones) {
       if (!milestone.title.trim() || !milestone.description.trim()) {
-        alert('Milestone title and description cannot be empty.');
+        toast.error('Milestone title and description cannot be empty.');
+        return;
+      }
+      if (milestone.price <= 0) {
+        toast.error('Milestone price must be greater than 0.');
         return;
       }
     }
 
+    if (milestones.length === 0) {
+      toast.error('At least one milestone is required.');
+      return;
+    }
+
     setUpdating(true);
     
-    const success = await updateProject(projectId, {
-      name,
-      brief,
-      milestones,
-    });
+    try {
+      const success = await updateProject(projectId, {
+        name,
+        brief,
+        milestones,
+      });
 
-    if (success) {
-      navigate('/dashboard');
+      if (success) {
+        toast.success('Project updated successfully!');
+        navigate('/dashboard');
+      }
+    } catch (error) {
+      console.error('Error updating project:', error);
+      toast.error('Failed to update project. Please try again.');
+    } finally {
+      setUpdating(false);
     }
-    
-    setUpdating(false);
   };
 
   return {
@@ -142,4 +159,3 @@ export const useEditProject = (projectId: string | undefined) => {
     setBrief,
   };
 };
-

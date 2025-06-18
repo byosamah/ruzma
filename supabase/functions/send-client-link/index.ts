@@ -48,7 +48,8 @@ const handler = async (req: Request): Promise<Response> => {
       }
     }
 
-    const clientUrl = `${Deno.env.get('SUPABASE_URL')?.replace('/rest/v1', '')}/client/project/${clientToken}`;
+    // Use the actual app URL instead of Supabase URL
+    const clientUrl = `${new URL(req.url).origin}/client/project/${clientToken}`;
 
     const emailResponse = await resend.emails.send({
       from: "Ruzma <notifications@ruzma.co>",
