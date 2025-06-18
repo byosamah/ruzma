@@ -60,7 +60,28 @@ serve(async (req) => {
         userType = 'pro'
       }
 
-      console.log('Determined user type:', userType)
+      console.log('Determined user type:', userType, 'for variant:', variantId)
+
+      // For subscription_updated events, handle potential cancellation of old subscriptions
+      if (eventName === 'subscription_updated') {
+        // Update all existing subscriptions for this user to cancelled (except the current one)
+        const { error: cancelOldError } = await supabase
+          .from('subscriptions')
+          .update({
+            status: 'cancelled',
+            cancelled_at: new Date().toISOString(),
+            updated_at: new Date().toISOString()
+          })
+          .eq('user_id', userId)
+          .neq('lemon_squeezy_id', subscription.id)
+          .in('status', ['active', 'on_trial'])
+
+        if (cancelOldError) {
+          console.error('Error cancelling old subscriptions:', cancelOldError)
+        } else {
+          console.log('Cancelled old subscriptions for user:', userId)
+        }
+      }
 
       // Update or insert subscription record with better error handling
       const subscriptionData = {
@@ -102,13 +123,15 @@ serve(async (req) => {
         console.log('New subscription record created successfully')
       }
 
-      // Update user profile with proper error handling
+      // Always update user profile with the new subscription status
       const profileData = {
         user_type: userType,
         subscription_status: status,
         subscription_id: subscription.id,
         updated_at: new Date().toISOString()
       }
+
+      console.log('Updating profile with data:', profileData)
 
       const { error: profileError } = await supabase
         .from('profiles')
@@ -128,10 +151,23 @@ serve(async (req) => {
         if (insertProfileError) {
           console.error('Error creating profile:', insertProfileError)
         } else {
-          console.log('Profile created successfully')
+          console.log('Profile created successfully with user_type:', userType)
         }
       } else {
         console.log(`Successfully updated user ${userId} to ${userType} plan with status ${status}`)
+      }
+
+      // Double check - verify the profile was updated
+      const { data: verifyProfile, error: verifyError } = await supabase
+        .from('profiles')
+        .select('user_type, subscription_status')
+        .eq('id', userId)
+        .single()
+
+      if (verifyError) {
+        console.error('Error verifying profile update:', verifyError)
+      } else {
+        console.log('Profile verification - user_type:', verifyProfile.user_type, 'status:', verifyProfile.subscription_status)
       }
     }
 
@@ -161,20 +197,35 @@ serve(async (req) => {
           console.log('Subscription marked as cancelled')
         }
 
-        // Update user profile back to free
-        const { error: profileError } = await supabase
-          .from('profiles')
-          .update({
-            user_type: 'free',
-            subscription_status: 'cancelled',
-            updated_at: new Date().toISOString()
-          })
-          .eq('id', userId)
+        // Check if user has any other active subscriptions before downgrading
+        const { data: activeSubscriptions, error: activeSubError } = await supabase
+          .from('subscriptions')
+          .select('*')
+          .eq('user_id', userId)
+          .eq('status', 'active')
 
-        if (profileError) {
-          console.error('Error updating profile after cancellation:', profileError)
+        if (activeSubError) {
+          console.error('Error checking for active subscriptions:', activeSubError)
+        }
+
+        // Only downgrade to free if no other active subscriptions
+        if (!activeSubscriptions || activeSubscriptions.length === 0) {
+          const { error: profileError } = await supabase
+            .from('profiles')
+            .update({
+              user_type: 'free',
+              subscription_status: 'cancelled',
+              updated_at: new Date().toISOString()
+            })
+            .eq('id', userId)
+
+          if (profileError) {
+            console.error('Error updating profile after cancellation:', profileError)
+          } else {
+            console.log(`User ${userId} subscription cancelled - reverted to free plan`)
+          }
         } else {
-          console.log(`User ${userId} subscription cancelled - reverted to free plan`)
+          console.log(`User ${userId} still has ${activeSubscriptions.length} active subscriptions, not downgrading`)
         }
       }
     }

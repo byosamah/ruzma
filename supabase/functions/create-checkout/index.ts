@@ -1,76 +1,70 @@
 
-import { serve } from "https://deno.land/std@0.168.0/http/server.ts"
-import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
+import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
+import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
-}
+};
+
+const logStep = (step: string, details?: any) => {
+  const detailsStr = details ? ` - ${JSON.stringify(details)}` : '';
+  console.log(`[CREATE-CHECKOUT] ${step}${detailsStr}`);
+};
 
 serve(async (req) => {
-  // Handle CORS preflight requests
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders });
   }
 
-  if (req.method !== 'POST') {
-    return new Response('Method not allowed', { status: 405, headers: corsHeaders });
-  }
+  const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
+  const supabaseServiceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
+  const supabase = createClient(supabaseUrl, supabaseServiceKey);
 
   try {
-    const supabaseUrl = Deno.env.get('SUPABASE_URL')!
-    const supabaseServiceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!
-    const lemonSqueezyApiKey = Deno.env.get('LEMON_SQUEEZY_API_KEY')!
-    
-    const supabase = createClient(supabaseUrl, supabaseServiceKey)
+    logStep('Function started');
 
-    // Get the user from the request
-    const authHeader = req.headers.get('Authorization')
-    if (!authHeader) {
-      return new Response(
-        JSON.stringify({ error: 'No authorization header' }),
-        { status: 401, headers: corsHeaders }
-      )
-    }
+    const body = await req.json();
+    const { storeId, variantId } = body;
 
-    const { data: { user }, error: userError } = await supabase.auth.getUser(
-      authHeader.replace('Bearer ', '')
-    )
-
-    if (userError || !user) {
-      return new Response(
-        JSON.stringify({ error: 'Unauthorized' }),
-        { status: 401, headers: corsHeaders }
-      )
-    }
-
-    const { storeId, variantId } = await req.json()
+    logStep('Request body parsed', { storeId, variantId });
 
     if (!storeId || !variantId) {
-      return new Response(
-        JSON.stringify({ error: 'Missing storeId or variantId' }),
-        { status: 400, headers: corsHeaders }
-      )
+      throw new Error('Missing required fields: storeId and variantId');
     }
 
-    // Get user profile for additional info
-    const { data: profile } = await supabase
-      .from('profiles')
-      .select('full_name')
-      .eq('id', user.id)
-      .single()
+    // Get the current user from the auth header
+    const authHeader = req.headers.get('Authorization');
+    if (!authHeader) {
+      throw new Error('No authorization header provided');
+    }
 
-    // Create checkout with Lemon Squeezy
+    const token = authHeader.replace('Bearer ', '');
+    const { data: { user }, error: userError } = await supabase.auth.getUser(token);
+    
+    if (userError || !user) {
+      throw new Error('User not authenticated');
+    }
+
+    logStep('User authenticated', { userId: user.id, email: user.email });
+
+    const lemonSqueezyApiKey = Deno.env.get('LEMON_SQUEEZY_API_KEY');
+    if (!lemonSqueezyApiKey) {
+      throw new Error('LEMON_SQUEEZY_API_KEY is not set');
+    }
+
+    logStep('Lemon Squeezy API key verified');
+
+    // Create checkout session with Lemon Squeezy API
     const checkoutData = {
       data: {
         type: 'checkouts',
         attributes: {
           checkout_data: {
             email: user.email,
-            name: profile?.full_name || user.email,
+            name: user.user_metadata?.full_name || user.email?.split('@')[0] || 'User',
             custom: {
-              user_id: user.id,
-              user_email: user.email
+              user_id: user.id // This is crucial for the webhook to identify the user
             }
           }
         },
@@ -78,65 +72,63 @@ serve(async (req) => {
           store: {
             data: {
               type: 'stores',
-              id: storeId
+              id: storeId.toString()
             }
           },
           variant: {
             data: {
               type: 'variants',
-              id: variantId
+              id: variantId.toString()
             }
           }
         }
       }
-    }
+    };
 
-    console.log('Creating checkout with data:', JSON.stringify(checkoutData, null, 2))
+    logStep('Checkout data prepared', checkoutData);
 
     const response = await fetch('https://api.lemonsqueezy.com/v1/checkouts', {
       method: 'POST',
       headers: {
-        'Authorization': `Bearer ${lemonSqueezyApiKey}`,
-        'Content-Type': 'application/vnd.api+json',
         'Accept': 'application/vnd.api+json',
+        'Content-Type': 'application/vnd.api+json',
+        'Authorization': `Bearer ${lemonSqueezyApiKey}`,
       },
-      body: JSON.stringify(checkoutData)
-    })
+      body: JSON.stringify(checkoutData),
+    });
 
-    const result = await response.json()
-    console.log('Lemon Squeezy response:', JSON.stringify(result, null, 2))
+    logStep('Lemon Squeezy API call made', { status: response.status });
 
     if (!response.ok) {
-      console.error('Lemon Squeezy API error:', result)
-      return new Response(
-        JSON.stringify({ 
-          error: 'Failed to create checkout',
-          details: result
-        }),
-        { status: response.status, headers: corsHeaders }
-      )
+      const errorText = await response.text();
+      logStep('Lemon Squeezy API error', { status: response.status, error: errorText });
+      throw new Error(`Lemon Squeezy API error: ${response.status} - ${errorText}`);
     }
 
-    // Extract the checkout URL from the correct location in the response
-    const checkoutUrl = result.data?.attributes?.url
+    const result = await response.json();
+    logStep('Lemon Squeezy response received', result);
+
+    const checkoutUrl = result.data?.attributes?.url;
+    
     if (!checkoutUrl) {
-      console.error('No checkout URL found in response:', result)
-      return new Response(
-        JSON.stringify({ error: 'No checkout URL received from Lemon Squeezy' }),
-        { status: 500, headers: corsHeaders }
-      )
+      logStep('No checkout URL in response', result);
+      throw new Error('No checkout URL returned from Lemon Squeezy');
     }
 
-    return new Response(
-      JSON.stringify({ checkout_url: checkoutUrl }),
-      { status: 200, headers: corsHeaders }
-    )
+    logStep('Checkout URL extracted', { checkoutUrl });
+
+    return new Response(JSON.stringify({ checkout_url: checkoutUrl }), {
+      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      status: 200,
+    });
 
   } catch (error) {
-    console.error('Checkout creation error:', error)
-    return new Response(
-      JSON.stringify({ error: 'Internal server error' }),
-      { status: 500, headers: corsHeaders }
-    )
+    const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
+    logStep('ERROR', { message: errorMessage });
+    
+    return new Response(JSON.stringify({ error: errorMessage }), {
+      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      status: 500,
+    });
   }
-})
+});
