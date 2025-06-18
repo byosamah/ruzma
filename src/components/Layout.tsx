@@ -53,13 +53,13 @@ const Layout: React.FC<LayoutProps> = ({
                   <Link to="/dashboard">
                     <Button variant={isActive('/dashboard') ? 'secondary' : 'ghost'} size="sm">
                       <Briefcase className="w-4 h-4 mr-2" />
-                      <span>{t("dashboard")}</span>
+                      {t("dashboard")}
                     </Button>
                   </Link>
                   <Link to="/profile">
                     <Button variant={isActive('/profile') ? 'secondary' : 'ghost'} size="sm">
                       <User className="w-4 h-4 mr-2" />
-                      <span>{t("profile")}</span>
+                      {t("profile")}
                     </Button>
                   </Link>
                   <Tooltip>
