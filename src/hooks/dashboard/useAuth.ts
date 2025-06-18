@@ -1,0 +1,107 @@
+
+import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { supabase } from '@/integrations/supabase/client';
+import { User } from '@supabase/supabase-js';
+import { toast } from 'sonner';
+import { logSecurityEvent } from '@/lib/authSecurity';
+
+export const useAuth = () => {
+  const [user, setUser] = useState<User | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [authChecked, setAuthChecked] = useState(false);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (authChecked) return;
+    
+    let isMounted = true;
+    
+    const fetchUser = async () => {
+      if (!isMounted) return;
+      
+      console.log('Dashboard: Starting secure auth check...');
+      logSecurityEvent('dashboard_auth_check_started');
+      
+      try {
+        // Handle auth tokens from URL hash (email confirmation)
+        const hash = window.location.hash;
+        if (hash && hash.includes('access_token=')) {
+          console.log('Dashboard: Processing auth tokens from URL hash');
+          logSecurityEvent('email_confirmation_token_processing');
+          
+          const params = new URLSearchParams(hash.substring(1));
+          const accessToken = params.get('access_token');
+          const refreshToken = params.get('refresh_token');
+          
+          if (accessToken && refreshToken) {
+            const { error } = await supabase.auth.setSession({
+              access_token: accessToken,
+              refresh_token: refreshToken,
+            });
+            
+            if (error) {
+              console.error('Dashboard: Error setting session from URL:', error);
+              logSecurityEvent('email_confirmation_failed', { error: error.message });
+              toast.error('Authentication failed. Please try logging in again.');
+            } else {
+              console.log('Dashboard: Session set successfully from URL tokens');
+              logSecurityEvent('email_confirmation_success');
+              toast.success('Email confirmed successfully! Welcome to Ruzma.');
+              // Clear the hash from URL
+              window.history.replaceState(null, '', window.location.pathname);
+            }
+          }
+        }
+
+        const { data: { user }, error: userError } = await supabase.auth.getUser();
+        console.log('Dashboard: Auth result -', { 
+          hasUser: !!user, 
+          userEmail: user?.email, 
+          error: userError?.message 
+        });
+        
+        if (!isMounted) return;
+        
+        if (userError || !user) {
+          console.log('Dashboard: No authenticated user, redirecting to login');
+          logSecurityEvent('dashboard_auth_failed', { error: userError?.message });
+          setLoading(false);
+          setAuthChecked(true);
+          navigate('/login');
+          return;
+        }
+
+        setUser(user);
+        logSecurityEvent('dashboard_auth_success', { userId: user.id });
+        console.log('Dashboard: User authenticated');
+      } catch (error) {
+        console.error('Dashboard: Unexpected error:', error);
+        logSecurityEvent('dashboard_unexpected_error', { error: error instanceof Error ? error.message : 'Unknown error' });
+        if (isMounted) {
+          setLoading(false);
+          setAuthChecked(true);
+          navigate('/login');
+        }
+      } finally {
+        if (isMounted) {
+          setLoading(false);
+          setAuthChecked(true);
+          console.log('Dashboard: Auth check complete');
+        }
+      }
+    };
+
+    fetchUser();
+    
+    return () => {
+      isMounted = false;
+    };
+  }, [authChecked, navigate]);
+
+  return {
+    user,
+    loading,
+    authChecked,
+  };
+};
