@@ -76,15 +76,6 @@ const ProjectHeaderActions: React.FC<ProjectHeaderActionsProps> = ({
       <Button
         variant="outline"
         size="sm"
-        onClick={onEditClick}
-        className="text-slate-600 hover:text-slate-800 border-slate-200 hover:border-slate-300"
-      >
-        <Edit className="w-4 h-4 mr-2" />
-        Edit
-      </Button>
-      <Button
-        variant="outline"
-        size="sm"
         onClick={handleCopyClientLink}
         className="text-slate-600 hover:text-slate-800 border-slate-200 hover:border-slate-300"
       >
@@ -109,6 +100,14 @@ const ProjectHeaderActions: React.FC<ProjectHeaderActionsProps> = ({
         <Mail className="w-4 h-4 mr-2" />
         Send Link
       </Button>
+      <Button
+        variant="outline"
+        size="sm"
+        onClick={onEditClick}
+        className="text-slate-600 hover:text-slate-800 border-slate-200 hover:border-slate-300"
+      >
+        <Edit className="w-4 h-4" />
+      </Button>
       {onDeleteClick && (
         <Button
           variant="outline"
@@ -116,8 +115,7 @@ const ProjectHeaderActions: React.FC<ProjectHeaderActionsProps> = ({
           onClick={onDeleteClick}
           className="text-red-600 hover:text-red-700 border-red-200 hover:border-red-300"
         >
-          <Trash2 className="w-4 h-4 mr-2" />
-          Delete
+          <Trash2 className="w-4 h-4" />
         </Button>
       )}
     </div>
