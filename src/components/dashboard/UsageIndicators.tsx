@@ -3,7 +3,7 @@ import React from 'react';
 import { Progress } from '@/components/ui/progress';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Database, FolderOpen, TrendingUp } from 'lucide-react';
+import { Database, FolderOpen, TrendingUp, MessageCircle } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useUsageTracking } from '@/hooks/useUsageTracking';
 import { DatabaseProject } from '@/hooks/projectTypes';
@@ -20,10 +20,23 @@ export const UsageIndicators: React.FC<UsageIndicatorsProps> = ({
   const navigate = useNavigate();
   const usage = useUsageTracking(userProfile, projects);
 
-  const getProgressColor = (percentage: number) => {
-    if (percentage >= 90) return 'bg-red-500';
-    if (percentage >= 80) return 'bg-yellow-500';
-    return 'bg-green-500';
+  const handleUpgradeClick = () => {
+    const userType = userProfile?.user_type || 'free';
+    if (userType === 'pro') {
+      navigate('/contact');
+    } else {
+      navigate('/plans');
+    }
+  };
+
+  const getUpgradeButtonText = () => {
+    const userType = userProfile?.user_type || 'free';
+    return userType === 'pro' ? 'Contact us' : 'Upgrade';
+  };
+
+  const getUpgradeButtonIcon = () => {
+    const userType = userProfile?.user_type || 'free';
+    return userType === 'pro' ? MessageCircle : TrendingUp;
   };
 
   return (
@@ -44,11 +57,11 @@ export const UsageIndicators: React.FC<UsageIndicatorsProps> = ({
                 <Button
                   size="sm"
                   variant="outline"
-                  onClick={() => navigate('/plans')}
+                  onClick={handleUpgradeClick}
                   className="text-xs"
                 >
-                  <TrendingUp className="h-3 w-3 mr-1" />
-                  Upgrade
+                  {React.createElement(getUpgradeButtonIcon(), { className: "h-3 w-3 mr-1" })}
+                  {getUpgradeButtonText()}
                 </Button>
               )}
             </div>
@@ -79,11 +92,11 @@ export const UsageIndicators: React.FC<UsageIndicatorsProps> = ({
                 <Button
                   size="sm"
                   variant="outline"
-                  onClick={() => navigate('/plans')}
+                  onClick={handleUpgradeClick}
                   className="text-xs"
                 >
-                  <TrendingUp className="h-3 w-3 mr-1" />
-                  Upgrade
+                  {React.createElement(getUpgradeButtonIcon(), { className: "h-3 w-3 mr-1" })}
+                  {getUpgradeButtonText()}
                 </Button>
               )}
             </div>

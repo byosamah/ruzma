@@ -17,6 +17,7 @@ import EditProject from "./pages/EditProject";
 import ProjectManagement from "./pages/ProjectManagement";
 import ProjectTemplates from "./pages/ProjectTemplates";
 import ClientProject from "./pages/ClientProject";
+import ContactUs from "./pages/ContactUs";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -42,6 +43,7 @@ function App() {
               <Route path="/edit-project/:id" element={<EditProject />} />
               <Route path="/project/:id" element={<ProjectManagement />} />
               <Route path="/templates" element={<ProjectTemplates />} />
+              <Route path="/contact" element={<ContactUs />} />
               <Route path="/client/:token" element={<ClientProject />} />
               <Route path="/client/project/:token" element={<ClientProject />} />
               <Route path="*" element={<NotFound />} />

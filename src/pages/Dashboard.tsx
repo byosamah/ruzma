@@ -1,3 +1,4 @@
+
 import React from 'react';
 import Layout from '@/components/Layout';
 import DashboardHeader from '@/components/dashboard/DashboardHeader';
@@ -8,7 +9,7 @@ import { useDashboard } from '@/hooks/useDashboard';
 import { useUsageTracking } from '@/hooks/useUsageTracking';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
-import { Plus, FileText } from 'lucide-react';
+import { Plus, FileText, MessageCircle } from 'lucide-react';
 import { useT } from '@/lib/i18n';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 
@@ -33,6 +34,12 @@ const Dashboard = () => {
   const handleNewProject = () => {
     if (usage.canCreateProject) {
       navigate('/create-project');
+    } else {
+      // If user is Pro and reached limits, go to contact page
+      const userType = profile?.user_type || 'free';
+      if (userType === 'pro') {
+        navigate('/contact');
+      }
     }
   };
 
@@ -55,26 +62,39 @@ const Dashboard = () => {
   }
 
   const EmptyProjectsButton = () => {
+    const userType = profile?.user_type || 'free';
+    const buttonText = !usage.canCreateProject && userType === 'pro' 
+      ? 'Contact us for more projects' 
+      : t('createFirstProject');
+    
+    const ButtonIcon = !usage.canCreateProject && userType === 'pro' ? MessageCircle : Plus;
+    
+    const tooltipMessage = !usage.canCreateProject 
+      ? (userType === 'pro' 
+          ? 'You\'ve reached the project limit. Contact us to discuss your needs.' 
+          : 'Project limit reached. Upgrade your plan to create more projects.')
+      : '';
+
     const button = (
       <Button 
         onClick={handleNewProject} 
         size="lg" 
         className="mt-4"
-        disabled={!usage.canCreateProject}
+        disabled={false} // Always enabled, but behavior changes based on plan
       >
-        <Plus className="w-5 h-5 mr-2" />
-        {t('createFirstProject')}
+        <ButtonIcon className="w-5 h-5 mr-2" />
+        {buttonText}
       </Button>
     );
 
-    if (!usage.canCreateProject) {
+    if (tooltipMessage) {
       return (
         <Tooltip>
           <TooltipTrigger asChild>
             {button}
           </TooltipTrigger>
           <TooltipContent>
-            <p>Project limit reached. Upgrade your plan to create more projects.</p>
+            <p>{tooltipMessage}</p>
           </TooltipContent>
         </Tooltip>
       );
