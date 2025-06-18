@@ -87,6 +87,12 @@ const Dashboard = () => {
     return button;
   };
 
+  // Determine layout based on project count
+  const isOddNumber = projects.length % 2 === 1;
+  const projectGridClass = isOddNumber 
+    ? "flex flex-col space-y-6" 
+    : "grid grid-cols-1 md:grid-cols-2 gap-6";
+
   return (
     <Layout user={user} onSignOut={handleSignOut}>
       <div className="space-y-8">
@@ -146,7 +152,7 @@ const Dashboard = () => {
                   <EmptyProjectsButton />
                 </div>
               ) : (
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className={projectGridClass}>
                   {projects.map((project) => (
                     <ProjectCard
                       key={project.id}
@@ -154,6 +160,7 @@ const Dashboard = () => {
                       onViewClick={handleViewProject}
                       onEditClick={handleEditProjectCard}
                       currency={userCurrency.currency}
+                      isVerticalLayout={isOddNumber}
                     />
                   ))}
                 </div>
