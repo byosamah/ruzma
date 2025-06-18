@@ -1,9 +1,12 @@
 
 import React from 'react';
 import { Button } from '@/components/ui/button';
-import { ArrowLeft, Edit, Trash2 } from 'lucide-react';
+import { ArrowLeft, Edit, Trash2, Copy, ExternalLink, Send } from 'lucide-react';
 import { useT } from '@/lib/i18n';
 import { DatabaseProject } from '@/hooks/projectTypes';
+import { toast } from 'sonner';
+import { sendClientLink } from '@/services/clientLinkService';
+import { supabase } from '@/integrations/supabase/client';
 
 interface ProjectHeaderProps {
   project: DatabaseProject;
@@ -19,6 +22,52 @@ const ProjectHeader: React.FC<ProjectHeaderProps> = ({
   onDeleteClick
 }) => {
   const t = useT();
+
+  const handleCopyClientLink = () => {
+    const clientUrl = `${window.location.origin}/client/project/${project.client_access_token}`;
+    navigator.clipboard.writeText(clientUrl);
+    toast.success('Client link copied to clipboard');
+  };
+
+  const handleViewClientPage = () => {
+    const clientUrl = `${window.location.origin}/client/project/${project.client_access_token}`;
+    window.open(clientUrl, '_blank');
+  };
+
+  const handleSendClientLink = async () => {
+    if (!project.client_email) {
+      toast.error('No client email address found for this project');
+      return;
+    }
+
+    try {
+      toast.loading('Sending client link...');
+      
+      // Get current user
+      const { data: { user } } = await supabase.auth.getUser();
+      
+      await sendClientLink({
+        clientEmail: project.client_email,
+        projectName: project.name,
+        freelancerName: 'Your freelancer',
+        clientToken: project.client_access_token,
+        userId: user?.id,
+      });
+
+      toast.dismiss();
+      toast.success('Client link sent successfully!');
+    } catch (error: any) {
+      toast.dismiss();
+      
+      if (error.message && error.message.includes('Domain verification required')) {
+        toast.error('Email domain needs verification. Please contact support.');
+      } else {
+        toast.error('Failed to send client link. Please try again.');
+      }
+      
+      console.error('Error sending client link:', error);
+    }
+  };
 
   return (
     <div className="flex items-center justify-between">
@@ -38,6 +87,30 @@ const ProjectHeader: React.FC<ProjectHeaderProps> = ({
         </div>
       </div>
       <div className="flex items-center gap-2">
+        <Button
+          variant="outline"
+          onClick={handleCopyClientLink}
+          className="flex items-center gap-2"
+        >
+          <Copy className="w-4 h-4" />
+          Copy Client Link
+        </Button>
+        <Button
+          variant="outline"
+          onClick={handleSendClientLink}
+          className="flex items-center gap-2"
+        >
+          <Send className="w-4 h-4" />
+          Send Client Link
+        </Button>
+        <Button
+          variant="outline"
+          onClick={handleViewClientPage}
+          className="flex items-center gap-2"
+        >
+          <ExternalLink className="w-4 h-4" />
+          View Client Page
+        </Button>
         <Button
           variant="outline"
           onClick={onEditClick}
