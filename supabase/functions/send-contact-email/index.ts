@@ -28,10 +28,11 @@ const handler = async (req: Request): Promise<Response> => {
 
     console.log('Processing contact form submission:', { name, email, subject });
 
-    // Send email using the sender's email as the from address
+    // Use verified domain for "from" and sender's email as "replyTo"
     const emailResponse = await resend.emails.send({
-      from: `${name} <${email}>`,
+      from: "Contact Form <onboarding@resend.dev>",
       to: ["hey@ruzma.co"],
+      replyTo: [email],
       subject: `Contact Form: ${subject}`,
       html: `
         <h2>New Contact Form Submission</h2>
@@ -42,6 +43,7 @@ const handler = async (req: Request): Promise<Response> => {
         <p>${message.replace(/\n/g, '<br>')}</p>
         <hr>
         <p><em>This message was sent from the contact form on your website.</em></p>
+        <p><em>You can reply directly to this email to respond to ${name}.</em></p>
       `,
     });
 
