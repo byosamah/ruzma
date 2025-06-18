@@ -25,7 +25,7 @@ serve(async (req) => {
   }
 
   try {
-    logStep('Webhook received');
+    logStep('Webhook received', { method: req.method, url: req.url });
     
     if (!supabaseUrl || !supabaseServiceKey) {
       logStep('ERROR: Missing Supabase configuration');
@@ -47,14 +47,21 @@ serve(async (req) => {
     if (webhookSecret) {
       const signature = req.headers.get('x-signature');
       logStep('Webhook signature check', { hasSignature: !!signature, hasSecret: !!webhookSecret });
-      // TODO: Implement signature verification
+      // TODO: Implement signature verification for production
     }
 
+    // Parse request body with better error handling
     let payload;
+    let rawBody;
     try {
-      payload = await req.json();
+      rawBody = await req.text();
+      logStep('Raw webhook body received', { bodyLength: rawBody.length });
+      payload = JSON.parse(rawBody);
     } catch (parseError) {
-      logStep('ERROR: Failed to parse request body', { error: parseError.message });
+      logStep('ERROR: Failed to parse request body', { 
+        error: parseError.message, 
+        bodyPreview: rawBody ? rawBody.substring(0, 200) : 'No body' 
+      });
       return new Response(
         JSON.stringify({ error: 'Invalid JSON payload' }),
         { 
@@ -67,21 +74,26 @@ serve(async (req) => {
       );
     }
 
-    logStep('Webhook payload received', { 
+    logStep('Webhook payload parsed', { 
       eventName: payload.meta?.event_name,
+      dataType: payload.data?.type,
       dataId: payload.data?.id,
       hasData: !!payload.data,
-      hasMeta: !!payload.meta 
+      hasMeta: !!payload.meta,
+      payloadKeys: Object.keys(payload || {})
     });
 
     const { meta, data } = payload;
     const eventName = meta?.event_name;
 
-    // Validate required fields
+    // Enhanced validation of required fields
     if (!eventName) {
-      logStep('ERROR: Missing event_name in payload');
+      logStep('ERROR: Missing event_name in payload', { meta, availableKeys: Object.keys(payload || {}) });
       return new Response(
-        JSON.stringify({ error: 'Missing event_name in payload' }),
+        JSON.stringify({ 
+          error: 'Missing event_name in payload',
+          received: { meta, dataKeys: Object.keys(payload || {}) }
+        }),
         { 
           status: 400,
           headers: { 
@@ -93,9 +105,16 @@ serve(async (req) => {
     }
 
     if (!data || !data.id) {
-      logStep('ERROR: Missing data or data.id in payload');
+      logStep('ERROR: Missing data or data.id in payload', { 
+        hasData: !!data, 
+        dataId: data?.id,
+        dataKeys: data ? Object.keys(data) : 'No data object'
+      });
       return new Response(
-        JSON.stringify({ error: 'Missing data or data.id in payload' }),
+        JSON.stringify({ 
+          error: 'Missing data or data.id in payload',
+          received: { hasData: !!data, dataId: data?.id }
+        }),
         { 
           status: 400,
           headers: { 
@@ -106,6 +125,9 @@ serve(async (req) => {
       );
     }
 
+    logStep('Processing webhook event', { eventName, dataId: data.id, dataType: data.type });
+
+    // Process different webhook events
     switch (eventName) {
       case 'subscription_created':
       case 'subscription_updated':
@@ -122,13 +144,23 @@ serve(async (req) => {
         break;
 
       default:
-        logStep(`Unhandled event: ${eventName}`);
+        logStep(`Unhandled event: ${eventName}`, { supportedEvents: [
+          'subscription_created', 
+          'subscription_updated', 
+          'subscription_cancelled', 
+          'subscription_expired', 
+          'order_created'
+        ]});
     }
 
-    logStep('Webhook processed successfully', { eventName });
+    logStep('Webhook processed successfully', { eventName, dataId: data.id });
 
     return new Response(
-      JSON.stringify({ received: true, event: eventName }),
+      JSON.stringify({ 
+        received: true, 
+        event: eventName,
+        processed_at: new Date().toISOString()
+      }),
       { 
         headers: { 
           ...corsHeaders, 
@@ -138,12 +170,17 @@ serve(async (req) => {
     );
 
   } catch (error) {
-    logStep('Webhook error', { error: error.message, stack: error.stack });
+    logStep('Webhook error', { 
+      error: error.message, 
+      stack: error.stack,
+      timestamp: new Date().toISOString()
+    });
     
     return new Response(
       JSON.stringify({ 
         error: error.message,
-        stack: error.stack 
+        stack: error.stack,
+        timestamp: new Date().toISOString()
       }),
       { 
         status: 500,
@@ -157,28 +194,65 @@ serve(async (req) => {
 });
 
 async function handleSubscriptionChange(supabase: any, data: any, status: string) {
-  logStep('Handling subscription change', { subscriptionId: data.id, status });
+  logStep('Handling subscription change', { 
+    subscriptionId: data.id, 
+    status, 
+    dataType: data.type,
+    hasAttributes: !!data.attributes 
+  });
   
   try {
-    // Validate required data fields
+    // Enhanced validation of data structure
     if (!data.attributes) {
-      logStep('ERROR: Missing data.attributes');
+      logStep('ERROR: Missing data.attributes', { 
+        dataKeys: Object.keys(data || {}),
+        dataId: data.id 
+      });
       return;
     }
 
-    // Try multiple methods to find the user
+    // Multiple strategies to find the user
     let userId = null;
     let userEmail = null;
     
-    // Method 1: Check for custom data in the subscription
-    const customData = data.attributes?.first_subscription_item?.meta?.custom_data;
-    if (customData?.user_id) {
-      userId = customData.user_id;
-      userEmail = customData.user_email;
-      logStep('Found user from custom data', { userId, userEmail });
+    logStep('Starting user lookup process', { 
+      hasCustomData: !!data.attributes?.first_subscription_item?.meta?.custom_data,
+      hasOrderCustom: !!data.attributes?.order?.custom,
+      customerEmail: data.attributes?.customer?.email 
+    });
+
+    // Method 1: Check for custom data in checkout_data array format
+    if (data.attributes?.checkout_data) {
+      logStep('Found checkout_data', { checkoutData: data.attributes.checkout_data });
+      
+      // Handle array format
+      if (Array.isArray(data.attributes.checkout_data)) {
+        const userIdField = data.attributes.checkout_data.find((field: any) => field.key === 'user_id');
+        const userEmailField = data.attributes.checkout_data.find((field: any) => field.key === 'user_email');
+        
+        if (userIdField) {
+          userId = userIdField.value;
+          userEmail = userEmailField?.value;
+          logStep('Found user from checkout_data array', { userId, userEmail });
+        }
+      }
+      // Handle object format (fallback)
+      else if (typeof data.attributes.checkout_data === 'object') {
+        userId = data.attributes.checkout_data.user_id;
+        userEmail = data.attributes.checkout_data.user_email;
+        logStep('Found user from checkout_data object', { userId, userEmail });
+      }
     }
     
-    // Method 2: Check order custom fields
+    // Method 2: Check for custom data in subscription meta
+    if (!userId && data.attributes?.first_subscription_item?.meta?.custom_data) {
+      const customData = data.attributes.first_subscription_item.meta.custom_data;
+      userId = customData.user_id;
+      userEmail = customData.user_email;
+      logStep('Found user from subscription custom data', { userId, userEmail });
+    }
+    
+    // Method 3: Check order custom fields
     if (!userId && data.attributes?.order?.custom) {
       const customFields = data.attributes.order.custom;
       const userIdField = customFields.find((field: any) => field.option_name === 'user_id');
@@ -191,9 +265,11 @@ async function handleSubscriptionChange(supabase: any, data: any, status: string
       }
     }
     
-    // Method 3: Try to find user by customer email
+    // Method 4: Try to find user by customer email
     if (!userId && data.attributes?.customer?.email) {
       userEmail = data.attributes.customer.email;
+      logStep('Attempting user lookup by email', { userEmail });
+      
       const { data: profileData, error } = await supabase
         .from('profiles')
         .select('id')
@@ -210,9 +286,14 @@ async function handleSubscriptionChange(supabase: any, data: any, status: string
     
     if (!userId) {
       logStep('ERROR: No user ID found in subscription data', { 
-        hasCustomData: !!customData,
-        hasOrderCustom: !!data.attributes?.order?.custom,
-        customerEmail: data.attributes?.customer?.email 
+        checkedMethods: [
+          'checkout_data',
+          'subscription_custom_data', 
+          'order_custom_fields',
+          'customer_email_lookup'
+        ],
+        customerEmail: data.attributes?.customer?.email,
+        availableDataKeys: Object.keys(data.attributes || {})
       });
       return;
     }
@@ -220,6 +301,8 @@ async function handleSubscriptionChange(supabase: any, data: any, status: string
     // Determine subscription tier based on variant/price
     let subscriptionTier = 'plus'; // default
     const variantId = data.attributes?.variant?.id || data.relationships?.variant?.data?.id;
+    
+    logStep('Determining subscription tier', { variantId });
     
     if (variantId === '697231') {
       subscriptionTier = 'plus';
@@ -245,30 +328,48 @@ async function handleSubscriptionChange(supabase: any, data: any, status: string
       .eq('id', userId);
 
     if (error) {
-      logStep('ERROR updating user subscription', { error: error.message, userId, updateData });
+      logStep('ERROR updating user subscription', { 
+        error: error.message, 
+        userId, 
+        updateData,
+        errorCode: error.code 
+      });
       throw error;
     } else {
       logStep('Successfully updated user subscription', { userId, updateData });
     }
   } catch (error) {
-    logStep('ERROR in handleSubscriptionChange', { error: error.message, stack: error.stack });
+    logStep('ERROR in handleSubscriptionChange', { 
+      error: error.message, 
+      stack: error.stack,
+      subscriptionId: data.id 
+    });
     throw error;
   }
 }
 
 async function handleOrderCreated(supabase: any, data: any) {
-  logStep('Handling order created', { orderId: data.id });
+  logStep('Handling order created', { orderId: data.id, dataType: data.type });
   
   try {
     // Validate required data fields
     if (!data.attributes) {
-      logStep('ERROR: Missing data.attributes in order');
+      logStep('ERROR: Missing data.attributes in order', { 
+        dataKeys: Object.keys(data || {}),
+        orderId: data.id 
+      });
       return;
     }
 
     // Extract user information from order
     let userId = null;
     let userEmail = null;
+    
+    logStep('Starting user lookup for order', {
+      hasCustomFields: !!data.attributes?.custom,
+      customerEmail: data.attributes?.customer?.email,
+      availableKeys: Object.keys(data.attributes || {})
+    });
     
     // Check custom fields in the order
     if (data.attributes?.custom) {
@@ -283,6 +384,8 @@ async function handleOrderCreated(supabase: any, data: any) {
     // Try to find user by customer email if no custom data
     if (!userId && data.attributes?.customer?.email) {
       userEmail = data.attributes.customer.email;
+      logStep('Attempting user lookup by customer email', { userEmail });
+      
       const { data: profileData, error } = await supabase
         .from('profiles')
         .select('id')
@@ -298,12 +401,21 @@ async function handleOrderCreated(supabase: any, data: any) {
     }
     
     if (userId) {
-      logStep('Order processed for user', { userId, orderId: data.id });
+      logStep('Order processed for user', { userId, orderId: data.id, userEmail });
+      // Additional order processing logic can be added here
     } else {
-      logStep('No user found for order', { orderId: data.id });
+      logStep('No user found for order', { 
+        orderId: data.id,
+        customerEmail: data.attributes?.customer?.email,
+        checkedMethods: ['order_custom_fields', 'customer_email_lookup']
+      });
     }
   } catch (error) {
-    logStep('ERROR in handleOrderCreated', { error: error.message, stack: error.stack });
+    logStep('ERROR in handleOrderCreated', { 
+      error: error.message, 
+      stack: error.stack,
+      orderId: data.id 
+    });
     throw error;
   }
 }

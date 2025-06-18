@@ -14,6 +14,13 @@ interface CheckoutRequest {
   customData?: Record<string, any>;
 }
 
+// Helper logging function
+const logStep = (step: string, details?: any) => {
+  const timestamp = new Date().toISOString();
+  const detailsStr = details ? ` - ${JSON.stringify(details)}` : '';
+  console.log(`[${timestamp}] [CREATE-CHECKOUT] ${step}${detailsStr}`);
+};
+
 serve(async (req) => {
   // Handle CORS preflight requests
   if (req.method === 'OPTIONS') {
@@ -21,8 +28,10 @@ serve(async (req) => {
   }
 
   try {
+    logStep('Function started');
+
     if (!LEMON_SQUEEZY_API_KEY) {
-      console.error('LEMON_SQUEEZY_API_KEY is not configured');
+      logStep('ERROR: LEMON_SQUEEZY_API_KEY is not configured');
       return new Response(
         JSON.stringify({ error: 'LEMON_SQUEEZY_API_KEY is not configured' }),
         { 
@@ -35,14 +44,16 @@ serve(async (req) => {
       );
     }
 
+    logStep('API key verified');
+
     const requestBody = await req.json();
-    console.log('Received request body:', JSON.stringify(requestBody, null, 2));
+    logStep('Received request body', requestBody);
 
     const { storeId, variantId, customData }: CheckoutRequest = requestBody;
 
     // Validate required fields
     if (!storeId || !variantId) {
-      console.error('Missing required fields:', { storeId, variantId });
+      logStep('ERROR: Missing required fields', { storeId, variantId });
       return new Response(
         JSON.stringify({ error: 'storeId and variantId are required' }),
         { 
@@ -55,19 +66,21 @@ serve(async (req) => {
       );
     }
 
-    console.log('Creating checkout with:', { storeId, variantId, customData });
+    logStep('Creating checkout with', { storeId, variantId, customData });
 
-    // According to Lemon Squeezy docs, checkout_data should be an object with custom fields
-    // Each custom field should have a name and value
-    const checkoutCustom: Record<string, string> = {};
+    // Format custom data as an array of key-value objects for Lemon Squeezy
+    const checkoutCustomArray: Array<{ key: string; value: string }> = [];
     
     if (customData) {
       Object.entries(customData).forEach(([key, value]) => {
-        checkoutCustom[key] = String(value);
+        checkoutCustomArray.push({
+          key: key,
+          value: String(value)
+        });
       });
     }
 
-    console.log('Formatted custom fields:', JSON.stringify(checkoutCustom, null, 2));
+    logStep('Formatted custom fields as array', checkoutCustomArray);
 
     // Lemon Squeezy checkout payload format
     const checkoutData = {
@@ -83,7 +96,7 @@ serve(async (req) => {
             skip_trial: false,
             subscription_preview: true,
           },
-          checkout_data: checkoutCustom, // This should be an object, not an array
+          checkout_data: checkoutCustomArray, // Array format as required by Lemon Squeezy
           test_mode: Deno.env.get('ENVIRONMENT') !== 'production',
         },
         relationships: {
@@ -103,7 +116,7 @@ serve(async (req) => {
       },
     };
 
-    console.log("Sending Lemon Squeezy payload:", JSON.stringify(checkoutData, null, 2));
+    logStep("Sending Lemon Squeezy payload", checkoutData);
 
     const response = await fetch('https://api.lemonsqueezy.com/v1/checkouts', {
       method: 'POST',
@@ -116,14 +129,30 @@ serve(async (req) => {
     });
 
     const responseText = await response.text();
-    console.log('Lemon Squeezy Response:', response.status, responseText);
+    logStep('Lemon Squeezy Response', { status: response.status, body: responseText });
 
     if (!response.ok) {
-      console.error('LemonSqueezy API error:', response.status, responseText);
+      logStep('ERROR: LemonSqueezy API error', { status: response.status, response: responseText });
+      
+      // Try to parse error details
+      let errorDetails = responseText;
+      try {
+        const errorData = JSON.parse(responseText);
+        errorDetails = errorData.errors || errorData.message || responseText;
+      } catch (parseError) {
+        logStep('Could not parse error response');
+      }
+
       return new Response(
         JSON.stringify({ 
           error: `LemonSqueezy API error: ${response.status}`,
-          details: responseText 
+          details: errorDetails,
+          debugInfo: {
+            apiKeyPresent: !!LEMON_SQUEEZY_API_KEY,
+            storeId,
+            variantId,
+            customDataCount: checkoutCustomArray.length
+          }
         }),
         { 
           status: response.status,
@@ -139,7 +168,7 @@ serve(async (req) => {
     try {
       result = JSON.parse(responseText);
     } catch (parseError) {
-      console.error('Failed to parse Lemon Squeezy response:', parseError);
+      logStep('ERROR: Failed to parse Lemon Squeezy response', parseError);
       return new Response(
         JSON.stringify({ error: 'Invalid response from LemonSqueezy' }),
         { 
@@ -152,10 +181,10 @@ serve(async (req) => {
       );
     }
 
-    console.log('Parsed LemonSqueezy result:', JSON.stringify(result, null, 2));
+    logStep('Parsed LemonSqueezy result', result);
 
     if (!result.data?.attributes?.url) {
-      console.error('No checkout URL in response:', result);
+      logStep('ERROR: No checkout URL in response', result);
       return new Response(
         JSON.stringify({ error: 'No checkout URL received from LemonSqueezy' }),
         { 
@@ -167,6 +196,11 @@ serve(async (req) => {
         }
       );
     }
+
+    logStep('Checkout created successfully', { 
+      checkoutId: result.data.id, 
+      url: result.data.attributes.url 
+    });
 
     return new Response(
       JSON.stringify({
@@ -182,12 +216,16 @@ serve(async (req) => {
     );
 
   } catch (error) {
-    console.error('Error creating checkout:', error);
+    logStep('ERROR: Unexpected error in create-checkout', { 
+      message: error.message, 
+      stack: error.stack 
+    });
     
     return new Response(
       JSON.stringify({ 
         error: error.message || 'Failed to create checkout',
-        stack: error.stack 
+        stack: error.stack,
+        timestamp: new Date().toISOString()
       }),
       { 
         status: 500,
