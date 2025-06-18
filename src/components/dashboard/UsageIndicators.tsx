@@ -40,12 +40,12 @@ export const UsageIndicators: React.FC<UsageIndicatorsProps> = ({
               <span className="text-2xl font-bold">
                 {usage.projects.current} of {usage.projects.max}
               </span>
-              {usage.shouldShowUpgrade && (
+              {usage.projects.percentage >= 100 && (
                 <Button
                   size="sm"
                   variant="outline"
                   onClick={() => navigate('/plans')}
-                  className="text-xs"
+                  className="bg-gradient-to-r from-brand-yellow to-yellow-500 text-brand-black border-0 hover:from-yellow-400 hover:to-yellow-600 hover:scale-105 transition-all duration-200 shadow-lg hover:shadow-xl font-semibold text-xs"
                 >
                   <TrendingUp className="h-3 w-3 mr-1" />
                   Upgrade
