@@ -59,6 +59,24 @@ export const useCreateProjectForm = (templateData?: any) => {
         return;
       }
 
+      // Check project limits before creating
+      const { data: limitCheck, error: limitError } = await supabase
+        .rpc('check_user_limits', {
+          _user_id: user.id,
+          _action: 'project'
+        });
+
+      if (limitError) {
+        console.error('Error checking limits:', limitError);
+        toast.error('Failed to check project limits');
+        return;
+      }
+
+      if (!limitCheck) {
+        toast.error('Project limit reached. Please upgrade your plan to create more projects.');
+        return;
+      }
+
       // Create the project
       const { data: project, error: projectError } = await supabase
         .from('projects')
@@ -87,6 +105,17 @@ export const useCreateProjectForm = (templateData?: any) => {
         .insert(milestoneInserts);
 
       if (milestonesError) throw milestonesError;
+
+      // Update project count
+      const { error: updateError } = await supabase
+        .rpc('update_project_count', {
+          _user_id: user.id,
+          _count_change: 1
+        });
+
+      if (updateError) {
+        console.error('Error updating project count:', updateError);
+      }
 
       toast.success('Project created successfully!');
       navigate('/dashboard');

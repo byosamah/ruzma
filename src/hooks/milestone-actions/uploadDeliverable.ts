@@ -17,6 +17,25 @@ export const uploadDeliverableAction = async (
   try {
     console.log('Uploading deliverable for milestone:', milestoneId, 'File:', file.name, 'Size:', file.size);
 
+    // Check storage limits before uploading
+    const { data: limitCheck, error: limitError } = await supabase
+      .rpc('check_user_limits', {
+        _user_id: user.id,
+        _action: 'storage',
+        _size: file.size
+      });
+
+    if (limitError) {
+      console.error('Error checking storage limits:', limitError);
+      toast.error('Failed to check storage limits');
+      return false;
+    }
+
+    if (!limitCheck) {
+      toast.error('Storage limit reached. Please upgrade your plan or delete some files to free up space.');
+      return false;
+    }
+
     const fileName = `${Date.now()}-${file.name}`;
     const filePath = `${user.id}/${milestoneId}/${fileName}`;
 
@@ -55,6 +74,17 @@ export const uploadDeliverableAction = async (
       toast.error('Failed to update milestone in database');
       await supabase.storage.from('deliverables').remove([filePath]);
       return false;
+    }
+
+    // Update storage usage
+    const { error: storageUpdateError } = await supabase
+      .rpc('update_user_storage', {
+        _user_id: user.id,
+        _size_change: file.size
+      });
+
+    if (storageUpdateError) {
+      console.error('Error updating storage usage:', storageUpdateError);
     }
     
     toast.success('Deliverable uploaded successfully');

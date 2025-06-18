@@ -1,3 +1,4 @@
+
 import { useState } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
@@ -12,6 +13,24 @@ export function useProjectActions(user: User | null, fetchProjects: () => Promis
       return null;
     }
     try {
+      // Check project limits before creating
+      const { data: limitCheck, error: limitError } = await supabase
+        .rpc('check_user_limits', {
+          _user_id: user.id,
+          _action: 'project'
+        });
+
+      if (limitError) {
+        console.error('Error checking limits:', limitError);
+        toast.error('Failed to check project limits');
+        return null;
+      }
+
+      if (!limitCheck) {
+        toast.error('Project limit reached. Please upgrade your plan to create more projects.');
+        return null;
+      }
+
       const { data: project, error: projectError } = await supabase
         .from('projects')
         .insert({
@@ -45,6 +64,17 @@ export function useProjectActions(user: User | null, fetchProjects: () => Promis
           console.error('Error creating milestones:', milestonesError);
           toast.error('Project created but failed to create milestones');
         }
+      }
+
+      // Update project count
+      const { error: updateError } = await supabase
+        .rpc('update_project_count', {
+          _user_id: user.id,
+          _count_change: 1
+        });
+
+      if (updateError) {
+        console.error('Error updating project count:', updateError);
       }
 
       toast.success('Project created successfully');
@@ -149,6 +179,17 @@ export function useProjectActions(user: User | null, fetchProjects: () => Promis
         console.error('Error deleting project:', error);
         toast.error('Failed to delete project');
         return false;
+      }
+
+      // Update project count
+      const { error: updateError } = await supabase
+        .rpc('update_project_count', {
+          _user_id: user.id,
+          _count_change: -1
+        });
+
+      if (updateError) {
+        console.error('Error updating project count:', updateError);
       }
 
       toast.success('Project deleted successfully');

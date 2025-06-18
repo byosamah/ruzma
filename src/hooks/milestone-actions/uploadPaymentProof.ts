@@ -11,6 +11,32 @@ export const uploadPaymentProofAction = async (milestoneId: string, file: File) 
       fileType: file.type
     });
 
+    // Get current user to check storage limits
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) {
+      toast.error('You must be logged in to upload payment proof');
+      return false;
+    }
+
+    // Check storage limits before uploading
+    const { data: limitCheck, error: limitError } = await supabase
+      .rpc('check_user_limits', {
+        _user_id: user.id,
+        _action: 'storage',
+        _size: file.size
+      });
+
+    if (limitError) {
+      console.error('Error checking storage limits:', limitError);
+      toast.error('Failed to check storage limits');
+      return false;
+    }
+
+    if (!limitCheck) {
+      toast.error('Storage limit reached. Please upgrade your plan or delete some files to free up space.');
+      return false;
+    }
+
     const fileExt = file.name.split('.').pop();
     const fileName = `${milestoneId}-${Date.now()}.${fileExt}`;
     const filePath = `${milestoneId}/${fileName}`;
@@ -53,6 +79,17 @@ export const uploadPaymentProofAction = async (milestoneId: string, file: File) 
       await supabase.storage.from('payment-proofs').remove([filePath]);
       toast.error(edgeData?.error || edgeError?.message || 'Payment proof submission failed.');
       return false;
+    }
+
+    // Update storage usage
+    const { error: storageUpdateError } = await supabase
+      .rpc('update_user_storage', {
+        _user_id: user.id,
+        _size_change: file.size
+      });
+
+    if (storageUpdateError) {
+      console.error('Error updating storage usage:', storageUpdateError);
     }
 
     toast.success('Payment proof submitted successfully!');

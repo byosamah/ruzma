@@ -1,44 +1,60 @@
 
-import React from "react";
-import { Button } from "@/components/ui/button";
-import { Plus, FileText } from "lucide-react";
-import { useNavigate } from "react-router-dom";
-import { useT } from "@/lib/i18n";
+import React from 'react';
+import { Button } from '@/components/ui/button';
+import { Plus } from 'lucide-react';
+import { useT } from '@/lib/i18n';
+import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 
 interface DashboardHeaderProps {
   displayName: string;
   onNewProject: () => void;
+  canCreateProject: boolean;
 }
 
 const DashboardHeader: React.FC<DashboardHeaderProps> = ({
   displayName,
   onNewProject,
+  canCreateProject,
 }) => {
   const t = useT();
-  const navigate = useNavigate();
+
+  const NewProjectButton = () => {
+    const button = (
+      <Button 
+        onClick={onNewProject} 
+        disabled={!canCreateProject}
+        className={!canCreateProject ? 'opacity-50 cursor-not-allowed' : ''}
+      >
+        <Plus className="w-4 h-4 mr-2" />
+        {t('newProject')}
+      </Button>
+    );
+
+    if (!canCreateProject) {
+      return (
+        <Tooltip>
+          <TooltipTrigger asChild>
+            {button}
+          </TooltipTrigger>
+          <TooltipContent>
+            <p>Project limit reached. Upgrade your plan to create more projects.</p>
+          </TooltipContent>
+        </Tooltip>
+      );
+    }
+
+    return button;
+  };
 
   return (
-    <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+    <div className="flex justify-between items-center mb-8">
       <div>
         <h1 className="text-3xl font-bold text-slate-800">
-          {t("welcomeBack", { name: displayName })}
+          {t('welcomeBack')}, {displayName}!
         </h1>
-        <p className="text-slate-600 mt-1">{t("manageProjects")}</p>
+        <p className="text-slate-600 mt-1">{t('dashboardSubtitle')}</p>
       </div>
-      <div className="flex gap-3">
-        <Button 
-          onClick={() => navigate("/templates")} 
-          variant="outline"
-          className="flex items-center"
-        >
-          <FileText className="w-4 h-4 mr-2" />
-          Templates
-        </Button>
-        <Button onClick={onNewProject} className="flex items-center">
-          <Plus className="w-4 h-4 mr-2" />
-          {t("newProject")}
-        </Button>
-      </div>
+      <NewProjectButton />
     </div>
   );
 };

@@ -8,6 +8,7 @@ import DashboardAnalytics from '@/components/dashboard/DashboardAnalytics';
 import { UsageIndicators } from '@/components/dashboard/UsageIndicators';
 import { useDashboard } from '@/hooks/useDashboard';
 import { useDashboardAnalytics } from '@/hooks/useDashboardAnalytics';
+import { useUsageTracking } from '@/hooks/useUsageTracking';
 import { useNavigate } from 'react-router-dom';
 
 const Dashboard = () => {
@@ -26,9 +27,12 @@ const Dashboard = () => {
   } = useDashboard();
 
   const analyticsData = useDashboardAnalytics(projects);
+  const usage = useUsageTracking(profile, projects);
 
   const handleNewProject = () => {
-    navigate('/create-project');
+    if (usage.canCreateProject) {
+      navigate('/create-project');
+    }
   };
 
   if (loading) {
@@ -44,7 +48,11 @@ const Dashboard = () => {
   return (
     <Layout user={user} onSignOut={handleSignOut}>
       <div className="space-y-8">
-        <DashboardHeader displayName={displayName} onNewProject={handleNewProject} />
+        <DashboardHeader 
+          displayName={displayName} 
+          onNewProject={handleNewProject}
+          canCreateProject={usage.canCreateProject}
+        />
         
         {/* Usage Indicators */}
         <UsageIndicators userProfile={profile} projects={projects} />
@@ -66,6 +74,7 @@ const Dashboard = () => {
               onDelete={handleDeleteProject}
               onNewProject={handleNewProject}
               currency={userCurrency.currency}
+              canCreateProject={usage.canCreateProject}
             />
           </div>
           
