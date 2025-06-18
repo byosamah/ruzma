@@ -85,7 +85,7 @@ const MilestonesList = () => {
                 name={`milestones.${index}.price`}
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>{t('priceLabel')} ({currency})</FormLabel>
+                    <FormLabel>{t('priceLabel')} {currency}</FormLabel>
                     <FormControl>
                       <Input
                         type="number"
