@@ -83,6 +83,12 @@ export const useSubscription = (user: User | null) => {
             },
           },
           relationships: {
+            store: {
+              data: {
+                type: 'stores',
+                id: '156524',
+              },
+            },
             variant: {
               data: {
                 type: 'variants',
