@@ -74,6 +74,7 @@ export const useSubscription = (user: User | null) => {
               custom: {
                 user_id: user.id,
               },
+              webhook_url: 'https://***REMOVED***.supabase.co/functions/v1/lemon-webhook',
             },
             product_options: {
               enabled_variants: [697231],
@@ -82,12 +83,6 @@ export const useSubscription = (user: User | null) => {
             },
           },
           relationships: {
-            store: {
-              data: {
-                type: 'stores',
-                id: '94d59cef-dbb8-4ea5-b178-d2540fcd6919',
-              },
-            },
             variant: {
               data: {
                 type: 'variants',
