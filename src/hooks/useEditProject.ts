@@ -3,6 +3,7 @@ import { useProjects } from '@/hooks/useProjects';
 import { useEditProjectAuth } from './editProject/useEditProjectAuth';
 import { useEditProjectData } from './editProject/useEditProjectData';
 import { useEditProjectActions } from './editProject/useEditProjectActions';
+import { MilestoneFormData } from '@/components/EditProject/types';
 
 export const useEditProject = (projectId: string | undefined) => {
   const { user, profile, loading, handleSignOut } = useEditProjectAuth(projectId);
@@ -27,7 +28,7 @@ export const useEditProject = (projectId: string | undefined) => {
   } = useEditProjectActions(updateProject);
 
   // Create wrapper functions to pass the current state
-  const wrappedHandleMilestoneChange = (index: number, field: keyof any, value: string | number) => {
+  const wrappedHandleMilestoneChange = (index: number, field: keyof MilestoneFormData, value: string | number) => {
     handleMilestoneChange(milestones, setMilestones, index, field, value);
   };
 
