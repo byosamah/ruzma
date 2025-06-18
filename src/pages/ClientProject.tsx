@@ -12,6 +12,11 @@ import ProjectFooter from "@/components/ProjectClient/ProjectFooter";
 
 const ClientProject = () => {
   const { token } = useParams<{ token: string }>();
+  
+  // Add debugging
+  console.log('ClientProject: token from params:', token);
+  console.log('ClientProject: current pathname:', window.location.pathname);
+  
   const {
     project,
     isLoading,
@@ -26,6 +31,7 @@ const ClientProject = () => {
   }
 
   if (error || !project) {
+    console.log('ClientProject: error or no project:', { error, project });
     return <ClientProjectError error={error} />;
   }
 

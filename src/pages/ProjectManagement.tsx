@@ -1,4 +1,3 @@
-
 import React from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import Layout from "@/components/Layout";
@@ -10,7 +9,7 @@ import ProjectHeader from "@/components/ProjectManagement/ProjectHeader";
 import MilestoneList from "@/components/ProjectManagement/MilestoneList";
 
 const ProjectManagement: React.FC = () => {
-  const { projectId } = useParams<{ projectId: string }>();
+  const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const t = useT();
 
@@ -25,14 +24,14 @@ const ProjectManagement: React.FC = () => {
     uploadDeliverable,
     downloadDeliverable,
     updateMilestoneWatermark,
-  } = useProjectManagement(projectId);
+  } = useProjectManagement(id);
 
   const handleBackClick = () => {
     navigate("/dashboard");
   };
 
   const handleEditClick = () => {
-    navigate(`/edit-project/${projectId}`);
+    navigate(`/edit-project/${id}`);
   };
 
   if (loading) {

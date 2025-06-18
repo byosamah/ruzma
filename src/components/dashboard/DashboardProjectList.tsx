@@ -1,5 +1,6 @@
 
 import React from "react";
+import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import ProjectCard from "@/components/ProjectCard";
@@ -24,10 +25,11 @@ const DashboardProjectList: React.FC<DashboardProjectListProps> = ({
   currency,
 }) => {
   const t = useT();
+  const navigate = useNavigate();
   
   const handleViewProject = (projectId: string) => {
-    // Navigate to correct project management route
-    window.location.href = `/project/${projectId}`;
+    // Use React Router navigation instead of window.location.href
+    navigate(`/project/${projectId}`);
   };
 
   return (
