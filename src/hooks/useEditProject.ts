@@ -1,144 +1,46 @@
 
-import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { supabase } from '@/integrations/supabase/client';
-import { User } from '@supabase/supabase-js';
-import { useProjects, DatabaseProject } from '@/hooks/useProjects';
-import { MilestoneFormData } from '@/components/EditProject/types';
-import { toast } from 'sonner';
+import { useProjects } from '@/hooks/useProjects';
+import { useEditProjectAuth } from './editProject/useEditProjectAuth';
+import { useEditProjectData } from './editProject/useEditProjectData';
+import { useEditProjectActions } from './editProject/useEditProjectActions';
 
 export const useEditProject = (projectId: string | undefined) => {
-  const navigate = useNavigate();
-  const [user, setUser] = useState<User | null>(null);
-  const [profile, setProfile] = useState<any>(null);
-  const [project, setProject] = useState<DatabaseProject | null>(null);
-  const [name, setName] = useState('');
-  const [brief, setBrief] = useState('');
-  const [milestones, setMilestones] = useState<MilestoneFormData[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [updating, setUpdating] = useState(false);
-
+  const { user, profile, loading, handleSignOut } = useEditProjectAuth(projectId);
   const { projects, updateProject } = useProjects(user);
+  
+  const {
+    project,
+    name,
+    brief,
+    milestones,
+    setName,
+    setBrief,
+    setMilestones,
+  } = useEditProjectData(projects, projectId);
 
-  useEffect(() => {
-    const checkAuthAndLoadProject = async () => {
-      setLoading(true);
-      
-      const { data: { user }, error: userError } = await supabase.auth.getUser();
-      
-      if (userError || !user) {
-        console.log('No user found, redirecting to login');
-        navigate('/login');
-        return;
-      }
+  const {
+    updating,
+    handleMilestoneChange,
+    handleAddMilestone,
+    handleDeleteMilestone,
+    handleSubmit,
+  } = useEditProjectActions(updateProject);
 
-      setUser(user);
-      
-      const { data: profileData } = await supabase
-        .from('profiles')
-        .select('*')
-        .eq('id', user.id)
-        .maybeSingle();
-      
-      setProfile(profileData);
-      setLoading(false);
-    };
-
-    checkAuthAndLoadProject();
-  }, [projectId, navigate]);
-
-  useEffect(() => {
-    if (projects.length > 0 && projectId) {
-      const projectToEdit = projects.find(p => p.id === projectId);
-      if (projectToEdit) {
-        setProject(projectToEdit);
-        setName(projectToEdit.name);
-        setBrief(projectToEdit.brief);
-        setMilestones(projectToEdit.milestones.map(m => ({
-          id: m.id,
-          title: m.title,
-          description: m.description,
-          price: m.price,
-          status: m.status,
-        })));
-      }
-    }
-  }, [projects, projectId]);
-
-  const handleSignOut = async () => {
-    await supabase.auth.signOut();
-    navigate('/');
+  // Create wrapper functions to pass the current state
+  const wrappedHandleMilestoneChange = (index: number, field: keyof any, value: string | number) => {
+    handleMilestoneChange(milestones, setMilestones, index, field, value);
   };
 
-  const handleMilestoneChange = (index: number, field: keyof MilestoneFormData, value: string | number) => {
-    const newMilestones = [...milestones];
-    const milestoneToUpdate = { ...newMilestones[index] };
-
-    if (field === 'price') {
-      milestoneToUpdate[field] = parseFloat(value as string) || 0;
-    } else {
-      (milestoneToUpdate as any)[field] = value;
-    }
-    newMilestones[index] = milestoneToUpdate;
-    setMilestones(newMilestones);
+  const wrappedHandleAddMilestone = () => {
+    handleAddMilestone(milestones, setMilestones);
   };
 
-  const handleAddMilestone = () => {
-    setMilestones([
-      ...milestones,
-      {
-        title: '',
-        description: '',
-        price: 0,
-        status: 'pending',
-      },
-    ]);
+  const wrappedHandleDeleteMilestone = (index: number) => {
+    handleDeleteMilestone(milestones, setMilestones, index);
   };
 
-  const handleDeleteMilestone = (index: number) => {
-    setMilestones(milestones.filter((_, i) => i !== index));
-  };
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!project || !projectId) return;
-
-    // Validate milestones
-    for (const milestone of milestones) {
-      if (!milestone.title.trim() || !milestone.description.trim()) {
-        toast.error('Milestone title and description cannot be empty.');
-        return;
-      }
-      if (milestone.price <= 0) {
-        toast.error('Milestone price must be greater than 0.');
-        return;
-      }
-    }
-
-    if (milestones.length === 0) {
-      toast.error('At least one milestone is required.');
-      return;
-    }
-
-    setUpdating(true);
-    
-    try {
-      const success = await updateProject(projectId, {
-        name,
-        brief,
-        milestones,
-      });
-
-      if (success) {
-        toast.success('Project updated successfully!');
-        navigate('/dashboard');
-      }
-    } catch (error) {
-      console.error('Error updating project:', error);
-      toast.error('Failed to update project. Please try again.');
-    } finally {
-      setUpdating(false);
-    }
+  const wrappedHandleSubmit = (e: React.FormEvent) => {
+    handleSubmit(e, projectId, name, brief, milestones);
   };
 
   return {
@@ -151,10 +53,10 @@ export const useEditProject = (projectId: string | undefined) => {
     loading,
     updating,
     handleSignOut,
-    handleMilestoneChange,
-    handleAddMilestone,
-    handleDeleteMilestone,
-    handleSubmit,
+    handleMilestoneChange: wrappedHandleMilestoneChange,
+    handleAddMilestone: wrappedHandleAddMilestone,
+    handleDeleteMilestone: wrappedHandleDeleteMilestone,
+    handleSubmit: wrappedHandleSubmit,
     setName,
     setBrief,
   };
