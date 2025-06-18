@@ -1,6 +1,6 @@
-
 import { toast } from 'sonner';
 import { sendClientLink } from '@/services/clientLinkService';
+import { supabase } from '@/integrations/supabase/client';
 
 export const useProjectCardActions = (
   project: any,
@@ -32,21 +32,29 @@ export const useProjectCardActions = (
     try {
       toast.loading('Sending client link...');
       
-      // Get freelancer name from user profile or use default
-      const freelancerName = 'Your freelancer'; // This should ideally come from user profile
+      // Get current user
+      const { data: { user } } = await supabase.auth.getUser();
       
       await sendClientLink({
         clientEmail: project.client_email,
         projectName: project.name,
-        freelancerName,
+        freelancerName: 'Your freelancer', // fallback name
         clientToken: project.client_access_token,
+        userId: user?.id,
       });
 
       toast.dismiss();
       toast.success('Client link sent successfully!');
-    } catch (error) {
+    } catch (error: any) {
       toast.dismiss();
-      toast.error('Failed to send client link. Please try again.');
+      
+      // Handle domain verification error specifically
+      if (error.message && error.message.includes('Domain verification required')) {
+        toast.error('Email domain needs verification. Please contact support.');
+      } else {
+        toast.error('Failed to send client link. Please try again.');
+      }
+      
       console.error('Error sending client link:', error);
     }
   };

@@ -6,6 +6,7 @@ interface SendClientLinkParams {
   projectName: string;
   freelancerName: string;
   clientToken: string;
+  userId?: string;
 }
 
 export const sendClientLink = async (params: SendClientLinkParams) => {

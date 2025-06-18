@@ -1,8 +1,13 @@
 
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { Resend } from "npm:resend@2.0.0";
+import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.50.0';
 
 const resend = new Resend(Deno.env.get("RESEND_API_KEY"));
+const supabase = createClient(
+  Deno.env.get('SUPABASE_URL') ?? '',
+  Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
+);
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -15,6 +20,7 @@ interface SendClientLinkRequest {
   projectName: string;
   freelancerName: string;
   clientToken: string;
+  userId?: string;
 }
 
 const handler = async (req: Request): Promise<Response> => {
@@ -24,9 +30,23 @@ const handler = async (req: Request): Promise<Response> => {
   }
 
   try {
-    const { clientEmail, projectName, freelancerName, clientToken }: SendClientLinkRequest = await req.json();
+    const { clientEmail, projectName, freelancerName, clientToken, userId }: SendClientLinkRequest = await req.json();
 
     console.log('Sending client link email:', { clientEmail, projectName, freelancerName });
+
+    // Get freelancer name from profile if userId is provided
+    let actualFreelancerName = freelancerName;
+    if (userId) {
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('full_name')
+        .eq('id', userId)
+        .single();
+      
+      if (profile?.full_name) {
+        actualFreelancerName = profile.full_name;
+      }
+    }
 
     const clientUrl = `${Deno.env.get('SUPABASE_URL')?.replace('/rest/v1', '')}/client/project/${clientToken}`;
 
@@ -43,7 +63,7 @@ const handler = async (req: Request): Promise<Response> => {
           </p>
           
           <p style="color: #555; line-height: 1.6; margin-bottom: 20px;">
-            <strong>${freelancerName}</strong> has created a project dashboard for you to easily track the work progress and receive deliverables for "<strong>${projectName}</strong>".
+            <strong>${actualFreelancerName}</strong> has created a project dashboard for you to easily track the work progress and receive deliverables for "<strong>${projectName}</strong>".
           </p>
           
           <p style="color: #555; line-height: 1.6; margin-bottom: 30px;">
@@ -69,7 +89,7 @@ const handler = async (req: Request): Promise<Response> => {
           </p>
           
           <p style="color: #555; line-height: 1.6; margin-bottom: 20px;">
-            If you have any questions about your project, please don't hesitate to contact ${freelancerName} directly.
+            If you have any questions about your project, please don't hesitate to contact ${actualFreelancerName} directly.
           </p>
           
           <hr style="border: none; border-top: 1px solid #eee; margin: 30px 0;">
@@ -93,6 +113,21 @@ const handler = async (req: Request): Promise<Response> => {
     });
   } catch (error: any) {
     console.error("Error in send-client-link function:", error);
+    
+    // Handle Resend domain verification error specifically
+    if (error.message && error.message.includes('verify a domain')) {
+      return new Response(
+        JSON.stringify({ 
+          error: 'Domain verification required. Please verify ruzma.co domain in Resend settings.',
+          details: error.message 
+        }),
+        {
+          status: 403,
+          headers: { "Content-Type": "application/json", ...corsHeaders },
+        }
+      );
+    }
+    
     return new Response(
       JSON.stringify({ error: error.message }),
       {
