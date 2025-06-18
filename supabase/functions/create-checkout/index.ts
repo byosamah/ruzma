@@ -68,8 +68,8 @@ serve(async (req) => {
 
     logStep('Creating checkout with', { storeId, variantId, customData });
 
-    // Lemon Squeezy checkout payload format - simplified without custom data first
-    const checkoutData = {
+    // Create the base checkout payload
+    const checkoutData: any = {
       data: {
         type: 'checkouts',
         attributes: {
@@ -103,20 +103,16 @@ serve(async (req) => {
       },
     };
 
-    // Add custom data only if provided, in the correct array format
-    if (customData) {
-      const customArray: Array<{ key: string; value: string }> = [];
-      Object.entries(customData).forEach(([key, value]) => {
-        customArray.push({
-          key: key,
-          value: String(value)
-        });
-      });
+    // Only add checkout_data if we have custom data
+    if (customData && Object.keys(customData).length > 0) {
+      // Format as key-value objects array
+      const checkoutDataArray = Object.entries(customData).map(([key, value]) => ({
+        key: key,
+        value: String(value)
+      }));
       
-      if (customArray.length > 0) {
-        checkoutData.data.attributes.checkout_data = customArray;
-        logStep('Added custom data to checkout', customArray);
-      }
+      checkoutData.data.attributes.checkout_data = checkoutDataArray;
+      logStep('Added custom data to checkout', checkoutDataArray);
     }
 
     logStep("Sending Lemon Squeezy payload", checkoutData);
