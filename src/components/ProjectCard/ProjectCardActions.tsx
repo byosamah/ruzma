@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { Button } from '@/components/ui/button';
 import { Edit, Eye, Trash2, Copy, Link } from 'lucide-react';
@@ -26,7 +27,6 @@ const ProjectCardActions: React.FC<ProjectCardActionsProps> = ({
       <div className="flex gap-2">
         <Button variant="outline" size="sm" onClick={onEditClick} className="flex items-center gap-1">
           <Edit className="w-4 h-4" />
-          Edit
         </Button>
         <Button variant="outline" size="sm" onClick={onViewClick} className="flex items-center gap-1">
           <Eye className="w-4 h-4" />
