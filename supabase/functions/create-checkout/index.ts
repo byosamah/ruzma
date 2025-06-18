@@ -68,21 +68,7 @@ serve(async (req) => {
 
     logStep('Creating checkout with', { storeId, variantId, customData });
 
-    // Format custom data as an array of key-value objects for Lemon Squeezy
-    const checkoutCustomArray: Array<{ key: string; value: string }> = [];
-    
-    if (customData) {
-      Object.entries(customData).forEach(([key, value]) => {
-        checkoutCustomArray.push({
-          key: key,
-          value: String(value)
-        });
-      });
-    }
-
-    logStep('Formatted custom fields as array', checkoutCustomArray);
-
-    // Lemon Squeezy checkout payload format
+    // Lemon Squeezy checkout payload format - simplified without custom data first
     const checkoutData = {
       data: {
         type: 'checkouts',
@@ -96,7 +82,8 @@ serve(async (req) => {
             skip_trial: false,
             subscription_preview: true,
           },
-          checkout_data: checkoutCustomArray, // Array format as required by Lemon Squeezy
+          expires_at: null,
+          preview: true,
           test_mode: Deno.env.get('ENVIRONMENT') !== 'production',
         },
         relationships: {
@@ -115,6 +102,22 @@ serve(async (req) => {
         },
       },
     };
+
+    // Add custom data only if provided, in the correct array format
+    if (customData) {
+      const customArray: Array<{ key: string; value: string }> = [];
+      Object.entries(customData).forEach(([key, value]) => {
+        customArray.push({
+          key: key,
+          value: String(value)
+        });
+      });
+      
+      if (customArray.length > 0) {
+        checkoutData.data.attributes.checkout_data = customArray;
+        logStep('Added custom data to checkout', customArray);
+      }
+    }
 
     logStep("Sending Lemon Squeezy payload", checkoutData);
 
@@ -151,7 +154,7 @@ serve(async (req) => {
             apiKeyPresent: !!LEMON_SQUEEZY_API_KEY,
             storeId,
             variantId,
-            customDataCount: checkoutCustomArray.length
+            hasCustomData: !!customData
           }
         }),
         { 
