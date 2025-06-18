@@ -36,6 +36,7 @@ const VerticalProjectCard: React.FC<ProjectCardProps> = ({
                 onDeleteClick={onDeleteClick ? actions.handleDeleteClick : undefined}
                 onCopyClientLink={actions.handleCopyClientLink}
                 onViewClientPage={actions.handleViewClientPage}
+                onSendClientLink={actions.handleSendClientLink}
                 variant="header"
               />
             </div>
@@ -71,6 +72,7 @@ const VerticalProjectCard: React.FC<ProjectCardProps> = ({
               onDeleteClick={onDeleteClick ? actions.handleDeleteClick : undefined}
               onCopyClientLink={actions.handleCopyClientLink}
               onViewClientPage={actions.handleViewClientPage}
+              onSendClientLink={actions.handleSendClientLink}
               variant="footer"
             />
           </div>

@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { Button } from '@/components/ui/button';
-import { Edit, Eye, Trash2, Copy, Link } from 'lucide-react';
+import { Edit, Eye, Trash2, Copy, Link, Mail } from 'lucide-react';
 
 interface ProjectCardActionsProps {
   onEditClick: (e: React.MouseEvent) => void;
@@ -9,6 +9,7 @@ interface ProjectCardActionsProps {
   onDeleteClick?: (e: React.MouseEvent) => void;
   onCopyClientLink: (e: React.MouseEvent) => void;
   onViewClientPage: (e: React.MouseEvent) => void;
+  onSendClientLink?: (e: React.MouseEvent) => void;
   showClientActions?: boolean;
   variant?: 'header' | 'footer';
 }
@@ -19,6 +20,7 @@ const ProjectCardActions: React.FC<ProjectCardActionsProps> = ({
   onDeleteClick,
   onCopyClientLink,
   onViewClientPage,
+  onSendClientLink,
   showClientActions = false,
   variant = 'header'
 }) => {
@@ -51,6 +53,12 @@ const ProjectCardActions: React.FC<ProjectCardActionsProps> = ({
           <Link className="w-4 h-4" />
           View Client Page
         </Button>
+        {onSendClientLink && (
+          <Button variant="outline" size="sm" onClick={onSendClientLink} className="flex items-center gap-1 flex-1">
+            <Mail className="w-4 h-4" />
+            Send Link
+          </Button>
+        )}
       </div>
     );
   }
@@ -65,6 +73,12 @@ const ProjectCardActions: React.FC<ProjectCardActionsProps> = ({
         <Link className="w-4 h-4" />
         View Client Page
       </Button>
+      {onSendClientLink && (
+        <Button variant="outline" size="sm" onClick={onSendClientLink} className="flex items-center gap-1">
+          <Mail className="w-4 h-4" />
+          Send to Client
+        </Button>
+      )}
     </div>
   );
 };
