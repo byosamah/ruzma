@@ -19,7 +19,11 @@ serve(async (req) => {
     const supabase = createClient(supabaseUrl, supabaseServiceKey)
 
     const body = await req.json()
-    console.log('Webhook received:', JSON.stringify(body, null, 2))
+    console.log('=== WEBHOOK RECEIVED ===')
+    console.log('Event:', body.meta?.event_name)
+    console.log('User ID:', body.meta?.custom_data?.user_id)
+    console.log('Variant ID:', body.data?.attributes?.variant_id)
+    console.log('Status:', body.data?.attributes?.status)
 
     const { meta, data } = body
     const eventName = meta?.event_name
@@ -37,7 +41,7 @@ serve(async (req) => {
       const customData = meta?.custom_data
       
       if (!customData?.user_id) {
-        console.log('No user_id in meta custom data')
+        console.log('❌ ERROR: No user_id in meta custom data')
         return new Response('OK', { status: 200, headers: corsHeaders })
       }
 
@@ -45,25 +49,29 @@ serve(async (req) => {
       const status = subscription.attributes?.status
       const variantId = subscription.attributes?.variant_id?.toString()
 
-      console.log('Processing subscription event:', {
-        eventName,
-        userId,
-        status,
-        variantId
-      })
+      console.log('=== PROCESSING SUBSCRIPTION ===')
+      console.log('Event:', eventName)
+      console.log('User ID:', userId)
+      console.log('Status:', status)
+      console.log('Variant ID:', variantId)
 
-      // Determine user type based on variant ID
+      // Determine user type based on variant ID with enhanced logging
       let userType = 'free'
       if (variantId === '697231') {
         userType = 'plus'
+        console.log('✅ DETECTED: Plus plan subscription')
       } else if (variantId === '697237') {
         userType = 'pro'
+        console.log('✅ DETECTED: Pro plan subscription')
+      } else {
+        console.log('⚠️ WARNING: Unknown variant ID:', variantId, '- defaulting to free')
       }
 
-      console.log('Determined user type:', userType, 'for variant:', variantId)
+      console.log('Final user type determined:', userType)
 
       // For subscription_updated events, handle potential cancellation of old subscriptions
       if (eventName === 'subscription_updated') {
+        console.log('=== CANCELLING OLD SUBSCRIPTIONS ===')
         // Update all existing subscriptions for this user to cancelled (except the current one)
         const { error: cancelOldError } = await supabase
           .from('subscriptions')
@@ -77,9 +85,9 @@ serve(async (req) => {
           .in('status', ['active', 'on_trial'])
 
         if (cancelOldError) {
-          console.error('Error cancelling old subscriptions:', cancelOldError)
+          console.error('❌ Error cancelling old subscriptions:', cancelOldError)
         } else {
-          console.log('Cancelled old subscriptions for user:', userId)
+          console.log('✅ Successfully cancelled old subscriptions for user:', userId)
         }
       }
 
@@ -93,6 +101,9 @@ serve(async (req) => {
         expires_at: subscription.attributes?.renews_at ? new Date(subscription.attributes.renews_at) : null,
         updated_at: new Date().toISOString()
       }
+
+      console.log('=== UPDATING SUBSCRIPTION RECORD ===')
+      console.log('Subscription data:', subscriptionData)
 
       // Try insert first, then update if duplicate
       const { error: insertError } = await supabase
@@ -112,15 +123,15 @@ serve(async (req) => {
             .eq('lemon_squeezy_id', subscription.id)
 
           if (updateError) {
-            console.error('Error updating existing subscription:', updateError)
+            console.error('❌ Error updating existing subscription:', updateError)
           } else {
-            console.log('Existing subscription record updated successfully')
+            console.log('✅ Existing subscription record updated successfully')
           }
         } else {
-          console.error('Error inserting subscription:', insertError)
+          console.error('❌ Error inserting subscription:', insertError)
         }
       } else {
-        console.log('New subscription record created successfully')
+        console.log('✅ New subscription record created successfully')
       }
 
       // Always update user profile with the new subscription status
@@ -131,7 +142,8 @@ serve(async (req) => {
         updated_at: new Date().toISOString()
       }
 
-      console.log('Updating profile with data:', profileData)
+      console.log('=== UPDATING USER PROFILE ===')
+      console.log('Profile data to update:', profileData)
 
       const { error: profileError } = await supabase
         .from('profiles')
@@ -139,8 +151,11 @@ serve(async (req) => {
         .eq('id', userId)
 
       if (profileError) {
-        console.error('Error updating profile:', profileError)
+        console.error('❌ Error updating profile:', profileError)
+        console.error('Profile error details:', JSON.stringify(profileError, null, 2))
+        
         // Try to create profile if it doesn't exist
+        console.log('Attempting to create new profile...')
         const { error: insertProfileError } = await supabase
           .from('profiles')
           .insert({
@@ -149,25 +164,36 @@ serve(async (req) => {
           })
         
         if (insertProfileError) {
-          console.error('Error creating profile:', insertProfileError)
+          console.error('❌ Error creating profile:', insertProfileError)
+          console.error('Insert profile error details:', JSON.stringify(insertProfileError, null, 2))
         } else {
-          console.log('Profile created successfully with user_type:', userType)
+          console.log('✅ Profile created successfully with user_type:', userType)
         }
       } else {
-        console.log(`Successfully updated user ${userId} to ${userType} plan with status ${status}`)
+        console.log(`✅ Successfully updated user ${userId} to ${userType} plan with status ${status}`)
       }
 
       // Double check - verify the profile was updated
+      console.log('=== VERIFYING PROFILE UPDATE ===')
       const { data: verifyProfile, error: verifyError } = await supabase
         .from('profiles')
-        .select('user_type, subscription_status')
+        .select('user_type, subscription_status, subscription_id')
         .eq('id', userId)
         .single()
 
       if (verifyError) {
-        console.error('Error verifying profile update:', verifyError)
+        console.error('❌ Error verifying profile update:', verifyError)
       } else {
-        console.log('Profile verification - user_type:', verifyProfile.user_type, 'status:', verifyProfile.subscription_status)
+        console.log('✅ Profile verification successful:')
+        console.log('- User Type:', verifyProfile.user_type)
+        console.log('- Subscription Status:', verifyProfile.subscription_status)
+        console.log('- Subscription ID:', verifyProfile.subscription_id)
+        
+        if (verifyProfile.user_type === userType) {
+          console.log('🎉 SUCCESS: User type correctly updated to', userType)
+        } else {
+          console.error('⚠️ WARNING: User type mismatch! Expected:', userType, 'Got:', verifyProfile.user_type)
+        }
       }
     }
 
@@ -179,7 +205,9 @@ serve(async (req) => {
       if (customData?.user_id) {
         const userId = customData.user_id
 
-        console.log('Processing subscription cancellation for user:', userId)
+        console.log('=== PROCESSING CANCELLATION ===')
+        console.log('User ID:', userId)
+        console.log('Subscription ID:', subscription.id)
 
         // Update subscription record
         const { error: subError } = await supabase
@@ -192,9 +220,9 @@ serve(async (req) => {
           .eq('lemon_squeezy_id', subscription.id)
 
         if (subError) {
-          console.error('Error updating cancelled subscription:', subError)
+          console.error('❌ Error updating cancelled subscription:', subError)
         } else {
-          console.log('Subscription marked as cancelled')
+          console.log('✅ Subscription marked as cancelled')
         }
 
         // Check if user has any other active subscriptions before downgrading
@@ -205,11 +233,12 @@ serve(async (req) => {
           .eq('status', 'active')
 
         if (activeSubError) {
-          console.error('Error checking for active subscriptions:', activeSubError)
+          console.error('❌ Error checking for active subscriptions:', activeSubError)
         }
 
         // Only downgrade to free if no other active subscriptions
         if (!activeSubscriptions || activeSubscriptions.length === 0) {
+          console.log('No other active subscriptions found, downgrading to free')
           const { error: profileError } = await supabase
             .from('profiles')
             .update({
@@ -220,9 +249,9 @@ serve(async (req) => {
             .eq('id', userId)
 
           if (profileError) {
-            console.error('Error updating profile after cancellation:', profileError)
+            console.error('❌ Error updating profile after cancellation:', profileError)
           } else {
-            console.log(`User ${userId} subscription cancelled - reverted to free plan`)
+            console.log(`✅ User ${userId} subscription cancelled - reverted to free plan`)
           }
         } else {
           console.log(`User ${userId} still has ${activeSubscriptions.length} active subscriptions, not downgrading`)
@@ -230,9 +259,11 @@ serve(async (req) => {
       }
     }
 
+    console.log('=== WEBHOOK PROCESSING COMPLETE ===')
     return new Response('OK', { status: 200, headers: corsHeaders })
   } catch (error) {
-    console.error('Webhook error:', error)
+    console.error('❌ WEBHOOK ERROR:', error)
+    console.error('Error details:', JSON.stringify(error, null, 2))
     return new Response('Internal Server Error', { status: 500, headers: corsHeaders })
   }
 })
