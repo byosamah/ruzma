@@ -26,8 +26,8 @@ export const SUBSCRIPTION_PLANS: SubscriptionPlan[] = [
       'Priority support',
       'Advanced analytics',
     ],
-    storeId: import.meta.env.VITE_LEMON_SQUEEZY_STORE_ID || '',
-    variantId: import.meta.env.VITE_LEMON_SQUEEZY_PLUS_VARIANT_ID || '',
+    storeId: '148628',
+    variantId: '697231',
   },
   {
     id: 'pro',
@@ -41,8 +41,8 @@ export const SUBSCRIPTION_PLANS: SubscriptionPlan[] = [
       'Custom integrations',
       'White-label options',
     ],
-    storeId: import.meta.env.VITE_LEMON_SQUEEZY_STORE_ID || '',
-    variantId: import.meta.env.VITE_LEMON_SQUEEZY_PRO_VARIANT_ID || '',
+    storeId: '148628',
+    variantId: '697237',
   },
 ];
 
@@ -66,6 +66,8 @@ export const useSubscription = () => {
         throw new Error('User not authenticated');
       }
 
+      console.log('Creating checkout for plan:', plan);
+
       // Call our edge function to create the checkout
       const { data, error: functionError } = await supabase.functions.invoke('create-checkout', {
         body: {
@@ -77,6 +79,8 @@ export const useSubscription = () => {
           },
         },
       });
+
+      console.log('Edge function response:', { data, error: functionError });
 
       if (functionError) {
         throw functionError;

@@ -22,14 +22,21 @@ serve(async (req) => {
 
   try {
     if (!LEMON_SQUEEZY_API_KEY) {
+      console.error('LEMON_SQUEEZY_API_KEY is not configured');
       throw new Error('LEMON_SQUEEZY_API_KEY is not configured');
     }
 
-    const { storeId, variantId, customData }: CheckoutRequest = await req.json();
+    const requestBody = await req.json();
+    console.log('Received request body:', JSON.stringify(requestBody, null, 2));
+
+    const { storeId, variantId, customData }: CheckoutRequest = requestBody;
 
     if (!storeId || !variantId) {
+      console.error('Missing required fields:', { storeId, variantId });
       throw new Error('storeId and variantId are required');
     }
+
+    console.log('Creating checkout with:', { storeId, variantId, customData });
 
     const checkoutData = {
       data: {
@@ -55,7 +62,7 @@ serve(async (req) => {
       },
     };
 
-    console.log('Creating checkout with data:', JSON.stringify(checkoutData, null, 2));
+    console.log('Sending checkout data to LemonSqueezy:', JSON.stringify(checkoutData, null, 2));
 
     const response = await fetch('https://api.lemonsqueezy.com/v1/checkouts', {
       method: 'POST',
@@ -72,10 +79,12 @@ serve(async (req) => {
     console.log('LemonSqueezy response:', responseText);
 
     if (!response.ok) {
+      console.error('LemonSqueezy API error:', response.status, responseText);
       throw new Error(`LemonSqueezy API error: ${response.status} - ${responseText}`);
     }
 
     const result = JSON.parse(responseText);
+    console.log('Parsed LemonSqueezy result:', JSON.stringify(result, null, 2));
 
     return new Response(
       JSON.stringify({
