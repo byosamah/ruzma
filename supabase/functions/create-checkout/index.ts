@@ -84,7 +84,7 @@ serve(async (req) => {
       },
     };
 
-    console.log('Sending checkout data to LemonSqueezy:', JSON.stringify(checkoutData, null, 2));
+    console.log("Sending Lemon Squeezy payload:", JSON.stringify(checkoutData, null, 2));
 
     const response = await fetch('https://api.lemonsqueezy.com/v1/checkouts', {
       method: 'POST',
@@ -97,8 +97,7 @@ serve(async (req) => {
     });
 
     const responseText = await response.text();
-    console.log('LemonSqueezy response status:', response.status);
-    console.log('LemonSqueezy response:', responseText);
+    console.log('Lemon Squeezy Response:', response.status, responseText);
 
     if (!response.ok) {
       console.error('LemonSqueezy API error:', response.status, responseText);
