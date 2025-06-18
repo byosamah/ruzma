@@ -138,9 +138,22 @@ export const useSubscription = () => {
     }
   };
 
+  const mapUserTypeToPlanId = (userType: string): string | null => {
+    switch (userType) {
+      case 'plus':
+        return 'plus';
+      case 'pro':
+        return 'pro';
+      case 'free':
+      default:
+        return null;
+    }
+  };
+
   return {
     createCheckout,
     checkSubscriptionStatus,
+    mapUserTypeToPlanId,
     isLoading,
     error,
     plans: SUBSCRIPTION_PLANS,

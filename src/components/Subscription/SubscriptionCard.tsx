@@ -3,12 +3,13 @@ import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Check } from 'lucide-react';
+import { Check, Crown } from 'lucide-react';
 import { SubscriptionPlan } from '@/hooks/useSubscription';
 
 interface SubscriptionCardProps {
   plan: SubscriptionPlan;
   isPopular?: boolean;
+  isCurrentPlan?: boolean;
   onSelectPlan: (planId: string) => void;
   isLoading?: boolean;
 }
@@ -16,16 +17,62 @@ interface SubscriptionCardProps {
 export const SubscriptionCard: React.FC<SubscriptionCardProps> = ({
   plan,
   isPopular = false,
+  isCurrentPlan = false,
   onSelectPlan,
   isLoading = false,
 }) => {
-  return (
-    <Card className={`relative ${isPopular ? 'border-primary shadow-lg scale-105' : ''}`}>
-      {isPopular && (
+  const getCardClassName = () => {
+    if (isCurrentPlan) {
+      return 'relative border-green-500 bg-green-50/50';
+    }
+    if (isPopular) {
+      return 'relative border-primary shadow-lg scale-105';
+    }
+    return 'relative';
+  };
+
+  const getBadge = () => {
+    if (isCurrentPlan) {
+      return (
+        <Badge className="absolute -top-2 left-1/2 transform -translate-x-1/2 bg-green-500 hover:bg-green-600">
+          <Crown className="h-3 w-3 mr-1" />
+          Current Plan
+        </Badge>
+      );
+    }
+    if (isPopular) {
+      return (
         <Badge className="absolute -top-2 left-1/2 transform -translate-x-1/2 bg-primary">
           Most Popular
         </Badge>
-      )}
+      );
+    }
+    return null;
+  };
+
+  const getButtonText = () => {
+    if (isCurrentPlan) {
+      return 'Current Plan';
+    }
+    if (isLoading) {
+      return 'Creating checkout...';
+    }
+    return 'Choose Plan';
+  };
+
+  const getButtonVariant = () => {
+    if (isCurrentPlan) {
+      return 'secondary' as const;
+    }
+    if (isPopular) {
+      return 'default' as const;
+    }
+    return 'outline' as const;
+  };
+
+  return (
+    <Card className={getCardClassName()}>
+      {getBadge()}
       
       <CardHeader className="text-center">
         <CardTitle className="text-xl font-bold">{plan.name}</CardTitle>
@@ -47,11 +94,11 @@ export const SubscriptionCard: React.FC<SubscriptionCardProps> = ({
       <CardFooter>
         <Button
           onClick={() => onSelectPlan(plan.id)}
-          disabled={isLoading}
+          disabled={isLoading || isCurrentPlan}
           className="w-full"
-          variant={isPopular ? 'default' : 'outline'}
+          variant={getButtonVariant()}
         >
-          {isLoading ? 'Creating checkout...' : 'Choose Plan'}
+          {getButtonText()}
         </Button>
       </CardFooter>
     </Card>
