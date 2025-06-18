@@ -28,18 +28,22 @@ export const createLemonSqueezyCheckout = async (checkoutData: CheckoutSessionDa
           media: true,
           logo: true,
         },
-        checkout_data: {
-          variant_id: checkoutData.variant_id,
-          custom: {
-            user_id: checkoutData.user_id,
-          },
-          webhook_url: checkoutData.webhook_url,
-        },
+        checkout_data: [
+          {
+            variant_id: checkoutData.variant_id,
+            custom: {
+              user_id: checkoutData.user_id,
+            },
+          }
+        ],
         product_options: {
           enabled_variants: [checkoutData.variant_id],
           redirect_url: checkoutData.redirect_url,
           receipt_link_url: checkoutData.receipt_link_url,
         },
+        expires_at: null,
+        preview: false,
+        test_mode: false,
       },
       relationships: {
         store: {

@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { User } from '@supabase/supabase-js';
 import { toast } from 'sonner';
@@ -56,7 +55,6 @@ export const useSubscription = (user: User | null) => {
         user_id: user.id,
         variant_id: 697231,
         store_id: '148628',
-        webhook_url: 'https://***REMOVED***.supabase.co/functions/v1/lemon-webhook',
         redirect_url: `${window.location.origin}/dashboard?upgraded=true`,
         receipt_link_url: `${window.location.origin}/dashboard`,
       };

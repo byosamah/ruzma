@@ -11,7 +11,6 @@ export interface CheckoutSessionData {
   user_id: string;
   variant_id: number;
   store_id: string;
-  webhook_url: string;
   redirect_url: string;
   receipt_link_url: string;
 }
