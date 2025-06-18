@@ -9,6 +9,10 @@ import { Textarea } from '@/components/ui/textarea';
 import { Plus, Trash2 } from 'lucide-react';
 import { useT } from '@/lib/i18n';
 import { CreateProjectFormData } from '@/lib/validators/project';
+import { useUserCurrency } from '@/hooks/useUserCurrency';
+import { supabase } from '@/integrations/supabase/client';
+import { useState, useEffect } from 'react';
+import { User } from '@supabase/supabase-js';
 
 const MilestonesList = () => {
   const t = useT();
@@ -17,6 +21,17 @@ const MilestonesList = () => {
     control,
     name: 'milestones',
   });
+  
+  const [user, setUser] = useState<User | null>(null);
+  const { currency, formatCurrency } = useUserCurrency(user);
+
+  useEffect(() => {
+    const getUser = async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      setUser(user);
+    };
+    getUser();
+  }, []);
 
   const addMilestone = () => {
     append({ title: '', description: '', price: 0 });
@@ -70,7 +85,7 @@ const MilestonesList = () => {
                 name={`milestones.${index}.price`}
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>{t('priceLabel')}</FormLabel>
+                    <FormLabel>{t('priceLabel')} ({currency})</FormLabel>
                     <FormControl>
                       <Input
                         type="number"
