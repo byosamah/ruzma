@@ -3,7 +3,7 @@ import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Calendar, DollarSign, CheckCircle, Clock, Eye, Edit, Link, Copy } from 'lucide-react';
+import { Calendar, DollarSign, CheckCircle, Clock, Eye, Edit, Link, Copy, Trash2 } from 'lucide-react';
 import { format, isValid, parseISO } from 'date-fns';
 import { DatabaseProject } from '@/hooks/projectTypes';
 import { useT } from '@/lib/i18n';
@@ -14,6 +14,7 @@ interface ProjectCardProps {
   project: DatabaseProject;
   onViewClick: (projectId: string) => void;
   onEditClick: (projectId: string) => void;
+  onDeleteClick?: (projectId: string) => void;
   currency: CurrencyCode;
   isVerticalLayout?: boolean;
 }
@@ -22,6 +23,7 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
   project,
   onViewClick,
   onEditClick,
+  onDeleteClick,
   currency,
   isVerticalLayout = false
 }) => {
@@ -59,6 +61,13 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
   const handleEditClick = (e: React.MouseEvent) => {
     e.stopPropagation();
     onEditClick(project.id);
+  };
+
+  const handleDeleteClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (onDeleteClick) {
+      onDeleteClick(project.id);
+    }
   };
 
   const handleViewClick = (e: React.MouseEvent) => {
@@ -114,6 +123,12 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
                     <Eye className="w-4 h-4" />
                     View
                   </Button>
+                  {onDeleteClick && (
+                    <Button variant="outline" size="sm" onClick={handleDeleteClick} className="flex items-center gap-1 text-red-500 hover:text-red-700 hover:bg-red-50">
+                      <Trash2 className="w-4 h-4" />
+                      Delete
+                    </Button>
+                  )}
                 </div>
               </div>
             </CardHeader>
@@ -198,6 +213,12 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
               <Eye className="w-4 h-4" />
               View
             </Button>
+            {onDeleteClick && (
+              <Button variant="outline" size="sm" onClick={handleDeleteClick} className="flex items-center gap-1 text-red-500 hover:text-red-700 hover:bg-red-50">
+                <Trash2 className="w-4 h-4" />
+                Delete
+              </Button>
+            )}
           </div>
         </div>
       </CardHeader>

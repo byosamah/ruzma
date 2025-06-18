@@ -134,6 +134,7 @@ const Dashboard = () => {
                   project={project}
                   onViewClick={handleViewProject}
                   onEditClick={handleEditProjectCard}
+                  onDeleteClick={handleDeleteProject}
                   currency={userCurrency.currency}
                   isVerticalLayout={isOddNumber}
                 />

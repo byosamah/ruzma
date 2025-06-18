@@ -1,3 +1,4 @@
+
 import React from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import Layout from "@/components/Layout";
@@ -5,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { ArrowLeft } from "lucide-react";
 import { useT, TranslationKey } from "@/lib/i18n";
 import { useProjectManagement } from "@/hooks/useProjectManagement";
+import { useProjects } from "@/hooks/useProjects";
 import ProjectHeader from "@/components/ProjectManagement/ProjectHeader";
 import MilestoneList from "@/components/ProjectManagement/MilestoneList";
 
@@ -26,12 +28,25 @@ const ProjectManagement: React.FC = () => {
     updateMilestoneWatermark,
   } = useProjectManagement(id);
 
+  const { deleteProject } = useProjects(user);
+
   const handleBackClick = () => {
     navigate("/dashboard");
   };
 
   const handleEditClick = () => {
     navigate(`/edit-project/${id}`);
+  };
+
+  const handleDeleteClick = async () => {
+    if (!id) return;
+    
+    if (confirm(`Are you sure you want to delete "${project?.name}"? This action cannot be undone.`)) {
+      const success = await deleteProject(id);
+      if (success) {
+        navigate('/dashboard');
+      }
+    }
   };
 
   if (loading) {
@@ -67,6 +82,7 @@ const ProjectManagement: React.FC = () => {
           project={project} 
           onBackClick={handleBackClick}
           onEditClick={handleEditClick}
+          onDeleteClick={handleDeleteClick}
         />
         <MilestoneList
           milestones={project.milestones}
