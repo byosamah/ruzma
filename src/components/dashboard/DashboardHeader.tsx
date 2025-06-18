@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { Button } from '@/components/ui/button';
-import { Plus } from 'lucide-react';
+import { Plus, BarChart3 } from 'lucide-react';
 import { useT } from '@/lib/i18n';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 
@@ -9,12 +9,14 @@ interface DashboardHeaderProps {
   displayName: string;
   onNewProject: () => void;
   canCreateProject: boolean;
+  onViewAnalytics: () => void;
 }
 
 const DashboardHeader: React.FC<DashboardHeaderProps> = ({
   displayName,
   onNewProject,
   canCreateProject,
+  onViewAnalytics,
 }) => {
   const t = useT();
 
@@ -54,7 +56,18 @@ const DashboardHeader: React.FC<DashboardHeaderProps> = ({
         </h1>
         <p className="text-slate-600 mt-1">{t('dashboardSubtitle')}</p>
       </div>
-      <NewProjectButton />
+      <div className="flex gap-3">
+        <Button 
+          variant="outline" 
+          size="sm" 
+          onClick={onViewAnalytics}
+          className="flex items-center gap-2"
+        >
+          <BarChart3 className="w-4 h-4" />
+          View Analytics
+        </Button>
+        <NewProjectButton />
+      </div>
     </div>
   );
 };

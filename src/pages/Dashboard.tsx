@@ -9,7 +9,7 @@ import { useDashboard } from '@/hooks/useDashboard';
 import { useUsageTracking } from '@/hooks/useUsageTracking';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
-import { Plus, FileText, BarChart3 } from 'lucide-react';
+import { Plus, FileText } from 'lucide-react';
 import { useT } from '@/lib/i18n';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 
@@ -97,6 +97,7 @@ const Dashboard = () => {
           displayName={displayName} 
           onNewProject={handleNewProject}
           canCreateProject={usage.canCreateProject}
+          onViewAnalytics={() => navigate('/analytics')}
         />
         
         {/* Usage Indicators */}
@@ -114,38 +115,6 @@ const Dashboard = () => {
         <div className="space-y-6">
           <div className="flex items-center justify-between">
             <h2 className="text-2xl font-bold text-slate-800">{t('yourProjects')}</h2>
-            <div className="flex gap-3">
-              <Button 
-                variant="outline" 
-                size="sm" 
-                onClick={() => navigate('/analytics')}
-                className="flex items-center gap-2"
-              >
-                <BarChart3 className="w-4 h-4" />
-                View Analytics
-              </Button>
-              {projects.length > 0 && (
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <Button 
-                      variant="outline" 
-                      size="sm" 
-                      onClick={handleNewProject}
-                      disabled={!usage.canCreateProject}
-                      className={!usage.canCreateProject ? 'opacity-50 cursor-not-allowed' : ''}
-                    >
-                      <Plus className="w-4 h-4 mr-2" />
-                      {t('newProject')}
-                    </Button>
-                  </TooltipTrigger>
-                  {!usage.canCreateProject && (
-                    <TooltipContent>
-                      <p>Project limit reached. Upgrade your plan to create more projects.</p>
-                    </TooltipContent>
-                  )}
-                </Tooltip>
-              )}
-            </div>
           </div>
 
           {projects.length === 0 ? (
