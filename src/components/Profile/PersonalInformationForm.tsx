@@ -9,6 +9,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { User, Mail, Save, DollarSign } from 'lucide-react';
 import { CURRENCIES, CurrencyCode } from '@/lib/currency';
 import { useT } from '@/lib/i18n';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 interface PersonalInformationFormProps {
   formData: {
@@ -37,6 +38,7 @@ export const PersonalInformationForm = ({
   onCurrencyChange,
 }: PersonalInformationFormProps) => {
   const t = useT();
+  const { language } = useLanguage();
 
   const handleCurrencyChange = (value: string) => {
     if (onCurrencyChange) {
@@ -120,7 +122,7 @@ export const PersonalInformationForm = ({
                 <SelectContent>
                   {Object.entries(CURRENCIES).map(([code, { symbol, name }]) => (
                     <SelectItem key={code} value={code}>
-                      {symbol} {name} ({code})
+                      {symbol[language]} {name} ({code})
                     </SelectItem>
                   ))}
                 </SelectContent>
