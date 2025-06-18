@@ -1,3 +1,4 @@
+
 import { useState } from 'react';
 import { toast } from 'sonner';
 import { supabase } from '@/integrations/supabase/client';
@@ -47,9 +48,8 @@ export const SUBSCRIPTION_PLANS: SubscriptionPlan[] = [
     features: [
       '10 projects',
       '50GB storage',
-      'Team collaboration',
-      'Custom integrations',
-      'White-label options',
+      'Priority support',
+      'Advanced analytics',
     ],
     storeId: '148628',
     variantId: '697237',
