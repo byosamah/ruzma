@@ -9,11 +9,13 @@ import { useProjectManagement } from "@/hooks/useProjectManagement";
 import { useProjects } from "@/hooks/useProjects";
 import ProjectHeader from "@/components/ProjectManagement/ProjectHeader";
 import MilestoneList from "@/components/ProjectManagement/MilestoneList";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 const ProjectManagement: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const t = useT();
+  const isMobile = useIsMobile();
 
   const {
     user,
@@ -67,8 +69,8 @@ const ProjectManagement: React.FC = () => {
   if (!project) {
     return (
       <Layout user={profile || user}>
-        <div className="max-w-xl mx-auto text-center mt-20">
-          <h2 className="text-2xl font-bold mb-2">{t('projectNotFound')}</h2>
+        <div className="max-w-xl mx-auto text-center mt-20 px-4">
+          <h2 className="text-xl sm:text-2xl font-bold mb-2">{t('projectNotFound')}</h2>
           <Button onClick={() => navigate("/dashboard")}>{t('goToDashboard')}</Button>
         </div>
       </Layout>
@@ -77,7 +79,7 @@ const ProjectManagement: React.FC = () => {
 
   return (
     <Layout user={profile || user}>
-      <div className="max-w-4xl mx-auto space-y-8">
+      <div className={`${isMobile ? 'max-w-full' : 'max-w-4xl'} mx-auto space-y-6 sm:space-y-8`}>
         <ProjectHeader 
           project={project} 
           onBackClick={handleBackClick}

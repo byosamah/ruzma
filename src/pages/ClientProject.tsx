@@ -9,9 +9,11 @@ import ProjectOverviewCard from "@/components/ProjectClient/ProjectOverviewCard"
 import ProjectInstructionsCard from "@/components/ProjectClient/ProjectInstructionsCard";
 import ProjectMilestonesList from "@/components/ProjectClient/ProjectMilestonesList";
 import ProjectFooter from "@/components/ProjectClient/ProjectFooter";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 const ClientProject = () => {
   const { token } = useParams<{ token: string }>();
+  const isMobile = useIsMobile();
   
   // Add debugging
   console.log('ClientProject: token from params:', token);
@@ -42,7 +44,7 @@ const ClientProject = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50">
       <ClientProjectHeader />
-      <main className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
+      <main className={`${isMobile ? 'max-w-full' : 'max-w-6xl'} mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 space-y-6 sm:space-y-8`}>
         <ProjectOverviewCard
           projectName={project.name}
           projectBrief={project.brief}

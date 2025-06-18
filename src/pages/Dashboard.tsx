@@ -12,10 +12,12 @@ import { Button } from '@/components/ui/button';
 import { Plus, FileText, MessageCircle } from 'lucide-react';
 import { useT } from '@/lib/i18n';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
+import { useIsMobile } from '@/hooks/use-mobile';
 
 const Dashboard = () => {
   const navigate = useNavigate();
   const t = useT();
+  const isMobile = useIsMobile();
   const {
     user,
     profile,
@@ -78,9 +80,9 @@ const Dashboard = () => {
     const button = (
       <Button 
         onClick={handleNewProject} 
-        size="lg" 
-        className="mt-4"
-        disabled={false} // Always enabled, but behavior changes based on plan
+        size={isMobile ? "default" : "lg"}
+        className={`${isMobile ? 'w-full' : ''} mt-4`}
+        disabled={false}
       >
         <ButtonIcon className="w-5 h-5 mr-2" />
         {buttonText}
@@ -103,15 +105,15 @@ const Dashboard = () => {
     return button;
   };
 
-  // Determine layout based on project count
+  // Determine layout based on project count and screen size
   const isOddNumber = projects.length % 2 === 1;
-  const projectGridClass = isOddNumber 
-    ? "flex flex-col space-y-6" 
-    : "grid grid-cols-1 md:grid-cols-2 gap-6";
+  const projectGridClass = isMobile || isOddNumber 
+    ? "flex flex-col space-y-4 sm:space-y-6" 
+    : "grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6";
 
   return (
     <Layout user={user} onSignOut={handleSignOut}>
-      <div className="space-y-8">
+      <div className="space-y-6 sm:space-y-8">
         <DashboardHeader 
           displayName={displayName} 
           onNewProject={handleNewProject}
@@ -131,13 +133,14 @@ const Dashboard = () => {
           userCurrency={userCurrency.currency}
         />
         
-        <div className="space-y-6">
-          <div className="flex items-center justify-between">
-            <h2 className="text-2xl font-bold text-slate-800">{t('yourProjects')}</h2>
+        <div className="space-y-4 sm:space-y-6">
+          <div className="flex flex-col space-y-4 sm:flex-row sm:items-center sm:justify-between sm:space-y-0">
+            <h2 className="text-xl sm:text-2xl font-bold text-slate-800">{t('yourProjects')}</h2>
             <Button 
               variant="outline" 
               onClick={() => navigate('/templates')}
-              className="flex items-center gap-2"
+              className="flex items-center gap-2 w-full sm:w-auto"
+              size={isMobile ? "default" : "default"}
             >
               <FileText className="w-4 h-4" />
               Templates
@@ -145,13 +148,15 @@ const Dashboard = () => {
           </div>
 
           {projects.length === 0 ? (
-            <div className="text-center py-12 bg-white rounded-lg border border-slate-200">
-              <FileText className="w-16 h-16 text-slate-300 mx-auto mb-4" />
-              <h3 className="text-lg font-medium text-slate-600 mb-2">
+            <div className="text-center py-8 sm:py-12 bg-white rounded-lg border border-slate-200">
+              <FileText className="w-12 h-12 sm:w-16 sm:h-16 text-slate-300 mx-auto mb-4" />
+              <h3 className="text-base sm:text-lg font-medium text-slate-600 mb-2">
                 {t('noProjectsYet')}
               </h3>
-              <p className="text-slate-400 mb-4">{t('createFirstProjectDesc')}</p>
-              <EmptyProjectsButton />
+              <p className="text-sm sm:text-base text-slate-400 mb-4 px-4">{t('createFirstProjectDesc')}</p>
+              <div className="px-4">
+                <EmptyProjectsButton />
+              </div>
             </div>
           ) : (
             <div className={projectGridClass}>
@@ -163,7 +168,7 @@ const Dashboard = () => {
                   onEditClick={handleEditProjectCard}
                   onDeleteClick={handleDeleteProject}
                   currency={userCurrency.currency}
-                  isVerticalLayout={isOddNumber}
+                  isVerticalLayout={isMobile || isOddNumber}
                 />
               ))}
             </div>
