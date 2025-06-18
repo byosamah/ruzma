@@ -42,6 +42,7 @@ function App() {
               <Route path="/project/:id" element={<ProjectManagement />} />
               <Route path="/templates" element={<ProjectTemplates />} />
               <Route path="/client/:token" element={<ClientProject />} />
+              <Route path="/client/project/:token" element={<ClientProject />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
           </BrowserRouter>
