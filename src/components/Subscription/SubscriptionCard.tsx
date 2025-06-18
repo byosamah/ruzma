@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -6,6 +5,7 @@ import { Badge } from '@/components/ui/badge';
 import { Check, Crown } from 'lucide-react';
 import { SubscriptionPlan } from '@/hooks/useSubscription';
 import { CurrencyCode, formatCurrency } from '@/lib/currency';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 interface SubscriptionCardProps {
   plan: SubscriptionPlan;
@@ -28,6 +28,8 @@ export const SubscriptionCard: React.FC<SubscriptionCardProps> = ({
   onSelectPlan,
   isLoading = false,
 }) => {
+  const { language } = useLanguage();
+
   const getCardClassName = () => {
     if (isCurrentPlan) {
       return 'relative border-green-500 bg-green-50/50';
@@ -114,7 +116,7 @@ export const SubscriptionCard: React.FC<SubscriptionCardProps> = ({
       <CardHeader className="text-center">
         <CardTitle className="text-xl font-bold">{plan.name}</CardTitle>
         <div className="mt-2">
-          <span className="text-3xl font-bold">{formatCurrency(plan.price, currency)}</span>
+          <span className="text-3xl font-bold">{formatCurrency(plan.price, currency, language)}</span>
           <span className="text-muted-foreground">/{plan.interval}</span>
         </div>
       </CardHeader>
