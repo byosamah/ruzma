@@ -27,6 +27,20 @@ serve(async (req) => {
   try {
     logStep('Webhook received');
     
+    if (!supabaseUrl || !supabaseServiceKey) {
+      logStep('ERROR: Missing Supabase configuration');
+      return new Response(
+        JSON.stringify({ error: 'Server configuration error' }),
+        { 
+          status: 500,
+          headers: { 
+            ...corsHeaders, 
+            'Content-Type': 'application/json' 
+          } 
+        }
+      );
+    }
+    
     const supabase = createClient(supabaseUrl, supabaseServiceKey);
     
     // Verify webhook signature if secret is provided
@@ -36,11 +50,61 @@ serve(async (req) => {
       // TODO: Implement signature verification
     }
 
-    const payload = await req.json();
-    logStep('Webhook payload received', { eventName: payload.meta?.event_name });
+    let payload;
+    try {
+      payload = await req.json();
+    } catch (parseError) {
+      logStep('ERROR: Failed to parse request body', { error: parseError.message });
+      return new Response(
+        JSON.stringify({ error: 'Invalid JSON payload' }),
+        { 
+          status: 400,
+          headers: { 
+            ...corsHeaders, 
+            'Content-Type': 'application/json' 
+          } 
+        }
+      );
+    }
+
+    logStep('Webhook payload received', { 
+      eventName: payload.meta?.event_name,
+      dataId: payload.data?.id,
+      hasData: !!payload.data,
+      hasMeta: !!payload.meta 
+    });
 
     const { meta, data } = payload;
     const eventName = meta?.event_name;
+
+    // Validate required fields
+    if (!eventName) {
+      logStep('ERROR: Missing event_name in payload');
+      return new Response(
+        JSON.stringify({ error: 'Missing event_name in payload' }),
+        { 
+          status: 400,
+          headers: { 
+            ...corsHeaders, 
+            'Content-Type': 'application/json' 
+          } 
+        }
+      );
+    }
+
+    if (!data || !data.id) {
+      logStep('ERROR: Missing data or data.id in payload');
+      return new Response(
+        JSON.stringify({ error: 'Missing data or data.id in payload' }),
+        { 
+          status: 400,
+          headers: { 
+            ...corsHeaders, 
+            'Content-Type': 'application/json' 
+          } 
+        }
+      );
+    }
 
     switch (eventName) {
       case 'subscription_created':
@@ -61,6 +125,8 @@ serve(async (req) => {
         logStep(`Unhandled event: ${eventName}`);
     }
 
+    logStep('Webhook processed successfully', { eventName });
+
     return new Response(
       JSON.stringify({ received: true, event: eventName }),
       { 
@@ -72,10 +138,13 @@ serve(async (req) => {
     );
 
   } catch (error) {
-    logStep('Webhook error', { error: error.message });
+    logStep('Webhook error', { error: error.message, stack: error.stack });
     
     return new Response(
-      JSON.stringify({ error: error.message }),
+      JSON.stringify({ 
+        error: error.message,
+        stack: error.stack 
+      }),
       { 
         status: 500,
         headers: { 
@@ -91,6 +160,12 @@ async function handleSubscriptionChange(supabase: any, data: any, status: string
   logStep('Handling subscription change', { subscriptionId: data.id, status });
   
   try {
+    // Validate required data fields
+    if (!data.attributes) {
+      logStep('ERROR: Missing data.attributes');
+      return;
+    }
+
     // Try multiple methods to find the user
     let userId = null;
     let userEmail = null;
@@ -128,6 +203,8 @@ async function handleSubscriptionChange(supabase: any, data: any, status: string
       if (profileData && !error) {
         userId = profileData.id;
         logStep('Found user by email lookup', { userId, userEmail });
+      } else {
+        logStep('Failed to find user by email', { userEmail, error: error?.message });
       }
     }
     
@@ -160,6 +237,8 @@ async function handleSubscriptionChange(supabase: any, data: any, status: string
       updated_at: new Date().toISOString(),
     };
 
+    logStep('Updating user profile', { userId, updateData });
+
     const { error } = await supabase
       .from('profiles')
       .update(updateData)
@@ -167,11 +246,13 @@ async function handleSubscriptionChange(supabase: any, data: any, status: string
 
     if (error) {
       logStep('ERROR updating user subscription', { error: error.message, userId, updateData });
+      throw error;
     } else {
       logStep('Successfully updated user subscription', { userId, updateData });
     }
   } catch (error) {
-    logStep('ERROR in handleSubscriptionChange', { error: error.message });
+    logStep('ERROR in handleSubscriptionChange', { error: error.message, stack: error.stack });
+    throw error;
   }
 }
 
@@ -179,6 +260,12 @@ async function handleOrderCreated(supabase: any, data: any) {
   logStep('Handling order created', { orderId: data.id });
   
   try {
+    // Validate required data fields
+    if (!data.attributes) {
+      logStep('ERROR: Missing data.attributes in order');
+      return;
+    }
+
     // Extract user information from order
     let userId = null;
     let userEmail = null;
@@ -205,6 +292,8 @@ async function handleOrderCreated(supabase: any, data: any) {
       if (profileData && !error) {
         userId = profileData.id;
         logStep('Found user by email lookup', { userId, userEmail });
+      } else {
+        logStep('Failed to find user by email', { userEmail, error: error?.message });
       }
     }
     
@@ -214,6 +303,7 @@ async function handleOrderCreated(supabase: any, data: any) {
       logStep('No user found for order', { orderId: data.id });
     }
   } catch (error) {
-    logStep('ERROR in handleOrderCreated', { error: error.message });
+    logStep('ERROR in handleOrderCreated', { error: error.message, stack: error.stack });
+    throw error;
   }
 }

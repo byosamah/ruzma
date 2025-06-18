@@ -23,7 +23,16 @@ serve(async (req) => {
   try {
     if (!LEMON_SQUEEZY_API_KEY) {
       console.error('LEMON_SQUEEZY_API_KEY is not configured');
-      throw new Error('LEMON_SQUEEZY_API_KEY is not configured');
+      return new Response(
+        JSON.stringify({ error: 'LEMON_SQUEEZY_API_KEY is not configured' }),
+        { 
+          status: 500,
+          headers: { 
+            ...corsHeaders, 
+            'Content-Type': 'application/json' 
+          } 
+        }
+      );
     }
 
     const requestBody = await req.json();
@@ -31,31 +40,40 @@ serve(async (req) => {
 
     const { storeId, variantId, customData }: CheckoutRequest = requestBody;
 
+    // Validate required fields
     if (!storeId || !variantId) {
       console.error('Missing required fields:', { storeId, variantId });
-      throw new Error('storeId and variantId are required');
+      return new Response(
+        JSON.stringify({ error: 'storeId and variantId are required' }),
+        { 
+          status: 400,
+          headers: { 
+            ...corsHeaders, 
+            'Content-Type': 'application/json' 
+          } 
+        }
+      );
     }
 
     console.log('Creating checkout with:', { storeId, variantId, customData });
 
-    // Format custom data as array with key/value pairs for Lemon Squeezy
-    let customFields: Array<{ key: string; value: string }> = [];
+    // According to Lemon Squeezy docs, checkout_data should be an object with custom fields
+    // Each custom field should have a name and value
+    const checkoutCustom: Record<string, string> = {};
     
     if (customData) {
-      customFields = Object.entries(customData).map(([key, value]) => ({
-        key: key,
-        value: String(value)
-      }));
+      Object.entries(customData).forEach(([key, value]) => {
+        checkoutCustom[key] = String(value);
+      });
     }
 
-    console.log('Formatted custom fields:', JSON.stringify(customFields, null, 2));
+    console.log('Formatted custom fields:', JSON.stringify(checkoutCustom, null, 2));
 
-    // Enhanced checkout data with user identification through custom fields
+    // Lemon Squeezy checkout payload format
     const checkoutData = {
       data: {
         type: 'checkouts',
         attributes: {
-          test_mode: Deno.env.get('ENVIRONMENT') !== 'production',
           checkout_options: {
             embed: false,
             media: true,
@@ -65,7 +83,8 @@ serve(async (req) => {
             skip_trial: false,
             subscription_preview: true,
           },
-          checkout_data: customFields,
+          checkout_data: checkoutCustom, // This should be an object, not an array
+          test_mode: Deno.env.get('ENVIRONMENT') !== 'production',
         },
         relationships: {
           store: {
@@ -101,11 +120,53 @@ serve(async (req) => {
 
     if (!response.ok) {
       console.error('LemonSqueezy API error:', response.status, responseText);
-      throw new Error(`LemonSqueezy API error: ${response.status} - ${responseText}`);
+      return new Response(
+        JSON.stringify({ 
+          error: `LemonSqueezy API error: ${response.status}`,
+          details: responseText 
+        }),
+        { 
+          status: response.status,
+          headers: { 
+            ...corsHeaders, 
+            'Content-Type': 'application/json' 
+          } 
+        }
+      );
     }
 
-    const result = JSON.parse(responseText);
+    let result;
+    try {
+      result = JSON.parse(responseText);
+    } catch (parseError) {
+      console.error('Failed to parse Lemon Squeezy response:', parseError);
+      return new Response(
+        JSON.stringify({ error: 'Invalid response from LemonSqueezy' }),
+        { 
+          status: 500,
+          headers: { 
+            ...corsHeaders, 
+            'Content-Type': 'application/json' 
+          } 
+        }
+      );
+    }
+
     console.log('Parsed LemonSqueezy result:', JSON.stringify(result, null, 2));
+
+    if (!result.data?.attributes?.url) {
+      console.error('No checkout URL in response:', result);
+      return new Response(
+        JSON.stringify({ error: 'No checkout URL received from LemonSqueezy' }),
+        { 
+          status: 500,
+          headers: { 
+            ...corsHeaders, 
+            'Content-Type': 'application/json' 
+          } 
+        }
+      );
+    }
 
     return new Response(
       JSON.stringify({
@@ -125,7 +186,8 @@ serve(async (req) => {
     
     return new Response(
       JSON.stringify({ 
-        error: error.message || 'Failed to create checkout' 
+        error: error.message || 'Failed to create checkout',
+        stack: error.stack 
       }),
       { 
         status: 500,
