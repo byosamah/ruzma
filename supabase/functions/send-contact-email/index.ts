@@ -28,10 +28,11 @@ const handler = async (req: Request): Promise<Response> => {
 
     console.log('Processing contact form submission:', { name, email, subject });
 
-    // Send email to hey@ruzma.co
+    // Send email to your verified email address (ruzmacoruzmaco@gmail.com)
+    // This will work with Resend's free tier
     const emailResponse = await resend.emails.send({
       from: "Contact Form <onboarding@resend.dev>",
-      to: ["hey@ruzma.co"],
+      to: ["ruzmacoruzmaco@gmail.com"], // Using your verified email address
       subject: `Contact Form: ${subject}`,
       html: `
         <h2>New Contact Form Submission</h2>
@@ -42,6 +43,7 @@ const handler = async (req: Request): Promise<Response> => {
         <p>${message.replace(/\n/g, '<br>')}</p>
         <hr>
         <p><em>This message was sent from the contact form on your website.</em></p>
+        <p><em>Reply to: ${email}</em></p>
       `,
     });
 

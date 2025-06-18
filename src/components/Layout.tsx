@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
-import { LogOut, User, Briefcase, TrendingUp } from 'lucide-react';
+import { LogOut, User, Briefcase, TrendingUp, MessageCircle } from 'lucide-react';
 import { useT } from '@/lib/i18n';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 import LanguageSelector from './LanguageSelector';
@@ -99,6 +99,18 @@ const Layout: React.FC<LayoutProps> = ({
                       <Briefcase className="w-4 h-4 mr-2" />
                       {t("dashboard")}
                     </Button>
+                  </Link>
+                  <Link to="/contact">
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <Button variant={isActive('/contact') ? 'secondary' : 'ghost'} size="icon">
+                          <MessageCircle className="w-4 h-4" />
+                        </Button>
+                      </TooltipTrigger>
+                      <TooltipContent>
+                        <p>Contact Us</p>
+                      </TooltipContent>
+                    </Tooltip>
                   </Link>
                   <Link to="/profile">
                     <Button variant={isActive('/profile') ? 'secondary' : 'ghost'} size="icon">
