@@ -1,7 +1,7 @@
-
 import { useState } from 'react';
 import { toast } from 'sonner';
 import { supabase } from '@/integrations/supabase/client';
+import { CurrencyCode, formatCurrency } from '@/lib/currency';
 
 export interface SubscriptionPlan {
   id: string;
@@ -13,48 +13,72 @@ export interface SubscriptionPlan {
   variantId?: string;
 }
 
-export const SUBSCRIPTION_PLANS: SubscriptionPlan[] = [
-  {
-    id: 'free',
-    name: 'Free',
-    price: 0,
-    interval: 'month',
-    features: [
-      '1 project',
-      '500MB storage',
-      'Basic support',
-      'Standard analytics',
-    ],
-  },
-  {
-    id: 'plus',
-    name: 'Plus',
-    price: 9.99,
-    interval: 'month',
-    features: [
-      '3 projects',
-      '10GB storage',
-      'Priority support',
-      'Advanced analytics',
-    ],
-    storeId: '148628',
-    variantId: '697231',
-  },
-  {
-    id: 'pro',
-    name: 'Pro',
-    price: 19.99,
-    interval: 'month',
-    features: [
-      '10 projects',
-      '50GB storage',
-      'Priority support',
-      'Advanced analytics',
-    ],
-    storeId: '148628',
-    variantId: '697237',
-  },
-];
+// Base prices in USD
+const BASE_PRICES = {
+  free: 0,
+  plus: 10,
+  pro: 50,
+};
+
+// Currency exchange rates (USD as base)
+const EXCHANGE_RATES: Record<CurrencyCode, number> = {
+  USD: 1,
+  SAR: 3.75,
+  JOD: 0.71,
+  AED: 3.67,
+  GBP: 0.79,
+  EGP: 48.5,
+};
+
+export const getSubscriptionPlans = (currency: CurrencyCode = 'USD'): SubscriptionPlan[] => {
+  const rate = EXCHANGE_RATES[currency] || 1;
+  
+  return [
+    {
+      id: 'free',
+      name: 'Free',
+      price: 0,
+      interval: 'month',
+      features: [
+        '1 project',
+        '500MB storage',
+        'Basic support',
+        'Standard analytics',
+      ],
+    },
+    {
+      id: 'plus',
+      name: 'Plus',
+      price: Math.round(BASE_PRICES.plus * rate * 100) / 100,
+      interval: 'month',
+      features: [
+        '3 projects',
+        '10GB storage',
+        'Priority support',
+        'Advanced analytics',
+      ],
+      storeId: '148628',
+      variantId: '697231',
+    },
+    {
+      id: 'pro',
+      name: 'Pro',
+      price: Math.round(BASE_PRICES.pro * rate * 100) / 100,
+      interval: 'month',
+      features: [
+        '10 projects',
+        '50GB storage',
+        'Priority support',
+        'Advanced analytics',
+      ],
+      storeId: '148628',
+      variantId: '697237',
+    },
+  ];
+};
+
+// Keep the original plans for backward compatibility
+export const SUBSCRIPTION_PLANS: SubscriptionPlan[] = getSubscriptionPlans('USD');
 
 export const useSubscription = () => {
   const [isLoading, setIsLoading] = useState(false);
@@ -175,5 +199,6 @@ export const useSubscription = () => {
     isLoading,
     error,
     plans: SUBSCRIPTION_PLANS,
+    getPlansForCurrency: getSubscriptionPlans,
   };
 };

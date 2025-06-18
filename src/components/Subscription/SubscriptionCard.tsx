@@ -5,9 +5,11 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Check, Crown } from 'lucide-react';
 import { SubscriptionPlan } from '@/hooks/useSubscription';
+import { CurrencyCode, formatCurrency } from '@/lib/currency';
 
 interface SubscriptionCardProps {
   plan: SubscriptionPlan;
+  currency: CurrencyCode;
   isPopular?: boolean;
   popularText?: string;
   isCurrentPlan?: boolean;
@@ -18,6 +20,7 @@ interface SubscriptionCardProps {
 
 export const SubscriptionCard: React.FC<SubscriptionCardProps> = ({
   plan,
+  currency,
   isPopular = false,
   popularText = 'Most Popular',
   isCurrentPlan = false,
@@ -111,7 +114,7 @@ export const SubscriptionCard: React.FC<SubscriptionCardProps> = ({
       <CardHeader className="text-center">
         <CardTitle className="text-xl font-bold">{plan.name}</CardTitle>
         <div className="mt-2">
-          <span className="text-3xl font-bold">${plan.price}</span>
+          <span className="text-3xl font-bold">{formatCurrency(plan.price, currency)}</span>
           <span className="text-muted-foreground">/{plan.interval}</span>
         </div>
       </CardHeader>

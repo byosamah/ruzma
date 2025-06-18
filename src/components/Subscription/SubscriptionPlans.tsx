@@ -6,12 +6,14 @@ import { useProjects } from '@/hooks/useProjects';
 import { supabase } from '@/integrations/supabase/client';
 import { useState, useEffect } from 'react';
 import { User } from '@supabase/supabase-js';
+import { useUserCurrency } from '@/hooks/useUserCurrency';
 
 export const SubscriptionPlans: React.FC = () => {
-  const { plans, createCheckout, isLoading } = useSubscription();
+  const { createCheckout, isLoading, getPlansForCurrency } = useSubscription();
   const [user, setUser] = useState<User | null>(null);
   const [userProfile, setUserProfile] = useState<any>(null);
   const [profileLoading, setProfileLoading] = useState(true);
+  const { currency } = useUserCurrency(user);
 
   useEffect(() => {
     const fetchUserAndProfile = async () => {
@@ -37,6 +39,9 @@ export const SubscriptionPlans: React.FC = () => {
 
     fetchUserAndProfile();
   }, []);
+
+  // Get plans with user's preferred currency
+  const plans = getPlansForCurrency(currency);
 
   const getCurrentPlanId = (userType: string) => {
     switch (userType) {
@@ -92,6 +97,7 @@ export const SubscriptionPlans: React.FC = () => {
           <SubscriptionCard
             key={plan.id}
             plan={plan}
+            currency={currency}
             isPopular={plan.id === popularPlanId}
             popularText={getPopularText(currentPlanId, plan.id)}
             isCurrentPlan={currentPlanId === plan.id}
