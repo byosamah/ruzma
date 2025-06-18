@@ -73,14 +73,8 @@ export type Database = {
           created_at: string | null
           currency: string | null
           full_name: string | null
-          grace_period_end: string | null
           id: string
           notification_settings: Json | null
-          project_count: number | null
-          storage_used: number | null
-          subscription_id: string | null
-          subscription_status: string | null
-          user_type: string | null
           website: string | null
         }
         Insert: {
@@ -90,14 +84,8 @@ export type Database = {
           created_at?: string | null
           currency?: string | null
           full_name?: string | null
-          grace_period_end?: string | null
           id: string
           notification_settings?: Json | null
-          project_count?: number | null
-          storage_used?: number | null
-          subscription_id?: string | null
-          subscription_status?: string | null
-          user_type?: string | null
           website?: string | null
         }
         Update: {
@@ -107,14 +95,8 @@ export type Database = {
           created_at?: string | null
           currency?: string | null
           full_name?: string | null
-          grace_period_end?: string | null
           id?: string
           notification_settings?: Json | null
-          project_count?: number | null
-          storage_used?: number | null
-          subscription_id?: string | null
-          subscription_status?: string | null
-          user_type?: string | null
           website?: string | null
         }
         Relationships: []
@@ -182,62 +164,12 @@ export type Database = {
         }
         Relationships: []
       }
-      subscriptions: {
-        Row: {
-          cancelled_at: string | null
-          created_at: string | null
-          expires_at: string | null
-          id: string
-          lemon_squeezy_id: string
-          product_id: string
-          status: string
-          updated_at: string | null
-          user_id: string
-          variant_id: string
-        }
-        Insert: {
-          cancelled_at?: string | null
-          created_at?: string | null
-          expires_at?: string | null
-          id?: string
-          lemon_squeezy_id: string
-          product_id: string
-          status: string
-          updated_at?: string | null
-          user_id: string
-          variant_id: string
-        }
-        Update: {
-          cancelled_at?: string | null
-          created_at?: string | null
-          expires_at?: string | null
-          id?: string
-          lemon_squeezy_id?: string
-          product_id?: string
-          status?: string
-          updated_at?: string | null
-          user_id?: string
-          variant_id?: string
-        }
-        Relationships: []
-      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      check_user_limits: {
-        Args: { _user_id: string; _action: string; _size?: number }
-        Returns: boolean
-      }
-      update_project_count: {
-        Args: { _user_id: string; _count_change: number }
-        Returns: undefined
-      }
-      update_user_storage: {
-        Args: { _user_id: string; _size_change: number }
-        Returns: undefined
-      }
+      [_ in never]: never
     }
     Enums: {
       [_ in never]: never

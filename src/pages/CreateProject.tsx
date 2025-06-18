@@ -14,10 +14,8 @@ import MilestonesList from '@/components/CreateProject/MilestonesList';
 import TemplateHeader from '@/components/CreateProject/TemplateHeader';
 import SaveAsTemplateCheckbox from '@/components/CreateProject/SaveAsTemplateCheckbox';
 import FormActions from '@/components/CreateProject/FormActions';
-import { PlanLimitModal } from '@/components/subscription/PlanLimitModal';
 import { useCreateProjectForm } from '@/hooks/useCreateProjectForm';
 import { useProjectTemplates } from '@/hooks/useProjectTemplates';
-import { useProjectLimits } from '@/hooks/useProjectLimits';
 
 const CreateProject = () => {
   const t = useT();
@@ -32,7 +30,6 @@ const CreateProject = () => {
   const templateData = location.state?.template;
   const { form, addMilestone, removeMilestone, loadFromTemplate, handleSubmit } = useCreateProjectForm(templateData);
   const { saveTemplate } = useProjectTemplates(user);
-  const { limitModalOpen, limitType, checkProjectCreationLimit, closeLimitModal } = useProjectLimits(user);
 
   const { formState: { isSubmitting } } = form;
 
@@ -70,12 +67,6 @@ const CreateProject = () => {
 
   const onSubmit = async (data: any) => {
     if (!user) return;
-    
-    // Check project creation limit before proceeding
-    const canCreate = await checkProjectCreationLimit();
-    if (!canCreate) {
-      return; // Modal will be shown by the hook
-    }
     
     // Save as template if requested
     if (saveAsTemplate && data.name) {
@@ -147,14 +138,6 @@ const CreateProject = () => {
             />
           </form>
         </Form>
-
-        {/* Plan Limit Modal */}
-        <PlanLimitModal
-          user={user}
-          isOpen={limitModalOpen}
-          onClose={closeLimitModal}
-          limitType={limitType}
-        />
       </div>
     </Layout>
   );
