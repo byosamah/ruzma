@@ -1,4 +1,3 @@
-
 import { useState, useEffect, useMemo, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
@@ -7,6 +6,7 @@ import { toast } from 'sonner';
 import { useProjects } from '@/hooks/useProjects';
 import { useUserCurrency } from '@/hooks/useUserCurrency';
 import { useT } from '@/lib/i18n';
+import { secureSignOut, logSecurityEvent } from '@/lib/authSecurity';
 
 export const useDashboard = () => {
   const [user, setUser] = useState<User | null>(null);
@@ -20,20 +20,23 @@ export const useDashboard = () => {
   const userCurrency = useUserCurrency(user);
 
   useEffect(() => {
-    if (authChecked) return; // Prevent multiple auth checks
+    if (authChecked) return;
     
     let isMounted = true;
     
     const fetchUserAndProfile = async () => {
       if (!isMounted) return;
       
-      console.log('Dashboard: Starting auth check...');
+      console.log('Dashboard: Starting secure auth check...');
+      logSecurityEvent('dashboard_auth_check_started');
       
       try {
         // Handle auth tokens from URL hash (email confirmation)
         const hash = window.location.hash;
         if (hash && hash.includes('access_token=')) {
           console.log('Dashboard: Processing auth tokens from URL hash');
+          logSecurityEvent('email_confirmation_token_processing');
+          
           const params = new URLSearchParams(hash.substring(1));
           const accessToken = params.get('access_token');
           const refreshToken = params.get('refresh_token');
@@ -46,9 +49,11 @@ export const useDashboard = () => {
             
             if (error) {
               console.error('Dashboard: Error setting session from URL:', error);
+              logSecurityEvent('email_confirmation_failed', { error: error.message });
               toast.error('Authentication failed. Please try logging in again.');
             } else {
               console.log('Dashboard: Session set successfully from URL tokens');
+              logSecurityEvent('email_confirmation_success');
               toast.success('Email confirmed successfully! Welcome to Ruzma.');
               // Clear the hash from URL
               window.history.replaceState(null, '', window.location.pathname);
@@ -67,6 +72,7 @@ export const useDashboard = () => {
         
         if (userError || !user) {
           console.log('Dashboard: No authenticated user, redirecting to login');
+          logSecurityEvent('dashboard_auth_failed', { error: userError?.message });
           setLoading(false);
           setAuthChecked(true);
           navigate('/login');
@@ -74,6 +80,7 @@ export const useDashboard = () => {
         }
 
         setUser(user);
+        logSecurityEvent('dashboard_auth_success', { userId: user.id });
         console.log('Dashboard: User authenticated, fetching profile...');
 
         const { data: profileData, error: profileError } = await supabase
@@ -104,17 +111,21 @@ export const useDashboard = () => {
           
           if (createError) {
             console.error("Dashboard: Profile creation failed:", createError);
+            logSecurityEvent('profile_creation_failed', { error: createError.message });
             toast.error("Profile setup error");
           } else {
             console.log('Dashboard: New profile created');
+            logSecurityEvent('profile_created', { userId: user.id });
             setProfile(newProfile);
           }
         } else {
           setProfile(profileData);
           console.log('Dashboard: Existing profile loaded');
+          logSecurityEvent('profile_loaded', { userId: user.id });
         }
       } catch (error) {
         console.error('Dashboard: Unexpected error:', error);
+        logSecurityEvent('dashboard_unexpected_error', { error: error instanceof Error ? error.message : 'Unknown error' });
         if (isMounted) {
           setLoading(false);
           setAuthChecked(true);
@@ -134,12 +145,12 @@ export const useDashboard = () => {
     return () => {
       isMounted = false;
     };
-  }, [authChecked, navigate]); // Added navigate to dependencies
+  }, [authChecked, navigate]);
 
   const handleSignOut = useCallback(async () => {
-    await supabase.auth.signOut();
-    navigate('/');
-  }, [navigate]);
+    logSecurityEvent('user_sign_out_initiated');
+    await secureSignOut();
+  }, []);
 
   const handleEditProject = useCallback((project: any) => {
     navigate(`/edit-project/${project.id}`);
@@ -147,6 +158,7 @@ export const useDashboard = () => {
 
   const handleDeleteProject = useCallback(async (projectId: string) => {
     if (confirm('Are you sure you want to delete this project?')) {
+      logSecurityEvent('project_deletion_initiated', { projectId });
       await deleteProject(projectId);
     }
   }, [deleteProject]);
