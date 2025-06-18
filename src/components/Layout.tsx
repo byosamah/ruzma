@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
@@ -56,7 +55,7 @@ const Layout: React.FC<LayoutProps> = ({
                   <Button 
                     variant="outline" 
                     size="sm" 
-                    className="bg-gradient-to-r from-brand-blue to-brand-navy text-white border-0 hover:from-blue-600 hover:to-slate-800 hover:scale-105 transition-all duration-200 shadow-lg hover:shadow-xl font-semibold"
+                    className="bg-gradient-to-r from-brand-yellow to-yellow-500 text-brand-black border-0 hover:from-yellow-400 hover:to-yellow-600 hover:scale-105 transition-all duration-200 shadow-lg hover:shadow-xl font-semibold"
                   >
                     <TrendingUp className="w-4 h-4 mr-2" />
                     Upgrade
