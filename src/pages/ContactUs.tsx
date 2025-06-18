@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -41,10 +40,19 @@ const ContactUs = () => {
 
   const onSubmit = async (data: ContactFormData) => {
     try {
-      // Here you would typically send the form data to your backend
-      console.log('Contact form submission:', data);
+      console.log('Submitting contact form:', data);
       
-      // For now, we'll just show a success message
+      // Call the edge function to send the email
+      const { error } = await supabase.functions.invoke('send-contact-email', {
+        body: data,
+      });
+
+      if (error) {
+        console.error('Error sending contact email:', error);
+        toast.error('Failed to send message. Please try again.');
+        return;
+      }
+
       toast.success('Thank you for your message! We\'ll get back to you soon.');
       
       // Reset the form

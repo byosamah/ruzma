@@ -13,6 +13,9 @@ verify_jwt = false
 [functions.send-payment-notification]
 verify_jwt = false
 
+[functions.send-contact-email]
+verify_jwt = false
+
 [functions.create-checkout]
 verify_jwt = true
 
