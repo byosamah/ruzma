@@ -5,6 +5,7 @@ import { ImageCropperDialog } from '@/components/ImageCropperDialog';
 import { ProfilePictureCard } from '@/components/Profile/ProfilePictureCard';
 import { PersonalInformationForm } from '@/components/Profile/PersonalInformationForm';
 import { AccountSettingsCard } from '@/components/Profile/AccountSettingsCard';
+import { SubscriptionPlans } from '@/components/Subscription/SubscriptionPlans';
 import { useProfile } from '@/hooks/useProfile';
 import { useT } from '@/lib/i18n';
 
@@ -69,6 +70,11 @@ const Profile = () => {
         </div>
 
         <AccountSettingsCard />
+        
+        {/* Add subscription plans section */}
+        <div className="mt-12">
+          <SubscriptionPlans />
+        </div>
       </div>
     </Layout>
   );
