@@ -83,16 +83,28 @@ export const useSubscription = () => {
 
       console.log('Create-checkout response:', data);
       console.log('Response type:', typeof data);
-      console.log('checkout_url present:', 'checkout_url' in data);
-      console.log('checkout_url value:', data?.checkout_url);
 
-      // More flexible validation for checkout_url
-      const checkoutUrl = data?.checkout_url;
-      if (checkoutUrl && checkoutUrl.trim()) {
+      // Handle both string and object responses
+      let responseData = data;
+      if (typeof data === 'string') {
+        try {
+          responseData = JSON.parse(data);
+          console.log('Parsed response data:', responseData);
+        } catch (parseError) {
+          console.error('Failed to parse response as JSON:', parseError);
+          throw new Error('Invalid response format from payment provider');
+        }
+      }
+
+      // Extract checkout URL
+      const checkoutUrl = responseData?.checkout_url;
+      console.log('Extracted checkout URL:', checkoutUrl);
+
+      if (checkoutUrl && typeof checkoutUrl === 'string' && checkoutUrl.trim()) {
         console.log('Redirecting to checkout:', checkoutUrl);
         window.location.href = checkoutUrl;
       } else {
-        console.error('No valid checkout URL found in response:', data);
+        console.error('No valid checkout URL found in response:', responseData);
         throw new Error('No checkout URL received from payment provider');
       }
     } catch (err) {
