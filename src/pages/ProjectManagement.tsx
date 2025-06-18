@@ -1,4 +1,3 @@
-
 import React from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import Layout from "@/components/Layout";
@@ -122,6 +121,7 @@ const ProjectManagement: React.FC = () => {
                   onBackClick={handleBackClick}
                   onEditClick={handleEditClick}
                   onDeleteClick={handleDeleteClick}
+                  userCurrency={userCurrency.currency}
                 />
               </div>
             </div>
