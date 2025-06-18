@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { User } from '@supabase/supabase-js';
 import { supabase } from '@/integrations/supabase/client';
@@ -59,6 +58,48 @@ export const useSubscription = (user: User | null) => {
     }
 
     try {
+      console.log('Creating checkout session for user:', user.id);
+      
+      const requestBody = {
+        data: {
+          type: 'checkouts',
+          attributes: {
+            checkout_options: {
+              embed: false,
+              media: true,
+              logo: true,
+            },
+            checkout_data: {
+              variant_id: 697231,
+              custom: {
+                user_id: user.id,
+              },
+            },
+            product_options: {
+              enabled_variants: [697231],
+              redirect_url: `${window.location.origin}/dashboard?upgraded=true`,
+              receipt_link_url: `${window.location.origin}/dashboard`,
+            },
+          },
+          relationships: {
+            store: {
+              data: {
+                type: 'stores',
+                id: '94d59cef-dbb8-4ea5-b178-d2540fcd6919',
+              },
+            },
+            variant: {
+              data: {
+                type: 'variants',
+                id: '697231',
+              },
+            },
+          },
+        },
+      };
+
+      console.log('Request body:', JSON.stringify(requestBody, null, 2));
+
       const response = await fetch('https://api.lemonsqueezy.com/v1/checkouts', {
         method: 'POST',
         headers: {
@@ -66,55 +107,43 @@ export const useSubscription = (user: User | null) => {
           'Content-Type': 'application/vnd.api+json',
           'Accept': 'application/vnd.api+json',
         },
-        body: JSON.stringify({
-          data: {
-            type: 'checkouts',
-            attributes: {
-              checkout_options: {
-                embed: false,
-                media: true,
-                logo: true,
-              },
-              checkout_data: {
-                variant_id: 697231,
-                custom_data: {
-                  user_id: user.id,
-                },
-              },
-              product_options: {
-                enabled_variants: [697231],
-                redirect_url: `${window.location.origin}/dashboard?upgraded=true`,
-                receipt_link_url: `${window.location.origin}/dashboard`,
-              },
-            },
-            relationships: {
-              store: {
-                data: {
-                  type: 'stores',
-                  id: '94d59cef-dbb8-4ea5-b178-d2540fcd6919',
-                },
-              },
-              variant: {
-                data: {
-                  type: 'variants',
-                  id: '697231',
-                },
-              },
-            },
-          },
-        }),
+        body: JSON.stringify(requestBody),
       });
 
-      const data = await response.json();
+      console.log('Response status:', response.status);
+      console.log('Response headers:', response.headers);
+
+      const responseText = await response.text();
+      console.log('Response text:', responseText);
+
+      let data;
+      try {
+        data = JSON.parse(responseText);
+      } catch (parseError) {
+        console.error('Failed to parse response as JSON:', parseError);
+        throw new Error('Invalid response from payment provider');
+      }
       
       if (!response.ok) {
-        throw new Error(data.errors?.[0]?.detail || 'Failed to create checkout session');
+        console.error('API Error Response:', data);
+        const errorMessage = data.errors?.[0]?.detail || data.message || 'Failed to create checkout session';
+        throw new Error(errorMessage);
       }
 
+      if (!data.data?.attributes?.url) {
+        console.error('No checkout URL in response:', data);
+        throw new Error('No checkout URL received');
+      }
+
+      console.log('Checkout URL:', data.data.attributes.url);
       return data.data.attributes.url;
     } catch (error) {
       console.error('Error creating checkout session:', error);
-      toast.error('Failed to start checkout process');
+      if (error instanceof Error) {
+        toast.error(`Failed to start checkout: ${error.message}`);
+      } else {
+        toast.error('Failed to start checkout process');
+      }
       return null;
     }
   };
