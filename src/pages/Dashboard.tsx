@@ -3,15 +3,13 @@ import React from 'react';
 import Layout from '@/components/Layout';
 import DashboardHeader from '@/components/dashboard/DashboardHeader';
 import DashboardStats from '@/components/dashboard/DashboardStats';
-import DashboardAnalytics from '@/components/dashboard/DashboardAnalytics';
 import ProjectCard from '@/components/ProjectCard';
 import { UsageIndicators } from '@/components/dashboard/UsageIndicators';
 import { useDashboard } from '@/hooks/useDashboard';
-import { useDashboardAnalytics } from '@/hooks/useDashboardAnalytics';
 import { useUsageTracking } from '@/hooks/useUsageTracking';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
-import { Plus, FileText } from 'lucide-react';
+import { Plus, FileText, BarChart3 } from 'lucide-react';
 import { useT } from '@/lib/i18n';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 
@@ -31,7 +29,6 @@ const Dashboard = () => {
     handleDeleteProject,
   } = useDashboard();
 
-  const analyticsData = useDashboardAnalytics(projects);
   const usage = useUsageTracking(profile, projects);
 
   const handleNewProject = () => {
@@ -114,63 +111,66 @@ const Dashboard = () => {
           userCurrency={userCurrency.currency}
         />
         
-        <div className="grid grid-cols-1 xl:grid-cols-3 gap-8">
-          <div className="xl:col-span-2">
-            <div className="space-y-6">
-              <div className="flex items-center justify-between">
-                <h2 className="text-2xl font-bold text-slate-800">{t('yourProjects')}</h2>
-                {projects.length > 0 && (
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <Button 
-                        variant="outline" 
-                        size="sm" 
-                        onClick={handleNewProject}
-                        disabled={!usage.canCreateProject}
-                        className={!usage.canCreateProject ? 'opacity-50 cursor-not-allowed' : ''}
-                      >
-                        <Plus className="w-4 h-4 mr-2" />
-                        {t('newProject')}
-                      </Button>
-                    </TooltipTrigger>
-                    {!usage.canCreateProject && (
-                      <TooltipContent>
-                        <p>Project limit reached. Upgrade your plan to create more projects.</p>
-                      </TooltipContent>
-                    )}
-                  </Tooltip>
-                )}
-              </div>
-
-              {projects.length === 0 ? (
-                <div className="text-center py-12 bg-white rounded-lg border border-slate-200">
-                  <FileText className="w-16 h-16 text-slate-300 mx-auto mb-4" />
-                  <h3 className="text-lg font-medium text-slate-600 mb-2">
-                    {t('noProjectsYet')}
-                  </h3>
-                  <p className="text-slate-400 mb-4">{t('createFirstProjectDesc')}</p>
-                  <EmptyProjectsButton />
-                </div>
-              ) : (
-                <div className={projectGridClass}>
-                  {projects.map((project) => (
-                    <ProjectCard
-                      key={project.id}
-                      project={project}
-                      onViewClick={handleViewProject}
-                      onEditClick={handleEditProjectCard}
-                      currency={userCurrency.currency}
-                      isVerticalLayout={isOddNumber}
-                    />
-                  ))}
-                </div>
+        <div className="space-y-6">
+          <div className="flex items-center justify-between">
+            <h2 className="text-2xl font-bold text-slate-800">{t('yourProjects')}</h2>
+            <div className="flex gap-3">
+              <Button 
+                variant="outline" 
+                size="sm" 
+                onClick={() => navigate('/analytics')}
+                className="flex items-center gap-2"
+              >
+                <BarChart3 className="w-4 h-4" />
+                View Analytics
+              </Button>
+              {projects.length > 0 && (
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Button 
+                      variant="outline" 
+                      size="sm" 
+                      onClick={handleNewProject}
+                      disabled={!usage.canCreateProject}
+                      className={!usage.canCreateProject ? 'opacity-50 cursor-not-allowed' : ''}
+                    >
+                      <Plus className="w-4 h-4 mr-2" />
+                      {t('newProject')}
+                    </Button>
+                  </TooltipTrigger>
+                  {!usage.canCreateProject && (
+                    <TooltipContent>
+                      <p>Project limit reached. Upgrade your plan to create more projects.</p>
+                    </TooltipContent>
+                  )}
+                </Tooltip>
               )}
             </div>
           </div>
-          
-          <div className="xl:col-span-1">
-            <DashboardAnalytics data={analyticsData} userCurrency={userCurrency.currency} />
-          </div>
+
+          {projects.length === 0 ? (
+            <div className="text-center py-12 bg-white rounded-lg border border-slate-200">
+              <FileText className="w-16 h-16 text-slate-300 mx-auto mb-4" />
+              <h3 className="text-lg font-medium text-slate-600 mb-2">
+                {t('noProjectsYet')}
+              </h3>
+              <p className="text-slate-400 mb-4">{t('createFirstProjectDesc')}</p>
+              <EmptyProjectsButton />
+            </div>
+          ) : (
+            <div className={projectGridClass}>
+              {projects.map((project) => (
+                <ProjectCard
+                  key={project.id}
+                  project={project}
+                  onViewClick={handleViewProject}
+                  onEditClick={handleEditProjectCard}
+                  currency={userCurrency.currency}
+                  isVerticalLayout={isOddNumber}
+                />
+              ))}
+            </div>
+          )}
         </div>
       </div>
     </Layout>
