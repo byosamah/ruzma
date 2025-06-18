@@ -54,10 +54,15 @@ const ProjectManagement: React.FC = () => {
   if (loading) {
     return (
       <Layout>
-        <div className="flex items-center justify-center min-h-[400px]">
-          <div className="text-center">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
-            <p className="text-slate-600">{t('loadingProject')}</p>
+        <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50/30 to-indigo-50/20">
+          <div className="flex items-center justify-center min-h-[60vh]">
+            <div className="text-center space-y-4">
+              <div className="relative">
+                <div className="w-16 h-16 border-4 border-blue-200 border-t-blue-600 rounded-full animate-spin mx-auto"></div>
+                <div className="absolute inset-0 w-16 h-16 border-4 border-transparent border-r-purple-400 rounded-full animate-spin mx-auto" style={{ animationDirection: 'reverse', animationDuration: '1.5s' }}></div>
+              </div>
+              <p className="text-slate-700 font-medium">{t('loadingProject')}</p>
+            </div>
           </div>
         </div>
       </Layout>
@@ -69,9 +74,22 @@ const ProjectManagement: React.FC = () => {
   if (!project) {
     return (
       <Layout user={profile || user}>
-        <div className="max-w-xl mx-auto text-center mt-20 px-4">
-          <h2 className="text-xl sm:text-2xl font-bold mb-2">{t('projectNotFound')}</h2>
-          <Button onClick={() => navigate("/dashboard")}>{t('goToDashboard')}</Button>
+        <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50/30 to-indigo-50/20">
+          <div className="flex items-center justify-center min-h-[60vh]">
+            <div className="max-w-md mx-auto text-center px-6">
+              <div className="w-20 h-20 bg-gradient-to-br from-slate-200 to-slate-300 rounded-2xl flex items-center justify-center mx-auto mb-6">
+                <div className="w-8 h-8 bg-slate-400 rounded-lg"></div>
+              </div>
+              <h2 className="text-2xl font-bold text-slate-800 mb-3">{t('projectNotFound')}</h2>
+              <p className="text-slate-600 mb-6">The project you're looking for doesn't exist or has been removed.</p>
+              <Button 
+                onClick={() => navigate("/dashboard")}
+                className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white px-6 py-2"
+              >
+                {t('goToDashboard')}
+              </Button>
+            </div>
+          </div>
         </div>
       </Layout>
     );
@@ -79,22 +97,62 @@ const ProjectManagement: React.FC = () => {
 
   return (
     <Layout user={profile || user}>
-      <div className={`${isMobile ? 'max-w-full' : 'max-w-4xl'} mx-auto space-y-6 sm:space-y-8`}>
-        <ProjectHeader 
-          project={project} 
-          onBackClick={handleBackClick}
-          onEditClick={handleEditClick}
-          onDeleteClick={handleDeleteClick}
-        />
-        <MilestoneList
-          milestones={project.milestones}
-          userCurrency={userCurrency.currency}
-          onUpdateMilestoneStatus={updateMilestoneStatus}
-          onPaymentUpload={uploadPaymentProof}
-          onDeliverableUpload={uploadDeliverable}
-          onDeliverableDownload={downloadDeliverable}
-          onUpdateWatermark={updateMilestoneWatermark}
-        />
+      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50/30 to-indigo-50/20">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
+          {/* Back Navigation */}
+          <div className="mb-6">
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={handleBackClick}
+              className="text-slate-600 hover:text-slate-800 hover:bg-white/60 -ml-2"
+            >
+              <ArrowLeft className="w-4 h-4 mr-2" />
+              {t('backToDashboard')}
+            </Button>
+          </div>
+
+          {/* Main Content */}
+          <div className="space-y-8">
+            {/* Project Header Card */}
+            <div className="bg-white/70 backdrop-blur-sm rounded-2xl border border-white/50 shadow-lg shadow-slate-200/50 overflow-hidden">
+              <div className="bg-gradient-to-r from-blue-600/5 via-purple-600/5 to-indigo-600/5 p-6 sm:p-8">
+                <ProjectHeader 
+                  project={project} 
+                  onBackClick={handleBackClick}
+                  onEditClick={handleEditClick}
+                  onDeleteClick={handleDeleteClick}
+                />
+              </div>
+            </div>
+
+            {/* Milestones Section */}
+            <div className="bg-white/70 backdrop-blur-sm rounded-2xl border border-white/50 shadow-lg shadow-slate-200/50 overflow-hidden">
+              <div className="p-6 sm:p-8">
+                <div className="flex items-center justify-between mb-6">
+                  <div>
+                    <h2 className="text-2xl font-bold text-slate-800">Project Milestones</h2>
+                    <p className="text-slate-600 mt-1">Track progress and manage deliverables</p>
+                  </div>
+                  <div className="text-right">
+                    <div className="text-sm text-slate-500">Total Milestones</div>
+                    <div className="text-2xl font-bold text-slate-800">{project.milestones.length}</div>
+                  </div>
+                </div>
+                
+                <MilestoneList
+                  milestones={project.milestones}
+                  userCurrency={userCurrency.currency}
+                  onUpdateMilestoneStatus={updateMilestoneStatus}
+                  onPaymentUpload={uploadPaymentProof}
+                  onDeliverableUpload={uploadDeliverable}
+                  onDeliverableDownload={downloadDeliverable}
+                  onUpdateWatermark={updateMilestoneWatermark}
+                />
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </Layout>
   );
