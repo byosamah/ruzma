@@ -3,7 +3,7 @@ export const dashboardTranslations = {
   en: {
     dashboard: "Dashboard",
     profile: "Profile",
-    welcomeBack: "Welcome back, {name}!",
+    welcomeBack: "Welcome back",
     dashboardSubtitle: "Manage your freelance projects and track payments",
     manageProjects: "Manage your freelance projects and track payments",
     newProject: "New Project",
@@ -15,6 +15,7 @@ export const dashboardTranslations = {
     completed: "Completed",
     milestonesCompleted: "Milestones completed",
     yourProjects: "Your Projects",
+    recentProjects: "Recent Projects",
     createFirstProject: "Create Your First Project",
     noProjectsYet: "No Projects Yet",
     createFirstProjectDesc: "Create your first project to start managing client deliverables",
@@ -26,7 +27,7 @@ export const dashboardTranslations = {
   ar: {
     dashboard: "لوحة التحكم",
     profile: "الملف الشخصي",
-    welcomeBack: "مرحباً بعودتك، {name}!",
+    welcomeBack: "مرحباً بعودتك",
     dashboardSubtitle: "قم بإدارة مشاريعك الحرة وتابع المدفوعات",
     manageProjects: "قم بإدارة مشاريعك الحرة وتابع المدفوعات",
     newProject: "مشروع جديد",
@@ -38,6 +39,7 @@ export const dashboardTranslations = {
     completed: "مكتمل",
     milestonesCompleted: "مراحل منجزة",
     yourProjects: "مشاريعك",
+    recentProjects: "المشاريع الحديثة",
     createFirstProject: "أنشئ أول مشروع لك",
     noProjectsYet: "لا توجد مشاريع بعد",
     createFirstProjectDesc: "قم بإنشاء مشروعك الأول لبدء إدارة تسليمات العملاء",
