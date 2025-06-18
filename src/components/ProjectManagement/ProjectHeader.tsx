@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Button } from '@/components/ui/button';
 import { ArrowLeft, Edit, Trash2, Copy, ExternalLink, Send } from 'lucide-react';
@@ -114,19 +113,18 @@ const ProjectHeader: React.FC<ProjectHeaderProps> = ({
         <Button
           variant="outline"
           onClick={onEditClick}
-          className="flex items-center gap-2"
+          size="icon"
         >
           <Edit className="w-4 h-4" />
-          {t('editProject')}
         </Button>
         {onDeleteClick && (
           <Button
             variant="outline"
             onClick={onDeleteClick}
-            className="flex items-center gap-2 text-red-500 hover:text-red-700 hover:bg-red-50"
+            size="icon"
+            className="text-red-500 hover:text-red-700 hover:bg-red-50"
           >
             <Trash2 className="w-4 h-4" />
-            Delete Project
           </Button>
         )}
       </div>
