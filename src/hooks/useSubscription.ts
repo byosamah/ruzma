@@ -68,22 +68,36 @@ export const useSubscription = () => {
       console.log('Creating checkout for plan:', plan);
       console.log('User details:', { id: user.id, email: user.email });
 
-      // Call our edge function to create the checkout with user data
-      const { data, error: functionError } = await supabase.functions.invoke('create-checkout', {
-        body: {
+      // Get the session token for authentication
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session?.access_token) {
+        throw new Error('No valid session found');
+      }
+
+      // Call the create-checkout function using direct fetch to the specific URL
+      const response = await fetch('https://***REMOVED***.supabase.co/functions/v1/create-checkout', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${session.access_token}`,
+          'Content-Type': 'application/json',
+          'apikey': '***REMOVED***'
+        },
+        body: JSON.stringify({
           storeId: plan.storeId,
           variantId: plan.variantId,
           customData: {
             user_id: user.id,
             user_email: user.email,
           },
-        },
+        }),
       });
 
-      console.log('Edge function response:', { data, error: functionError });
+      const data = await response.json();
 
-      if (functionError) {
-        throw functionError;
+      console.log('Create-checkout response:', { data, status: response.status });
+
+      if (!response.ok) {
+        throw new Error(data.error || `HTTP error! status: ${response.status}`);
       }
 
       if (data?.checkout_url) {
