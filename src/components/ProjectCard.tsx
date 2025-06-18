@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -126,7 +125,6 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
                   {onDeleteClick && (
                     <Button variant="outline" size="sm" onClick={handleDeleteClick} className="flex items-center gap-1 text-red-500 hover:text-red-700 hover:bg-red-50">
                       <Trash2 className="w-4 h-4" />
-                      Delete
                     </Button>
                   )}
                 </div>
@@ -216,7 +214,6 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
             {onDeleteClick && (
               <Button variant="outline" size="sm" onClick={handleDeleteClick} className="flex items-center gap-1 text-red-500 hover:text-red-700 hover:bg-red-50">
                 <Trash2 className="w-4 h-4" />
-                Delete
               </Button>
             )}
           </div>
