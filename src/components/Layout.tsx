@@ -56,7 +56,7 @@ const Layout: React.FC<LayoutProps> = ({
                   <Button 
                     variant="outline" 
                     size="sm" 
-                    className="bg-gradient-to-r from-blue-500 to-purple-600 text-white border-0 hover:from-blue-600 hover:to-purple-700 hover:scale-105 transition-all duration-200 shadow-lg hover:shadow-xl font-semibold"
+                    className="bg-gradient-to-r from-brand-blue to-brand-navy text-white border-0 hover:from-blue-600 hover:to-slate-800 hover:scale-105 transition-all duration-200 shadow-lg hover:shadow-xl font-semibold"
                   >
                     <TrendingUp className="w-4 h-4 mr-2" />
                     Upgrade
