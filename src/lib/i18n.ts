@@ -4,7 +4,6 @@ import { authTranslations } from "./translations/auth";
 import { dashboardTranslations } from "./translations/dashboard";
 import { projectTranslations } from "./translations/projects";
 import { clientTranslations } from "./translations/client";
-import { landingTranslations } from "./translations/landing";
 import { commonTranslations } from "./translations/common";
 import { profileTranslations } from "./translations/profile";
 
@@ -15,7 +14,6 @@ const translations = {
     ...dashboardTranslations.en,
     ...projectTranslations.en,
     ...clientTranslations.en,
-    ...landingTranslations.en,
     ...commonTranslations.en,
     ...profileTranslations.en,
   },
@@ -24,7 +22,6 @@ const translations = {
     ...dashboardTranslations.ar,
     ...projectTranslations.ar,
     ...clientTranslations.ar,
-    ...landingTranslations.ar,
     ...commonTranslations.ar,
     ...profileTranslations.ar,
   },
