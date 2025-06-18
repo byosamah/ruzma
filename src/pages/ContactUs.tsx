@@ -11,7 +11,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { toast } from 'sonner';
 import { useNavigate } from 'react-router-dom';
-import { Mail, Phone, MapPin } from 'lucide-react';
+import { Mail } from 'lucide-react';
 import { useT } from '@/lib/i18n';
 import { useDashboard } from '@/hooks/useDashboard';
 
@@ -158,45 +158,7 @@ const ContactUs = () => {
                   <Mail className="w-5 h-5 text-brand-yellow mt-1" />
                   <div>
                     <h3 className="font-medium text-slate-800">Email</h3>
-                    <p className="text-slate-600">support@ruzma.com</p>
-                  </div>
-                </div>
-
-                <div className="flex items-start space-x-3">
-                  <Phone className="w-5 h-5 text-brand-yellow mt-1" />
-                  <div>
-                    <h3 className="font-medium text-slate-800">Phone</h3>
-                    <p className="text-slate-600">+1 (555) 123-4567</p>
-                  </div>
-                </div>
-
-                <div className="flex items-start space-x-3">
-                  <MapPin className="w-5 h-5 text-brand-yellow mt-1" />
-                  <div>
-                    <h3 className="font-medium text-slate-800">Address</h3>
-                    <p className="text-slate-600">
-                      123 Business Street<br />
-                      Suite 100<br />
-                      City, State 12345
-                    </p>
-                  </div>
-                </div>
-              </div>
-
-              <div className="pt-6 border-t border-slate-200">
-                <h3 className="font-medium text-slate-800 mb-2">Business Hours</h3>
-                <div className="space-y-1 text-sm text-slate-600">
-                  <div className="flex justify-between">
-                    <span>Monday - Friday</span>
-                    <span>9:00 AM - 6:00 PM</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span>Saturday</span>
-                    <span>10:00 AM - 4:00 PM</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span>Sunday</span>
-                    <span>Closed</span>
+                    <p className="text-slate-600">hey@ruzma.co</p>
                   </div>
                 </div>
               </div>
