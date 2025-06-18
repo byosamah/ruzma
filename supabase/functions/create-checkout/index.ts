@@ -38,13 +38,13 @@ serve(async (req) => {
 
     console.log('Creating checkout with:', { storeId, variantId, customData });
 
-    // Format custom data as array of custom fields for Lemon Squeezy
-    let customFields: Array<{ option_name: string; option_value: string }> = [];
+    // Format custom data as array with key/value pairs for Lemon Squeezy
+    let customFields: Array<{ key: string; value: string }> = [];
     
     if (customData) {
       customFields = Object.entries(customData).map(([key, value]) => ({
-        option_name: key,
-        option_value: String(value)
+        key: key,
+        value: String(value)
       }));
     }
 
@@ -65,7 +65,7 @@ serve(async (req) => {
             skip_trial: false,
             subscription_preview: true,
           },
-          checkout_data: customFields.length > 0 ? customFields : [],
+          checkout_data: customFields,
         },
         relationships: {
           store: {
