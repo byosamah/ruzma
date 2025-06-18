@@ -2,7 +2,6 @@
 import { useState } from 'react';
 import { toast } from 'sonner';
 import { supabase } from '@/integrations/supabase/client';
-import { LemonSqueezyService } from '@/services/lemonsqueezy';
 
 export interface SubscriptionPlan {
   id: string;
@@ -67,8 +66,9 @@ export const useSubscription = () => {
       }
 
       console.log('Creating checkout for plan:', plan);
+      console.log('User details:', { id: user.id, email: user.email });
 
-      // Call our edge function to create the checkout
+      // Call our edge function to create the checkout with user data
       const { data, error: functionError } = await supabase.functions.invoke('create-checkout', {
         body: {
           storeId: plan.storeId,
@@ -87,6 +87,10 @@ export const useSubscription = () => {
       }
 
       if (data?.checkout_url) {
+        // Log the checkout creation for debugging
+        console.log('Redirecting to checkout:', data.checkout_url);
+        console.log('User data sent:', { user_id: user.id, user_email: user.email });
+        
         // Redirect to checkout
         window.location.href = data.checkout_url;
       } else {

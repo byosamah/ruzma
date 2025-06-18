@@ -38,12 +38,27 @@ serve(async (req) => {
 
     console.log('Creating checkout with:', { storeId, variantId, customData });
 
-    // Simplified checkout data without checkout_data field
+    // Enhanced checkout data with user identification through checkout_options
     const checkoutData = {
       data: {
         type: 'checkouts',
         attributes: {
           test_mode: Deno.env.get('ENVIRONMENT') !== 'production',
+          checkout_options: {
+            embed: false,
+            media: true,
+            logo: true,
+            desc: true,
+            discount: true,
+            skip_trial: false,
+            subscription_preview: true,
+          },
+          checkout_data: {
+            custom: customData ? Object.entries(customData).map(([key, value]) => ({
+              option_name: key,
+              option_value: String(value)
+            })) : []
+          },
         },
         relationships: {
           store: {

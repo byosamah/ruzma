@@ -11,6 +11,13 @@ const corsHeaders = {
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 };
 
+// Helper logging function
+const logStep = (step: string, details?: any) => {
+  const timestamp = new Date().toISOString();
+  const detailsStr = details ? ` - ${JSON.stringify(details)}` : '';
+  console.log(`[${timestamp}] [WEBHOOK] ${step}${detailsStr}`);
+};
+
 serve(async (req) => {
   // Handle CORS preflight requests
   if (req.method === 'OPTIONS') {
@@ -18,16 +25,19 @@ serve(async (req) => {
   }
 
   try {
+    logStep('Webhook received');
+    
     const supabase = createClient(supabaseUrl, supabaseServiceKey);
     
     // Verify webhook signature if secret is provided
     if (webhookSecret) {
       const signature = req.headers.get('x-signature');
-      // Add signature verification logic here
+      logStep('Webhook signature check', { hasSignature: !!signature, hasSecret: !!webhookSecret });
+      // TODO: Implement signature verification
     }
 
     const payload = await req.json();
-    console.log('Received webhook:', JSON.stringify(payload, null, 2));
+    logStep('Webhook payload received', { eventName: payload.meta?.event_name });
 
     const { meta, data } = payload;
     const eventName = meta?.event_name;
@@ -35,12 +45,12 @@ serve(async (req) => {
     switch (eventName) {
       case 'subscription_created':
       case 'subscription_updated':
-        await handleSubscriptionChange(supabase, data);
+        await handleSubscriptionChange(supabase, data, 'active');
         break;
       
       case 'subscription_cancelled':
       case 'subscription_expired':
-        await handleSubscriptionCancellation(supabase, data);
+        await handleSubscriptionChange(supabase, data, 'cancelled');
         break;
       
       case 'order_created':
@@ -48,11 +58,11 @@ serve(async (req) => {
         break;
 
       default:
-        console.log(`Unhandled event: ${eventName}`);
+        logStep(`Unhandled event: ${eventName}`);
     }
 
     return new Response(
-      JSON.stringify({ received: true }),
+      JSON.stringify({ received: true, event: eventName }),
       { 
         headers: { 
           ...corsHeaders, 
@@ -62,7 +72,7 @@ serve(async (req) => {
     );
 
   } catch (error) {
-    console.error('Webhook error:', error);
+    logStep('Webhook error', { error: error.message });
     
     return new Response(
       JSON.stringify({ error: error.message }),
@@ -77,64 +87,133 @@ serve(async (req) => {
   }
 });
 
-async function handleSubscriptionChange(supabase: any, data: any) {
-  console.log('Handling subscription change:', data);
+async function handleSubscriptionChange(supabase: any, data: any, status: string) {
+  logStep('Handling subscription change', { subscriptionId: data.id, status });
   
-  const customData = data.attributes.first_subscription_item?.meta?.custom_data;
-  const userId = customData?.user_id;
-  
-  if (!userId) {
-    console.error('No user_id found in subscription data');
-    return;
-  }
+  try {
+    // Try multiple methods to find the user
+    let userId = null;
+    let userEmail = null;
+    
+    // Method 1: Check for custom data in the subscription
+    const customData = data.attributes?.first_subscription_item?.meta?.custom_data;
+    if (customData?.user_id) {
+      userId = customData.user_id;
+      userEmail = customData.user_email;
+      logStep('Found user from custom data', { userId, userEmail });
+    }
+    
+    // Method 2: Check order custom fields
+    if (!userId && data.attributes?.order?.custom) {
+      const customFields = data.attributes.order.custom;
+      const userIdField = customFields.find((field: any) => field.option_name === 'user_id');
+      const userEmailField = customFields.find((field: any) => field.option_name === 'user_email');
+      
+      if (userIdField) {
+        userId = userIdField.option_value;
+        userEmail = userEmailField?.option_value;
+        logStep('Found user from order custom fields', { userId, userEmail });
+      }
+    }
+    
+    // Method 3: Try to find user by customer email
+    if (!userId && data.attributes?.customer?.email) {
+      userEmail = data.attributes.customer.email;
+      const { data: profileData, error } = await supabase
+        .from('profiles')
+        .select('id')
+        .eq('email', userEmail)
+        .single();
+        
+      if (profileData && !error) {
+        userId = profileData.id;
+        logStep('Found user by email lookup', { userId, userEmail });
+      }
+    }
+    
+    if (!userId) {
+      logStep('ERROR: No user ID found in subscription data', { 
+        hasCustomData: !!customData,
+        hasOrderCustom: !!data.attributes?.order?.custom,
+        customerEmail: data.attributes?.customer?.email 
+      });
+      return;
+    }
 
-  // Update user's subscription status
-  const { error } = await supabase
-    .from('profiles')
-    .update({
-      user_type: 'plus', // or determine from variant
+    // Determine subscription tier based on variant/price
+    let subscriptionTier = 'plus'; // default
+    const variantId = data.attributes?.variant?.id || data.relationships?.variant?.data?.id;
+    
+    if (variantId === '697231') {
+      subscriptionTier = 'plus';
+    } else if (variantId === '697237') {
+      subscriptionTier = 'pro';
+    }
+    
+    logStep('Determined subscription tier', { variantId, subscriptionTier });
+
+    // Update user's subscription status
+    const updateData = {
+      user_type: status === 'active' ? subscriptionTier : 'free',
       subscription_id: data.id,
-      subscription_status: data.attributes.status,
+      subscription_status: data.attributes?.status || status,
       updated_at: new Date().toISOString(),
-    })
-    .eq('id', userId);
+    };
 
-  if (error) {
-    console.error('Error updating user subscription:', error);
-  } else {
-    console.log('Successfully updated user subscription');
-  }
-}
+    const { error } = await supabase
+      .from('profiles')
+      .update(updateData)
+      .eq('id', userId);
 
-async function handleSubscriptionCancellation(supabase: any, data: any) {
-  console.log('Handling subscription cancellation:', data);
-  
-  const customData = data.attributes.first_subscription_item?.meta?.custom_data;
-  const userId = customData?.user_id;
-  
-  if (!userId) {
-    console.error('No user_id found in subscription data');
-    return;
-  }
-
-  // Update user's subscription status
-  const { error } = await supabase
-    .from('profiles')
-    .update({
-      user_type: 'free',
-      subscription_status: data.attributes.status,
-      updated_at: new Date().toISOString(),
-    })
-    .eq('id', userId);
-
-  if (error) {
-    console.error('Error updating user subscription cancellation:', error);
-  } else {
-    console.log('Successfully updated user subscription cancellation');
+    if (error) {
+      logStep('ERROR updating user subscription', { error: error.message, userId, updateData });
+    } else {
+      logStep('Successfully updated user subscription', { userId, updateData });
+    }
+  } catch (error) {
+    logStep('ERROR in handleSubscriptionChange', { error: error.message });
   }
 }
 
 async function handleOrderCreated(supabase: any, data: any) {
-  console.log('Handling order created:', data);
-  // Handle one-time purchases if needed
+  logStep('Handling order created', { orderId: data.id });
+  
+  try {
+    // Extract user information from order
+    let userId = null;
+    let userEmail = null;
+    
+    // Check custom fields in the order
+    if (data.attributes?.custom) {
+      const userIdField = data.attributes.custom.find((field: any) => field.option_name === 'user_id');
+      const userEmailField = data.attributes.custom.find((field: any) => field.option_name === 'user_email');
+      
+      userId = userIdField?.option_value;
+      userEmail = userEmailField?.option_value;
+      logStep('Found user from order custom fields', { userId, userEmail });
+    }
+    
+    // Try to find user by customer email if no custom data
+    if (!userId && data.attributes?.customer?.email) {
+      userEmail = data.attributes.customer.email;
+      const { data: profileData, error } = await supabase
+        .from('profiles')
+        .select('id')
+        .eq('email', userEmail)
+        .single();
+        
+      if (profileData && !error) {
+        userId = profileData.id;
+        logStep('Found user by email lookup', { userId, userEmail });
+      }
+    }
+    
+    if (userId) {
+      logStep('Order processed for user', { userId, orderId: data.id });
+    } else {
+      logStep('No user found for order', { orderId: data.id });
+    }
+  } catch (error) {
+    logStep('ERROR in handleOrderCreated', { error: error.message });
+  }
 }
