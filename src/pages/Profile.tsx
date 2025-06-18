@@ -5,7 +5,11 @@ import { ImageCropperDialog } from '@/components/ImageCropperDialog';
 import { ProfilePictureCard } from '@/components/Profile/ProfilePictureCard';
 import { PersonalInformationForm } from '@/components/Profile/PersonalInformationForm';
 import { AccountSettingsCard } from '@/components/Profile/AccountSettingsCard';
+import { SubscriptionCard } from '@/components/subscription/SubscriptionCard';
+import { PlanLimitModal } from '@/components/subscription/PlanLimitModal';
 import { useProfile } from '@/hooks/useProfile';
+import { useSubscription } from '@/hooks/useSubscription';
+import { useProjectLimits } from '@/hooks/useProjectLimits';
 import { useT } from '@/lib/i18n';
 
 const Profile = () => {
@@ -29,6 +33,9 @@ const Profile = () => {
     setCroppedAreaPixels,
     handleSignOut,
   } = useProfile();
+
+  const { subscription, loading: subscriptionLoading } = useSubscription(user);
+  const { limitModalOpen, limitType, closeLimitModal } = useProjectLimits(user);
 
   if (!user) {
     return <div>{t('loading')}</div>;
@@ -68,7 +75,20 @@ const Profile = () => {
           />
         </div>
 
+        {/* Subscription Information */}
+        {!subscriptionLoading && subscription && (
+          <SubscriptionCard user={user} subscription={subscription} />
+        )}
+
         <AccountSettingsCard />
+
+        {/* Plan Limit Modal */}
+        <PlanLimitModal
+          user={user}
+          isOpen={limitModalOpen}
+          onClose={closeLimitModal}
+          limitType={limitType}
+        />
       </div>
     </Layout>
   );
