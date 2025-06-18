@@ -38,11 +38,11 @@ serve(async (req) => {
 
     console.log('Creating checkout with:', { storeId, variantId, customData });
 
+    // Simplified checkout data without checkout_data field
     const checkoutData = {
       data: {
         type: 'checkouts',
         attributes: {
-          checkout_data: customData || {},
           test_mode: Deno.env.get('ENVIRONMENT') !== 'production',
         },
         relationships: {
