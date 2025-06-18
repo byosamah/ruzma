@@ -82,14 +82,18 @@ export const useSubscription = () => {
       }
 
       console.log('Create-checkout response:', data);
+      console.log('Response type:', typeof data);
+      console.log('checkout_url present:', 'checkout_url' in data);
+      console.log('checkout_url value:', data?.checkout_url);
 
-      // Check for checkout_url in the response
-      if (data && data.checkout_url && typeof data.checkout_url === 'string') {
-        console.log('Redirecting to checkout:', data.checkout_url);
-        window.location.href = data.checkout_url;
+      // More flexible validation for checkout_url
+      const checkoutUrl = data?.checkout_url;
+      if (checkoutUrl && checkoutUrl.trim()) {
+        console.log('Redirecting to checkout:', checkoutUrl);
+        window.location.href = checkoutUrl;
       } else {
-        console.error('Invalid response format:', data);
-        throw new Error('Invalid checkout response format');
+        console.error('No valid checkout URL found in response:', data);
+        throw new Error('No checkout URL received from payment provider');
       }
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Failed to create checkout';
