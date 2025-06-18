@@ -32,16 +32,25 @@ serve(async (req) => {
     // Handle subscription events
     if (eventName === 'subscription_created' || eventName === 'subscription_updated') {
       const subscription = data
-      const customData = subscription.attributes?.custom_data
+      
+      // Get user_id from meta.custom_data (not from subscription attributes)
+      const customData = meta?.custom_data
       
       if (!customData?.user_id) {
-        console.log('No user_id in custom data')
+        console.log('No user_id in meta custom data')
         return new Response('OK', { status: 200, headers: corsHeaders })
       }
 
       const userId = customData.user_id
       const status = subscription.attributes?.status
       const variantId = subscription.attributes?.variant_id?.toString()
+
+      console.log('Processing subscription event:', {
+        eventName,
+        userId,
+        status,
+        variantId
+      })
 
       // Determine user type based on variant ID
       let userType = 'free'
@@ -50,6 +59,8 @@ serve(async (req) => {
       } else if (variantId === '697237') {
         userType = 'pro'
       }
+
+      console.log('Determined user type:', userType)
 
       // Update or insert subscription record
       const { error: subError } = await supabase
@@ -66,6 +77,8 @@ serve(async (req) => {
 
       if (subError) {
         console.error('Error updating subscription:', subError)
+      } else {
+        console.log('Subscription record updated successfully')
       }
 
       // Update user profile
@@ -81,18 +94,20 @@ serve(async (req) => {
 
       if (profileError) {
         console.error('Error updating profile:', profileError)
+      } else {
+        console.log(`Successfully updated user ${userId} to ${userType} plan with status ${status}`)
       }
-
-      console.log(`Updated user ${userId} to ${userType} plan with status ${status}`)
     }
 
     // Handle subscription cancellation
     if (eventName === 'subscription_cancelled') {
       const subscription = data
-      const customData = subscription.attributes?.custom_data
+      const customData = meta?.custom_data
       
       if (customData?.user_id) {
         const userId = customData.user_id
+
+        console.log('Processing subscription cancellation for user:', userId)
 
         // Update subscription record
         const { error: subError } = await supabase
@@ -120,9 +135,9 @@ serve(async (req) => {
 
         if (profileError) {
           console.error('Error updating profile after cancellation:', profileError)
+        } else {
+          console.log(`User ${userId} subscription cancelled - reverted to free plan`)
         }
-
-        console.log(`User ${userId} subscription cancelled`)
       }
     }
 
