@@ -117,10 +117,12 @@ serve(async (req) => {
       )
     }
 
+    // Extract the checkout URL from the correct location in the response
     const checkoutUrl = result.data?.attributes?.url
     if (!checkoutUrl) {
+      console.error('No checkout URL found in response:', result)
       return new Response(
-        JSON.stringify({ error: 'No checkout URL received' }),
+        JSON.stringify({ error: 'No checkout URL received from Lemon Squeezy' }),
         { status: 500, headers: corsHeaders }
       )
     }
