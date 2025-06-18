@@ -31,7 +31,7 @@ const handler = async (req: Request): Promise<Response> => {
     // Use verified domain for "from" and sender's email as "replyTo"
     const emailResponse = await resend.emails.send({
       from: "Contact Form <onboarding@resend.dev>",
-      to: ["ruzmacoruzmaco@gmail.com"], // Changed to verified email address
+      to: ["hey@ruzma.co"], // Changed back to hey@ruzma.co
       replyTo: [email],
       subject: `Contact Form: ${subject}`,
       html: `
