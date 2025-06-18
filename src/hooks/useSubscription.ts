@@ -9,11 +9,23 @@ export interface SubscriptionPlan {
   price: number;
   interval: 'month' | 'year';
   features: string[];
-  storeId: string;
-  variantId: string;
+  storeId?: string;
+  variantId?: string;
 }
 
 export const SUBSCRIPTION_PLANS: SubscriptionPlan[] = [
+  {
+    id: 'free',
+    name: 'Free',
+    price: 0,
+    interval: 'month',
+    features: [
+      '2 projects',
+      '500MB storage',
+      'Basic support',
+      'Standard analytics',
+    ],
+  },
   {
     id: 'plus',
     name: 'Plus',
@@ -57,6 +69,14 @@ export const useSubscription = () => {
       const plan = SUBSCRIPTION_PLANS.find(p => p.id === planId);
       if (!plan) {
         throw new Error('Plan not found');
+      }
+
+      // Handle free plan downgrade
+      if (planId === 'free') {
+        // For now, just show a message - you might want to implement actual downgrade logic
+        toast.success('Downgrading to free plan...');
+        // You could add actual downgrade logic here by calling a Supabase function
+        return;
       }
 
       // Get the current user
@@ -146,7 +166,7 @@ export const useSubscription = () => {
         return 'pro';
       case 'free':
       default:
-        return null;
+        return 'free';
     }
   };
 

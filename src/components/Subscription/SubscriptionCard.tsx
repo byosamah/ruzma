@@ -10,6 +10,7 @@ interface SubscriptionCardProps {
   plan: SubscriptionPlan;
   isPopular?: boolean;
   isCurrentPlan?: boolean;
+  currentUserType?: string;
   onSelectPlan: (planId: string) => void;
   isLoading?: boolean;
 }
@@ -18,6 +19,7 @@ export const SubscriptionCard: React.FC<SubscriptionCardProps> = ({
   plan,
   isPopular = false,
   isCurrentPlan = false,
+  currentUserType = 'free',
   onSelectPlan,
   isLoading = false,
 }) => {
@@ -50,12 +52,39 @@ export const SubscriptionCard: React.FC<SubscriptionCardProps> = ({
     return null;
   };
 
+  const getPlanTierValue = (planId: string): number => {
+    switch (planId) {
+      case 'free': return 0;
+      case 'plus': return 1;
+      case 'pro': return 2;
+      default: return 0;
+    }
+  };
+
+  const isDowngrade = () => {
+    const currentTier = getPlanTierValue(currentUserType);
+    const targetTier = getPlanTierValue(plan.id);
+    return currentTier > targetTier;
+  };
+
+  const isUpgrade = () => {
+    const currentTier = getPlanTierValue(currentUserType);
+    const targetTier = getPlanTierValue(plan.id);
+    return currentTier < targetTier;
+  };
+
   const getButtonText = () => {
     if (isCurrentPlan) {
       return 'Current Plan';
     }
     if (isLoading) {
-      return 'Creating checkout...';
+      return 'Processing...';
+    }
+    if (isDowngrade()) {
+      return 'Downgrade';
+    }
+    if (isUpgrade()) {
+      return 'Upgrade';
     }
     return 'Choose Plan';
   };
@@ -63,6 +92,9 @@ export const SubscriptionCard: React.FC<SubscriptionCardProps> = ({
   const getButtonVariant = () => {
     if (isCurrentPlan) {
       return 'secondary' as const;
+    }
+    if (isDowngrade()) {
+      return 'outline' as const;
     }
     if (isPopular) {
       return 'default' as const;

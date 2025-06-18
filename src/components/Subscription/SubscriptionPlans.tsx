@@ -44,12 +44,13 @@ export const SubscriptionPlans: React.FC = () => {
         return 'plus';
       case 'pro':
         return 'pro';
+      case 'free':
       default:
-        return null;
+        return 'free';
     }
   };
 
-  const currentPlanId = userProfile?.user_type ? getCurrentPlanId(userProfile.user_type) : null;
+  const currentPlanId = userProfile?.user_type ? getCurrentPlanId(userProfile.user_type) : 'free';
 
   if (profileLoading) {
     return (
@@ -73,13 +74,14 @@ export const SubscriptionPlans: React.FC = () => {
         </p>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl mx-auto">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-6xl mx-auto">
         {plans.map((plan, index) => (
           <SubscriptionCard
             key={plan.id}
             plan={plan}
-            isPopular={index === 0}
+            isPopular={plan.id === 'plus'}
             isCurrentPlan={currentPlanId === plan.id}
+            currentUserType={currentPlanId}
             onSelectPlan={createCheckout}
             isLoading={isLoading}
           />
