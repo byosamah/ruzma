@@ -58,10 +58,10 @@ const ProjectManagement: React.FC = () => {
           <div className="flex items-center justify-center min-h-[60vh]">
             <div className="text-center space-y-4">
               <div className="relative">
-                <div className="w-16 h-16 border-4 border-blue-200 border-t-blue-600 rounded-full animate-spin mx-auto"></div>
-                <div className="absolute inset-0 w-16 h-16 border-4 border-transparent border-r-purple-400 rounded-full animate-spin mx-auto" style={{ animationDirection: 'reverse', animationDuration: '1.5s' }}></div>
+                <div className="w-16 h-16 border-4 border-brand-blue/30 border-t-brand-blue rounded-full animate-spin mx-auto"></div>
+                <div className="absolute inset-0 w-16 h-16 border-4 border-transparent border-r-brand-yellow/60 rounded-full animate-spin mx-auto" style={{ animationDirection: 'reverse', animationDuration: '1.5s' }}></div>
               </div>
-              <p className="text-slate-700 font-medium">{t('loadingProject')}</p>
+              <p className="text-brand-black/70 font-medium">{t('loadingProject')}</p>
             </div>
           </div>
         </div>
@@ -74,17 +74,17 @@ const ProjectManagement: React.FC = () => {
   if (!project) {
     return (
       <Layout user={profile || user}>
-        <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50/30 to-indigo-50/20">
+        <div className="min-h-screen bg-gradient-to-br from-auth-background via-brand-yellow/5 to-brand-blue/5">
           <div className="flex items-center justify-center min-h-[60vh]">
             <div className="max-w-md mx-auto text-center px-6">
-              <div className="w-20 h-20 bg-gradient-to-br from-slate-200 to-slate-300 rounded-2xl flex items-center justify-center mx-auto mb-6">
-                <div className="w-8 h-8 bg-slate-400 rounded-lg"></div>
+              <div className="w-20 h-20 bg-gradient-to-br from-brand-blue/10 to-brand-navy/20 rounded-2xl flex items-center justify-center mx-auto mb-6">
+                <div className="w-8 h-8 bg-brand-blue/40 rounded-lg"></div>
               </div>
-              <h2 className="text-2xl font-bold text-slate-800 mb-3">{t('projectNotFound')}</h2>
-              <p className="text-slate-600 mb-6">The project you're looking for doesn't exist or has been removed.</p>
+              <h2 className="text-2xl font-bold text-brand-black mb-3">{t('projectNotFound')}</h2>
+              <p className="text-brand-black/60 mb-6">The project you're looking for doesn't exist or has been removed.</p>
               <Button 
                 onClick={() => navigate("/dashboard")}
-                className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white px-6 py-2"
+                className="bg-gradient-to-r from-brand-blue to-brand-navy hover:from-brand-blue/90 hover:to-brand-navy/90 text-white px-6 py-2"
               >
                 {t('goToDashboard')}
               </Button>
@@ -97,7 +97,7 @@ const ProjectManagement: React.FC = () => {
 
   return (
     <Layout user={profile || user}>
-      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50/30 to-indigo-50/20">
+      <div className="min-h-screen bg-gradient-to-br from-auth-background via-brand-yellow/5 to-brand-blue/5">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
           {/* Back Navigation */}
           <div className="mb-6">
@@ -105,7 +105,7 @@ const ProjectManagement: React.FC = () => {
               variant="ghost"
               size="sm"
               onClick={handleBackClick}
-              className="text-slate-600 hover:text-slate-800 hover:bg-white/60 -ml-2"
+              className="text-brand-black/60 hover:text-brand-black hover:bg-white/60 -ml-2"
             >
               <ArrowLeft className="w-4 h-4 mr-2" />
               {t('backToDashboard')}
@@ -115,8 +115,8 @@ const ProjectManagement: React.FC = () => {
           {/* Main Content */}
           <div className="space-y-8">
             {/* Project Header Card */}
-            <div className="bg-white/70 backdrop-blur-sm rounded-2xl border border-white/50 shadow-lg shadow-slate-200/50 overflow-hidden">
-              <div className="bg-gradient-to-r from-blue-600/5 via-purple-600/5 to-indigo-600/5 p-6 sm:p-8">
+            <div className="bg-white/70 backdrop-blur-sm rounded-2xl border border-white/50 shadow-lg shadow-brand-blue/5 overflow-hidden">
+              <div className="bg-gradient-to-r from-brand-blue/5 via-brand-yellow/5 to-brand-navy/5 p-6 sm:p-8">
                 <ProjectHeader 
                   project={project} 
                   onBackClick={handleBackClick}
@@ -127,16 +127,16 @@ const ProjectManagement: React.FC = () => {
             </div>
 
             {/* Milestones Section */}
-            <div className="bg-white/70 backdrop-blur-sm rounded-2xl border border-white/50 shadow-lg shadow-slate-200/50 overflow-hidden">
+            <div className="bg-white/70 backdrop-blur-sm rounded-2xl border border-white/50 shadow-lg shadow-brand-blue/5 overflow-hidden">
               <div className="p-6 sm:p-8">
                 <div className="flex items-center justify-between mb-6">
                   <div>
-                    <h2 className="text-2xl font-bold text-slate-800">Project Milestones</h2>
-                    <p className="text-slate-600 mt-1">Track progress and manage deliverables</p>
+                    <h2 className="text-2xl font-bold text-brand-black">Project Milestones</h2>
+                    <p className="text-brand-black/60 mt-1">Track progress and manage deliverables</p>
                   </div>
                   <div className="text-right">
-                    <div className="text-sm text-slate-500">Total Milestones</div>
-                    <div className="text-2xl font-bold text-slate-800">{project.milestones.length}</div>
+                    <div className="text-sm text-brand-black/50">Total Milestones</div>
+                    <div className="text-2xl font-bold text-brand-black">{project.milestones.length}</div>
                   </div>
                 </div>
                 
