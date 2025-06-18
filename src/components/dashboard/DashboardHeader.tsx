@@ -59,7 +59,6 @@ const DashboardHeader: React.FC<DashboardHeaderProps> = ({
       <div className="flex gap-3">
         <Button 
           variant="outline" 
-          size="sm" 
           onClick={onViewAnalytics}
           className="flex items-center gap-2"
         >
