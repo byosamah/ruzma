@@ -1,7 +1,8 @@
+
 import React from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
-import { LogOut, User, Briefcase } from 'lucide-react';
+import { LogOut, User, Briefcase, TrendingUp } from 'lucide-react';
 import { useT } from '@/lib/i18n';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 import LanguageSelector from './LanguageSelector';
@@ -47,6 +48,14 @@ const Layout: React.FC<LayoutProps> = ({
           <div className="flex justify-between items-center h-16">
             <LogoComponent />
             <div className="flex items-center space-x-4">
+              {user && (
+                <Link to="/plans">
+                  <Button variant="outline" size="sm" className="text-blue-600 border-blue-600 hover:bg-blue-50">
+                    <TrendingUp className="w-4 h-4 mr-2" />
+                    Upgrade
+                  </Button>
+                </Link>
+              )}
               <LanguageSelector />
               {user ? <>
                   <Link to="/dashboard">
