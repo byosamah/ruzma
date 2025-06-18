@@ -9,7 +9,7 @@ import { useDashboard } from '@/hooks/useDashboard';
 import { useUsageTracking } from '@/hooks/useUsageTracking';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
-import { Plus, FileText } from 'lucide-react';
+import { Plus, FileText, Template } from 'lucide-react';
 import { useT } from '@/lib/i18n';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 
@@ -115,6 +115,14 @@ const Dashboard = () => {
         <div className="space-y-6">
           <div className="flex items-center justify-between">
             <h2 className="text-2xl font-bold text-slate-800">{t('yourProjects')}</h2>
+            <Button 
+              variant="outline" 
+              onClick={() => navigate('/templates')}
+              className="flex items-center gap-2"
+            >
+              <Template className="w-4 h-4" />
+              Templates
+            </Button>
           </div>
 
           {projects.length === 0 ? (
