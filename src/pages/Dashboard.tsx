@@ -55,7 +55,7 @@ const Dashboard = () => {
           completedMilestones={stats.completedMilestones}
           totalMilestones={stats.totalMilestones}
           pendingPayments={stats.pendingPayments}
-          userCurrency={userCurrency}
+          userCurrency={userCurrency.currency}
         />
         
         <div className="grid grid-cols-1 xl:grid-cols-3 gap-8">
@@ -65,12 +65,12 @@ const Dashboard = () => {
               onEdit={handleEditProject}
               onDelete={handleDeleteProject}
               onNewProject={handleNewProject}
-              currency={userCurrency}
+              currency={userCurrency.currency}
             />
           </div>
           
           <div className="xl:col-span-1">
-            <DashboardAnalytics data={analyticsData} userCurrency={userCurrency} />
+            <DashboardAnalytics data={analyticsData} userCurrency={userCurrency.currency} />
           </div>
         </div>
       </div>
