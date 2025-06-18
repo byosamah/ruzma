@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
@@ -57,9 +56,8 @@ const Layout: React.FC<LayoutProps> = ({
                     </Button>
                   </Link>
                   <Link to="/profile">
-                    <Button variant={isActive('/profile') ? 'secondary' : 'ghost'} size="sm">
-                      <User className="w-4 h-4 mr-2" />
-                      {t("profile")}
+                    <Button variant={isActive('/profile') ? 'secondary' : 'ghost'} size="icon">
+                      <User className="w-4 h-4" />
                     </Button>
                   </Link>
                   <Tooltip>
