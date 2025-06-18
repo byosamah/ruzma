@@ -138,7 +138,7 @@ export const getSecureDownloadUrl = async (
       userId
     });
 
-    const { data, error } = supabase.storage
+    const { data, error } = await supabase.storage
       .from(bucket)
       .createSignedUrl(path, 3600); // 1 hour expiry
 
