@@ -83,11 +83,13 @@ export const useSubscription = () => {
 
       console.log('Create-checkout response:', data);
 
-      if (data?.checkout_url) {
+      // Check for checkout_url in the response
+      if (data && data.checkout_url && typeof data.checkout_url === 'string') {
         console.log('Redirecting to checkout:', data.checkout_url);
         window.location.href = data.checkout_url;
       } else {
-        throw new Error('No checkout URL received');
+        console.error('Invalid response format:', data);
+        throw new Error('Invalid checkout response format');
       }
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Failed to create checkout';
