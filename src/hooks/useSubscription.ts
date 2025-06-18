@@ -26,8 +26,8 @@ export const SUBSCRIPTION_PLANS: SubscriptionPlan[] = [
       'Priority support',
       'Advanced analytics',
     ],
-    storeId: process.env.REACT_APP_LEMON_SQUEEZY_STORE_ID || '',
-    variantId: process.env.REACT_APP_LEMON_SQUEEZY_PLUS_VARIANT_ID || '',
+    storeId: import.meta.env.VITE_LEMON_SQUEEZY_STORE_ID || '',
+    variantId: import.meta.env.VITE_LEMON_SQUEEZY_PLUS_VARIANT_ID || '',
   },
   {
     id: 'pro',
@@ -41,8 +41,8 @@ export const SUBSCRIPTION_PLANS: SubscriptionPlan[] = [
       'Custom integrations',
       'White-label options',
     ],
-    storeId: process.env.REACT_APP_LEMON_SQUEEZY_STORE_ID || '',
-    variantId: process.env.REACT_APP_LEMON_SQUEEZY_PRO_VARIANT_ID || '',
+    storeId: import.meta.env.VITE_LEMON_SQUEEZY_STORE_ID || '',
+    variantId: import.meta.env.VITE_LEMON_SQUEEZY_PRO_VARIANT_ID || '',
   },
 ];
 
