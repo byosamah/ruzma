@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Button } from '@/components/ui/button';
 import { Edit, Eye, Trash2, Copy, Link } from 'lucide-react';
@@ -29,9 +28,8 @@ const ProjectCardActions: React.FC<ProjectCardActionsProps> = ({
           <Edit className="w-4 h-4" />
           Edit
         </Button>
-        <Button variant="outline" size="sm" onClick={onViewClick} className="flex items-center gap-1 bg-amber-400 hover:bg-amber-300">
+        <Button variant="outline" size="sm" onClick={onViewClick} className="flex items-center gap-1">
           <Eye className="w-4 h-4" />
-          View
         </Button>
         {onDeleteClick && (
           <Button variant="outline" size="sm" onClick={onDeleteClick} className="flex items-center gap-1 text-red-500 hover:text-red-700 hover:bg-red-50">
