@@ -38,7 +38,19 @@ serve(async (req) => {
 
     console.log('Creating checkout with:', { storeId, variantId, customData });
 
-    // Enhanced checkout data with user identification through checkout_options
+    // Format custom data properly - LemonSqueezy expects each custom field to be a string
+    let formattedCustomData: Array<{ option_name: string; option_value: string }> = [];
+    
+    if (customData) {
+      formattedCustomData = Object.entries(customData).map(([key, value]) => ({
+        option_name: key,
+        option_value: String(value) // Ensure it's a string
+      }));
+    }
+
+    console.log('Formatted custom data:', JSON.stringify(formattedCustomData, null, 2));
+
+    // Enhanced checkout data with user identification through checkout_data
     const checkoutData = {
       data: {
         type: 'checkouts',
@@ -54,10 +66,7 @@ serve(async (req) => {
             subscription_preview: true,
           },
           checkout_data: {
-            custom: customData ? Object.entries(customData).map(([key, value]) => ({
-              option_name: key,
-              option_value: String(value)
-            })) : []
+            custom: formattedCustomData
           },
         },
         relationships: {
