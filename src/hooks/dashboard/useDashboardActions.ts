@@ -3,7 +3,7 @@ import { useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { secureSignOut, logSecurityEvent } from '@/lib/authSecurity';
 
-export const useDashboardActions = (deleteProject: (projectId: string) => Promise<void>) => {
+export const useDashboardActions = (deleteProject: (projectId: string) => Promise<boolean>) => {
   const navigate = useNavigate();
 
   const handleSignOut = useCallback(async () => {
