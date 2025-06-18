@@ -31,7 +31,7 @@ const handler = async (req: Request): Promise<Response> => {
     const clientUrl = `${Deno.env.get('SUPABASE_URL')?.replace('/rest/v1', '')}/client/project/${clientToken}`;
 
     const emailResponse = await resend.emails.send({
-      from: "Ruzma <onboarding@resend.dev>",
+      from: "Ruzma <notifications@ruzma.co>",
       to: [clientEmail],
       subject: `Your Project Dashboard - ${projectName}`,
       html: `
