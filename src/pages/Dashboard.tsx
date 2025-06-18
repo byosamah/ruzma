@@ -1,4 +1,3 @@
-
 import React from 'react';
 import Layout from '@/components/Layout';
 import DashboardHeader from '@/components/dashboard/DashboardHeader';
@@ -9,7 +8,7 @@ import { useDashboard } from '@/hooks/useDashboard';
 import { useUsageTracking } from '@/hooks/useUsageTracking';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
-import { Plus, FileText, FileTemplate } from 'lucide-react';
+import { Plus, FileText } from 'lucide-react';
 import { useT } from '@/lib/i18n';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 
@@ -120,7 +119,7 @@ const Dashboard = () => {
               onClick={() => navigate('/templates')}
               className="flex items-center gap-2"
             >
-              <FileTemplate className="w-4 h-4" />
+              <FileText className="w-4 h-4" />
               Templates
             </Button>
           </div>
