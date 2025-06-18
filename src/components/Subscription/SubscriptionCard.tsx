@@ -51,7 +51,7 @@ export const SubscriptionCard: React.FC<SubscriptionCardProps> = ({
           className="w-full"
           variant={isPopular ? 'default' : 'outline'}
         >
-          {isLoading ? 'Creating checkout...' : 'Choose Plan'}
+          {isLoading ? 'Creating checkout...' : 'Coming Soon'}
         </Button>
       </CardFooter>
     </Card>
