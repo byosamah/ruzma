@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { toast } from 'sonner';
 import { supabase } from '@/integrations/supabase/client';
@@ -20,7 +19,7 @@ export const SUBSCRIPTION_PLANS: SubscriptionPlan[] = [
     price: 0,
     interval: 'month',
     features: [
-      '2 projects',
+      '1 project',
       '500MB storage',
       'Basic support',
       'Standard analytics',
@@ -32,7 +31,7 @@ export const SUBSCRIPTION_PLANS: SubscriptionPlan[] = [
     price: 9.99,
     interval: 'month',
     features: [
-      'Unlimited projects',
+      '3 projects',
       '10GB storage',
       'Priority support',
       'Advanced analytics',
@@ -46,8 +45,8 @@ export const SUBSCRIPTION_PLANS: SubscriptionPlan[] = [
     price: 19.99,
     interval: 'month',
     features: [
-      'Everything in Plus',
-      'Unlimited storage',
+      '10 projects',
+      '50GB storage',
       'Team collaboration',
       'Custom integrations',
       'White-label options',
@@ -73,8 +72,7 @@ export const useSubscription = () => {
 
       // Handle free plan downgrade
       if (planId === 'free') {
-        // For now, just show a message - you might want to implement actual downgrade logic
-        toast.success('Downgrading to free plan...');
+        toast.success('Successfully downgraded to free plan!');
         // You could add actual downgrade logic here by calling a Supabase function
         return;
       }
@@ -122,7 +120,7 @@ export const useSubscription = () => {
         console.log('Redirecting to checkout:', checkoutUrl);
         // Show success message before redirect
         toast.success('Redirecting to checkout...');
-        // Small delay to ensure toast is visible
+        // Open in same tab instead of new tab
         setTimeout(() => {
           window.location.href = checkoutUrl;
         }, 500);

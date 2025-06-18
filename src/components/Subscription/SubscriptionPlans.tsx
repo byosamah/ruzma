@@ -50,7 +50,27 @@ export const SubscriptionPlans: React.FC = () => {
     }
   };
 
+  const getPopularPlan = (currentUserType: string) => {
+    switch (currentUserType) {
+      case 'free':
+        return 'plus'; // Highlight Plus as "Most Popular" for free users
+      case 'plus':
+        return 'pro'; // Highlight Pro as "Upgrade your work" for plus users
+      case 'pro':
+      default:
+        return null; // No highlighting for pro users
+    }
+  };
+
+  const getPopularText = (currentUserType: string, planId: string) => {
+    if (currentUserType === 'plus' && planId === 'pro') {
+      return 'Upgrade your work';
+    }
+    return 'Most Popular';
+  };
+
   const currentPlanId = userProfile?.user_type ? getCurrentPlanId(userProfile.user_type) : 'free';
+  const popularPlanId = getPopularPlan(currentPlanId);
 
   if (profileLoading) {
     return (
@@ -67,19 +87,13 @@ export const SubscriptionPlans: React.FC = () => {
 
   return (
     <div className="space-y-6">
-      <div className="text-center">
-        <h2 className="text-3xl font-bold">Choose Your Plan</h2>
-        <p className="text-muted-foreground mt-2">
-          Upgrade your account to unlock more features and storage
-        </p>
-      </div>
-
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-6xl mx-auto">
-        {plans.map((plan, index) => (
+        {plans.map((plan) => (
           <SubscriptionCard
             key={plan.id}
             plan={plan}
-            isPopular={plan.id === 'plus'}
+            isPopular={plan.id === popularPlanId}
+            popularText={getPopularText(currentPlanId, plan.id)}
             isCurrentPlan={currentPlanId === plan.id}
             currentUserType={currentPlanId}
             onSelectPlan={createCheckout}

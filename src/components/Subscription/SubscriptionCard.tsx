@@ -9,6 +9,7 @@ import { SubscriptionPlan } from '@/hooks/useSubscription';
 interface SubscriptionCardProps {
   plan: SubscriptionPlan;
   isPopular?: boolean;
+  popularText?: string;
   isCurrentPlan?: boolean;
   currentUserType?: string;
   onSelectPlan: (planId: string) => void;
@@ -18,6 +19,7 @@ interface SubscriptionCardProps {
 export const SubscriptionCard: React.FC<SubscriptionCardProps> = ({
   plan,
   isPopular = false,
+  popularText = 'Most Popular',
   isCurrentPlan = false,
   currentUserType = 'free',
   onSelectPlan,
@@ -45,7 +47,7 @@ export const SubscriptionCard: React.FC<SubscriptionCardProps> = ({
     if (isPopular) {
       return (
         <Badge className="absolute -top-2 left-1/2 transform -translate-x-1/2 bg-primary">
-          Most Popular
+          {popularText}
         </Badge>
       );
     }

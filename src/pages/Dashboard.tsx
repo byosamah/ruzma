@@ -1,19 +1,15 @@
+
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
 import Layout from '@/components/Layout';
-import { useT } from '@/lib/i18n';
-import DashboardHeader from "@/components/dashboard/DashboardHeader";
-import DashboardStats from "@/components/dashboard/DashboardStats";
-import DashboardProjectList from "@/components/dashboard/DashboardProjectList";
-import DashboardAnalytics from "@/components/dashboard/DashboardAnalytics";
+import { DashboardHeader } from '@/components/dashboard/DashboardHeader';
+import { DashboardStats } from '@/components/dashboard/DashboardStats';
+import { DashboardProjectList } from '@/components/dashboard/DashboardProjectList';
+import { DashboardAnalytics } from '@/components/dashboard/DashboardAnalytics';
+import { UsageIndicators } from '@/components/dashboard/UsageIndicators';
 import { useDashboard } from '@/hooks/useDashboard';
 import { useDashboardAnalytics } from '@/hooks/useDashboardAnalytics';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 const Dashboard = () => {
-  const t = useT();
-  const navigate = useNavigate();
-
   const {
     user,
     profile,
@@ -27,78 +23,46 @@ const Dashboard = () => {
     handleDeleteProject,
   } = useDashboard();
 
-  // Use original projects for analytics (they are already DatabaseProject type)
-  const analyticsData = useDashboardAnalytics(projects.map(p => ({
-    ...p,
-    user_id: user?.id || '',
-    created_at: p.created_at || new Date().toISOString(),
-    updated_at: p.updated_at || new Date().toISOString(),
-    client_access_token: p.client_access_token || '',
-    milestones: p.milestones.map(m => ({
-      ...m,
-      project_id: p.id,
-      created_at: m.created_at || new Date().toISOString(),
-      updated_at: m.updated_at || new Date().toISOString(),
-    }))
-  })));
+  const analyticsData = useDashboardAnalytics(projects);
 
   if (loading) {
     return (
-      <Layout>
-        <div className="flex items-center justify-center min-h-[400px]">
-          <div className="text-center">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
-            <p className="text-slate-600">{t('loadingDashboard')}</p>
-          </div>
+      <Layout user={user} onSignOut={handleSignOut}>
+        <div className="flex items-center justify-center min-h-[60vh]">
+          <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-slate-900"></div>
         </div>
       </Layout>
     );
   }
 
-  if (!user) {
-    console.log('Dashboard: Rendering without user - this should not happen');
-    return <div>{t('loadingDashboard')}</div>;
-  }
-
   return (
-    <Layout user={profile || user} onSignOut={handleSignOut}>
+    <Layout user={user} onSignOut={handleSignOut}>
       <div className="space-y-8">
-        <DashboardHeader
-          displayName={displayName}
-          onNewProject={() => navigate("/create-project")}
+        <DashboardHeader displayName={displayName} />
+        
+        {/* Usage Indicators */}
+        <UsageIndicators userProfile={profile} projects={projects} />
+        
+        <DashboardStats 
+          stats={stats} 
+          userCurrency={userCurrency}
+          analyticsData={analyticsData}
         />
         
-        <Tabs defaultValue="overview" className="w-full">
-          <TabsList className="grid w-full grid-cols-2">
-            <TabsTrigger value="overview">Overview</TabsTrigger>
-            <TabsTrigger value="analytics">Analytics</TabsTrigger>
-          </TabsList>
-          
-          <TabsContent value="overview" className="space-y-8">
-            <DashboardStats
-              totalProjects={stats.totalProjects}
-              totalEarnings={stats.totalEarnings}
-              completedMilestones={stats.completedMilestones}
-              totalMilestones={stats.totalMilestones}
-              pendingPayments={stats.pendingPayments}
-              userCurrency={userCurrency.currency}
-            />
+        <div className="grid grid-cols-1 xl:grid-cols-3 gap-8">
+          <div className="xl:col-span-2">
             <DashboardProjectList
               projects={projects}
-              onEdit={handleEditProject}
-              onDelete={handleDeleteProject}
-              onNewProject={() => navigate("/create-project")}
-              currency={userCurrency.currency}
+              userCurrency={userCurrency}
+              onEditProject={handleEditProject}
+              onDeleteProject={handleDeleteProject}
             />
-          </TabsContent>
+          </div>
           
-          <TabsContent value="analytics" className="space-y-8">
-            <DashboardAnalytics
-              data={analyticsData}
-              userCurrency={userCurrency.currency}
-            />
-          </TabsContent>
-        </Tabs>
+          <div className="xl:col-span-1">
+            <DashboardAnalytics analyticsData={analyticsData} />
+          </div>
+        </div>
       </div>
     </Layout>
   );
