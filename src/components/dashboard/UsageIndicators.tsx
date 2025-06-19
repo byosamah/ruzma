@@ -40,17 +40,17 @@ export const UsageIndicators: React.FC<UsageIndicatorsProps> = ({
   };
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mb-4">
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
       {/* Projects Usage */}
-      <Card className="p-3">
-        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-1">
-          <CardTitle className="text-xs font-medium text-muted-foreground">Projects Used</CardTitle>
-          <FolderOpen className="h-3.5 w-3.5 text-muted-foreground" />
+      <Card>
+        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+          <CardTitle className="text-sm font-medium">Projects Used</CardTitle>
+          <FolderOpen className="h-4 w-4 text-muted-foreground" />
         </CardHeader>
-        <CardContent className="p-0">
+        <CardContent>
           <div className="space-y-2">
             <div className="flex items-center justify-between">
-              <span className="text-lg font-bold">
+              <span className="text-2xl font-bold">
                 {usage.projects.current} of {usage.projects.max}
               </span>
               {usage.projects.percentage >= 100 && (
@@ -58,7 +58,7 @@ export const UsageIndicators: React.FC<UsageIndicatorsProps> = ({
                   size="sm"
                   variant="outline"
                   onClick={handleUpgradeClick}
-                  className="text-xs h-6 px-2"
+                  className="text-xs"
                 >
                   {React.createElement(getUpgradeButtonIcon(), { className: "h-3 w-3 mr-1" })}
                   {getUpgradeButtonText()}
@@ -67,25 +67,25 @@ export const UsageIndicators: React.FC<UsageIndicatorsProps> = ({
             </div>
             <Progress
               value={usage.projects.percentage}
-              className="h-1.5"
+              className="h-2"
             />
             <p className="text-xs text-muted-foreground">
-              {usage.projects.percentage}% used
+              {usage.projects.percentage}% of projects used
             </p>
           </div>
         </CardContent>
       </Card>
 
       {/* Storage Usage */}
-      <Card className="p-3">
-        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-1">
-          <CardTitle className="text-xs font-medium text-muted-foreground">Storage Used</CardTitle>
-          <Database className="h-3.5 w-3.5 text-muted-foreground" />
+      <Card>
+        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+          <CardTitle className="text-sm font-medium">Storage Used</CardTitle>
+          <Database className="h-4 w-4 text-muted-foreground" />
         </CardHeader>
-        <CardContent className="p-0">
+        <CardContent>
           <div className="space-y-2">
             <div className="flex items-center justify-between">
-              <span className="text-lg font-bold">
+              <span className="text-2xl font-bold">
                 {usage.storage.currentFormatted} of {usage.storage.maxFormatted}
               </span>
               {usage.storage.percentage >= 100 && (
@@ -93,7 +93,7 @@ export const UsageIndicators: React.FC<UsageIndicatorsProps> = ({
                   size="sm"
                   variant="outline"
                   onClick={handleUpgradeClick}
-                  className="text-xs h-6 px-2"
+                  className="text-xs"
                 >
                   {React.createElement(getUpgradeButtonIcon(), { className: "h-3 w-3 mr-1" })}
                   {getUpgradeButtonText()}
@@ -102,10 +102,10 @@ export const UsageIndicators: React.FC<UsageIndicatorsProps> = ({
             </div>
             <Progress
               value={usage.storage.percentage}
-              className="h-1.5"
+              className="h-2"
             />
             <p className="text-xs text-muted-foreground">
-              {usage.storage.percentage}% used
+              {usage.storage.percentage}% of storage used
             </p>
           </div>
         </CardContent>
