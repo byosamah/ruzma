@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
@@ -21,6 +20,7 @@ const SignUp = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [isEmailSent, setIsEmailSent] = useState(false);
+  const [resendCooldown, setResendCooldown] = useState(0);
   const navigate = useNavigate();
 
   const validateForm = () => {
@@ -131,6 +131,11 @@ const SignUp = () => {
   };
 
   const handleResendConfirmation = async () => {
+    if (resendCooldown > 0) {
+      toast.error(`Please wait ${resendCooldown} seconds before trying again.`);
+      return;
+    }
+
     setIsLoading(true);
     try {
       const { error } = await supabase.auth.resend({
@@ -142,12 +147,36 @@ const SignUp = () => {
       });
 
       if (error) {
-        toast.error('Failed to resend confirmation email');
+        console.error('Resend error:', error);
+        
+        // Handle rate limiting specifically
+        if (error.message.includes('security purposes') || error.message.includes('after')) {
+          // Extract the number of seconds from the error message if possible
+          const secondsMatch = error.message.match(/(\d+)\s+seconds?/);
+          const seconds = secondsMatch ? parseInt(secondsMatch[1]) : 40;
+          
+          setResendCooldown(seconds);
+          toast.error(`Please wait ${seconds} seconds before requesting another confirmation email.`);
+          
+          // Start countdown
+          const interval = setInterval(() => {
+            setResendCooldown(prev => {
+              if (prev <= 1) {
+                clearInterval(interval);
+                return 0;
+              }
+              return prev - 1;
+            });
+          }, 1000);
+        } else {
+          toast.error('Failed to resend confirmation email. Please try again.');
+        }
       } else {
         toast.success('Confirmation email sent! Please check your inbox.');
       }
     } catch (error) {
-      toast.error('Failed to resend confirmation email');
+      console.error('Unexpected error during resend:', error);
+      toast.error('Failed to resend confirmation email. Please try again.');
     } finally {
       setIsLoading(false);
     }
@@ -187,9 +216,9 @@ const SignUp = () => {
                 onClick={handleResendConfirmation}
                 variant="outline" 
                 className="w-full"
-                disabled={isLoading}
+                disabled={isLoading || resendCooldown > 0}
               >
-                {isLoading ? 'Sending...' : 'Resend Confirmation Email'}
+                {isLoading ? 'Sending...' : resendCooldown > 0 ? `Wait ${resendCooldown}s` : 'Resend Confirmation Email'}
               </Button>
               
               <Button asChild variant="ghost" className="w-full">
