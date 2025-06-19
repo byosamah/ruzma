@@ -1,5 +1,7 @@
 
 import React, { useRef, useEffect, useState } from "react";
+import { useWatermarkedPreview } from "@/hooks/useWatermarkedPreview";
+import { Loader2 } from "lucide-react";
 
 interface DeliverableWatermarkedPreviewProps {
   fileUrl: string;
@@ -19,62 +21,94 @@ const getFileType = (url: string): string => {
   return "";
 };
 
-const WatermarkLayer: React.FC<{ text: string }> = ({ text }) => (
-  <div
-    style={{
-      pointerEvents: "none",
-      position: "absolute",
-      left: 0,
-      top: 0,
-      width: "100%",
-      height: "100%",
-      display: "flex",
-      alignItems: "center",
-      justifyContent: "center",
-      color: "rgba(70,70,70,0.35)",
-      fontSize: "2.5rem",
-      fontWeight: "bold",
-      textAlign: "center",
-      zIndex: 3,
-      userSelect: "none",
-      transform: "rotate(-20deg)"
-    }}
-  >
-    {text}
-  </div>
-);
-
 const DeliverableWatermarkedPreview: React.FC<DeliverableWatermarkedPreviewProps> = ({
   fileUrl,
   watermarkText,
   fileType,
 }) => {
-  // Image preview
-  if (isImage(fileType) || isImage(getFileType(fileUrl))) {
+  const { loading, generateWatermarkedPreview } = useWatermarkedPreview();
+  const [securePreviewUrl, setSecurePreviewUrl] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const createSecurePreview = async () => {
+      try {
+        const actualFileType = fileType || getFileType(fileUrl);
+        
+        if (!isImage(actualFileType) && !isPDF(actualFileType)) {
+          setError("File type not supported for secure preview");
+          return;
+        }
+
+        const watermarkedUrl = await generateWatermarkedPreview(
+          fileUrl,
+          watermarkText,
+          actualFileType
+        );
+
+        if (watermarkedUrl) {
+          setSecurePreviewUrl(watermarkedUrl);
+        } else {
+          setError("Failed to generate secure preview");
+        }
+      } catch (err) {
+        console.error('Error creating secure preview:', err);
+        setError("Failed to generate secure preview");
+      }
+    };
+
+    createSecurePreview();
+  }, [fileUrl, watermarkText, fileType, generateWatermarkedPreview]);
+
+  if (loading) {
     return (
       <div className="relative flex items-center justify-center w-full h-full min-h-[300px] bg-slate-100 rounded overflow-hidden">
-        <img
-          src={fileUrl}
-          alt="deliverable"
-          className="max-h-[350px] rounded object-contain w-auto mx-auto"
-          style={{ width: "100%", height: "auto", opacity: 1, objectFit: "contain" }}
-        />
-        <WatermarkLayer text={watermarkText} />
+        <div className="flex flex-col items-center gap-3">
+          <Loader2 className="w-8 h-8 animate-spin text-slate-600" />
+          <p className="text-sm text-slate-600">Creating secure preview...</p>
+        </div>
       </div>
     );
   }
 
-  // PDF preview
-  if (isPDF(fileType) || isPDF(getFileType(fileUrl))) {
-    // Use an <iframe> overlaying watermark text
+  if (error || !securePreviewUrl) {
+    return (
+      <div className="relative flex items-center justify-center w-full h-full min-h-[300px] bg-slate-100 rounded overflow-hidden">
+        <div className="text-center">
+          <p className="text-slate-500 text-sm mb-2">Secure preview unavailable</p>
+          <p className="text-xs text-slate-400">{error || "Failed to generate watermarked preview"}</p>
+        </div>
+      </div>
+    );
+  }
+
+  const actualFileType = fileType || getFileType(fileUrl);
+
+  // Image preview with embedded watermark
+  if (isImage(actualFileType)) {
+    return (
+      <div className="relative flex items-center justify-center w-full h-full min-h-[300px] bg-slate-100 rounded overflow-hidden">
+        <img
+          src={securePreviewUrl}
+          alt="Secure watermarked preview"
+          className="max-h-[350px] rounded object-contain w-auto mx-auto"
+          style={{ width: "100%", height: "auto", objectFit: "contain" }}
+          onError={() => setError("Failed to load secure preview")}
+        />
+      </div>
+    );
+  }
+
+  // PDF preview with embedded watermark
+  if (isPDF(actualFileType)) {
     return (
       <div className="relative w-full min-h-[420px] bg-slate-100 rounded overflow-hidden">
         <iframe
-          src={fileUrl}
-          title="PDF Preview"
-          className="w-full h-[430px] rounded z-1"
+          src={securePreviewUrl}
+          title="Secure PDF Preview"
+          className="w-full h-[430px] rounded"
+          onError={() => setError("Failed to load secure PDF preview")}
         />
-        <WatermarkLayer text={watermarkText} />
       </div>
     );
   }
@@ -82,7 +116,7 @@ const DeliverableWatermarkedPreview: React.FC<DeliverableWatermarkedPreviewProps
   // Fallback for unknown file type
   return (
     <div className="w-full bg-slate-100 min-h-[100px] flex items-center justify-center rounded">
-      <span className="text-slate-500 text-sm">Preview not available</span>
+      <span className="text-slate-500 text-sm">Secure preview not available for this file type</span>
     </div>
   );
 };
