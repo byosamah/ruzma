@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
@@ -60,8 +61,8 @@ const SignUp = () => {
     try {
       console.log('Attempting to sign up with email:', formData.email);
       
-      // Use current window location for redirect URL
-      const redirectUrl = `${window.location.origin}/dashboard`;
+      // Use hub.ruzma.co/login for redirect URL
+      const redirectUrl = 'https://hub.ruzma.co/login';
       console.log('Using redirect URL:', redirectUrl);
       
       const { data, error } = await supabase.auth.signUp({
@@ -142,7 +143,7 @@ const SignUp = () => {
         type: 'signup',
         email: formData.email,
         options: {
-          emailRedirectTo: `${window.location.origin}/dashboard`
+          emailRedirectTo: 'https://hub.ruzma.co/login'
         }
       });
 
