@@ -23,63 +23,44 @@ const VerticalProjectCard: React.FC<ProjectCardProps> = ({
       className="hover:shadow-lg transition-shadow duration-200 cursor-pointer" 
       onClick={actions.handleCardClick}
     >
-      <div className="flex flex-col md:flex-row">
-        <div className="md:w-2/3">
-          <CardHeader>
-            <div className="flex justify-between items-start">
-              <CardTitle className="text-lg font-semibold text-slate-800 line-clamp-2">
-                {project.name}
-              </CardTitle>
-              <ProjectCardActions
-                onEditClick={actions.handleEditClick}
-                onViewClick={actions.handleViewClick}
-                onDeleteClick={onDeleteClick ? actions.handleDeleteClick : undefined}
-                onCopyClientLink={actions.handleCopyClientLink}
-                onViewClientPage={actions.handleViewClientPage}
-                onSendClientLink={actions.handleSendClientLink}
-                variant="header"
-              />
-            </div>
-          </CardHeader>
-          <CardContent>
-            <ProjectCardContent
-              project={project}
-              stats={stats}
-              currency={currency}
-              isVerticalLayout={true}
-            />
-          </CardContent>
+      <CardHeader className="pb-4">
+        <div className="flex justify-between items-start gap-4">
+          <CardTitle className="text-lg font-semibold text-slate-800 line-clamp-2 flex-1">
+            {project.name}
+          </CardTitle>
+          <ProjectCardActions
+            onEditClick={actions.handleEditClick}
+            onViewClick={actions.handleViewClick}
+            onDeleteClick={onDeleteClick ? actions.handleDeleteClick : undefined}
+            onCopyClientLink={actions.handleCopyClientLink}
+            onViewClientPage={actions.handleViewClientPage}
+            onSendClientLink={actions.handleSendClientLink}
+            variant="header"
+          />
         </div>
+      </CardHeader>
+      
+      <CardContent className="pt-0">
+        <ProjectCardContent
+          project={project}
+          stats={stats}
+          currency={currency}
+          isVerticalLayout={true}
+        />
         
-        <div className="md:w-1/3 p-6 border-t md:border-t-0 md:border-l border-slate-200 flex flex-col justify-between">
-          <div className="space-y-4">
-            <div className="flex flex-wrap gap-2">
-              {project.milestones.slice(0, 3).map(milestone => (
-                <Badge key={milestone.id} variant="secondary" className={`text-xs ${getStatusColor(milestone.status)} text-white`}>
-                  {milestone.title}
-                </Badge>
-              ))}
-              {project.milestones.length > 3 && (
-                <Badge variant="outline" className="text-xs">
-                  +{project.milestones.length - 3} More
-                </Badge>
-              )}
-            </div>
-          </div>
-
-          <div className="mt-auto pt-4">
-            <ProjectCardActions
-              onEditClick={actions.handleEditClick}
-              onViewClick={actions.handleViewClick}
-              onDeleteClick={onDeleteClick ? actions.handleDeleteClick : undefined}
-              onCopyClientLink={actions.handleCopyClientLink}
-              onViewClientPage={actions.handleViewClientPage}
-              onSendClientLink={actions.handleSendClientLink}
-              variant="footer"
-            />
-          </div>
+        <div className="mt-6 pt-4 border-t border-slate-100">
+          <ProjectCardActions
+            onEditClick={actions.handleEditClick}
+            onViewClick={actions.handleViewClick}
+            onDeleteClick={onDeleteClick ? actions.handleDeleteClick : undefined}
+            onCopyClientLink={actions.handleCopyClientLink}
+            onViewClientPage={actions.handleViewClientPage}
+            onSendClientLink={actions.handleSendClientLink}
+            showClientActions={true}
+            variant="footer"
+          />
         </div>
-      </div>
+      </CardContent>
     </Card>
   );
 };
