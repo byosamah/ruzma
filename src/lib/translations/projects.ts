@@ -81,11 +81,6 @@ export const projectTranslations = {
     total: "Total",
     useTemplate: "Use Template",
     deleteTemplateConfirmation: "Are you sure you want to delete this template?",
-    // New keys for secure preview
-    showPreview: "Show Preview",
-    hidePreview: "Hide Preview",
-    securePreview: "Watermarked Preview",
-    pendingPayment: "PENDING PAYMENT",
   },
   ar: {
     loadingProject: "جاري تحميل المشروع...",
@@ -168,10 +163,5 @@ export const projectTranslations = {
     total: "الإجمالي",
     useTemplate: "استخدام القالب",
     deleteTemplateConfirmation: "هل أنت متأكد من أنك تريد حذف هذا القالب؟",
-    // New keys for secure preview
-    showPreview: "عرض المعاينة",
-    hidePreview: "إخفاء المعاينة",
-    securePreview: "معاينة محمية",
-    pendingPayment: "في انتظار الدفع",
   },
 };

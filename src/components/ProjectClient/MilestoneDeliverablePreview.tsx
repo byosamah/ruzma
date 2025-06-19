@@ -2,7 +2,7 @@
 import React, { useState } from "react";
 import DeliverableWatermarkedPreview from "@/components/MilestoneCard/DeliverableWatermarkedPreview";
 import { Button } from "@/components/ui/button";
-import { Eye, Shield } from "lucide-react";
+import { Eye } from "lucide-react";
 import { useT } from "@/lib/i18n";
 
 interface MilestoneDeliverablePreviewProps {
@@ -48,19 +48,16 @@ const MilestoneDeliverablePreview: React.FC<MilestoneDeliverablePreviewProps> = 
           <Eye className="w-4 h-4" />
           <span className="ml-1">{open ? t('hidePreview') : t('showPreview')}</span>
         </Button>
-        <div className="flex items-center gap-1 text-xs text-slate-600 select-none">
-          <Shield className="w-3 h-3" />
-          <span>{watermarkText ? t('securePreview') : t('securePreview')}</span>
-        </div>
+        <span className="text-xs text-slate-600 select-none">
+          {watermarkText ? t('watermarked') : ""}
+        </span>
       </div>
       {open && (
-        <div className="border border-slate-200 rounded-lg overflow-hidden">
-          <DeliverableWatermarkedPreview
-            fileUrl={deliverableUrl}
-            watermarkText={watermarkText || t('pendingPayment')}
-            fileType={getDeliverableFileType(deliverableName, deliverableUrl)}
-          />
-        </div>
+        <DeliverableWatermarkedPreview
+          fileUrl={deliverableUrl}
+          watermarkText={watermarkText || t('pendingPayment')}
+          fileType={getDeliverableFileType(deliverableName, deliverableUrl)}
+        />
       )}
     </div>
   );
