@@ -23,5 +23,6 @@ export interface MilestoneCardProps {
   onDeliverableUpload?: (milestoneId: string, file: File, watermarkText?: string) => void;
   onDeliverableDownload?: (milestoneId: string) => void;
   currency?: import('@/lib/currency').CurrencyCode;
+  freelancerCurrency?: import('@/lib/currency').CurrencyCode;
   onUpdateWatermark?: (milestoneId: string, watermarkText: string) => void;
 }
