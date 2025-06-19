@@ -99,6 +99,7 @@ export function useProjectActions(user: User | null, fetchProjects: () => Promis
     projectData: {
       name: string;
       brief: string;
+      clientEmail?: string;
       milestones: Array<{
         id?: string;
         title: string;
@@ -123,6 +124,7 @@ export function useProjectActions(user: User | null, fetchProjects: () => Promis
         .update({
           name: projectData.name,
           brief: projectData.brief,
+          client_email: projectData.clientEmail,
           start_date,
           end_date,
           updated_at: new Date().toISOString(),

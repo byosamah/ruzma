@@ -11,10 +11,12 @@ import { useT } from '@/lib/i18n';
 interface ProjectFormProps {
   name: string;
   brief: string;
+  clientEmail: string;
   milestones: MilestoneFormData[];
   updating: boolean;
   onNameChange: (name: string) => void;
   onBriefChange: (brief: string) => void;
+  onClientEmailChange: (email: string) => void;
   onMilestoneChange: (index: number, field: keyof MilestoneFormData, value: string | number) => void;
   onAddMilestone: () => void;
   onDeleteMilestone: (index: number) => void;
@@ -24,10 +26,12 @@ interface ProjectFormProps {
 export const ProjectForm: React.FC<ProjectFormProps> = ({
   name,
   brief,
+  clientEmail,
   milestones,
   updating,
   onNameChange,
   onBriefChange,
+  onClientEmailChange,
   onMilestoneChange,
   onAddMilestone,
   onDeleteMilestone,
@@ -55,6 +59,16 @@ export const ProjectForm: React.FC<ProjectFormProps> = ({
           placeholder={t('projectBriefPlaceholder_edit')}
           required
           rows={4}
+        />
+      </div>
+      <div className="space-y-2">
+        <label htmlFor="clientEmail" className="text-sm font-medium text-slate-700">Client Email</label>
+        <Input
+          id="clientEmail"
+          type="email"
+          value={clientEmail}
+          onChange={(e) => onClientEmailChange(e.target.value)}
+          placeholder="Enter client email (optional)"
         />
       </div>
 

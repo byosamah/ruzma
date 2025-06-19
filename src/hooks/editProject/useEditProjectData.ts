@@ -10,6 +10,7 @@ export const useEditProjectData = (
   const [project, setProject] = useState<DatabaseProject | null>(null);
   const [name, setName] = useState('');
   const [brief, setBrief] = useState('');
+  const [clientEmail, setClientEmail] = useState('');
   const [milestones, setMilestones] = useState<MilestoneFormData[]>([]);
 
   useEffect(() => {
@@ -19,6 +20,7 @@ export const useEditProjectData = (
         setProject(projectToEdit);
         setName(projectToEdit.name);
         setBrief(projectToEdit.brief);
+        setClientEmail(projectToEdit.client_email || '');
         setMilestones(projectToEdit.milestones.map(m => ({
           id: m.id,
           title: m.title,
@@ -36,9 +38,11 @@ export const useEditProjectData = (
     project,
     name,
     brief,
+    clientEmail,
     milestones,
     setName,
     setBrief,
+    setClientEmail,
     setMilestones,
   };
 };

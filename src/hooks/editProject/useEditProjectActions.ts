@@ -57,6 +57,7 @@ export const useEditProjectActions = (
     projectId: string | undefined,
     name: string,
     brief: string,
+    clientEmail: string,
     milestones: MilestoneFormData[]
   ) => {
     e.preventDefault();
@@ -85,6 +86,7 @@ export const useEditProjectActions = (
       const success = await updateProject(projectId, {
         name,
         brief,
+        clientEmail,
         milestones,
       });
 

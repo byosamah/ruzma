@@ -22,6 +22,7 @@ const EditProject: React.FC = () => {
     project,
     name,
     brief,
+    clientEmail,
     milestones,
     loading,
     updating,
@@ -32,6 +33,7 @@ const EditProject: React.FC = () => {
     handleSubmit,
     setName,
     setBrief,
+    setClientEmail,
   } = useEditProject(projectId);
 
   if (loading) {
@@ -80,10 +82,12 @@ const EditProject: React.FC = () => {
             <ProjectForm
               name={name}
               brief={brief}
+              clientEmail={clientEmail}
               milestones={milestones}
               updating={updating}
               onNameChange={setName}
               onBriefChange={setBrief}
+              onClientEmailChange={setClientEmail}
               onMilestoneChange={handleMilestoneChange}
               onAddMilestone={handleAddMilestone}
               onDeleteMilestone={handleDeleteMilestone}

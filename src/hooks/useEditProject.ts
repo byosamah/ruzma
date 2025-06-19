@@ -13,9 +13,11 @@ export const useEditProject = (projectId: string | undefined) => {
     project,
     name,
     brief,
+    clientEmail,
     milestones,
     setName,
     setBrief,
+    setClientEmail,
     setMilestones,
   } = useEditProjectData(projects, projectId);
 
@@ -41,7 +43,7 @@ export const useEditProject = (projectId: string | undefined) => {
   };
 
   const wrappedHandleSubmit = (e: React.FormEvent) => {
-    handleSubmit(e, projectId, name, brief, milestones);
+    handleSubmit(e, projectId, name, brief, clientEmail, milestones);
   };
 
   return {
@@ -50,6 +52,7 @@ export const useEditProject = (projectId: string | undefined) => {
     project,
     name,
     brief,
+    clientEmail,
     milestones,
     loading,
     updating,
@@ -60,5 +63,6 @@ export const useEditProject = (projectId: string | undefined) => {
     handleSubmit: wrappedHandleSubmit,
     setName,
     setBrief,
+    setClientEmail,
   };
 };
