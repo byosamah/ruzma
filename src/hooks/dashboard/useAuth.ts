@@ -57,7 +57,8 @@ export const useAuth = () => {
         const { data: { user }, error: userError } = await supabase.auth.getUser();
         console.log('Dashboard: Auth result -', { 
           hasUser: !!user, 
-          userEmail: user?.email, 
+          userEmail: user?.email,
+          emailConfirmed: user?.email_confirmed_at,
           error: userError?.message 
         });
         
@@ -72,9 +73,24 @@ export const useAuth = () => {
           return;
         }
 
+        // Check if user's email is confirmed
+        if (!user.email_confirmed_at) {
+          console.log('Dashboard: User email not confirmed, redirecting to login');
+          logSecurityEvent('dashboard_unconfirmed_email', { userId: user.id });
+          toast.error('Please confirm your email address before accessing your account.');
+          
+          // Sign out the unconfirmed user
+          await supabase.auth.signOut();
+          
+          setLoading(false);
+          setAuthChecked(true);
+          navigate('/login');
+          return;
+        }
+
         setUser(user);
         logSecurityEvent('dashboard_auth_success', { userId: user.id });
-        console.log('Dashboard: User authenticated');
+        console.log('Dashboard: User authenticated and confirmed');
       } catch (error) {
         console.error('Dashboard: Unexpected error:', error);
         logSecurityEvent('dashboard_unexpected_error', { error: error instanceof Error ? error.message : 'Unknown error' });

@@ -20,6 +20,7 @@ const SignUp = () => {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const [isEmailSent, setIsEmailSent] = useState(false);
   const navigate = useNavigate();
 
   const validateForm = () => {
@@ -78,22 +79,34 @@ const SignUp = () => {
 
       if (error) {
         console.error('SignUp error:', error);
-        toast.error(error.message);
+        
+        // Handle specific error cases
+        if (error.message.includes('User already registered')) {
+          toast.error('An account with this email already exists. Please try logging in instead.');
+        } else if (error.message.includes('Invalid email')) {
+          toast.error('Please enter a valid email address.');
+        } else {
+          toast.error(error.message);
+        }
         return;
       }
 
-      if (data.user && !data.session) {
-        // User created but needs email confirmation
-        toast.success('Account created! Please check your email to verify your account.');
-        console.log('User created, email confirmation required');
-      } else if (data.session) {
-        // User created and automatically signed in (email confirmation disabled)
-        toast.success('Account created and signed in successfully!');
-        console.log('User created and signed in automatically');
-        navigate('/dashboard');
+      if (data.user) {
+        if (!data.session) {
+          // User created but needs email confirmation - this is the correct flow
+          console.log('User created, email confirmation required');
+          toast.success('Account created! Please check your email and click the confirmation link to complete your registration.');
+          setIsEmailSent(true);
+        } else {
+          // This shouldn't happen if email confirmation is enabled
+          console.warn('User was automatically confirmed - check Supabase settings');
+          toast.success('Account created and signed in successfully!');
+          navigate('/dashboard');
+        }
+      } else {
+        toast.error('Failed to create account. Please try again.');
       }
       
-      setFormData({ name: '', email: '', password: '', confirmPassword: '' });
     } catch (error) {
       console.error('Unexpected error during signup:', error);
       toast.error('An unexpected error occurred. Please try again.');
@@ -116,6 +129,82 @@ const SignUp = () => {
       }));
     }
   };
+
+  const handleResendConfirmation = async () => {
+    setIsLoading(true);
+    try {
+      const { error } = await supabase.auth.resend({
+        type: 'signup',
+        email: formData.email,
+        options: {
+          emailRedirectTo: `${window.location.origin}/dashboard`
+        }
+      });
+
+      if (error) {
+        toast.error('Failed to resend confirmation email');
+      } else {
+        toast.success('Confirmation email sent! Please check your inbox.');
+      }
+    } catch (error) {
+      toast.error('Failed to resend confirmation email');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  // Show confirmation sent screen
+  if (isEmailSent) {
+    return (
+      <div className="min-h-screen bg-auth-background flex flex-col items-center justify-center p-4">
+        <div className="absolute top-10 sm:top-16">
+          <Link to="/">
+            <img src="/lovable-uploads/bca9fbc0-5ee9-455b-91b3-b7eff1f56169.png" alt="Ruzma Logo" className="h-10" />
+          </Link>
+        </div>
+
+        <Card className="w-full max-w-md shadow-lg bg-white">
+          <CardHeader className="text-center">
+            <CardTitle className="text-2xl font-bold text-slate-800">Check Your Email</CardTitle>
+            <p className="text-slate-600">We've sent a confirmation link to your email address</p>
+          </CardHeader>
+          <CardContent className="text-center space-y-4">
+            <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+              <Mail className="h-12 w-12 text-blue-500 mx-auto mb-2" />
+              <p className="text-sm text-slate-600 mb-2">
+                A confirmation email has been sent to:
+              </p>
+              <p className="font-semibold text-slate-800">{formData.email}</p>
+            </div>
+            
+            <div className="text-sm text-slate-600 space-y-2">
+              <p>Please check your email and click the confirmation link to activate your account.</p>
+              <p>Don't forget to check your spam folder if you don't see the email.</p>
+            </div>
+
+            <div className="space-y-3">
+              <Button 
+                onClick={handleResendConfirmation}
+                variant="outline" 
+                className="w-full"
+                disabled={isLoading}
+              >
+                {isLoading ? 'Sending...' : 'Resend Confirmation Email'}
+              </Button>
+              
+              <Button asChild variant="ghost" className="w-full">
+                <Link to="/login">Back to Sign In</Link>
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+        
+        <div className="absolute bottom-8 text-sm text-slate-600">
+          © {new Date().getFullYear()} Ruzma. All rights reserved.
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-auth-background flex flex-col items-center justify-center p-4">
