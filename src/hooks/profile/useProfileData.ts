@@ -43,7 +43,7 @@ export const useProfileData = () => {
       if (profile) {
         setFormData({
           name: profile.full_name || '',
-          email: user.email || '',
+          email: profile.email || user.email || '',
           company: profile.company || '',
           website: profile.website || '',
           bio: profile.bio || '',
@@ -56,7 +56,8 @@ export const useProfileData = () => {
           .from('profiles')
           .insert({
             id: user.id,
-            full_name: user.user_metadata?.full_name || user.email?.split('@')[0] || 'User'
+            full_name: user.user_metadata?.full_name || user.email?.split('@')[0] || 'User',
+            email: user.email
           })
           .select()
           .single();
@@ -67,7 +68,7 @@ export const useProfileData = () => {
         } else if (newProfile) {
           setFormData({
             name: newProfile.full_name || '',
-            email: user.email || '',
+            email: newProfile.email || user.email || '',
             company: newProfile.company || '',
             website: newProfile.website || '',
             bio: newProfile.bio || '',
@@ -105,6 +106,7 @@ export const useProfileData = () => {
       .from('profiles')
       .update({
         full_name: formData.name,
+        email: formData.email,
         company: formData.company,
         website: formData.website,
         bio: formData.bio,

@@ -72,6 +72,7 @@ export type Database = {
           company: string | null
           created_at: string | null
           currency: string | null
+          email: string | null
           full_name: string | null
           grace_period_end: string | null
           id: string
@@ -90,6 +91,7 @@ export type Database = {
           company?: string | null
           created_at?: string | null
           currency?: string | null
+          email?: string | null
           full_name?: string | null
           grace_period_end?: string | null
           id: string
@@ -108,6 +110,7 @@ export type Database = {
           company?: string | null
           created_at?: string | null
           currency?: string | null
+          email?: string | null
           full_name?: string | null
           grace_period_end?: string | null
           id?: string

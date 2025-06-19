@@ -40,7 +40,8 @@ export const useUserProfile = (user: User | null) => {
           .from('profiles')
           .insert({
             id: user.id,
-            full_name: user.user_metadata?.full_name || user.email?.split('@')[0] || 'User'
+            full_name: user.user_metadata?.full_name || user.email?.split('@')[0] || 'User',
+            email: user.email
           })
           .select()
           .single();
