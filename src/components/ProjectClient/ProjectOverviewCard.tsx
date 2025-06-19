@@ -11,6 +11,7 @@ interface ProjectOverviewCardProps {
   totalMilestones: number;
   completedMilestones: number;
   currency: CurrencyCode;
+  freelancerCurrency?: CurrencyCode; // Add freelancer's preferred currency
 }
 
 const ProjectOverviewCard: React.FC<ProjectOverviewCardProps> = ({
@@ -20,8 +21,13 @@ const ProjectOverviewCard: React.FC<ProjectOverviewCardProps> = ({
   totalMilestones,
   completedMilestones,
   currency,
+  freelancerCurrency,
 }) => {
   const t = useT();
+  
+  // Use freelancer's preferred currency if available, otherwise fall back to the provided currency
+  const displayCurrency = freelancerCurrency || currency;
+  
   return (
     <Card className="bg-white/80 backdrop-blur-sm">
       <CardHeader>
@@ -31,7 +37,7 @@ const ProjectOverviewCard: React.FC<ProjectOverviewCardProps> = ({
             <p className="text-slate-600 mt-2">{projectBrief}</p>
           </div>
           <div className="text-right">
-            <div className="text-3xl font-bold text-slate-800">{formatCurrency(totalValue, currency)}</div>
+            <div className="text-3xl font-bold text-slate-800">{formatCurrency(totalValue, displayCurrency)}</div>
             <div className="text-sm text-slate-600">{t('totalProjectValue')}</div>
           </div>
         </div>

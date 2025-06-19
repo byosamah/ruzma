@@ -30,6 +30,8 @@ export const getClientProject = async (token: string): Promise<DatabaseProject> 
       ...milestone,
       status: milestone.status as 'pending' | 'payment_submitted' | 'approved' | 'rejected',
     })),
+    // Include freelancer's currency if available from the response
+    freelancer_currency: data.freelancer_currency,
   };
   
   console.log('Successfully fetched project:', typedProject);

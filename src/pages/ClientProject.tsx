@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { useParams } from 'react-router-dom';
 import { useClientProject } from '@/hooks/useClientProject';
@@ -26,6 +25,7 @@ const ClientProject = () => {
     handlePaymentUpload,
     handleDeliverableDownload,
     userCurrency,
+    freelancerCurrency, // Get freelancer's preferred currency
   } = useClientProject(token);
 
   if (isLoading) {
@@ -52,6 +52,7 @@ const ClientProject = () => {
           totalMilestones={totalMilestones}
           completedMilestones={completedMilestones}
           currency={userCurrency}
+          freelancerCurrency={freelancerCurrency}
         />
         <ProjectInstructionsCard />
         <ProjectMilestonesList

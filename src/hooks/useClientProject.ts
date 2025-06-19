@@ -86,6 +86,9 @@ export const useClientProject = (token?: string) => {
 
   const error = queryError ? (queryError as Error).message : null;
 
+  // Extract freelancer's currency from project data
+  const freelancerCurrency = project?.freelancer_currency || project?.currency || null;
+
   return {
     project: project || null,
     isLoading,
@@ -93,5 +96,6 @@ export const useClientProject = (token?: string) => {
     handlePaymentUpload,
     handleDeliverableDownload,
     userCurrency: userCurrency.currency,
+    freelancerCurrency, // Return freelancer's preferred currency
   };
 };
