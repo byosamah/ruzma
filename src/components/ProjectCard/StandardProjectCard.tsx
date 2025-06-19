@@ -19,12 +19,12 @@ const StandardProjectCard: React.FC<ProjectCardProps> = ({
 
   return (
     <Card 
-      className="hover:shadow-lg transition-shadow duration-200 cursor-pointer" 
+      className="hover:shadow-md transition-shadow duration-200 cursor-pointer border-slate-200" 
       onClick={actions.handleCardClick}
     >
-      <CardHeader>
+      <CardHeader className="pb-2 px-4 pt-4">
         <div className="flex justify-between items-start">
-          <CardTitle className="text-lg font-semibold text-slate-800 line-clamp-2">
+          <CardTitle className="text-base font-semibold text-slate-800 line-clamp-2 leading-tight">
             {project.name}
           </CardTitle>
           <ProjectCardActions
@@ -38,7 +38,7 @@ const StandardProjectCard: React.FC<ProjectCardProps> = ({
           />
         </div>
       </CardHeader>
-      <CardContent>
+      <CardContent className="px-4 pb-3">
         <ProjectCardContent
           project={project}
           stats={stats}
