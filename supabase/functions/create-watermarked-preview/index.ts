@@ -23,6 +23,33 @@ Deno.serve(async (req) => {
       Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!
     )
 
+    // Check if bucket exists first
+    const { data: buckets, error: bucketError } = await supabaseAdmin.storage.listBuckets()
+    console.log('Available buckets:', buckets?.map(b => b.id))
+    
+    if (bucketError) {
+      console.error('Error checking buckets:', bucketError)
+      return new Response(JSON.stringify({ 
+        error: 'Failed to check storage buckets',
+        details: bucketError.message 
+      }), {
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        status: 500,
+      })
+    }
+
+    const watermarkedBucketExists = buckets?.some(bucket => bucket.id === 'watermarked-previews')
+    if (!watermarkedBucketExists) {
+      console.error('Watermarked previews bucket does not exist')
+      return new Response(JSON.stringify({ 
+        error: 'Storage bucket not found',
+        details: 'The watermarked-previews bucket has not been created' 
+      }), {
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        status: 500,
+      })
+    }
+
     // Fetch the original file
     const response = await fetch(fileUrl)
     if (!response.ok) {
@@ -98,9 +125,6 @@ async function createWatermarkedImage(
   mimeType: string
 ): Promise<ArrayBuffer> {
   console.log('Creating watermarked image with text:', watermarkText)
-  
-  // For now, we'll create a simple approach that works with Deno
-  // This creates a semi-transparent overlay effect by modifying the image data slightly
   
   try {
     // Import imagescript dynamically for image processing
