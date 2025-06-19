@@ -22,53 +22,69 @@ const ProjectMilestonesList: React.FC<ProjectMilestonesListProps> = ({
 }) => {
   const t = useT();
   return (
-    <div className="space-y-6">
-      <h2 className="text-2xl font-bold text-slate-800">{t('projectMilestones')}</h2>
-      <div className="space-y-4">
-        {milestones.length === 0 ? (
-          <Card className="text-center py-8">
-            <CardContent>
-              <p className="text-slate-500">{t('noMilestonesSetup')}</p>
-            </CardContent>
-          </Card>
-        ) : (
-          milestones.map((milestone, index) => (
-            <div key={milestone.id} className="relative">
-              {index > 0 && (
-                <div className="absolute -top-4 left-6 w-0.5 h-4 bg-slate-300"></div>
-              )}
-              <div className="mb-2">
-                <MilestoneDeliverablePreview
-                  milestoneId={milestone.id}
-                  deliverableUrl={milestone.deliverable_url}
-                  deliverableName={milestone.deliverable_name}
-                  status={milestone.status}
-                  watermarkText={milestone.watermark_text ?? undefined}
-                />
+    <div className="relative">
+      {/* Sticky Preview Container */}
+      <MilestoneDeliverablePreview
+        milestones={milestones}
+      />
+      
+      {/* Milestones List */}
+      <div className="space-y-8">
+        <div className="flex items-center justify-between">
+          <h2 className="text-2xl font-bold text-slate-800">{t('projectMilestones')}</h2>
+          <div className="text-sm text-slate-500">
+            {milestones.length} {milestones.length === 1 ? 'milestone' : 'milestones'}
+          </div>
+        </div>
+        
+        <div className="space-y-6">
+          {milestones.length === 0 ? (
+            <Card className="text-center py-12">
+              <CardContent>
+                <div className="text-slate-400 text-lg mb-2">📋</div>
+                <p className="text-slate-500 font-medium">{t('noMilestonesSetup')}</p>
+              </CardContent>
+            </Card>
+          ) : (
+            milestones.map((milestone, index) => (
+              <div key={milestone.id} className="relative">
+                {/* Timeline connector */}
+                {index > 0 && (
+                  <div className="absolute -top-6 left-8 w-0.5 h-6 bg-gradient-to-b from-slate-200 to-transparent"></div>
+                )}
+                
+                {/* Milestone number badge */}
+                <div className="absolute -left-2 top-6 w-8 h-8 bg-white border-2 border-slate-200 rounded-full flex items-center justify-center text-sm font-semibold text-slate-600 shadow-sm z-10">
+                  {index + 1}
+                </div>
+                
+                {/* Milestone card with left margin for the badge */}
+                <div className="ml-8 relative">
+                  <MilestoneCard
+                    milestone={{
+                      id: milestone.id,
+                      title: milestone.title,
+                      description: milestone.description,
+                      price: milestone.price,
+                      status: milestone.status,
+                      deliverable: milestone.deliverable_name ? {
+                        name: milestone.deliverable_name,
+                        size: milestone.deliverable_size || 0,
+                        url: milestone.deliverable_url
+                      } : undefined,
+                      paymentProofUrl: milestone.payment_proof_url,
+                      watermarkText: milestone.watermark_text ?? undefined,
+                    }}
+                    isClient={true}
+                    onPaymentUpload={onPaymentUpload}
+                    onDeliverableDownload={onDeliverableDownload}
+                    currency={currency}
+                  />
+                </div>
               </div>
-              <MilestoneCard
-                milestone={{
-                  id: milestone.id,
-                  title: milestone.title,
-                  description: milestone.description,
-                  price: milestone.price,
-                  status: milestone.status,
-                  deliverable: milestone.deliverable_name ? {
-                    name: milestone.deliverable_name,
-                    size: milestone.deliverable_size || 0,
-                    url: milestone.deliverable_url
-                  } : undefined,
-                  paymentProofUrl: milestone.payment_proof_url,
-                  watermarkText: milestone.watermark_text ?? undefined,
-                }}
-                isClient={true}
-                onPaymentUpload={onPaymentUpload}
-                onDeliverableDownload={onDeliverableDownload}
-                currency={currency}
-              />
-            </div>
-          ))
-        )}
+            ))
+          )}
+        </div>
       </div>
     </div>
   );
