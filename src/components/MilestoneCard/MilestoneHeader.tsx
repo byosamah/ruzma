@@ -29,19 +29,19 @@ const MilestoneHeader: React.FC<MilestoneHeaderProps> = ({
 
   if (isMobile) {
     return (
-      <CardHeader className="pb-4">
-        <div className="space-y-3">
-          <div>
-            <CardTitle className="text-lg font-semibold leading-tight">{title}</CardTitle>
-            <p className="text-sm text-slate-600 mt-1 leading-relaxed">{description}</p>
+      <CardHeader className="pb-4 px-6 pt-6">
+        <div className="space-y-4">
+          <div className="space-y-2">
+            <CardTitle className="text-xl font-semibold text-slate-900 leading-tight">{title}</CardTitle>
+            <p className="text-sm text-slate-600 leading-relaxed">{description}</p>
           </div>
-          <div className="flex items-center justify-between">
-            <div className="text-lg font-bold text-slate-800">
+          <div className="flex items-center justify-between pt-2">
+            <div className="text-2xl font-bold text-slate-900">
               {formatCurrency(price, currency)}
             </div>
-            <Badge className={`${getStatusColor(status)} flex items-center space-x-1`}>
-              <StatusIcon className="w-4 h-4" />
-              <span className="capitalize text-xs">{t(statusKey)}</span>
+            <Badge className={`${getStatusColor(status)} flex items-center gap-1.5 px-3 py-1`}>
+              <StatusIcon className="w-3.5 h-3.5" />
+              <span className="capitalize text-xs font-medium">{t(statusKey)}</span>
             </Badge>
           </div>
         </div>
@@ -50,19 +50,19 @@ const MilestoneHeader: React.FC<MilestoneHeaderProps> = ({
   }
 
   return (
-    <CardHeader>
-      <div className="flex justify-between items-start">
-        <div>
-          <CardTitle className="text-lg font-semibold">{title}</CardTitle>
-          <p className="text-sm text-slate-600 mt-1">{description}</p>
+    <CardHeader className="px-6 pt-6 pb-4">
+      <div className="flex justify-between items-start gap-6">
+        <div className="flex-1 space-y-2">
+          <CardTitle className="text-xl font-semibold text-slate-900">{title}</CardTitle>
+          <p className="text-sm text-slate-600 leading-relaxed max-w-2xl">{description}</p>
         </div>
-        <div className="text-right">
-          <div className="text-lg font-bold text-slate-800">
+        <div className="flex flex-col items-end space-y-3 flex-shrink-0">
+          <div className="text-2xl font-bold text-slate-900">
             {formatCurrency(price, currency)}
           </div>
-          <Badge className={`mt-1 ${getStatusColor(status)} flex items-center space-x-1`}>
-            <StatusIcon className="w-4 h-4" />
-            <span className="capitalize">{t(statusKey)}</span>
+          <Badge className={`${getStatusColor(status)} flex items-center gap-1.5 px-3 py-1`}>
+            <StatusIcon className="w-3.5 h-3.5" />
+            <span className="capitalize font-medium">{t(statusKey)}</span>
           </Badge>
         </div>
       </div>

@@ -23,34 +23,36 @@ const MilestoneCard = ({
 
   return (
     <>
-      <Card className={`transition-all duration-200 ${getStatusColor(milestone.status)} border-l-4`}>
-        <MilestoneHeader
-          title={milestone.title}
-          description={milestone.description}
-          price={milestone.price}
-          status={milestone.status}
-          currency={currency}
-        />
-        <CardContent>
-          <div className="space-y-4">
-            {isClient ? (
-              <ClientView
-                milestone={milestone}
-                onPaymentUpload={onPaymentUpload}
-                onDeliverableDownload={onDeliverableDownload}
-              />
-            ) : (
-              <FreelancerView
-                milestone={milestone}
-                onApprove={onApprove}
-                onReject={onReject}
-                onDeliverableUpload={onDeliverableUpload}
-                onShowPaymentProofPreview={() => setShowPaymentProofPreview(true)}
-                onUpdateWatermark={onUpdateWatermark}
-              />
-            )}
-          </div>
-        </CardContent>
+      <Card className={`overflow-hidden bg-white shadow-sm border-0 rounded-xl ${getStatusColor(milestone.status)}`}>
+        <div className="border-l-4 border-blue-500">
+          <MilestoneHeader
+            title={milestone.title}
+            description={milestone.description}
+            price={milestone.price}
+            status={milestone.status}
+            currency={currency}
+          />
+          <CardContent className="px-6 pb-6">
+            <div className="mt-4">
+              {isClient ? (
+                <ClientView
+                  milestone={milestone}
+                  onPaymentUpload={onPaymentUpload}
+                  onDeliverableDownload={onDeliverableDownload}
+                />
+              ) : (
+                <FreelancerView
+                  milestone={milestone}
+                  onApprove={onApprove}
+                  onReject={onReject}
+                  onDeliverableUpload={onDeliverableUpload}
+                  onShowPaymentProofPreview={() => setShowPaymentProofPreview(true)}
+                  onUpdateWatermark={onUpdateWatermark}
+                />
+              )}
+            </div>
+          </CardContent>
+        </div>
       </Card>
 
       {/* Payment Proof Preview Modal */}
