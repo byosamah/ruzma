@@ -56,7 +56,7 @@ const DashboardHeader: React.FC<DashboardHeaderProps> = ({
       <div className="space-y-4 mb-6">
         <div className="text-center">
           <h1 className="text-2xl font-bold text-slate-800 leading-tight">
-            {t('welcomeBack')}, {displayName}!
+            Welcome, {displayName}!
           </h1>
           <p className="text-slate-600 mt-1 text-sm">{t('dashboardSubtitle')}</p>
         </div>
@@ -81,7 +81,7 @@ const DashboardHeader: React.FC<DashboardHeaderProps> = ({
     <div className="flex justify-between items-center mb-8">
       <div>
         <h1 className="text-3xl font-bold text-slate-800">
-          {t('welcomeBack')}, {displayName}!
+          Welcome, {displayName}!
         </h1>
         <p className="text-slate-600 mt-1">{t('dashboardSubtitle')}</p>
       </div>
