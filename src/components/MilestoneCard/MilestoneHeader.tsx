@@ -13,6 +13,7 @@ interface MilestoneHeaderProps {
   price: number;
   status: string;
   currency: CurrencyCode;
+  freelancerCurrency?: CurrencyCode; // Add freelancer's preferred currency
 }
 
 const MilestoneHeader: React.FC<MilestoneHeaderProps> = ({
@@ -20,12 +21,16 @@ const MilestoneHeader: React.FC<MilestoneHeaderProps> = ({
   description,
   price,
   status,
-  currency
+  currency,
+  freelancerCurrency
 }) => {
   const StatusIcon = getStatusIcon(status);
   const t = useT();
   const isMobile = useIsMobile();
   const statusKey = `status_${status}` as TranslationKey;
+  
+  // Use freelancer's preferred currency if available, otherwise fall back to the provided currency
+  const displayCurrency = freelancerCurrency || currency;
 
   if (isMobile) {
     return (
@@ -37,7 +42,7 @@ const MilestoneHeader: React.FC<MilestoneHeaderProps> = ({
           </div>
           <div className="flex items-center justify-between pt-2">
             <div className="text-2xl font-bold text-slate-900">
-              {formatCurrency(price, currency)}
+              {formatCurrency(price, displayCurrency)}
             </div>
             <Badge className={`${getStatusColor(status)} flex items-center gap-1.5 px-3 py-1`}>
               <StatusIcon className="w-3.5 h-3.5" />
@@ -58,7 +63,7 @@ const MilestoneHeader: React.FC<MilestoneHeaderProps> = ({
         </div>
         <div className="flex flex-col items-end space-y-3 flex-shrink-0">
           <div className="text-2xl font-bold text-slate-900">
-            {formatCurrency(price, currency)}
+            {formatCurrency(price, displayCurrency)}
           </div>
           <Badge className={`${getStatusColor(status)} flex items-center gap-1.5 px-3 py-1`}>
             <StatusIcon className="w-3.5 h-3.5" />

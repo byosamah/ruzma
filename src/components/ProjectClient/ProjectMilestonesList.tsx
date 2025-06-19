@@ -12,6 +12,7 @@ interface ProjectMilestonesListProps {
   onPaymentUpload: (milestoneId: string, file: File) => void;
   onDeliverableDownload: (milestoneId: string) => void;
   currency: CurrencyCode;
+  freelancerCurrency?: CurrencyCode; // Add freelancer's preferred currency
 }
 
 const ProjectMilestonesList: React.FC<ProjectMilestonesListProps> = ({
@@ -19,6 +20,7 @@ const ProjectMilestonesList: React.FC<ProjectMilestonesListProps> = ({
   onPaymentUpload,
   onDeliverableDownload,
   currency,
+  freelancerCurrency,
 }) => {
   const t = useT();
   return (
@@ -86,6 +88,7 @@ const ProjectMilestonesList: React.FC<ProjectMilestonesListProps> = ({
                       onPaymentUpload={onPaymentUpload}
                       onDeliverableDownload={onDeliverableDownload}
                       currency={currency}
+                      freelancerCurrency={freelancerCurrency}
                     />
                   </div>
                 </div>

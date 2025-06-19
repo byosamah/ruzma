@@ -17,6 +17,7 @@ const MilestoneCard = ({
   onDeliverableUpload,
   onDeliverableDownload,
   currency = 'USD',
+  freelancerCurrency, // Add freelancer's preferred currency
   onUpdateWatermark
 }: MilestoneCardProps) => {
   const [showPaymentProofPreview, setShowPaymentProofPreview] = useState(false);
@@ -31,6 +32,7 @@ const MilestoneCard = ({
             price={milestone.price}
             status={milestone.status}
             currency={currency}
+            freelancerCurrency={freelancerCurrency}
           />
           <CardContent className="px-6 pb-6">
             <div className="mt-4">

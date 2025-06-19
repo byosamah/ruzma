@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { useParams } from 'react-router-dom';
 import { useClientProject } from '@/hooks/useClientProject';
@@ -41,6 +42,9 @@ const ClientProject = () => {
   const completedMilestones = project.milestones.filter(m => m.status === 'approved').length;
   const totalValue = project.milestones.reduce((sum, m) => sum + m.price, 0);
 
+  // Always use freelancer's preferred currency if available, otherwise fall back to user currency
+  const displayCurrency = freelancerCurrency || userCurrency;
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50">
       <ClientProjectHeader />
@@ -51,7 +55,7 @@ const ClientProject = () => {
           totalValue={totalValue}
           totalMilestones={totalMilestones}
           completedMilestones={completedMilestones}
-          currency={userCurrency}
+          currency={displayCurrency}
           freelancerCurrency={freelancerCurrency}
         />
         <ProjectInstructionsCard />
@@ -59,7 +63,8 @@ const ClientProject = () => {
           milestones={project.milestones}
           onPaymentUpload={handlePaymentUpload}
           onDeliverableDownload={handleDeliverableDownload}
-          currency={userCurrency}
+          currency={displayCurrency}
+          freelancerCurrency={freelancerCurrency}
         />
       </main>
       <ProjectFooter />
