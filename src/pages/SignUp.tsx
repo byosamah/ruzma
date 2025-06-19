@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
@@ -137,15 +136,24 @@ const SignUp = () => {
       return;
     }
 
+    if (!formData.email) {
+      toast.error('Email address is required to resend confirmation.');
+      return;
+    }
+
     setIsLoading(true);
     try {
-      const { error } = await supabase.auth.resend({
+      console.log('Attempting to resend confirmation email to:', formData.email);
+      
+      const { data, error } = await supabase.auth.resend({
         type: 'signup',
         email: formData.email,
         options: {
           emailRedirectTo: 'https://hub.ruzma.co/login'
         }
       });
+
+      console.log('Resend response:', { data, error });
 
       if (error) {
         console.error('Resend error:', error);
@@ -154,7 +162,7 @@ const SignUp = () => {
         if (error.message.includes('security purposes') || error.message.includes('after')) {
           // Extract the number of seconds from the error message if possible
           const secondsMatch = error.message.match(/(\d+)\s+seconds?/);
-          const seconds = secondsMatch ? parseInt(secondsMatch[1]) : 40;
+          const seconds = secondsMatch ? parseInt(secondsMatch[1]) : 60;
           
           setResendCooldown(seconds);
           toast.error(`Please wait ${seconds} seconds before requesting another confirmation email.`);
@@ -169,11 +177,26 @@ const SignUp = () => {
               return prev - 1;
             });
           }, 1000);
+        } else if (error.message.includes('Email not confirmed')) {
+          toast.error('Please check your email and click the confirmation link first.');
         } else {
-          toast.error('Failed to resend confirmation email. Please try again.');
+          toast.error(`Failed to resend confirmation email: ${error.message}`);
         }
       } else {
-        toast.success('Confirmation email sent! Please check your inbox.');
+        console.log('Confirmation email resent successfully');
+        toast.success('Confirmation email sent! Please check your inbox and spam folder.');
+        
+        // Set a small cooldown to prevent spam
+        setResendCooldown(30);
+        const interval = setInterval(() => {
+          setResendCooldown(prev => {
+            if (prev <= 1) {
+              clearInterval(interval);
+              return 0;
+            }
+            return prev - 1;
+          });
+        }, 1000);
       }
     } catch (error) {
       console.error('Unexpected error during resend:', error);
