@@ -84,11 +84,11 @@ const ProjectDetailsForm = () => {
           name="clientEmail"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>{t('clientEmail')}</FormLabel>
+              <FormLabel>Client Email</FormLabel>
               <FormControl>
                 <Input 
                   type="email" 
-                  placeholder={t('clientEmailPlaceholder')} 
+                  placeholder="Enter client email (optional)" 
                   {...field} 
                 />
               </FormControl>
