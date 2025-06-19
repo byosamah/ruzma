@@ -49,7 +49,7 @@ const handler = async (req: Request): Promise<Response> => {
     }
 
     // Use the correct app domain
-    const clientUrl = `https://ruzma-app.lovable.app/client/project/${clientToken}`;
+    const clientUrl = `https://hub.ruzma.co/client/project/${clientToken}`;
 
     const emailResponse = await resend.emails.send({
       from: "Ruzma <notifications@ruzma.co>",

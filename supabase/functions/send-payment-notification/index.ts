@@ -1,3 +1,4 @@
+
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { Resend } from "npm:resend@2.0.0";
 
@@ -38,16 +39,16 @@ const handler = async (req: Request): Promise<Response> => {
     console.log("Project:", projectName);
     console.log("Resend API Key configured:", !!resendApiKey);
 
-    // Generate the correct client project URL using the fixed app name
+    // Generate the correct client project URL using the new domain
     const origin = req.headers.get('origin') || req.headers.get('referer');
     console.log("Request origin:", origin);
     
-    // Use ruzma-app as the base URL
-    let baseUrl = 'https://ruzma-app.lovable.app';
+    // Use hub.ruzma.co as the base URL
+    let baseUrl = 'https://hub.ruzma.co';
     
     if (origin && origin.includes('lovable.app')) {
-      // If the request comes from a lovable.app domain, use ruzma-app
-      baseUrl = 'https://ruzma-app.lovable.app';
+      // If the request comes from a lovable.app domain, still use hub.ruzma.co
+      baseUrl = 'https://hub.ruzma.co';
     }
     
     const clientProjectUrl = `${baseUrl}/client/project/${clientToken}`;
