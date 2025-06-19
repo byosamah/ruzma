@@ -1,3 +1,4 @@
+
 import React from 'react';
 import Layout from '@/components/Layout';
 import DashboardHeader from '@/components/dashboard/DashboardHeader';
@@ -65,15 +66,15 @@ const Dashboard = () => {
   const EmptyProjectsButton = () => {
     const userType = profile?.user_type || 'free';
     const buttonText = !usage.canCreateProject && userType === 'pro' 
-      ? 'Contact us for more projects' 
+      ? t('contactUsForMoreProjects')
       : t('createFirstProject');
     
     const ButtonIcon = !usage.canCreateProject && userType === 'pro' ? MessageCircle : Plus;
     
     const tooltipMessage = !usage.canCreateProject 
       ? (userType === 'pro' 
-          ? 'You\'ve reached the project limit. Contact us to discuss your needs.' 
-          : 'Project limit reached. Upgrade your plan to create more projects.')
+          ? t('projectLimitReachedPro')
+          : t('projectLimitReached'))
       : '';
 
     const button = (
@@ -142,7 +143,7 @@ const Dashboard = () => {
               size={isMobile ? "default" : "default"}
             >
               <FileText className="w-4 h-4" />
-              Templates
+              {t('templates')}
             </Button>
           </div>
 

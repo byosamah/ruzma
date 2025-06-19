@@ -42,7 +42,7 @@ const DashboardHeader: React.FC<DashboardHeaderProps> = ({
             {button}
           </TooltipTrigger>
           <TooltipContent>
-            <p>Project limit reached. Upgrade your plan to create more projects.</p>
+            <p>{t('projectLimitReached')}</p>
           </TooltipContent>
         </Tooltip>
       );
@@ -67,7 +67,7 @@ const DashboardHeader: React.FC<DashboardHeaderProps> = ({
             className="flex items-center justify-center gap-2 sm:flex-1"
           >
             <BarChart3 className="w-4 h-4" />
-            View Analytics
+            {t('viewAnalytics')}
           </Button>
           <div className="sm:flex-1">
             <NewProjectButton />
@@ -92,7 +92,7 @@ const DashboardHeader: React.FC<DashboardHeaderProps> = ({
           className="flex items-center gap-2"
         >
           <BarChart3 className="w-4 h-4" />
-          View Analytics
+          {t('viewAnalytics')}
         </Button>
         <NewProjectButton />
       </div>

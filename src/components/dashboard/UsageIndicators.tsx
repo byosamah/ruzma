@@ -7,6 +7,7 @@ import { Database, FolderOpen, TrendingUp, MessageCircle } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useUsageTracking } from '@/hooks/useUsageTracking';
 import { DatabaseProject } from '@/hooks/projectTypes';
+import { useT } from '@/lib/i18n';
 
 interface UsageIndicatorsProps {
   userProfile: any;
@@ -18,6 +19,7 @@ export const UsageIndicators: React.FC<UsageIndicatorsProps> = ({
   projects,
 }) => {
   const navigate = useNavigate();
+  const t = useT();
   const usage = useUsageTracking(userProfile, projects);
 
   const handleUpgradeClick = () => {
@@ -31,7 +33,7 @@ export const UsageIndicators: React.FC<UsageIndicatorsProps> = ({
 
   const getUpgradeButtonText = () => {
     const userType = userProfile?.user_type || 'free';
-    return userType === 'pro' ? 'Contact us' : 'Upgrade';
+    return userType === 'pro' ? t('contactUs') : t('upgrade');
   };
 
   const getUpgradeButtonIcon = () => {
@@ -44,7 +46,7 @@ export const UsageIndicators: React.FC<UsageIndicatorsProps> = ({
       {/* Projects Usage */}
       <Card className="border-slate-200">
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-1 px-3 pt-3">
-          <CardTitle className="text-xs font-medium text-slate-600">Projects Used</CardTitle>
+          <CardTitle className="text-xs font-medium text-slate-600">{t('projectsUsed')}</CardTitle>
           <FolderOpen className="h-3.5 w-3.5 text-slate-400" />
         </CardHeader>
         <CardContent className="px-3 pb-3">
@@ -70,7 +72,7 @@ export const UsageIndicators: React.FC<UsageIndicatorsProps> = ({
               className="h-1.5"
             />
             <p className="text-xs text-slate-500">
-              {usage.projects.percentage}% used
+              {usage.projects.percentage}% {t('used')}
             </p>
           </div>
         </CardContent>
@@ -79,7 +81,7 @@ export const UsageIndicators: React.FC<UsageIndicatorsProps> = ({
       {/* Storage Usage */}
       <Card className="border-slate-200">
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-1 px-3 pt-3">
-          <CardTitle className="text-xs font-medium text-slate-600">Storage Used</CardTitle>
+          <CardTitle className="text-xs font-medium text-slate-600">{t('storageUsed')}</CardTitle>
           <Database className="h-3.5 w-3.5 text-slate-400" />
         </CardHeader>
         <CardContent className="px-3 pb-3">
@@ -105,7 +107,7 @@ export const UsageIndicators: React.FC<UsageIndicatorsProps> = ({
               className="h-1.5"
             />
             <p className="text-xs text-slate-500">
-              {usage.storage.percentage}% used
+              {usage.storage.percentage}% {t('used')}
             </p>
           </div>
         </CardContent>

@@ -49,7 +49,7 @@ const ProjectCardContent: React.FC<ProjectCardContentProps> = ({
       <div className="flex flex-wrap items-center gap-3 text-xs">
         <div className="flex items-center gap-1 text-slate-600">
           <Clock className="w-3 h-3" />
-          <span>{stats.completedMilestones}/{stats.totalMilestones} {t('milestones_plural')}</span>
+          <span>{stats.completedMilestones}/{stats.totalMilestones} {t('milestones')}</span>
         </div>
         
         <div className="flex items-center gap-1 text-slate-600">
@@ -60,7 +60,7 @@ const ProjectCardContent: React.FC<ProjectCardContentProps> = ({
 
       <div className="flex items-center justify-between">
         <Badge variant="secondary" className="text-xs px-2 py-0.5">
-          {stats.totalMilestones} {t('milestones_plural')}
+          {stats.totalMilestones} {t('milestones')}
         </Badge>
         
         <div className="text-xs text-slate-400">
