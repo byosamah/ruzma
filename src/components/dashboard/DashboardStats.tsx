@@ -6,7 +6,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Briefcase, Clock, CheckCircle } from "lucide-react";
+import { Briefcase, DollarSign, Clock, CheckCircle } from "lucide-react";
 import { formatCurrency, CurrencyCode } from "@/lib/currency";
 import { useT } from "@/lib/i18n";
 
@@ -18,10 +18,6 @@ interface DashboardStatsProps {
   pendingPayments: number;
   userCurrency: CurrencyCode;
 }
-
-const MoneyIcon = () => (
-  <img src="/lovable-uploads/47dfcb8f-ab87-46b3-940f-e8f798b9fde1.png" alt="Money" className="w-4 h-4" />
-);
 
 const DashboardStats: React.FC<DashboardStatsProps> = ({
   totalProjects,
@@ -52,7 +48,7 @@ const DashboardStats: React.FC<DashboardStatsProps> = ({
           <CardTitle className="text-sm font-medium">
             {t("totalEarnings")}
           </CardTitle>
-          <MoneyIcon />
+          <DollarSign className="w-4 h-4" />
         </CardHeader>
         <CardContent>
           <div className="text-xl sm:text-2xl font-bold break-words">

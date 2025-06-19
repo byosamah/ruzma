@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { Calendar, Users } from 'lucide-react';
+import { DollarSign, Calendar, Users } from 'lucide-react';
 import { DatabaseProject } from '@/hooks/projectTypes';
 import { formatCurrency } from '@/lib/currency';
 import { CurrencyCode } from '@/lib/currency';
@@ -10,10 +10,6 @@ interface ProjectStatsProps {
   isMobile: boolean;
   userCurrency: CurrencyCode;
 }
-
-const MoneyIcon = () => (
-  <img src="/lovable-uploads/47dfcb8f-ab87-46b3-940f-e8f798b9fde1.png" alt="Money" className="w-4 h-4 sm:w-5 sm:h-5" />
-);
 
 const ProjectStats: React.FC<ProjectStatsProps> = ({ project, isMobile, userCurrency }) => {
   // Calculate project stats
@@ -26,7 +22,7 @@ const ProjectStats: React.FC<ProjectStatsProps> = ({ project, isMobile, userCurr
       <div className="grid grid-cols-3 gap-4">
         <div className="bg-white/60 rounded-xl p-4 text-center border border-white/40">
           <div className="w-8 h-8 bg-green-100 rounded-lg flex items-center justify-center mx-auto mb-2">
-            <MoneyIcon />
+            <DollarSign className="w-4 h-4 text-green-600" />
           </div>
           <div className="text-lg font-bold text-slate-800">{formatCurrency(totalValue, userCurrency)}</div>
           <div className="text-xs text-slate-600">Total Value</div>
@@ -54,7 +50,7 @@ const ProjectStats: React.FC<ProjectStatsProps> = ({ project, isMobile, userCurr
       <div className="bg-white/60 rounded-xl p-6 border border-white/40">
         <div className="flex items-center">
           <div className="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center mr-4">
-            <MoneyIcon />
+            <DollarSign className="w-5 h-5 text-green-600" />
           </div>
           <div>
             <div className="text-2xl font-bold text-slate-800">{formatCurrency(totalValue, userCurrency)}</div>
