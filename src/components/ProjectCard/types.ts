@@ -16,10 +16,11 @@ export interface ProjectCardContentProps {
   isVerticalLayout: boolean;
 }
 
-export interface ProjectCardProps extends ProjectCardContentProps {
-  onEdit?: (projectId: string) => void;
-  onView?: (projectId: string) => void;
-  onDelete?: (projectId: string) => void;
-  onDuplicate?: (projectId: string) => void;
-  onShare?: (projectId: string) => void;
+export interface ProjectCardProps {
+  project: DatabaseProject;
+  onViewClick: (projectId: string) => void;
+  onEditClick: (projectId: string) => void;
+  onDeleteClick?: (projectId: string) => void;
+  currency: CurrencyCode;
+  isVerticalLayout?: boolean;
 }

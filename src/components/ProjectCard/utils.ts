@@ -20,8 +20,11 @@ export const calculateProjectStats = (project: DatabaseProject): ProjectStats =>
   const totalValue = project.milestones.reduce((sum, milestone) => sum + milestone.price, 0);
   const completedMilestones = project.milestones.filter(m => m.status === 'approved').length;
   const totalMilestones = project.milestones.length;
+  const approvedValue = project.milestones
+    .filter(m => m.status === 'approved')
+    .reduce((sum, milestone) => sum + milestone.price, 0);
   
-  return { totalValue, completedMilestones, totalMilestones };
+  return { totalValue, completedMilestones, totalMilestones, approvedValue };
 };
 
 export const formatProjectDate = (dateString: string): string => {
