@@ -7,15 +7,15 @@ import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip
 
 const FloatingContactButton = () => {
   return (
-    <div className="fixed bottom-6 right-6 z-50">
+    <div className="fixed bottom-4 right-4 sm:bottom-6 sm:right-6 z-50">
       <Tooltip>
         <TooltipTrigger asChild>
           <Link to="/contact">
             <Button 
               size="icon" 
-              className="h-14 w-14 rounded-full shadow-lg hover:shadow-xl transition-all duration-200 bg-brand-yellow hover:bg-yellow-500 text-brand-black border-0"
+              className="h-12 w-12 sm:h-14 sm:w-14 rounded-full shadow-lg hover:shadow-xl transition-all duration-200 bg-brand-yellow hover:bg-yellow-500 text-brand-black border-0 active:scale-95"
             >
-              <MessageCircle className="w-6 h-6" />
+              <MessageCircle className="w-5 h-5 sm:w-6 sm:h-6" />
             </Button>
           </Link>
         </TooltipTrigger>
