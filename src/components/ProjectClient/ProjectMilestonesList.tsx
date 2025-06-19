@@ -12,7 +12,7 @@ interface ProjectMilestonesListProps {
   onPaymentUpload: (milestoneId: string, file: File) => void;
   onDeliverableDownload: (milestoneId: string) => void;
   currency: CurrencyCode;
-  freelancerCurrency?: CurrencyCode; // Add freelancer's preferred currency
+  freelancerCurrency?: CurrencyCode;
 }
 
 const ProjectMilestonesList: React.FC<ProjectMilestonesListProps> = ({
@@ -83,6 +83,8 @@ const ProjectMilestonesList: React.FC<ProjectMilestonesListProps> = ({
                         } : undefined,
                         paymentProofUrl: milestone.payment_proof_url,
                         watermarkText: milestone.watermark_text ?? undefined,
+                        start_date: milestone.start_date ?? undefined,
+                        end_date: milestone.end_date ?? undefined,
                       }}
                       isClient={true}
                       onPaymentUpload={onPaymentUpload}

@@ -12,6 +12,8 @@ export interface Milestone {
   };
   paymentProofUrl?: string;
   watermarkText?: string;
+  start_date?: string;
+  end_date?: string;
 }
 
 export interface MilestoneCardProps {

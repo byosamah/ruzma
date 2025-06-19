@@ -6,23 +6,24 @@ import { FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/comp
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { useT } from '@/lib/i18n';
+import { CreateProjectFormData } from '@/lib/validators/project';
 
 const ProjectDetailsForm = () => {
   const t = useT();
-  const { control } = useFormContext();
+  const { control } = useFormContext<CreateProjectFormData>();
 
   return (
     <Card className="bg-white/80 backdrop-blur-sm">
       <CardHeader>
         <CardTitle>{t('projectDetails')}</CardTitle>
       </CardHeader>
-      <CardContent className="space-y-4">
+      <CardContent className="space-y-6">
         <FormField
           control={control}
           name="name"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>{t('projectNameLabel')}</FormLabel>
+              <FormLabel>{t('projectName')}</FormLabel>
               <FormControl>
                 <Input placeholder={t('projectNamePlaceholder')} {...field} />
               </FormControl>
@@ -30,33 +31,64 @@ const ProjectDetailsForm = () => {
             </FormItem>
           )}
         />
+        
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <FormField
+            control={control}
+            name="start_date"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Project Start Date</FormLabel>
+                <FormControl>
+                  <Input type="date" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={control}
+            name="end_date"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Project End Date</FormLabel>
+                <FormControl>
+                  <Input type="date" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </div>
+
         <FormField
           control={control}
           name="brief"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>{t('projectBriefLabel')}</FormLabel>
+              <FormLabel>{t('projectBrief')}</FormLabel>
               <FormControl>
-                <Textarea
-                  placeholder={t('projectBriefPlaceholder')}
-                  rows={4}
-                  {...field}
+                <Textarea 
+                  placeholder={t('projectBriefPlaceholder')} 
+                  rows={4} 
+                  {...field} 
                 />
               </FormControl>
               <FormMessage />
             </FormItem>
           )}
         />
+
         <FormField
           control={control}
           name="clientEmail"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Client Email</FormLabel>
+              <FormLabel>{t('clientEmail')}</FormLabel>
               <FormControl>
                 <Input 
-                  type="email"
-                  placeholder="client@example.com" 
+                  type="email" 
+                  placeholder={t('clientEmailPlaceholder')} 
                   {...field} 
                 />
               </FormControl>

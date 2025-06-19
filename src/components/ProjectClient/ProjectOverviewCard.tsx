@@ -3,6 +3,7 @@ import React from "react";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { formatCurrency, CurrencyCode } from "@/lib/currency";
 import { useT } from "@/lib/i18n";
+import { Calendar } from "lucide-react";
 
 interface ProjectOverviewCardProps {
   projectName: string;
@@ -11,7 +12,9 @@ interface ProjectOverviewCardProps {
   totalMilestones: number;
   completedMilestones: number;
   currency: CurrencyCode;
-  freelancerCurrency?: CurrencyCode; // Add freelancer's preferred currency
+  freelancerCurrency?: CurrencyCode;
+  startDate?: string;
+  endDate?: string;
 }
 
 const ProjectOverviewCard: React.FC<ProjectOverviewCardProps> = ({
@@ -22,19 +25,37 @@ const ProjectOverviewCard: React.FC<ProjectOverviewCardProps> = ({
   completedMilestones,
   currency,
   freelancerCurrency,
+  startDate,
+  endDate,
 }) => {
   const t = useT();
   
   // Use freelancer's preferred currency if available, otherwise fall back to the provided currency
   const displayCurrency = freelancerCurrency || currency;
   
+  const formatDate = (dateString?: string) => {
+    if (!dateString) return null;
+    const date = new Date(dateString);
+    return date.toLocaleDateString();
+  };
+  
   return (
     <Card className="bg-white/80 backdrop-blur-sm">
       <CardHeader>
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center space-y-4 md:space-y-0">
-          <div>
+          <div className="flex-1">
             <CardTitle className="text-2xl text-slate-800">{projectName}</CardTitle>
             <p className="text-slate-600 mt-2">{projectBrief}</p>
+            {(startDate || endDate) && (
+              <div className="flex items-center gap-2 text-sm text-slate-500 mt-3">
+                <Calendar className="w-4 h-4" />
+                <span>
+                  {startDate && formatDate(startDate)}
+                  {startDate && endDate && ' - '}
+                  {endDate && formatDate(endDate)}
+                </span>
+              </div>
+            )}
           </div>
           <div className="text-right">
             <div className="text-3xl font-bold text-slate-800">{formatCurrency(totalValue, displayCurrency)}</div>

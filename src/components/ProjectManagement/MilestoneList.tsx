@@ -49,6 +49,8 @@ const MilestoneList: React.FC<MilestoneListProps> = ({
                 } : undefined,
                 paymentProofUrl: milestone.payment_proof_url,
                 watermarkText: milestone.watermark_text || undefined,
+                start_date: milestone.start_date || undefined,
+                end_date: milestone.end_date || undefined,
               }}
               onApprove={
                 milestone.status === "payment_submitted"

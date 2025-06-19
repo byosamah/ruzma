@@ -34,7 +34,7 @@ const MilestonesList = () => {
   }, []);
 
   const addMilestone = () => {
-    append({ title: '', description: '', price: 0 });
+    append({ title: '', description: '', price: 0, start_date: '', end_date: '' });
   };
 
   return (
@@ -100,6 +100,36 @@ const MilestonesList = () => {
                 )}
               />
             </div>
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <FormField
+                control={control}
+                name={`milestones.${index}.start_date`}
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Start Date</FormLabel>
+                    <FormControl>
+                      <Input type="date" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={control}
+                name={`milestones.${index}.end_date`}
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>End Date</FormLabel>
+                    <FormControl>
+                      <Input type="date" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+            
             <FormField
               control={control}
               name={`milestones.${index}.description`}

@@ -6,6 +6,7 @@ import { formatCurrency, CurrencyCode } from '@/lib/currency';
 import { getStatusColor, getStatusIcon } from './utils';
 import { useT, TranslationKey } from '@/lib/i18n';
 import { useIsMobile } from '@/hooks/use-mobile';
+import { Calendar } from 'lucide-react';
 
 interface MilestoneHeaderProps {
   title: string;
@@ -13,7 +14,9 @@ interface MilestoneHeaderProps {
   price: number;
   status: string;
   currency: CurrencyCode;
-  freelancerCurrency?: CurrencyCode; // Add freelancer's preferred currency
+  freelancerCurrency?: CurrencyCode;
+  start_date?: string;
+  end_date?: string;
 }
 
 const MilestoneHeader: React.FC<MilestoneHeaderProps> = ({
@@ -22,7 +25,9 @@ const MilestoneHeader: React.FC<MilestoneHeaderProps> = ({
   price,
   status,
   currency,
-  freelancerCurrency
+  freelancerCurrency,
+  start_date,
+  end_date
 }) => {
   const StatusIcon = getStatusIcon(status);
   const t = useT();
@@ -32,6 +37,12 @@ const MilestoneHeader: React.FC<MilestoneHeaderProps> = ({
   // Use freelancer's preferred currency if available, otherwise fall back to the provided currency
   const displayCurrency = freelancerCurrency || currency;
 
+  const formatDate = (dateString?: string) => {
+    if (!dateString) return null;
+    const date = new Date(dateString);
+    return date.toLocaleDateString();
+  };
+
   if (isMobile) {
     return (
       <CardHeader className="pb-4 px-6 pt-6">
@@ -39,6 +50,16 @@ const MilestoneHeader: React.FC<MilestoneHeaderProps> = ({
           <div className="space-y-2">
             <CardTitle className="text-xl font-semibold text-slate-900 leading-tight">{title}</CardTitle>
             <p className="text-sm text-slate-600 leading-relaxed">{description}</p>
+            {(start_date || end_date) && (
+              <div className="flex items-center gap-2 text-sm text-slate-500">
+                <Calendar className="w-4 h-4" />
+                <span>
+                  {start_date && formatDate(start_date)}
+                  {start_date && end_date && ' - '}
+                  {end_date && formatDate(end_date)}
+                </span>
+              </div>
+            )}
           </div>
           <div className="flex items-center justify-between pt-2">
             <div className="text-2xl font-bold text-slate-900">
@@ -60,6 +81,16 @@ const MilestoneHeader: React.FC<MilestoneHeaderProps> = ({
         <div className="flex-1 space-y-2">
           <CardTitle className="text-xl font-semibold text-slate-900">{title}</CardTitle>
           <p className="text-sm text-slate-600 leading-relaxed max-w-2xl">{description}</p>
+          {(start_date || end_date) && (
+            <div className="flex items-center gap-2 text-sm text-slate-500">
+              <Calendar className="w-4 h-4" />
+              <span>
+                {start_date && formatDate(start_date)}
+                {start_date && end_date && ' - '}
+                {end_date && formatDate(end_date)}
+              </span>
+            </div>
+          )}
         </div>
         <div className="flex flex-col items-end space-y-3 flex-shrink-0">
           <div className="text-2xl font-bold text-slate-900">

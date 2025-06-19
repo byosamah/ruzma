@@ -26,7 +26,7 @@ const ClientProject = () => {
     handlePaymentUpload,
     handleDeliverableDownload,
     userCurrency,
-    freelancerCurrency, // Get freelancer's preferred currency
+    freelancerCurrency,
   } = useClientProject(token);
 
   if (isLoading) {
@@ -57,6 +57,8 @@ const ClientProject = () => {
           completedMilestones={completedMilestones}
           currency={displayCurrency}
           freelancerCurrency={freelancerCurrency}
+          startDate={project.start_date ?? undefined}
+          endDate={project.end_date ?? undefined}
         />
         <ProjectInstructionsCard />
         <ProjectMilestonesList

@@ -10,6 +10,8 @@ export interface DatabaseProject {
   client_email?: string;
   currency?: string;
   freelancer_currency?: string;
+  start_date?: string;
+  end_date?: string;
   milestones: DatabaseMilestone[];
 }
 
@@ -27,4 +29,6 @@ export interface DatabaseMilestone {
   deliverable_size?: number;
   payment_proof_url?: string;
   watermark_text?: string;
+  start_date?: string;
+  end_date?: string;
 }

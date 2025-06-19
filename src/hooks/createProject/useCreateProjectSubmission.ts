@@ -43,6 +43,8 @@ export const useCreateProjectSubmission = () => {
           brief: data.brief,
           client_email: data.clientEmail,
           user_id: user.id,
+          start_date: data.start_date || null,
+          end_date: data.end_date || null,
         })
         .select()
         .single();
@@ -56,6 +58,8 @@ export const useCreateProjectSubmission = () => {
         description: milestone.description,
         price: milestone.price,
         status: 'pending' as const,
+        start_date: milestone.start_date || null,
+        end_date: milestone.end_date || null,
       }));
 
       const { error: milestonesError } = await supabase

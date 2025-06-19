@@ -25,6 +25,8 @@ export const useEditProjectData = (
           description: m.description,
           price: m.price,
           status: m.status,
+          start_date: m.start_date || '',
+          end_date: m.end_date || '',
         })));
       }
     }

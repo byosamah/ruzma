@@ -53,16 +53,36 @@ export const MilestoneItemEditor: React.FC<MilestoneItemEditorProps> = ({
           rows={2}
         />
       </div>
+      <div className="grid grid-cols-2 gap-4">
+        <div className="space-y-2">
+          <label htmlFor={`milestone-price-${index}`} className="text-sm font-medium text-slate-700">{t('price')}</label>
+          <Input
+            id={`milestone-price-${index}`}
+            type="number"
+            value={milestone.price}
+            onChange={(e) => onMilestoneChange(index, 'price', e.target.value)}
+            placeholder={t('milestonePricePlaceholder_edit')}
+            required
+            min="0"
+          />
+        </div>
+        <div className="space-y-2">
+          <label htmlFor={`milestone-start-date-${index}`} className="text-sm font-medium text-slate-700">Start Date</label>
+          <Input
+            id={`milestone-start-date-${index}`}
+            type="date"
+            value={milestone.start_date || ''}
+            onChange={(e) => onMilestoneChange(index, 'start_date', e.target.value)}
+          />
+        </div>
+      </div>
       <div className="space-y-2">
-        <label htmlFor={`milestone-price-${index}`} className="text-sm font-medium text-slate-700">{t('price')}</label>
+        <label htmlFor={`milestone-end-date-${index}`} className="text-sm font-medium text-slate-700">End Date</label>
         <Input
-          id={`milestone-price-${index}`}
-          type="number"
-          value={milestone.price}
-          onChange={(e) => onMilestoneChange(index, 'price', e.target.value)}
-          placeholder={t('milestonePricePlaceholder_edit')}
-          required
-          min="0"
+          id={`milestone-end-date-${index}`}
+          type="date"
+          value={milestone.end_date || ''}
+          onChange={(e) => onMilestoneChange(index, 'end_date', e.target.value)}
         />
       </div>
     </div>
