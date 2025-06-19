@@ -1,3 +1,4 @@
+
 import { toast } from 'sonner';
 import { sendClientLink } from '@/services/clientLinkService';
 import { supabase } from '@/integrations/supabase/client';
@@ -10,14 +11,14 @@ export const useProjectCardActions = (
 ) => {
   const handleCopyClientLink = (e: React.MouseEvent) => {
     e.stopPropagation();
-    const clientUrl = `${window.location.origin}/client/project/${project.client_access_token}`;
+    const clientUrl = `https://hub.ruzma.co/client/project/${project.client_access_token}`;
     navigator.clipboard.writeText(clientUrl);
     toast.success('Client link copied to clipboard');
   };
 
   const handleViewClientPage = (e: React.MouseEvent) => {
     e.stopPropagation();
-    const clientUrl = `${window.location.origin}/client/project/${project.client_access_token}`;
+    const clientUrl = `https://hub.ruzma.co/client/project/${project.client_access_token}`;
     window.open(clientUrl, '_blank');
   };
 
