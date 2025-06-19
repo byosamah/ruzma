@@ -81,6 +81,16 @@ export const projectTranslations = {
     total: "Total",
     useTemplate: "Use Template",
     deleteTemplateConfirmation: "Are you sure you want to delete this template?",
+    // New keys for project management page
+    projectMilestones: "Project Milestones",
+    trackProgressAndDeliverables: "Track progress and manage deliverables",
+    projectHeaderStats: "Project Statistics",
+    projectHeaderActions: "Project Actions",
+    edit: "Edit",
+    delete: "Delete",
+    copyClientLink: "Copy Client Link",
+    clientEmail: "Client Email",
+    clientEmailPlaceholder: "Enter client email (optional)",
   },
   ar: {
     loadingProject: "جاري تحميل المشروع...",
@@ -163,5 +173,15 @@ export const projectTranslations = {
     total: "الإجمالي",
     useTemplate: "استخدام القالب",
     deleteTemplateConfirmation: "هل أنت متأكد من أنك تريد حذف هذا القالب؟",
+    // New keys for project management page
+    projectMilestones: "مراحل المشروع",
+    trackProgressAndDeliverables: "تتبع التقدم وإدارة التسليمات",
+    projectHeaderStats: "إحصائيات المشروع",
+    projectHeaderActions: "إجراءات المشروع",
+    edit: "تعديل",
+    delete: "حذف",
+    copyClientLink: "نسخ رابط العميل",
+    clientEmail: "بريد العميل الإلكتروني",
+    clientEmailPlaceholder: "أدخل بريد العميل الإلكتروني (اختياري)",
   },
 };

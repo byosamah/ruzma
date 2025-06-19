@@ -62,13 +62,13 @@ export const ProjectForm: React.FC<ProjectFormProps> = ({
         />
       </div>
       <div className="space-y-2">
-        <label htmlFor="clientEmail" className="text-sm font-medium text-slate-700">Client Email</label>
+        <label htmlFor="clientEmail" className="text-sm font-medium text-slate-700">{t('clientEmail')}</label>
         <Input
           id="clientEmail"
           type="email"
           value={clientEmail}
           onChange={(e) => onClientEmailChange(e.target.value)}
-          placeholder="Enter client email (optional)"
+          placeholder={t('clientEmailPlaceholder')}
         />
       </div>
 

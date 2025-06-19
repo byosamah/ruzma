@@ -1,3 +1,4 @@
+
 import React from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import Layout from "@/components/Layout";
@@ -42,7 +43,7 @@ const ProjectManagement: React.FC = () => {
   const handleDeleteClick = async () => {
     if (!id) return;
     
-    if (confirm(`Are you sure you want to delete "${project?.name}"? This action cannot be undone.`)) {
+    if (confirm(t('areYouSureDeleteProject'))) {
       const success = await deleteProject(id);
       if (success) {
         navigate('/dashboard');
@@ -80,7 +81,7 @@ const ProjectManagement: React.FC = () => {
                 <div className="w-8 h-8 bg-brand-blue/40 rounded-lg"></div>
               </div>
               <h2 className="text-2xl font-bold text-brand-black mb-3">{t('projectNotFound')}</h2>
-              <p className="text-brand-black/60 mb-6">The project you're looking for doesn't exist or has been removed.</p>
+              <p className="text-brand-black/60 mb-6">{t('projectNotFoundDesc')}</p>
               <Button 
                 onClick={() => navigate("/dashboard")}
                 className="bg-gradient-to-r from-brand-blue to-brand-navy hover:from-brand-blue/90 hover:to-brand-navy/90 text-white px-6 py-2"
@@ -131,11 +132,11 @@ const ProjectManagement: React.FC = () => {
               <div className="p-6 sm:p-8">
                 <div className="flex items-center justify-between mb-6">
                   <div>
-                    <h2 className="text-2xl font-bold text-brand-black">Project Milestones</h2>
-                    <p className="text-brand-black/60 mt-1">Track progress and manage deliverables</p>
+                    <h2 className="text-2xl font-bold text-brand-black">{t('projectMilestones')}</h2>
+                    <p className="text-brand-black/60 mt-1">{t('trackProgressAndDeliverables')}</p>
                   </div>
                   <div className="text-right">
-                    <div className="text-sm text-brand-black/50">Total Milestones</div>
+                    <div className="text-sm text-brand-black/50">{t('totalMilestones')}</div>
                     <div className="text-2xl font-bold text-brand-black">{project.milestones.length}</div>
                   </div>
                 </div>
