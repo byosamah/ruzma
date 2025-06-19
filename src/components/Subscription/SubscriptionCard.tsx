@@ -6,7 +6,6 @@ import { Check, Crown } from 'lucide-react';
 import { SubscriptionPlan } from '@/hooks/useSubscription';
 import { CurrencyCode, formatCurrency } from '@/lib/currency';
 import { useLanguage } from '@/contexts/LanguageContext';
-
 interface SubscriptionCardProps {
   plan: SubscriptionPlan;
   currency: CurrencyCode;
@@ -17,7 +16,6 @@ interface SubscriptionCardProps {
   onSelectPlan: (planId: string) => void;
   isLoading?: boolean;
 }
-
 export const SubscriptionCard: React.FC<SubscriptionCardProps> = ({
   plan,
   currency,
@@ -26,10 +24,11 @@ export const SubscriptionCard: React.FC<SubscriptionCardProps> = ({
   isCurrentPlan = false,
   currentUserType = 'free',
   onSelectPlan,
-  isLoading = false,
+  isLoading = false
 }) => {
-  const { language } = useLanguage();
-
+  const {
+    language
+  } = useLanguage();
   const getCardClassName = () => {
     if (isCurrentPlan) {
       return 'relative border-green-500 bg-green-50/50';
@@ -39,47 +38,42 @@ export const SubscriptionCard: React.FC<SubscriptionCardProps> = ({
     }
     return 'relative';
   };
-
   const getBadge = () => {
     if (isCurrentPlan) {
-      return (
-        <Badge className="absolute -top-2 left-1/2 transform -translate-x-1/2 bg-green-500 hover:bg-green-600">
-          <Crown className="h-3 w-3 mr-1" />
+      return <Badge className="absolute -top-2 left-1/2 transform -translate-x-1/2 bg-green-500 hover:bg-green-600">
+          
           Current Plan
-        </Badge>
-      );
+        </Badge>;
     }
     if (isPopular) {
-      return (
-        <Badge className="absolute -top-2 left-1/2 transform -translate-x-1/2 bg-primary">
+      return <Badge className="absolute -top-2 left-1/2 transform -translate-x-1/2 bg-primary">
           {popularText}
-        </Badge>
-      );
+        </Badge>;
     }
     return null;
   };
-
   const getPlanTierValue = (planId: string): number => {
     switch (planId) {
-      case 'free': return 0;
-      case 'plus': return 1;
-      case 'pro': return 2;
-      default: return 0;
+      case 'free':
+        return 0;
+      case 'plus':
+        return 1;
+      case 'pro':
+        return 2;
+      default:
+        return 0;
     }
   };
-
   const isDowngrade = () => {
     const currentTier = getPlanTierValue(currentUserType);
     const targetTier = getPlanTierValue(plan.id);
     return currentTier > targetTier;
   };
-
   const isUpgrade = () => {
     const currentTier = getPlanTierValue(currentUserType);
     const targetTier = getPlanTierValue(plan.id);
     return currentTier < targetTier;
   };
-
   const getButtonText = () => {
     if (isCurrentPlan) {
       return 'Current Plan';
@@ -95,7 +89,6 @@ export const SubscriptionCard: React.FC<SubscriptionCardProps> = ({
     }
     return 'Choose Plan';
   };
-
   const getButtonVariant = () => {
     if (isCurrentPlan) {
       return 'secondary' as const;
@@ -108,9 +101,7 @@ export const SubscriptionCard: React.FC<SubscriptionCardProps> = ({
     }
     return 'outline' as const;
   };
-
-  return (
-    <Card className={getCardClassName()}>
+  return <Card className={getCardClassName()}>
       {getBadge()}
       
       <CardHeader className="text-center">
@@ -122,24 +113,16 @@ export const SubscriptionCard: React.FC<SubscriptionCardProps> = ({
       </CardHeader>
 
       <CardContent className="space-y-3">
-        {plan.features.map((feature, index) => (
-          <div key={index} className="flex items-center">
+        {plan.features.map((feature, index) => <div key={index} className="flex items-center">
             <Check className="h-4 w-4 text-green-500 mr-2 flex-shrink-0" />
             <span className="text-sm">{feature}</span>
-          </div>
-        ))}
+          </div>)}
       </CardContent>
 
       <CardFooter>
-        <Button
-          onClick={() => onSelectPlan(plan.id)}
-          disabled={isLoading || isCurrentPlan}
-          className="w-full"
-          variant={getButtonVariant()}
-        >
+        <Button onClick={() => onSelectPlan(plan.id)} disabled={isLoading || isCurrentPlan} className="w-full" variant={getButtonVariant()}>
           {getButtonText()}
         </Button>
       </CardFooter>
-    </Card>
-  );
+    </Card>;
 };
