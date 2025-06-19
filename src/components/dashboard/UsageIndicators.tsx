@@ -40,17 +40,17 @@ export const UsageIndicators: React.FC<UsageIndicatorsProps> = ({
   };
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mb-4">
       {/* Projects Usage */}
-      <Card>
-        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-          <CardTitle className="text-sm font-medium">Projects Used</CardTitle>
-          <FolderOpen className="h-4 w-4 text-muted-foreground" />
+      <Card className="border-slate-200">
+        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-1 px-3 pt-3">
+          <CardTitle className="text-xs font-medium text-slate-600">Projects Used</CardTitle>
+          <FolderOpen className="h-3.5 w-3.5 text-slate-400" />
         </CardHeader>
-        <CardContent>
-          <div className="space-y-2">
+        <CardContent className="px-3 pb-3">
+          <div className="space-y-1.5">
             <div className="flex items-center justify-between">
-              <span className="text-2xl font-bold">
+              <span className="text-lg font-bold text-slate-800">
                 {usage.projects.current} of {usage.projects.max}
               </span>
               {usage.projects.percentage >= 100 && (
@@ -58,34 +58,34 @@ export const UsageIndicators: React.FC<UsageIndicatorsProps> = ({
                   size="sm"
                   variant="outline"
                   onClick={handleUpgradeClick}
-                  className="text-xs"
+                  className="text-xs h-6 px-2"
                 >
-                  {React.createElement(getUpgradeButtonIcon(), { className: "h-3 w-3 mr-1" })}
+                  {React.createElement(getUpgradeButtonIcon(), { className: "h-2.5 w-2.5 mr-1" })}
                   {getUpgradeButtonText()}
                 </Button>
               )}
             </div>
             <Progress
               value={usage.projects.percentage}
-              className="h-2"
+              className="h-1.5"
             />
-            <p className="text-xs text-muted-foreground">
-              {usage.projects.percentage}% of projects used
+            <p className="text-xs text-slate-500">
+              {usage.projects.percentage}% used
             </p>
           </div>
         </CardContent>
       </Card>
 
       {/* Storage Usage */}
-      <Card>
-        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-          <CardTitle className="text-sm font-medium">Storage Used</CardTitle>
-          <Database className="h-4 w-4 text-muted-foreground" />
+      <Card className="border-slate-200">
+        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-1 px-3 pt-3">
+          <CardTitle className="text-xs font-medium text-slate-600">Storage Used</CardTitle>
+          <Database className="h-3.5 w-3.5 text-slate-400" />
         </CardHeader>
-        <CardContent>
-          <div className="space-y-2">
+        <CardContent className="px-3 pb-3">
+          <div className="space-y-1.5">
             <div className="flex items-center justify-between">
-              <span className="text-2xl font-bold">
+              <span className="text-lg font-bold text-slate-800">
                 {usage.storage.currentFormatted} of {usage.storage.maxFormatted}
               </span>
               {usage.storage.percentage >= 100 && (
@@ -93,19 +93,19 @@ export const UsageIndicators: React.FC<UsageIndicatorsProps> = ({
                   size="sm"
                   variant="outline"
                   onClick={handleUpgradeClick}
-                  className="text-xs"
+                  className="text-xs h-6 px-2"
                 >
-                  {React.createElement(getUpgradeButtonIcon(), { className: "h-3 w-3 mr-1" })}
+                  {React.createElement(getUpgradeButtonIcon(), { className: "h-2.5 w-2.5 mr-1" })}
                   {getUpgradeButtonText()}
                 </Button>
               )}
             </div>
             <Progress
               value={usage.storage.percentage}
-              className="h-2"
+              className="h-1.5"
             />
-            <p className="text-xs text-muted-foreground">
-              {usage.storage.percentage}% of storage used
+            <p className="text-xs text-slate-500">
+              {usage.storage.percentage}% used
             </p>
           </div>
         </CardContent>
