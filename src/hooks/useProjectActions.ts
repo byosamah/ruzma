@@ -1,10 +1,10 @@
-
 import { useState } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import { User } from '@supabase/supabase-js';
 import { DatabaseProject } from './projectTypes';
 import { type CreateProjectFormData } from '@/lib/validators/project';
+import { calculateProjectDates } from '@/lib/projectDateUtils';
 
 export function useProjectActions(user: User | null, fetchProjects: () => Promise<void>) {
   const createProject = async (projectData: CreateProjectFormData) => {
@@ -31,6 +31,9 @@ export function useProjectActions(user: User | null, fetchProjects: () => Promis
         return null;
       }
 
+      // Calculate project dates from milestones
+      const { start_date, end_date } = calculateProjectDates(projectData.milestones);
+
       const { data: project, error: projectError } = await supabase
         .from('projects')
         .insert({
@@ -38,6 +41,8 @@ export function useProjectActions(user: User | null, fetchProjects: () => Promis
           name: projectData.name,
           brief: projectData.brief,
           client_email: projectData.clientEmail,
+          start_date,
+          end_date,
         })
         .select()
         .single();
@@ -54,6 +59,8 @@ export function useProjectActions(user: User | null, fetchProjects: () => Promis
           title: milestone.title,
           description: milestone.description,
           price: milestone.price,
+          start_date: milestone.start_date || null,
+          end_date: milestone.end_date || null,
         }));
 
         const { error: milestonesError } = await supabase
@@ -98,6 +105,8 @@ export function useProjectActions(user: User | null, fetchProjects: () => Promis
         description: string;
         price: number;
         status: 'pending' | 'payment_submitted' | 'approved' | 'rejected';
+        start_date?: string;
+        end_date?: string;
       }>;
     }
   ) => {
@@ -106,11 +115,16 @@ export function useProjectActions(user: User | null, fetchProjects: () => Promis
       return false;
     }
     try {
+      // Calculate project dates from milestones
+      const { start_date, end_date } = calculateProjectDates(projectData.milestones);
+
       const { error: projectError } = await supabase
         .from('projects')
         .update({
           name: projectData.name,
           brief: projectData.brief,
+          start_date,
+          end_date,
           updated_at: new Date().toISOString(),
         })
         .eq('id', projectId)
@@ -140,6 +154,8 @@ export function useProjectActions(user: User | null, fetchProjects: () => Promis
           description: milestone.description,
           price: milestone.price,
           status: milestone.status,
+          start_date: milestone.start_date || null,
+          end_date: milestone.end_date || null,
         }));
 
         const { error: milestonesError } = await supabase

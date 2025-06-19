@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import { CreateProjectFormData } from '@/lib/validators/project';
+import { calculateProjectDates } from '@/lib/projectDateUtils';
 
 export const useCreateProjectSubmission = () => {
   const navigate = useNavigate();
@@ -35,6 +36,9 @@ export const useCreateProjectSubmission = () => {
         return;
       }
 
+      // Calculate project dates from milestones
+      const { start_date, end_date } = calculateProjectDates(data.milestones);
+
       // Create the project
       const { data: project, error: projectError } = await supabase
         .from('projects')
@@ -43,8 +47,8 @@ export const useCreateProjectSubmission = () => {
           brief: data.brief,
           client_email: data.clientEmail,
           user_id: user.id,
-          start_date: data.start_date || null,
-          end_date: data.end_date || null,
+          start_date,
+          end_date,
         })
         .select()
         .single();

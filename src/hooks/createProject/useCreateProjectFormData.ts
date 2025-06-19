@@ -11,8 +11,6 @@ export const useCreateProjectFormData = (templateData?: any) => {
       name: templateData?.name || '',
       brief: templateData?.brief || '',
       clientEmail: '',
-      start_date: templateData?.start_date || '',
-      end_date: templateData?.end_date || '',
       milestones: templateData?.milestones?.map((milestone: any) => ({
         title: milestone.title || '',
         description: milestone.description || '',
@@ -48,8 +46,6 @@ export const useCreateProjectFormData = (templateData?: any) => {
 
     form.setValue('name', template.name || '');
     form.setValue('brief', template.brief || '');
-    form.setValue('start_date', template.start_date || '');
-    form.setValue('end_date', template.end_date || '');
     form.setValue('milestones', templateMilestones);
   }, [form]);
 
