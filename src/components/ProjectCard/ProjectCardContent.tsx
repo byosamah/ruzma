@@ -2,7 +2,7 @@
 import React from 'react';
 import { CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Calendar, Clock, DollarSign } from 'lucide-react';
+import { Calendar, Clock } from 'lucide-react';
 import { formatCurrency, CurrencyCode } from '@/lib/currency';
 import { DatabaseProject } from '@/hooks/projectTypes';
 import { ProjectStats } from './types';
@@ -14,6 +14,10 @@ interface ProjectCardContentProps {
   currency: CurrencyCode;
   isVerticalLayout: boolean;
 }
+
+const MoneyIcon = () => (
+  <img src="/lovable-uploads/47dfcb8f-ab87-46b3-940f-e8f798b9fde1.png" alt="Money" className="w-3 h-3" />
+);
 
 const ProjectCardContent: React.FC<ProjectCardContentProps> = ({ 
   project, 
@@ -53,7 +57,7 @@ const ProjectCardContent: React.FC<ProjectCardContentProps> = ({
         </div>
         
         <div className="flex items-center gap-1 text-slate-600">
-          <DollarSign className="w-3 h-3" />
+          <MoneyIcon />
           <span>{formatCurrency(stats.totalValue, currency)}</span>
         </div>
       </div>
