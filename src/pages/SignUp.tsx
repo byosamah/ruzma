@@ -60,8 +60,8 @@ const SignUp = () => {
     try {
       console.log('Attempting to sign up with email:', formData.email);
       
-      // Use hub.ruzma.co/login for redirect URL
-      const redirectUrl = 'https://hub.ruzma.co/login';
+      // Use hub.ruzma.co for redirect URL
+      const redirectUrl = 'https://hub.ruzma.co';
       console.log('Using redirect URL:', redirectUrl);
       
       const { data, error } = await supabase.auth.signUp({
@@ -149,7 +149,7 @@ const SignUp = () => {
         type: 'signup',
         email: formData.email,
         options: {
-          emailRedirectTo: 'https://hub.ruzma.co/login'
+          emailRedirectTo: 'https://hub.ruzma.co'
         }
       });
 
