@@ -8,6 +8,8 @@ export interface DatabaseProject {
   updated_at: string;
   client_access_token: string;
   client_email?: string;
+  currency?: string;
+  freelancer_currency?: string;
   milestones: DatabaseMilestone[];
 }
 

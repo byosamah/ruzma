@@ -96,6 +96,20 @@ Deno.serve(async (req) => {
       })
     }
 
+    // Fetch the freelancer's profile to get their preferred currency
+    const { data: profileData, error: profileError } = await supabaseAdmin
+      .from('profiles')
+      .select('currency')
+      .eq('id', projectData.user_id)
+      .maybeSingle();
+
+    console.log('Freelancer profile result:', { profileData, profileError })
+
+    // Add freelancer's currency to the project data
+    if (profileData && profileData.currency) {
+      projectData.freelancer_currency = profileData.currency;
+    }
+
     // Sanitize response and do not leak internal details
     delete projectData.user_id;
 
