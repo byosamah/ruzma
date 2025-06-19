@@ -51,7 +51,7 @@ const VerticalProjectCard: React.FC<ProjectCardProps> = ({
           </CardContent>
         </div>
         
-        <div className="md:w-1/3 p-6 border-t md:border-t-0 md:border-l border-slate-200">
+        <div className="md:w-1/3 p-6 border-t md:border-t-0 md:border-l border-slate-200 flex flex-col justify-between">
           <div className="space-y-4">
             <div className="flex flex-wrap gap-2">
               {project.milestones.slice(0, 3).map(milestone => (
@@ -65,7 +65,9 @@ const VerticalProjectCard: React.FC<ProjectCardProps> = ({
                 </Badge>
               )}
             </div>
+          </div>
 
+          <div className="mt-auto pt-4">
             <ProjectCardActions
               onEditClick={actions.handleEditClick}
               onViewClick={actions.handleViewClick}
