@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
@@ -20,14 +19,18 @@ const ForgotPassword = () => {
     setIsLoading(true);
 
     try {
+      console.log('Sending password reset email to:', email);
+      
       const { error } = await supabase.auth.resetPasswordForEmail(email, {
-        redirectTo: `${window.location.origin}/reset-password`,
+        redirectTo: 'https://hub.ruzma.co/reset-password',
       });
 
       if (error) {
+        console.error('Password reset error:', error);
         throw error;
       }
 
+      console.log('Password reset email sent successfully');
       setEmailSent(true);
       toast.success(t('passwordResetEmailSent'));
     } catch (error: any) {
