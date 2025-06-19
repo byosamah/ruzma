@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
@@ -49,6 +48,20 @@ const SignUp = () => {
     return Object.keys(newErrors).length === 0;
   };
 
+  const getRedirectUrl = () => {
+    // Check if we're in development (localhost) or production
+    const currentUrl = window.location.origin;
+    
+    if (currentUrl.includes('localhost')) {
+      // For development, we should still use the proper preview URL
+      // The user should replace this with their actual preview URL
+      return 'https://id-preview--f60a1915-b5a8-429d-bf2a-ffca2468a2f7.lovable.app/dashboard';
+    }
+    
+    // For production, use the current origin
+    return `${currentUrl}/dashboard`;
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
@@ -66,7 +79,7 @@ const SignUp = () => {
           data: {
             full_name: formData.name,
           },
-          emailRedirectTo: `${window.location.origin}/dashboard`
+          emailRedirectTo: getRedirectUrl()
         }
       });
 
