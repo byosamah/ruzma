@@ -2,7 +2,14 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { getClientProject, uploadPaymentProof } from '@/api/clientProject';
 import { useUserCurrency } from '@/hooks/useUserCurrency';
+import { CurrencyCode } from '@/lib/currency';
 import { toast } from 'sonner';
+
+// Helper function to validate currency code
+const isValidCurrencyCode = (currency: string): currency is CurrencyCode => {
+  const validCurrencies: CurrencyCode[] = ['SAR', 'JOD', 'USD', 'AED', 'GBP', 'EGP'];
+  return validCurrencies.includes(currency as CurrencyCode);
+};
 
 export const useClientProject = (token?: string) => {
   const queryClient = useQueryClient();
@@ -86,8 +93,14 @@ export const useClientProject = (token?: string) => {
 
   const error = queryError ? (queryError as Error).message : null;
 
-  // Extract freelancer's currency from project data
-  const freelancerCurrency = project?.freelancer_currency || project?.currency || null;
+  // Safely extract and validate freelancer's currency
+  const freelancerCurrency: CurrencyCode | null = (() => {
+    const dbCurrency = project?.freelancer_currency || project?.currency;
+    if (dbCurrency && isValidCurrencyCode(dbCurrency)) {
+      return dbCurrency;
+    }
+    return null;
+  })();
 
   return {
     project: project || null,
@@ -96,6 +109,6 @@ export const useClientProject = (token?: string) => {
     handlePaymentUpload,
     handleDeliverableDownload,
     userCurrency: userCurrency.currency,
-    freelancerCurrency, // Return freelancer's preferred currency
+    freelancerCurrency,
   };
 };
