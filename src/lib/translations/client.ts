@@ -1,6 +1,10 @@
 
 export const clientTranslations = {
   en: {
+    // Headers
+    clientProjectPortal: "Client Project Portal",
+    trackProjectProgressAndMakePayments: "Track project progress and make payments",
+    
     // Project Overview
     howItWorks: "How It Works",
     followTheseStepsToTrackYourProject: "Follow these steps to track your project progress",
@@ -19,6 +23,7 @@ export const clientTranslations = {
     paymentUnderReview: "Payment Under Review",
     paymentApprovedReadyToDownload: "Payment Approved - Ready to Download",
     statusUnknown: "Status Unknown",
+    pendingPayment: "Pending Payment",
     
     // Actions
     uploading: "Uploading...",
@@ -39,8 +44,17 @@ export const clientTranslations = {
     complete: "Complete",
     completed: "Completed",
     remaining: "Remaining",
+    totalMilestones: "Total Milestones",
+    
+    // Footer
+    questionsContactFreelancer: "Questions? Contact your freelancer directly",
+    poweredByRuzma: "Powered by Ruzma",
   },
   ar: {
+    // Headers
+    clientProjectPortal: "بوابة مشروع العميل",
+    trackProjectProgressAndMakePayments: "تتبع تقدم المشروع وقم بالمدفوعات",
+    
     // Project Overview
     howItWorks: "كيف يعمل",
     followTheseStepsToTrackYourProject: "اتبع هذه الخطوات لتتبع تقدم مشروعك",
@@ -59,6 +73,7 @@ export const clientTranslations = {
     paymentUnderReview: "الدفع قيد المراجعة",
     paymentApprovedReadyToDownload: "تمت الموافقة على الدفع - جاهز للتحميل",
     statusUnknown: "الحالة غير معروفة",
+    pendingPayment: "الدفع معلق",
     
     // Actions
     uploading: "جار الرفع...",
@@ -79,5 +94,10 @@ export const clientTranslations = {
     complete: "مكتمل",
     completed: "مكتمل",
     remaining: "متبقي",
+    totalMilestones: "إجمالي المراحل",
+    
+    // Footer
+    questionsContactFreelancer: "أسئلة؟ تواصل مع المستقل مباشرة",
+    poweredByRuzma: "مدعوم من رزمة",
   },
 };
