@@ -69,12 +69,16 @@ export const useProfileData = () => {
         setProfilePicture(profile.avatar_url || null);
       } else {
         // No profile exists or there was an error fetching, try to create one.
+        // Get currency from user metadata if available
+        const userCurrency = user.user_metadata?.currency || 'USD';
+        
         const { data: newProfile, error: createError } = await supabase
           .from('profiles')
           .insert({
             id: user.id,
             full_name: user.user_metadata?.full_name || user.email?.split('@')[0] || 'User',
-            email: user.email
+            email: user.email,
+            currency: userCurrency
           })
           .select()
           .single();
@@ -89,7 +93,7 @@ export const useProfileData = () => {
             company: newProfile.company || '',
             website: newProfile.website || '',
             bio: newProfile.bio || '',
-            currency: newProfile.currency || 'USD',
+            currency: newProfile.currency || userCurrency,
             professionalTitle: branding?.freelancer_title || '',
             shortBio: branding?.freelancer_bio || '',
             primaryColor: branding?.primary_color || '#050c1e',

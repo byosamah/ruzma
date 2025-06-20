@@ -12,7 +12,8 @@ const SignUp = () => {
     name: '',
     email: '',
     password: '',
-    confirmPassword: ''
+    confirmPassword: '',
+    currency: 'USD'
   });
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
@@ -46,6 +47,7 @@ const SignUp = () => {
         options: {
           data: {
             full_name: formData.name,
+            currency: formData.currency,
           },
           emailRedirectTo: redirectUrl
         }
@@ -102,6 +104,21 @@ const SignUp = () => {
       setErrors(prev => ({
         ...prev,
         [e.target.name]: ''
+      }));
+    }
+  };
+
+  const handleCurrencyChange = (currency: string) => {
+    setFormData(prev => ({
+      ...prev,
+      currency
+    }));
+    
+    // Clear currency error if it exists
+    if (errors.currency) {
+      setErrors(prev => ({
+        ...prev,
+        currency: ''
       }));
     }
   };
@@ -202,6 +219,7 @@ const SignUp = () => {
       showConfirmPassword={showConfirmPassword}
       isLoading={isLoading}
       onFormDataChange={handleFormDataChange}
+      onCurrencyChange={handleCurrencyChange}
       onSubmit={handleSubmit}
       onTogglePassword={() => setShowPassword(!showPassword)}
       onToggleConfirmPassword={() => setShowConfirmPassword(!showConfirmPassword)}

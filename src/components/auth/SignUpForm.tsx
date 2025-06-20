@@ -5,13 +5,16 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Eye, EyeOff, Mail, Lock, User } from 'lucide-react';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Eye, EyeOff, Mail, Lock, User, DollarSign } from 'lucide-react';
+import { CURRENCIES } from '@/lib/currency';
 
 interface FormData {
   name: string;
   email: string;
   password: string;
   confirmPassword: string;
+  currency: string;
 }
 
 interface SignUpFormProps {
@@ -21,6 +24,7 @@ interface SignUpFormProps {
   showConfirmPassword: boolean;
   isLoading: boolean;
   onFormDataChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  onCurrencyChange: (currency: string) => void;
   onSubmit: (e: React.FormEvent) => void;
   onTogglePassword: () => void;
   onToggleConfirmPassword: () => void;
@@ -33,6 +37,7 @@ const SignUpForm = ({
   showConfirmPassword,
   isLoading,
   onFormDataChange,
+  onCurrencyChange,
   onSubmit,
   onTogglePassword,
   onToggleConfirmPassword
@@ -91,6 +96,26 @@ const SignUpForm = ({
                 />
               </div>
               {errors.email && <p className="text-sm text-red-600 mt-1">{errors.email}</p>}
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="currency">Preferred Currency</Label>
+              <div className="relative">
+                <DollarSign className="absolute left-3 top-3 h-4 w-4 text-slate-400 z-10" />
+                <Select value={formData.currency} onValueChange={onCurrencyChange}>
+                  <SelectTrigger className="pl-10">
+                    <SelectValue placeholder="Select your currency" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {Object.entries(CURRENCIES).map(([code, { symbol, name }]) => (
+                      <SelectItem key={code} value={code}>
+                        {symbol.en} {name} ({code})
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+              {errors.currency && <p className="text-sm text-red-600 mt-1">{errors.currency}</p>}
             </div>
             
             <div className="space-y-2">
