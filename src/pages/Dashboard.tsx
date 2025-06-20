@@ -56,8 +56,8 @@ const Dashboard = () => {
   if (loading) {
     return (
       <Layout user={user} onSignOut={handleSignOut}>
-        <div className="flex items-center justify-center min-h-[60vh]">
-          <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-slate-900"></div>
+        <div className="flex items-center justify-center min-h-[50vh] sm:min-h-[60vh]">
+          <div className="animate-spin rounded-full h-16 w-16 sm:h-32 sm:w-32 border-b-2 border-slate-900"></div>
         </div>
       </Layout>
     );
@@ -80,8 +80,8 @@ const Dashboard = () => {
     const button = (
       <Button 
         onClick={handleNewProject} 
-        size={isMobile ? "default" : "lg"}
-        className={`${isMobile ? 'w-full' : ''} mt-4`}
+        size="lg"
+        className="w-full sm:w-auto px-6 py-3 text-base"
         disabled={false}
       >
         <ButtonIcon className="w-5 h-5 mr-2" />
@@ -89,7 +89,7 @@ const Dashboard = () => {
       </Button>
     );
 
-    if (tooltipMessage) {
+    if (tooltipMessage && !isMobile) {
       return (
         <Tooltip>
           <TooltipTrigger asChild>
@@ -105,11 +105,10 @@ const Dashboard = () => {
     return button;
   };
 
-  // Determine layout based on project count and screen size
-  const isOddNumber = projects.length % 2 === 1;
-  const projectGridClass = isMobile || isOddNumber 
+  // Always use vertical layout on mobile for better readability
+  const projectGridClass = isMobile 
     ? "flex flex-col space-y-4 sm:space-y-6" 
-    : "grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6";
+    : "grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6";
 
   return (
     <Layout user={user} onSignOut={handleSignOut}>
@@ -139,8 +138,8 @@ const Dashboard = () => {
             <Button 
               variant="outline" 
               onClick={() => navigate('/templates')}
-              className="flex items-center gap-2 w-full sm:w-auto"
-              size={isMobile ? "default" : "default"}
+              className="flex items-center gap-2 w-full sm:w-auto px-4 py-2"
+              size="default"
             >
               <FileText className="w-4 h-4" />
               {t('templates')}
@@ -148,12 +147,14 @@ const Dashboard = () => {
           </div>
 
           {projects.length === 0 ? (
-            <div className="text-center py-8 sm:py-12 bg-white rounded-lg border border-slate-200">
+            <div className="text-center py-8 sm:py-12 bg-white rounded-lg border border-slate-200 mx-2 sm:mx-0">
               <FileText className="w-12 h-12 sm:w-16 sm:h-16 text-slate-300 mx-auto mb-4" />
-              <h3 className="text-base sm:text-lg font-medium text-slate-600 mb-2">
+              <h3 className="text-lg sm:text-xl font-medium text-slate-600 mb-2 px-4">
                 {t('noProjectsYet')}
               </h3>
-              <p className="text-sm sm:text-base text-slate-400 mb-4 px-4">{t('createFirstProjectDesc')}</p>
+              <p className="text-sm sm:text-base text-slate-400 mb-6 px-4 max-w-md mx-auto">
+                {t('createFirstProjectDesc')}
+              </p>
               <div className="px-4">
                 <EmptyProjectsButton />
               </div>
@@ -168,7 +169,7 @@ const Dashboard = () => {
                   onEditClick={handleEditProjectCard}
                   onDeleteClick={handleDeleteProject}
                   currency={userCurrency.currency}
-                  isVerticalLayout={isMobile || isOddNumber}
+                  isVerticalLayout={true}
                 />
               ))}
             </div>

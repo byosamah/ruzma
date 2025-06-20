@@ -28,14 +28,14 @@ const DashboardHeader: React.FC<DashboardHeaderProps> = ({
         onClick={onNewProject} 
         disabled={!canCreateProject}
         size={isMobile ? "default" : "default"}
-        className={`${!canCreateProject ? 'opacity-50 cursor-not-allowed' : ''} ${isMobile ? 'w-full' : ''}`}
+        className={`${!canCreateProject ? 'opacity-50 cursor-not-allowed' : ''} ${isMobile ? 'w-full' : 'px-6'} h-10 sm:h-11`}
       >
         <Plus className="w-4 h-4 mr-2" />
         {t('newProject')}
       </Button>
     );
 
-    if (!canCreateProject) {
+    if (!canCreateProject && !isMobile) {
       return (
         <Tooltip>
           <TooltipTrigger asChild>
@@ -54,17 +54,17 @@ const DashboardHeader: React.FC<DashboardHeaderProps> = ({
   if (isMobile) {
     return (
       <div className="space-y-4 mb-6">
-        <div className="text-center">
-          <h1 className="text-2xl font-bold text-slate-800 leading-tight">
+        <div className="text-center px-4">
+          <h1 className="text-2xl sm:text-3xl font-bold text-slate-800 leading-tight mb-2">
             Welcome, {displayName}!
           </h1>
-          <p className="text-slate-600 mt-1 text-sm">{t('dashboardSubtitle')}</p>
+          <p className="text-slate-600 text-sm sm:text-base">{t('dashboardSubtitle')}</p>
         </div>
-        <div className="flex flex-col space-y-3 sm:flex-row sm:space-y-0 sm:space-x-3">
+        <div className="flex flex-col space-y-3 px-2 sm:px-0 sm:flex-row sm:space-y-0 sm:space-x-3">
           <Button 
             variant="outline" 
             onClick={onViewAnalytics}
-            className="flex items-center justify-center gap-2 sm:flex-1"
+            className="flex items-center justify-center gap-2 sm:flex-1 h-10 sm:h-11"
           >
             <BarChart3 className="w-4 h-4" />
             {t('viewAnalytics')}
@@ -78,18 +78,18 @@ const DashboardHeader: React.FC<DashboardHeaderProps> = ({
   }
 
   return (
-    <div className="flex justify-between items-center mb-8">
-      <div>
-        <h1 className="text-3xl font-bold text-slate-800">
+    <div className="flex flex-col lg:flex-row lg:justify-between lg:items-center mb-8 space-y-4 lg:space-y-0">
+      <div className="text-center lg:text-left">
+        <h1 className="text-2xl sm:text-3xl font-bold text-slate-800">
           Welcome, {displayName}!
         </h1>
-        <p className="text-slate-600 mt-1">{t('dashboardSubtitle')}</p>
+        <p className="text-slate-600 mt-1 text-sm sm:text-base">{t('dashboardSubtitle')}</p>
       </div>
-      <div className="flex gap-3">
+      <div className="flex flex-col sm:flex-row gap-3 justify-center lg:justify-end">
         <Button 
           variant="outline" 
           onClick={onViewAnalytics}
-          className="flex items-center gap-2"
+          className="flex items-center gap-2 px-4 sm:px-6 h-10 sm:h-11"
         >
           <BarChart3 className="w-4 h-4" />
           {t('viewAnalytics')}

@@ -41,13 +41,13 @@ const MobileMenu: React.FC<MobileMenuProps> = ({
       
       <Sheet open={mobileMenuOpen} onOpenChange={onToggle}>
         <SheetTrigger asChild>
-          <Button variant="ghost" size="icon">
+          <Button variant="ghost" size="icon" className="h-10 w-10">
             {mobileMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
           </Button>
         </SheetTrigger>
-        <SheetContent side="right" className="w-64">
-          <SheetHeader>
-            <SheetTitle>Menu</SheetTitle>
+        <SheetContent side="right" className="w-80 sm:w-96">
+          <SheetHeader className="pb-4">
+            <SheetTitle className="text-lg">Menu</SheetTitle>
           </SheetHeader>
           <div className="mt-6">
             <NavigationMenu

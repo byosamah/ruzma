@@ -8,10 +8,12 @@ import { ArrowLeft } from 'lucide-react';
 import { useDashboard } from '@/hooks/useDashboard';
 import { useDashboardAnalytics } from '@/hooks/useDashboardAnalytics';
 import { useT } from '@/lib/i18n';
+import { useIsMobile } from '@/hooks/use-mobile';
 
 const Analytics = () => {
   const navigate = useNavigate();
   const t = useT();
+  const isMobile = useIsMobile();
   const {
     user,
     loading,
@@ -25,8 +27,8 @@ const Analytics = () => {
   if (loading) {
     return (
       <Layout user={user} onSignOut={handleSignOut}>
-        <div className="flex items-center justify-center min-h-[60vh]">
-          <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-slate-900"></div>
+        <div className="flex items-center justify-center min-h-[50vh] sm:min-h-[60vh]">
+          <div className="animate-spin rounded-full h-16 w-16 sm:h-32 sm:w-32 border-b-2 border-slate-900"></div>
         </div>
       </Layout>
     );
@@ -34,21 +36,23 @@ const Analytics = () => {
 
   return (
     <Layout user={user} onSignOut={handleSignOut}>
-      <div className="space-y-8">
-        <div className="flex items-center space-x-4">
+      <div className="space-y-6 sm:space-y-8">
+        <div className="flex flex-col sm:flex-row sm:items-center space-y-4 sm:space-y-0 sm:space-x-4">
           <Button
             variant="outline"
-            size="sm"
+            size={isMobile ? "default" : "sm"}
             onClick={() => navigate('/dashboard')}
-            className="flex items-center gap-2"
+            className="flex items-center gap-2 w-full sm:w-auto"
           >
             <ArrowLeft className="w-4 h-4" />
             Back to Dashboard
           </Button>
-          <h1 className="text-3xl font-bold text-slate-800">Analytics</h1>
+          <h1 className="text-2xl sm:text-3xl font-bold text-slate-800 text-center sm:text-left">
+            Analytics
+          </h1>
         </div>
         
-        <div className="max-w-4xl">
+        <div className="w-full">
           <DashboardAnalytics data={analyticsData} userCurrency={userCurrency.currency} />
         </div>
       </div>
