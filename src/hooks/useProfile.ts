@@ -15,6 +15,7 @@ export const useProfile = () => {
     isSaved,
     handleChange,
     handleCurrencyChange,
+    handleLogoUpload,
     handleSubmit,
     updateProfilePicture,
   } = useProfileData();
@@ -43,6 +44,7 @@ export const useProfile = () => {
     navigate,
     handleChange,
     handleCurrencyChange,
+    handleLogoUpload,
     handleSubmit,
     handleUploadClick,
     handleFileChange,

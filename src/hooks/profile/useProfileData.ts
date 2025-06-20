@@ -5,6 +5,7 @@ import { toast } from "sonner";
 import { supabase } from '@/integrations/supabase/client';
 import { User } from '@supabase/supabase-js';
 import { ProfileFormData } from './types';
+import { secureFileUpload } from '@/lib/storageeSecurity';
 
 export const useProfileData = () => {
   const [user, setUser] = useState<User | null>(null);
@@ -17,7 +18,9 @@ export const useProfileData = () => {
     bio: '',
     currency: 'USD',
     professionalTitle: '',
-    shortBio: ''
+    shortBio: '',
+    primaryColor: '#4B72E5',
+    logoUrl: ''
   });
   const [isLoading, setIsLoading] = useState(false);
   const [isSaved, setIsSaved] = useState(false);
@@ -39,10 +42,10 @@ export const useProfileData = () => {
         .eq('id', user.id)
         .maybeSingle();
 
-      // Fetch branding data for professional title and short bio
+      // Fetch branding data for professional title, short bio, color, and logo
       const { data: branding, error: brandingError } = await supabase
         .from('freelancer_branding')
-        .select('freelancer_title, freelancer_bio')
+        .select('freelancer_title, freelancer_bio, primary_color, logo_url')
         .eq('user_id', user.id)
         .maybeSingle();
 
@@ -59,7 +62,9 @@ export const useProfileData = () => {
           bio: profile.bio || '',
           currency: profile.currency || 'USD',
           professionalTitle: branding?.freelancer_title || '',
-          shortBio: branding?.freelancer_bio || ''
+          shortBio: branding?.freelancer_bio || '',
+          primaryColor: branding?.primary_color || '#4B72E5',
+          logoUrl: branding?.logo_url || ''
         });
         setProfilePicture(profile.avatar_url || null);
       } else {
@@ -86,7 +91,9 @@ export const useProfileData = () => {
             bio: newProfile.bio || '',
             currency: newProfile.currency || 'USD',
             professionalTitle: branding?.freelancer_title || '',
-            shortBio: branding?.freelancer_bio || ''
+            shortBio: branding?.freelancer_bio || '',
+            primaryColor: branding?.primary_color || '#4B72E5',
+            logoUrl: branding?.logo_url || ''
           });
           setProfilePicture(newProfile.avatar_url || null);
         }
@@ -111,6 +118,33 @@ export const useProfileData = () => {
     setIsSaved(false);
   };
 
+  const handleLogoUpload = async (file: File) => {
+    if (!user) return;
+
+    try {
+      const result = await secureFileUpload(
+        file,
+        'branding-logos',
+        user.id,
+        user.id
+      );
+
+      if (result.success && result.url) {
+        setFormData(prev => ({
+          ...prev,
+          logoUrl: result.url
+        }));
+        setIsSaved(false);
+        toast.success('Logo uploaded successfully!');
+      } else {
+        toast.error(result.error || 'Failed to upload logo');
+      }
+    } catch (error) {
+      console.error('Error uploading logo:', error);
+      toast.error('Failed to upload logo');
+    }
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!user) return;
@@ -129,7 +163,7 @@ export const useProfileData = () => {
       })
       .eq('id', user.id);
 
-    // Update branding data for professional title and short bio
+    // Update branding data for professional title, short bio, color, and logo
     const { error: brandingError } = await supabase
       .from('freelancer_branding')
       .upsert({
@@ -137,8 +171,9 @@ export const useProfileData = () => {
         freelancer_title: formData.professionalTitle || '',
         freelancer_bio: formData.shortBio || '',
         freelancer_name: formData.name,
-        primary_color: '#4B72E5',
+        primary_color: formData.primaryColor || '#4B72E5',
         secondary_color: '#1D3770',
+        logo_url: formData.logoUrl || '',
         updated_at: new Date().toISOString(),
       }, { 
         onConflict: 'user_id',
@@ -168,6 +203,7 @@ export const useProfileData = () => {
     isSaved,
     handleChange,
     handleCurrencyChange,
+    handleLogoUpload,
     handleSubmit,
     updateProfilePicture,
   };

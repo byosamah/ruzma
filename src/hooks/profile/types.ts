@@ -8,6 +8,8 @@ export interface ProfileFormData {
   currency: string;
   professionalTitle?: string;
   shortBio?: string;
+  primaryColor?: string;
+  logoUrl?: string;
 }
 
 export interface ProfileState {

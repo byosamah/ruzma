@@ -1,3 +1,4 @@
+
 import React from 'react';
 import Layout from '@/components/Layout';
 import { ImageCropperDialog } from '@/components/ImageCropperDialog';
@@ -8,8 +9,10 @@ import { BrandingCard } from '@/components/Profile/BrandingCard';
 import { useProfile } from '@/hooks/useProfile';
 import { useBranding } from '@/hooks/useBranding';
 import { useT } from '@/lib/i18n';
+
 const Profile = () => {
   const t = useT();
+  
   const {
     user,
     profilePicture,
@@ -21,6 +24,7 @@ const Profile = () => {
     navigate,
     handleChange,
     handleCurrencyChange,
+    handleLogoUpload,
     handleSubmit,
     handleUploadClick,
     handleFileChange,
@@ -29,6 +33,7 @@ const Profile = () => {
     setCroppedAreaPixels,
     handleSignOut
   } = useProfile();
+
   const {
     branding,
     isLoading: brandingLoading,
@@ -36,35 +41,60 @@ const Profile = () => {
     saveBranding,
     uploadLogo
   } = useBranding(user);
+
   if (!user) {
     return <div>{t('loading')}</div>;
   }
-  return <Layout user={user} onSignOut={handleSignOut}>
+
+  return (
+    <Layout user={user} onSignOut={handleSignOut}>
       <div className="max-w-6xl mx-auto space-y-8">
         <div>
           <h1 className="text-3xl font-bold text-slate-800">{t('profileSettings')}</h1>
           <p className="text-slate-600 mt-2">{t('manageAccountInfo')}</p>
         </div>
 
-        <ImageCropperDialog image={imageToCrop} onCropComplete={setCroppedAreaPixels} onSave={onCropSave} onClose={onCropCancel} />
+        <ImageCropperDialog
+          image={imageToCrop}
+          onCropComplete={setCroppedAreaPixels}
+          onSave={onCropSave}
+          onClose={onCropCancel}
+        />
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          <ProfilePictureCard profilePicture={profilePicture} userName={formData.name} onUploadClick={handleUploadClick} onFileChange={handleFileChange} fileInputRef={fileInputRef} />
-          <PersonalInformationForm formData={formData} isLoading={isLoading} isSaved={isSaved} onFormChange={handleChange} onFormSubmit={handleSubmit} onCancel={() => navigate('/dashboard')} onCurrencyChange={handleCurrencyChange} />
+          <ProfilePictureCard
+            profilePicture={profilePicture}
+            userName={formData.name}
+            onUploadClick={handleUploadClick}
+            onFileChange={handleFileChange}
+            fileInputRef={fileInputRef}
+          />
+          <PersonalInformationForm
+            formData={formData}
+            isLoading={isLoading}
+            isSaved={isSaved}
+            onFormChange={handleChange}
+            onFormSubmit={handleSubmit}
+            onCancel={() => navigate('/dashboard')}
+            onCurrencyChange={handleCurrencyChange}
+            onLogoUpload={handleLogoUpload}
+          />
         </div>
 
-        {/* Brand Management Section */}
-        <div className="space-y-4">
-          <div>
-            
-            
-          </div>
-          
-          {!brandingLoading && <BrandingCard branding={branding} onSave={saveBranding} onLogoUpload={uploadLogo} isSaving={brandingSaving} />}
-        </div>
+        {/* Simplified Brand Management Section - only advanced branding features */}
+        {!brandingLoading && (
+          <BrandingCard
+            branding={branding}
+            onSave={saveBranding}
+            onLogoUpload={uploadLogo}
+            isSaving={brandingSaving}
+          />
+        )}
 
         <AccountSettingsCard />
       </div>
-    </Layout>;
+    </Layout>
+  );
 };
+
 export default Profile;
