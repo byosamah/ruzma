@@ -5,7 +5,9 @@ import { ImageCropperDialog } from '@/components/ImageCropperDialog';
 import { ProfilePictureCard } from '@/components/Profile/ProfilePictureCard';
 import { PersonalInformationForm } from '@/components/Profile/PersonalInformationForm';
 import { AccountSettingsCard } from '@/components/Profile/AccountSettingsCard';
+import { BrandingCard } from '@/components/Profile/BrandingCard';
 import { useProfile } from '@/hooks/useProfile';
+import { useBranding } from '@/hooks/useBranding';
 import { useT } from '@/lib/i18n';
 
 const Profile = () => {
@@ -30,13 +32,21 @@ const Profile = () => {
     handleSignOut,
   } = useProfile();
 
+  const {
+    branding,
+    isLoading: brandingLoading,
+    isSaving: brandingSaving,
+    saveBranding,
+    uploadLogo,
+  } = useBranding(user);
+
   if (!user) {
     return <div>{t('loading')}</div>;
   }
 
   return (
     <Layout user={user} onSignOut={handleSignOut}>
-      <div className="max-w-4xl mx-auto space-y-8">
+      <div className="max-w-6xl mx-auto space-y-8">
         <div>
           <h1 className="text-3xl font-bold text-slate-800">{t('profileSettings')}</h1>
           <p className="text-slate-600 mt-2">{t('manageAccountInfo')}</p>
@@ -66,6 +76,23 @@ const Profile = () => {
             onCancel={() => navigate('/dashboard')}
             onCurrencyChange={handleCurrencyChange}
           />
+        </div>
+
+        {/* Brand Management Section */}
+        <div className="space-y-4">
+          <div>
+            <h2 className="text-2xl font-bold text-slate-800">Brand Management</h2>
+            <p className="text-slate-600">Customize how your brand appears to clients</p>
+          </div>
+          
+          {!brandingLoading && (
+            <BrandingCard
+              branding={branding}
+              onSave={saveBranding}
+              onLogoUpload={uploadLogo}
+              isSaving={brandingSaving}
+            />
+          )}
         </div>
 
         <AccountSettingsCard />

@@ -2,7 +2,8 @@
 import React from 'react';
 import { useParams } from 'react-router-dom';
 import { useClientProject } from '@/hooks/useClientProject';
-import ClientProjectHeader from "@/components/ProjectClient/ClientProjectHeader";
+import { useClientBranding } from '@/hooks/useClientBranding';
+import BrandedClientHeader from "@/components/ProjectClient/BrandedClientHeader";
 import ClientProjectLoading from "@/components/ProjectClient/ClientProjectLoading";
 import ClientProjectError from "@/components/ProjectClient/ClientProjectError";
 import ProjectOverviewCard from "@/components/ProjectClient/ProjectOverviewCard";
@@ -15,7 +16,6 @@ const ClientProject = () => {
   const { token } = useParams<{ token: string }>();
   const isMobile = useIsMobile();
   
-  // Add debugging
   console.log('ClientProject: token from params:', token);
   console.log('ClientProject: current pathname:', window.location.pathname);
   
@@ -29,7 +29,12 @@ const ClientProject = () => {
     freelancerCurrency,
   } = useClientProject(token);
 
-  if (isLoading) {
+  const {
+    branding,
+    isLoading: brandingLoading,
+  } = useClientBranding(project?.user_id);
+
+  if (isLoading || brandingLoading) {
     return <ClientProjectLoading />;
   }
 
@@ -45,9 +50,18 @@ const ClientProject = () => {
   // Always use freelancer's preferred currency if available, otherwise fall back to user currency
   const displayCurrency = freelancerCurrency || userCurrency;
 
+  // Create CSS custom properties for theming
+  const brandingStyles = branding ? {
+    '--brand-primary': branding.primary_color,
+    '--brand-secondary': branding.secondary_color,
+  } as React.CSSProperties : {};
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50">
-      <ClientProjectHeader />
+    <div 
+      className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50"
+      style={brandingStyles}
+    >
+      <BrandedClientHeader branding={branding} />
       <main className={`${isMobile ? 'max-w-full' : 'max-w-6xl'} mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 space-y-6 sm:space-y-8`}>
         <ProjectOverviewCard
           projectName={project.name}
@@ -59,6 +73,7 @@ const ClientProject = () => {
           freelancerCurrency={freelancerCurrency}
           startDate={project.start_date ?? undefined}
           endDate={project.end_date ?? undefined}
+          branding={branding}
         />
         <ProjectInstructionsCard />
         <ProjectMilestonesList
@@ -67,6 +82,7 @@ const ClientProject = () => {
           onDeliverableDownload={handleDeliverableDownload}
           currency={displayCurrency}
           freelancerCurrency={freelancerCurrency}
+          branding={branding}
         />
       </main>
       <ProjectFooter />

@@ -1,108 +1,60 @@
 
 import React from 'react';
-import { CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { formatCurrency, CurrencyCode } from '@/lib/currency';
-import { getStatusColor, getStatusIcon } from './utils';
-import { useT, TranslationKey } from '@/lib/i18n';
-import { useIsMobile } from '@/hooks/use-mobile';
-import { Calendar } from 'lucide-react';
+import { getStatusColor, getStatusIcon, formatDateRange } from './utils';
+import { Milestone } from './types';
+import { FreelancerBranding } from '@/types/branding';
 
 interface MilestoneHeaderProps {
-  title: string;
-  description: string;
-  price: number;
-  status: string;
+  milestone: Milestone;
   currency: CurrencyCode;
-  freelancerCurrency?: CurrencyCode;
-  start_date?: string;
-  end_date?: string;
+  branding?: FreelancerBranding | null;
 }
 
-const MilestoneHeader: React.FC<MilestoneHeaderProps> = ({
-  title,
-  description,
-  price,
-  status,
+const MilestoneHeader: React.FC<MilestoneHeaderProps> = ({ 
+  milestone, 
   currency,
-  freelancerCurrency,
-  start_date,
-  end_date
+  branding 
 }) => {
-  const StatusIcon = getStatusIcon(status);
-  const t = useT();
-  const isMobile = useIsMobile();
-  const statusKey = `status_${status}` as TranslationKey;
+  const StatusIcon = getStatusIcon(milestone.status);
+  const statusColor = getStatusColor(milestone.status);
+  const primaryColor = branding?.primary_color || '#4B72E5';
   
-  // Use freelancer's preferred currency if available, otherwise fall back to the provided currency
-  const displayCurrency = freelancerCurrency || currency;
-
-  const formatDate = (dateString?: string) => {
-    if (!dateString) return null;
-    const date = new Date(dateString);
-    return date.toLocaleDateString();
-  };
-
-  if (isMobile) {
-    return (
-      <CardHeader className="pb-4 px-6 pt-6">
-        <div className="space-y-4">
-          <div className="space-y-2">
-            <CardTitle className="text-xl font-semibold text-slate-900 leading-tight">{title}</CardTitle>
-            <p className="text-sm text-slate-600 leading-relaxed">{description}</p>
-            {(start_date || end_date) && (
-              <div className="flex items-center gap-2 text-sm text-slate-500">
-                <Calendar className="w-4 h-4" />
-                <span>
-                  {start_date && formatDate(start_date)}
-                  {start_date && end_date && ' - '}
-                  {end_date && formatDate(end_date)}
-                </span>
-              </div>
-            )}
-          </div>
-          <div className="flex items-center justify-between pt-2">
-            <div className="text-2xl font-bold text-slate-900">
-              {formatCurrency(price, displayCurrency)}
-            </div>
-            <Badge className={`${getStatusColor(status)} flex items-center gap-1.5 px-3 py-1`}>
-              <StatusIcon className="w-3.5 h-3.5" />
-              <span className="capitalize text-xs font-medium">{t(statusKey)}</span>
-            </Badge>
-          </div>
-        </div>
-      </CardHeader>
-    );
-  }
-
   return (
-    <CardHeader className="px-6 pt-6 pb-4">
-      <div className="flex justify-between items-start gap-6">
-        <div className="flex-1 space-y-2">
-          <CardTitle className="text-xl font-semibold text-slate-900">{title}</CardTitle>
-          <p className="text-sm text-slate-600 leading-relaxed max-w-2xl">{description}</p>
-          {(start_date || end_date) && (
-            <div className="flex items-center gap-2 text-sm text-slate-500">
-              <Calendar className="w-4 h-4" />
-              <span>
-                {start_date && formatDate(start_date)}
-                {start_date && end_date && ' - '}
-                {end_date && formatDate(end_date)}
-              </span>
-            </div>
-          )}
+    <div className="space-y-4">
+      <div className="flex items-start justify-between">
+        <div className="flex-1">
+          <h3 className="text-lg font-semibold text-slate-800 mb-2">
+            {milestone.title}
+          </h3>
+          <p className="text-slate-600 text-sm leading-relaxed">
+            {milestone.description}
+          </p>
         </div>
-        <div className="flex flex-col items-end space-y-3 flex-shrink-0">
-          <div className="text-2xl font-bold text-slate-900">
-            {formatCurrency(price, displayCurrency)}
+        <div className="ml-4 text-right">
+          <div 
+            className="text-xl font-bold"
+            style={{ color: primaryColor }}
+          >
+            {formatCurrency(milestone.price, currency)}
           </div>
-          <Badge className={`${getStatusColor(status)} flex items-center gap-1.5 px-3 py-1`}>
-            <StatusIcon className="w-3.5 h-3.5" />
-            <span className="capitalize font-medium">{t(statusKey)}</span>
+          <Badge 
+            variant={statusColor as any} 
+            className="mt-1 text-xs"
+          >
+            <StatusIcon className="w-3 h-3 mr-1" />
+            {milestone.status.charAt(0).toUpperCase() + milestone.status.slice(1).replace('_', ' ')}
           </Badge>
         </div>
       </div>
-    </CardHeader>
+      
+      {(milestone.start_date || milestone.end_date) && (
+        <div className="text-xs text-slate-500">
+          📅 {formatDateRange(milestone.start_date, milestone.end_date)}
+        </div>
+      )}
+    </div>
   );
 };
 

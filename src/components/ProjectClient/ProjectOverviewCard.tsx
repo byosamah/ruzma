@@ -4,6 +4,7 @@ import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { formatCurrency, CurrencyCode } from "@/lib/currency";
 import { useT } from "@/lib/i18n";
 import { Calendar } from "lucide-react";
+import { FreelancerBranding } from "@/types/branding";
 
 interface ProjectOverviewCardProps {
   projectName: string;
@@ -15,6 +16,7 @@ interface ProjectOverviewCardProps {
   freelancerCurrency?: CurrencyCode;
   startDate?: string;
   endDate?: string;
+  branding?: FreelancerBranding | null;
 }
 
 const ProjectOverviewCard: React.FC<ProjectOverviewCardProps> = ({
@@ -27,11 +29,15 @@ const ProjectOverviewCard: React.FC<ProjectOverviewCardProps> = ({
   freelancerCurrency,
   startDate,
   endDate,
+  branding,
 }) => {
   const t = useT();
   
   // Use freelancer's preferred currency if available, otherwise fall back to the provided currency
   const displayCurrency = freelancerCurrency || currency;
+  
+  const primaryColor = branding?.primary_color || '#4B72E5';
+  const secondaryColor = branding?.secondary_color || '#1D3770';
   
   const formatDate = (dateString?: string) => {
     if (!dateString) return null;
@@ -40,7 +46,7 @@ const ProjectOverviewCard: React.FC<ProjectOverviewCardProps> = ({
   };
   
   return (
-    <Card className="bg-white/80 backdrop-blur-sm">
+    <Card className="bg-white/80 backdrop-blur-sm border-0 shadow-lg">
       <CardHeader>
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center space-y-4 md:space-y-0">
           <div className="flex-1">
@@ -58,7 +64,12 @@ const ProjectOverviewCard: React.FC<ProjectOverviewCardProps> = ({
             )}
           </div>
           <div className="text-right">
-            <div className="text-3xl font-bold text-slate-800">{formatCurrency(totalValue, displayCurrency)}</div>
+            <div 
+              className="text-3xl font-bold"
+              style={{ color: primaryColor }}
+            >
+              {formatCurrency(totalValue, displayCurrency)}
+            </div>
             <div className="text-sm text-slate-600">{t('totalProjectValue')}</div>
           </div>
         </div>
@@ -66,7 +77,12 @@ const ProjectOverviewCard: React.FC<ProjectOverviewCardProps> = ({
       <CardContent>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           <div className="text-center">
-            <div className="text-2xl font-bold text-blue-600">{totalMilestones}</div>
+            <div 
+              className="text-2xl font-bold"
+              style={{ color: primaryColor }}
+            >
+              {totalMilestones}
+            </div>
             <div className="text-sm text-slate-600">{t('totalMilestones')}</div>
           </div>
           <div className="text-center">
@@ -87,8 +103,11 @@ const ProjectOverviewCard: React.FC<ProjectOverviewCardProps> = ({
           </div>
           <div className="w-full bg-slate-200 rounded-full h-3">
             <div 
-              className="bg-gradient-to-r from-blue-500 to-purple-500 h-3 rounded-full transition-all duration-300"
-              style={{ width: `${totalMilestones > 0 ? (completedMilestones / totalMilestones) * 100 : 0}%` }}
+              className="h-3 rounded-full transition-all duration-300"
+              style={{ 
+                width: `${totalMilestones > 0 ? (completedMilestones / totalMilestones) * 100 : 0}%`,
+                background: `linear-gradient(90deg, ${primaryColor} 0%, ${secondaryColor} 100%)`
+              }}
             ></div>
           </div>
         </div>

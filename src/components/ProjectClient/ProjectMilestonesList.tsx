@@ -6,6 +6,7 @@ import MilestoneDeliverablePreview from "@/components/ProjectClient/MilestoneDel
 import { DatabaseMilestone } from "@/hooks/useProjects";
 import { CurrencyCode } from "@/lib/currency";
 import { useT } from "@/lib/i18n";
+import { FreelancerBranding } from "@/types/branding";
 
 interface ProjectMilestonesListProps {
   milestones: DatabaseMilestone[];
@@ -13,6 +14,7 @@ interface ProjectMilestonesListProps {
   onDeliverableDownload: (milestoneId: string) => void;
   currency: CurrencyCode;
   freelancerCurrency?: CurrencyCode;
+  branding?: FreelancerBranding | null;
 }
 
 const ProjectMilestonesList: React.FC<ProjectMilestonesListProps> = ({
@@ -21,13 +23,19 @@ const ProjectMilestonesList: React.FC<ProjectMilestonesListProps> = ({
   onDeliverableDownload,
   currency,
   freelancerCurrency,
+  branding,
 }) => {
   const t = useT();
+  const primaryColor = branding?.primary_color || '#4B72E5';
+  
   return (
     <div className="space-y-8">
       <div className="text-center">
         <h2 className="text-3xl font-bold text-slate-800 mb-2">{t('projectMilestones')}</h2>
-        <div className="w-24 h-1 bg-blue-500 mx-auto rounded-full"></div>
+        <div 
+          className="w-24 h-1 mx-auto rounded-full"
+          style={{ backgroundColor: primaryColor }}
+        ></div>
       </div>
       
       <div className="space-y-8">
@@ -45,15 +53,26 @@ const ProjectMilestonesList: React.FC<ProjectMilestonesListProps> = ({
         ) : (
           <div className="relative">
             {/* Timeline line */}
-            <div className="absolute left-8 top-0 bottom-0 w-0.5 bg-gradient-to-b from-blue-200 via-blue-300 to-blue-200"></div>
+            <div 
+              className="absolute left-8 top-0 bottom-0 w-0.5 opacity-30"
+              style={{ 
+                background: `linear-gradient(to bottom, ${primaryColor}20, ${primaryColor}60, ${primaryColor}20)` 
+              }}
+            ></div>
             
             {milestones.map((milestone, index) => (
               <div key={milestone.id} className="relative mb-8 last:mb-0">
                 {/* Timeline dot */}
-                <div className="absolute left-6 top-8 w-4 h-4 bg-white border-4 border-blue-400 rounded-full z-10 shadow-sm"></div>
+                <div 
+                  className="absolute left-6 top-8 w-4 h-4 bg-white border-4 rounded-full z-10 shadow-sm"
+                  style={{ borderColor: primaryColor }}
+                ></div>
                 
                 {/* Milestone number */}
-                <div className="absolute left-4 top-4 w-8 h-8 bg-blue-500 text-white rounded-full flex items-center justify-center text-sm font-bold z-20 shadow-md">
+                <div 
+                  className="absolute left-4 top-4 w-8 h-8 text-white rounded-full flex items-center justify-center text-sm font-bold z-20 shadow-md"
+                  style={{ backgroundColor: primaryColor }}
+                >
                   {index + 1}
                 </div>
                 
@@ -91,6 +110,7 @@ const ProjectMilestonesList: React.FC<ProjectMilestonesListProps> = ({
                       onDeliverableDownload={onDeliverableDownload}
                       currency={currency}
                       freelancerCurrency={freelancerCurrency}
+                      branding={branding}
                     />
                   </div>
                 </div>

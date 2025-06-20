@@ -1,75 +1,71 @@
 
-import React, { useState } from 'react';
+import React from 'react';
 import { Card, CardContent } from '@/components/ui/card';
-import { MilestoneCardProps } from './types';
-import { getStatusColor } from './utils';
+import { Badge } from '@/components/ui/badge';
 import MilestoneHeader from './MilestoneHeader';
 import ClientView from './ClientView';
 import FreelancerView from './FreelancerView';
-import PaymentProofModal from './PaymentProofModal';
+import { Milestone } from './types';
+import { formatCurrency, CurrencyCode } from '@/lib/currency';
+import { FreelancerBranding } from '@/types/branding';
 
-const MilestoneCard = ({
-  milestone, 
-  onApprove, 
-  onReject, 
+interface MilestoneCardProps {
+  milestone: Milestone;
+  isClient?: boolean;
+  onPaymentUpload?: (milestoneId: string, file: File) => void;
+  onDeliverableDownload?: (milestoneId: string) => void;
+  onDeliverableUpload?: (milestoneId: string, file: File) => void;
+  onStatusUpdate?: (milestoneId: string, status: string) => void;
+  onWatermarkUpdate?: (milestoneId: string, watermark: string) => void;
+  currency?: CurrencyCode;
+  freelancerCurrency?: CurrencyCode;
+  branding?: FreelancerBranding | null;
+}
+
+const MilestoneCard: React.FC<MilestoneCardProps> = ({
+  milestone,
   isClient = false,
   onPaymentUpload,
-  onDeliverableUpload,
   onDeliverableDownload,
+  onDeliverableUpload,
+  onStatusUpdate,
+  onWatermarkUpdate,
   currency = 'USD',
   freelancerCurrency,
-  onUpdateWatermark
-}: MilestoneCardProps) => {
-  const [showPaymentProofPreview, setShowPaymentProofPreview] = useState(false);
-
+  branding,
+}) => {
+  const displayCurrency = freelancerCurrency || currency;
+  const primaryColor = branding?.primary_color || '#4B72E5';
+  
   return (
-    <>
-      <Card className={`overflow-hidden bg-white shadow-sm border-0 rounded-xl ${getStatusColor(milestone.status)}`}>
-        <div className="border-l-4 border-blue-500">
-          <MilestoneHeader
-            title={milestone.title}
-            description={milestone.description}
-            price={milestone.price}
-            status={milestone.status}
-            currency={currency}
-            freelancerCurrency={freelancerCurrency}
-            start_date={milestone.start_date}
-            end_date={milestone.end_date}
-          />
-          <CardContent className="px-6 pb-6">
-            <div className="mt-4">
-              {isClient ? (
-                <ClientView
-                  milestone={milestone}
-                  onPaymentUpload={onPaymentUpload}
-                  onDeliverableDownload={onDeliverableDownload}
-                />
-              ) : (
-                <FreelancerView
-                  milestone={milestone}
-                  onApprove={onApprove}
-                  onReject={onReject}
-                  onDeliverableUpload={onDeliverableUpload}
-                  onShowPaymentProofPreview={() => setShowPaymentProofPreview(true)}
-                  onUpdateWatermark={onUpdateWatermark}
-                />
-              )}
-            </div>
-          </CardContent>
-        </div>
-      </Card>
-
-      {/* Payment Proof Preview Modal */}
-      {showPaymentProofPreview && milestone.paymentProofUrl && (
-        <PaymentProofModal
-          paymentProofUrl={milestone.paymentProofUrl}
-          onClose={() => setShowPaymentProofPreview(false)}
-          onApprove={onApprove}
-          onReject={onReject}
-          milestoneId={milestone.id}
+    <Card className="bg-white/90 backdrop-blur-sm shadow-lg border-0 hover:shadow-xl transition-all duration-300">
+      <div 
+        className="h-1 w-full"
+        style={{ backgroundColor: primaryColor }}
+      ></div>
+      <CardContent className="p-6">
+        <MilestoneHeader 
+          milestone={milestone} 
+          currency={displayCurrency} 
+          branding={branding}
         />
-      )}
-    </>
+        
+        {isClient ? (
+          <ClientView
+            milestone={milestone}
+            onPaymentUpload={onPaymentUpload}
+            onDeliverableDownload={onDeliverableDownload}
+          />
+        ) : (
+          <FreelancerView
+            milestone={milestone}
+            onDeliverableUpload={onDeliverableUpload}
+            onStatusUpdate={onStatusUpdate}
+            onWatermarkUpdate={onWatermarkUpdate}
+          />
+        )}
+      </CardContent>
+    </Card>
   );
 };
 
