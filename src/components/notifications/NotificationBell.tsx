@@ -9,18 +9,28 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { NotificationList } from './NotificationList';
-import { useNotifications } from '@/hooks/useNotifications';
 import { User } from '@supabase/supabase-js';
 
 interface NotificationBellProps {
   user: User | null;
+  notificationsData?: {
+    notifications: any[];
+    unreadCount: number;
+    loading: boolean;
+    markAsRead: (id: string) => void;
+    markAllAsRead: () => void;
+  };
 }
 
-export const NotificationBell: React.FC<NotificationBellProps> = ({ user }) => {
+export const NotificationBell: React.FC<NotificationBellProps> = ({ 
+  user, 
+  notificationsData 
+}) => {
   const [isOpen, setIsOpen] = useState(false);
-  const { notifications, unreadCount, loading, markAsRead, markAllAsRead } = useNotifications(user);
 
-  if (!user) return null;
+  if (!user || !notificationsData) return null;
+
+  const { notifications, unreadCount, loading, markAsRead, markAllAsRead } = notificationsData;
 
   return (
     <DropdownMenu open={isOpen} onOpenChange={setIsOpen}>

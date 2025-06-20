@@ -8,6 +8,7 @@ import NavigationMenu from './Layout/NavigationMenu';
 import MobileMenu from './Layout/MobileMenu';
 import { supabase } from '@/integrations/supabase/client';
 import { useIsMobile } from '@/hooks/use-mobile';
+import { useNotifications } from '@/hooks/useNotifications';
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -25,6 +26,9 @@ const Layout: React.FC<LayoutProps> = ({
   const isMobile = useIsMobile();
   const [userProfile, setUserProfile] = useState<any>(null);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  
+  // Use notifications hook at the Layout level
+  const notificationsData = useNotifications(user);
   
   const isActive = (path: string) => location.pathname === path;
   const isLandingPage = location.pathname === '/';
@@ -86,6 +90,7 @@ const Layout: React.FC<LayoutProps> = ({
                 shouldShowUpgradeButton={shouldShowUpgradeButton}
                 onSignOut={handleSignOut}
                 onMenuClick={() => {}}
+                notificationsData={notificationsData}
               />
             </div>
 
@@ -102,6 +107,7 @@ const Layout: React.FC<LayoutProps> = ({
                 isActive={isActive}
                 shouldShowUpgradeButton={shouldShowUpgradeButton}
                 onSignOut={handleSignOut}
+                notificationsData={notificationsData}
               />
             </div>
           </div>
