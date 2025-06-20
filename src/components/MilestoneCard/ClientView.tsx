@@ -127,7 +127,7 @@ const ClientView: React.FC<ClientViewProps> = ({
       )}
 
       {/* Deliverable Download Section */}
-      {milestone.status === 'approved' && milestone.deliverable_url && (
+      {milestone.status === 'approved' && milestone.deliverable?.url && (
         <div className="space-y-3">
           <h4 className="text-sm font-semibold text-slate-700">{t('downloadDeliverable')}</h4>
           <div className="flex items-center gap-3">
@@ -139,9 +139,9 @@ const ClientView: React.FC<ClientViewProps> = ({
               <Download className="w-4 h-4 mr-2" />
               {t('downloadFile')}
             </Button>
-            {milestone.deliverable_name && (
+            {milestone.deliverable?.name && (
               <span className="text-sm text-slate-600">
-                {milestone.deliverable_name}
+                {milestone.deliverable.name}
               </span>
             )}
           </div>
