@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { Button } from '@/components/ui/button';
-import { BarChart3, FileText, User, CreditCard, LogOut } from 'lucide-react';
+import { BarChart3, User, CreditCard, LogOut } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { NotificationBell } from '@/components/notifications/NotificationBell';
 import { useT } from '@/lib/i18n';
@@ -36,8 +36,6 @@ const NavigationMenu: React.FC<NavigationMenuProps> = ({
 
   const menuItems = [
     { path: '/dashboard', label: t('dashboard'), icon: BarChart3 },
-    { path: '/analytics', label: t('analytics'), icon: BarChart3 },
-    { path: '/templates', label: t('templates'), icon: FileText },
     { path: '/profile', label: t('profile'), icon: User },
     { path: '/plans', label: t('plans'), icon: CreditCard },
   ];
