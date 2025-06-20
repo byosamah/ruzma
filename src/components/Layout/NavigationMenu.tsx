@@ -84,7 +84,7 @@ const NavigationMenu: React.FC<NavigationMenuProps> = ({
       
       <Button variant="ghost" size="sm" className="text-red-600 hover:text-red-700 hover:bg-red-50" onClick={onSignOut}>
         <LogOut className="w-4 h-4 lg:mr-1" />
-        <span className="hidden lg:inline">{t('signOut')}</span>
+        
       </Button>
     </div>;
 };
