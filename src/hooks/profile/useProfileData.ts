@@ -15,7 +15,9 @@ export const useProfileData = () => {
     company: '',
     website: '',
     bio: '',
-    currency: 'USD'
+    currency: 'USD',
+    professionalTitle: '',
+    shortBio: ''
   });
   const [isLoading, setIsLoading] = useState(false);
   const [isSaved, setIsSaved] = useState(false);
@@ -30,10 +32,18 @@ export const useProfileData = () => {
       }
       setUser(user);
 
+      // Fetch profile data
       const { data: profile, error } = await supabase
         .from('profiles')
         .select('*')
         .eq('id', user.id)
+        .maybeSingle();
+
+      // Fetch branding data for professional title and short bio
+      const { data: branding, error: brandingError } = await supabase
+        .from('freelancer_branding')
+        .select('freelancer_title, freelancer_bio')
+        .eq('user_id', user.id)
         .maybeSingle();
 
       if (error) {
@@ -47,7 +57,9 @@ export const useProfileData = () => {
           company: profile.company || '',
           website: profile.website || '',
           bio: profile.bio || '',
-          currency: profile.currency || 'USD'
+          currency: profile.currency || 'USD',
+          professionalTitle: branding?.freelancer_title || '',
+          shortBio: branding?.freelancer_bio || ''
         });
         setProfilePicture(profile.avatar_url || null);
       } else {
@@ -72,7 +84,9 @@ export const useProfileData = () => {
             company: newProfile.company || '',
             website: newProfile.website || '',
             bio: newProfile.bio || '',
-            currency: newProfile.currency || 'USD'
+            currency: newProfile.currency || 'USD',
+            professionalTitle: branding?.freelancer_title || '',
+            shortBio: branding?.freelancer_bio || ''
           });
           setProfilePicture(newProfile.avatar_url || null);
         }
@@ -102,6 +116,7 @@ export const useProfileData = () => {
     if (!user) return;
     setIsLoading(true);
 
+    // Update profile data
     const { error } = await supabase
       .from('profiles')
       .update({
@@ -113,11 +128,27 @@ export const useProfileData = () => {
         currency: formData.currency,
       })
       .eq('id', user.id);
+
+    // Update branding data for professional title and short bio
+    const { error: brandingError } = await supabase
+      .from('freelancer_branding')
+      .upsert({
+        user_id: user.id,
+        freelancer_title: formData.professionalTitle || '',
+        freelancer_bio: formData.shortBio || '',
+        freelancer_name: formData.name,
+        primary_color: '#4B72E5',
+        secondary_color: '#1D3770',
+        updated_at: new Date().toISOString(),
+      }, { 
+        onConflict: 'user_id',
+        ignoreDuplicates: false 
+      });
     
     setIsLoading(false);
 
-    if (error) {
-      toast.error(error.message);
+    if (error || brandingError) {
+      toast.error(error?.message || brandingError?.message || 'Error updating profile');
     } else {
       setIsSaved(true);
       toast.success("Profile updated successfully!");

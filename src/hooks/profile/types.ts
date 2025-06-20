@@ -6,6 +6,8 @@ export interface ProfileFormData {
   website: string;
   bio: string;
   currency: string;
+  professionalTitle?: string;
+  shortBio?: string;
 }
 
 export interface ProfileState {

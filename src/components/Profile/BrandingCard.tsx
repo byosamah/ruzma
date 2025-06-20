@@ -4,9 +4,8 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Textarea } from '@/components/ui/textarea';
 import { Separator } from '@/components/ui/separator';
-import { Upload, Eye, Palette, User, Briefcase } from 'lucide-react';
+import { Upload, Eye, Palette, User } from 'lucide-react';
 import { FreelancerBranding, BrandingFormData } from '@/types/branding';
 import { useT } from '@/lib/i18n';
 
@@ -78,8 +77,11 @@ export const BrandingCard: React.FC<BrandingCardProps> = ({
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           <Palette className="w-5 h-5" />
-          Brand Management
+          Brand Colors & Logo
         </CardTitle>
+        <p className="text-sm text-slate-600">
+          Customize your brand colors and logo. Professional title and bio are managed in Personal Information above.
+        </p>
       </CardHeader>
       <CardContent>
         <form onSubmit={handleSubmit} className="space-y-6">
@@ -162,55 +164,6 @@ export const BrandingCard: React.FC<BrandingCardProps> = ({
                   />
                 </div>
               </div>
-            </div>
-          </div>
-
-          <Separator />
-
-          {/* Freelancer Info Section */}
-          <div className="space-y-4">
-            <Label>Freelancer Information</Label>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <Label htmlFor="freelancer_name">Name</Label>
-                <div className="relative">
-                  <User className="absolute left-3 top-3 h-4 w-4 text-slate-400" />
-                  <Input
-                    id="freelancer_name"
-                    value={formData.freelancer_name}
-                    onChange={(e) => handleChange('freelancer_name', e.target.value)}
-                    placeholder="Your name"
-                    className="pl-10"
-                  />
-                </div>
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="freelancer_title">Professional Title</Label>
-                <div className="relative">
-                  <Briefcase className="absolute left-3 top-3 h-4 w-4 text-slate-400" />
-                  <Input
-                    id="freelancer_title"
-                    value={formData.freelancer_title}
-                    onChange={(e) => handleChange('freelancer_title', e.target.value)}
-                    placeholder="e.g., UI/UX Designer"
-                    className="pl-10"
-                  />
-                </div>
-              </div>
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="freelancer_bio">Short Bio (1-2 lines)</Label>
-              <Textarea
-                id="freelancer_bio"
-                value={formData.freelancer_bio}
-                onChange={(e) => handleChange('freelancer_bio', e.target.value)}
-                placeholder="A brief description of your expertise and experience..."
-                rows={3}
-                maxLength={200}
-              />
-              <p className="text-xs text-slate-500">
-                {formData.freelancer_bio.length}/200 characters
-              </p>
             </div>
           </div>
 

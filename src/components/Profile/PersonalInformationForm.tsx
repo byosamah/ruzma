@@ -6,7 +6,7 @@ import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { User, Mail, Save, DollarSign } from 'lucide-react';
+import { User, Mail, Save, DollarSign, Briefcase } from 'lucide-react';
 import { CURRENCIES, CurrencyCode } from '@/lib/currency';
 import { useT } from '@/lib/i18n';
 import { useLanguage } from '@/contexts/LanguageContext';
@@ -19,6 +19,8 @@ interface PersonalInformationFormProps {
     website: string;
     bio: string;
     currency?: string;
+    professionalTitle?: string;
+    shortBio?: string;
   };
   isLoading: boolean;
   isSaved: boolean;
@@ -112,6 +114,21 @@ export const PersonalInformationForm = ({
           </div>
 
           <div className="space-y-2">
+            <Label htmlFor="professionalTitle">Professional Title</Label>
+            <div className="relative">
+              <Briefcase className="absolute left-3 top-3 h-4 w-4 text-slate-400" />
+              <Input
+                id="professionalTitle"
+                name="professionalTitle"
+                placeholder="e.g., UI/UX Designer, Web Developer"
+                value={formData.professionalTitle || ''}
+                onChange={onFormChange}
+                className="pl-10"
+              />
+            </div>
+          </div>
+
+          <div className="space-y-2">
             <Label htmlFor="currency">{t('preferredCurrency')}</Label>
             <div className="relative">
               <DollarSign className="absolute left-3 top-3 h-4 w-4 text-slate-400 z-10" />
@@ -128,6 +145,23 @@ export const PersonalInformationForm = ({
                 </SelectContent>
               </Select>
             </div>
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="shortBio">Short Bio (1-2 lines for client pages)</Label>
+            <textarea
+              id="shortBio"
+              name="shortBio"
+              rows={2}
+              className="w-full px-3 py-2 border border-slate-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
+              placeholder="A brief description of your expertise and experience..."
+              value={formData.shortBio || ''}
+              onChange={onFormChange}
+              maxLength={200}
+            />
+            <p className="text-xs text-slate-500">
+              {(formData.shortBio || '').length}/200 characters
+            </p>
           </div>
 
           <div className="space-y-2">
