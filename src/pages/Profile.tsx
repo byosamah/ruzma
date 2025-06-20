@@ -5,9 +5,7 @@ import { ImageCropperDialog } from '@/components/ImageCropperDialog';
 import { ProfilePictureCard } from '@/components/Profile/ProfilePictureCard';
 import { PersonalInformationForm } from '@/components/Profile/PersonalInformationForm';
 import { AccountSettingsCard } from '@/components/Profile/AccountSettingsCard';
-import { BrandingCard } from '@/components/Profile/BrandingCard';
 import { useProfile } from '@/hooks/useProfile';
-import { useBranding } from '@/hooks/useBranding';
 import { useT } from '@/lib/i18n';
 
 const Profile = () => {
@@ -33,14 +31,6 @@ const Profile = () => {
     setCroppedAreaPixels,
     handleSignOut
   } = useProfile();
-
-  const {
-    branding,
-    isLoading: brandingLoading,
-    isSaving: brandingSaving,
-    saveBranding,
-    uploadLogo
-  } = useBranding(user);
 
   if (!user) {
     return <div>{t('loading')}</div>;
@@ -80,16 +70,6 @@ const Profile = () => {
             onLogoUpload={handleLogoUpload}
           />
         </div>
-
-        {/* Simplified Brand Management Section - only advanced branding features */}
-        {!brandingLoading && (
-          <BrandingCard
-            branding={branding}
-            onSave={saveBranding}
-            onLogoUpload={uploadLogo}
-            isSaving={brandingSaving}
-          />
-        )}
 
         <AccountSettingsCard />
       </div>
