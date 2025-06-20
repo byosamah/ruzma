@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Button } from '@/components/ui/button';
 import { BarChart3, User, LogOut } from 'lucide-react';
@@ -62,13 +61,13 @@ const NavigationMenu: React.FC<NavigationMenuProps> = ({
         
         {shouldShowUpgradeButton && (
           <Button
-            className="justify-start w-full bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 text-white font-semibold shadow-lg border-0"
+            className="justify-start w-full bg-brand-yellow hover:bg-brand-yellow/90 text-brand-black font-semibold shadow-md border-0"
             onClick={() => {
               navigate('/plans');
               onMenuClick();
             }}
           >
-            ✨ {t('upgrade')}
+            {t('upgrade')}
           </Button>
         )}
         
@@ -107,12 +106,11 @@ const NavigationMenu: React.FC<NavigationMenuProps> = ({
       {shouldShowUpgradeButton && (
         <Button
           size="sm"
-          className="bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 text-white font-semibold shadow-lg border-0 px-4"
+          className="bg-brand-yellow hover:bg-brand-yellow/90 text-brand-black font-semibold shadow-md border-0 px-4"
           onClick={() => navigate('/plans')}
         >
-          <span className="flex items-center gap-1">
-            ✨ <span className="hidden lg:inline">{t('upgrade')}</span>
-          </span>
+          <span className="hidden lg:inline">{t('upgrade')}</span>
+          <span className="lg:hidden">{t('upgrade')}</span>
         </Button>
       )}
       
