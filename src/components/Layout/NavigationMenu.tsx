@@ -1,14 +1,32 @@
 
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
-import { Briefcase, User, LogOut, TrendingUp } from 'lucide-react';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Badge } from '@/components/ui/badge';
+import { 
+  User, 
+  LogOut, 
+  BarChart3, 
+  Crown, 
+  FolderOpen, 
+  Settings,
+  Palette,
+  FileText 
+} from 'lucide-react';
+import { NotificationBell } from '@/components/notifications/NotificationBell';
 import { useT } from '@/lib/i18n';
-import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 
 interface NavigationMenuProps {
-  user?: any;
-  userProfile?: any;
+  user: any;
+  userProfile: any;
   isActive: (path: string) => boolean;
   isMobile: boolean;
   shouldShowUpgradeButton: boolean;
@@ -25,95 +43,112 @@ const NavigationMenu: React.FC<NavigationMenuProps> = ({
   onSignOut,
   onMenuClick,
 }) => {
+  const navigate = useNavigate();
   const t = useT();
 
-  if (!user) {
-    return (
-      <div className={`${isMobile ? 'flex flex-col space-y-2' : 'flex items-center space-x-3'}`}>
-        <Link to="/login" onClick={onMenuClick} className={isMobile ? 'w-full' : ''}>
-          <Button 
-            variant="ghost" 
-            size={isMobile ? "default" : "sm"} 
-            className={`${isMobile ? 'w-full justify-start' : ''} text-sm`}
-          >
-            {t("login")}
-          </Button>
-        </Link>
-        <Link to="/signup" onClick={onMenuClick} className={isMobile ? 'w-full' : ''}>
-          <Button 
-            size={isMobile ? "default" : "sm"} 
-            variant="secondary" 
-            className={`${isMobile ? 'w-full justify-start' : ''} text-sm`}
-          >
-            {t("signUp")}
-          </Button>
-        </Link>
-      </div>
-    );
+  const navItems = [
+    { path: '/dashboard', label: t('dashboard'), icon: FolderOpen },
+    { path: '/analytics', label: t('analytics'), icon: BarChart3 },
+    { path: '/templates', label: t('templates'), icon: FileText },
+  ];
+
+  const getInitials = (name: string) => {
+    return name
+      .split(' ')
+      .map(n => n[0])
+      .join('')
+      .toUpperCase();
+  };
+
+  if (isMobile) {
+    return null; // Mobile menu is handled separately
   }
 
   return (
-    <div className={`${isMobile ? 'flex flex-col space-y-2' : 'flex items-center space-x-3'}`}>
-      {shouldShowUpgradeButton && (
-        <Link to="/plans" onClick={onMenuClick} className={isMobile ? 'w-full' : ''}>
-          <Button 
-            variant="outline" 
-            size={isMobile ? "default" : "sm"}
-            className={`bg-gradient-to-r from-brand-yellow to-yellow-500 text-brand-black border-0 hover:from-yellow-400 hover:to-yellow-600 hover:scale-105 transition-all duration-200 shadow-lg hover:shadow-xl font-semibold text-sm ${isMobile ? 'w-full justify-start' : ''}`}
-          >
-            <TrendingUp className="w-4 h-4 mr-2" />
-            Upgrade
-          </Button>
-        </Link>
-      )}
-      <Link to="/dashboard" onClick={onMenuClick} className={isMobile ? 'w-full' : ''}>
-        <Button 
-          variant={isActive('/dashboard') ? 'secondary' : 'ghost'} 
-          size={isMobile ? "default" : "sm"} 
-          className={`${isMobile ? 'w-full justify-start' : 'justify-center'} text-sm`}
-        >
-          <Briefcase className="w-4 h-4 mr-2" />
-          {t("dashboard")}
-        </Button>
-      </Link>
-      <Link to="/profile" onClick={onMenuClick} className={isMobile ? 'w-full' : ''}>
-        <Button 
-          variant={isActive('/profile') ? 'secondary' : 'ghost'} 
-          size={isMobile ? "default" : "sm"} 
-          className={`${isMobile ? 'w-full justify-start' : 'justify-center'} text-sm`}
-        >
-          <User className="w-4 h-4 mr-2 sm:mr-0" />
-          <span className="sm:hidden">Profile</span>
-        </Button>
-      </Link>
-      {isMobile ? (
-        <Button 
-          variant="ghost" 
-          size="default"
-          onClick={onSignOut} 
-          className="text-red-500 hover:text-red-400 hover:bg-red-500/10 w-full justify-start text-sm"
-        >
-          <LogOut className="w-4 h-4 mr-2" />
-          <span>{t("signOut")}</span>
-        </Button>
-      ) : (
-        <Tooltip>
-          <TooltipTrigger asChild>
-            <Button 
-              variant="ghost" 
+    <>
+      {user && (
+        <>
+          {/* Navigation Links */}
+          <div className="flex items-center space-x-1">
+            {navItems.map((item) => (
+              <Link key={item.path} to={item.path}>
+                <Button
+                  variant={isActive(item.path) ? "secondary" : "ghost"}
+                  size="sm"
+                  className="flex items-center gap-2"
+                  onClick={onMenuClick}
+                >
+                  <item.icon className="w-4 h-4" />
+                  <span className="hidden lg:inline">{item.label}</span>
+                </Button>
+              </Link>
+            ))}
+          </div>
+
+          {/* Upgrade Button */}
+          {shouldShowUpgradeButton && (
+            <Button
+              variant="outline"
               size="sm"
-              onClick={onSignOut} 
-              className="text-red-500 hover:text-red-400 hover:bg-red-500/10 justify-center text-sm"
+              onClick={() => navigate('/plans')}
+              className="border-orange-200 text-orange-700 hover:bg-orange-50 flex items-center gap-1"
             >
-              <LogOut className="w-4 h-4" />
+              <Crown className="w-4 h-4" />
+              <span className="hidden lg:inline">{t('upgrade')}</span>
             </Button>
-          </TooltipTrigger>
-          <TooltipContent>
-            <p>{t("signOut")}</p>
-          </TooltipContent>
-        </Tooltip>
+          )}
+
+          {/* Notification Bell */}
+          <NotificationBell user={user} />
+
+          {/* User Menu */}
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="ghost" className="relative h-8 w-8 rounded-full">
+                <Avatar className="h-8 w-8">
+                  <AvatarImage src={userProfile?.avatar_url} alt="Avatar" />
+                  <AvatarFallback className="text-xs">
+                    {user?.email ? getInitials(user.email) : 'U'}
+                  </AvatarFallback>
+                </Avatar>
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent className="w-56" align="end" forceMount>
+              <div className="flex items-center justify-start gap-2 p-2">
+                <div className="flex flex-col space-y-1 leading-none">
+                  <p className="font-medium text-sm">
+                    {userProfile?.full_name || user?.email?.split('@')[0] || 'User'}
+                  </p>
+                  <p className="text-xs text-muted-foreground truncate max-w-[200px]">
+                    {user?.email}
+                  </p>
+                  <div className="flex items-center gap-1 mt-1">
+                    <Badge variant="outline" className="text-xs px-1 py-0">
+                      {userProfile?.user_type === 'pro' ? 'Pro' : 
+                       userProfile?.user_type === 'plus' ? 'Plus' : 'Free'}
+                    </Badge>
+                  </div>
+                </div>
+              </div>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem onClick={() => navigate('/profile')}>
+                <User className="mr-2 h-4 w-4" />
+                <span>{t('profile')}</span>
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => navigate('/plans')}>
+                <Crown className="mr-2 h-4 w-4" />
+                <span>{t('plans')}</span>
+              </DropdownMenuItem>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem onClick={onSignOut}>
+                <LogOut className="mr-2 h-4 w-4" />
+                <span>{t('signOut')}</span>
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </>
       )}
-    </div>
+    </>
   );
 };
 
