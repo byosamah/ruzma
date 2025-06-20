@@ -1,6 +1,7 @@
+
 import React from 'react';
 import { Button } from '@/components/ui/button';
-import { BarChart3, User, LogOut } from 'lucide-react';
+import { BarChart3, User, LogOut, Stars } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { NotificationBell } from '@/components/notifications/NotificationBell';
 import { useT } from '@/lib/i18n';
@@ -67,6 +68,7 @@ const NavigationMenu: React.FC<NavigationMenuProps> = ({
               onMenuClick();
             }}
           >
+            <Stars className="w-4 h-4 mr-2" />
             {t('upgrade')}
           </Button>
         )}
@@ -109,6 +111,7 @@ const NavigationMenu: React.FC<NavigationMenuProps> = ({
           className="bg-brand-yellow hover:bg-brand-yellow/90 text-brand-black font-semibold shadow-md border-0 px-4"
           onClick={() => navigate('/plans')}
         >
+          <Stars className="w-4 h-4 mr-1" />
           <span className="hidden lg:inline">{t('upgrade')}</span>
           <span className="lg:hidden">{t('upgrade')}</span>
         </Button>
