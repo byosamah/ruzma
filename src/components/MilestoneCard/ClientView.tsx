@@ -1,8 +1,9 @@
-import React, { useState, useRef } from 'react';
+
+import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
-import { Upload, Download, ExternalLink, Eye } from 'lucide-react';
+import { Upload, Download, Clock, CheckCircle, AlertCircle } from 'lucide-react';
 import { Milestone } from './types';
-import DeliverableWatermarkedPreview from './DeliverableWatermarkedPreview';
+import { useT } from '@/lib/i18n';
 
 interface ClientViewProps {
   milestone: Milestone;
@@ -13,19 +14,12 @@ interface ClientViewProps {
 const ClientView: React.FC<ClientViewProps> = ({
   milestone,
   onPaymentUpload,
-  onDeliverableDownload
+  onDeliverableDownload,
 }) => {
-  const [showPreview, setShowPreview] = useState(false);
   const [uploading, setUploading] = useState(false);
+  const t = useT();
 
-  // We need two refs to reset the file input for both "pending" and "rejected" states.
-  const paymentInputRef = React.useRef<HTMLInputElement>(null);
-  const paymentResubmitInputRef = React.useRef<HTMLInputElement>(null);
-
-  const handlePaymentFileUpload = async (
-    event: React.ChangeEvent<HTMLInputElement>,
-    variant: "pending" | "rejected"
-  ) => {
+  const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file && onPaymentUpload) {
       setUploading(true);
@@ -33,152 +27,127 @@ const ClientView: React.FC<ClientViewProps> = ({
         await onPaymentUpload(milestone.id, file);
       } finally {
         setUploading(false);
-        // Reset the correct input after upload
-        if (variant === 'pending' && paymentInputRef.current) {
-          paymentInputRef.current.value = '';
-        }
-        if (variant === 'rejected' && paymentResubmitInputRef.current) {
-          paymentResubmitInputRef.current.value = '';
-        }
       }
     }
   };
 
-  const triggerFileUpload = (inputRef: React.RefObject<HTMLInputElement>) => {
-    inputRef.current?.click();
+  const getStatusMessage = () => {
+    switch (milestone.status) {
+      case 'pending':
+        return {
+          icon: Clock,
+          message: t('awaitingPayment'),
+          color: 'text-amber-600',
+          bgColor: 'bg-amber-50',
+          borderColor: 'border-amber-200'
+        };
+      case 'payment_submitted':
+        return {
+          icon: AlertCircle,
+          message: t('paymentUnderReview'),
+          color: 'text-blue-600',
+          bgColor: 'bg-blue-50',
+          borderColor: 'border-blue-200'
+        };
+      case 'approved':
+        return {
+          icon: CheckCircle,
+          message: t('paymentApprovedReadyToDownload'),
+          color: 'text-green-600',
+          bgColor: 'bg-green-50',
+          borderColor: 'border-green-200'
+        };
+      default:
+        return {
+          icon: Clock,
+          message: t('statusUnknown'),
+          color: 'text-gray-600',
+          bgColor: 'bg-gray-50',
+          borderColor: 'border-gray-200'
+        };
+    }
   };
 
-  // Helper for getting file type based on url or name
-  const getDeliverableFileType = (deliverable?: { name: string, url?: string }) => {
-    if (!deliverable || !deliverable.url) return '';
-    const name = deliverable.name.toLowerCase();
-    if (name.endsWith('.pdf')) return 'application/pdf';
-    if (name.endsWith('.jpg') || name.endsWith('.jpeg') || name.endsWith('.png')) return 'image/jpeg';
-    return '';
-  };
-
-  const renderPaymentProofLink = () => {
-    if (!milestone.paymentProofUrl) return null;
-    return (
-      <div className="flex items-center space-x-2">
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={() => window.open(milestone.paymentProofUrl, '_blank')}
-          className="flex items-center space-x-1"
-        >
-          <ExternalLink className="w-4 h-4" />
-          <span>View Uploaded Proof</span>
-        </Button>
-      </div>
-    );
-  };
-
-  const showDeliverablePreview =
-    milestone.deliverable &&
-    milestone.deliverable.url &&
-    milestone.status !== 'approved';
+  const statusInfo = getStatusMessage();
+  const StatusIcon = statusInfo.icon;
 
   return (
-    <div className="space-y-3">
-      {/* Show a watermarked preview if deliverable exists and payment not approved */}
-      {showDeliverablePreview && (
-        <div>
-          <div className="flex items-center mb-1 gap-2">
-            <Button
-              variant="outline"
-              size="sm"
-              className="flex items-center"
-              onClick={() => setShowPreview(val => !val)}
-            >
-              <Eye className="w-4 h-4" />
-              <span className="ml-1">{showPreview ? "Hide" : "Show"} Preview</span>
-            </Button>
-            <span className="text-xs text-slate-600 select-none">
-              {milestone.watermarkText ? `(Watermarked)` : ""}
-            </span>
-          </div>
-          {showPreview && (
-            <DeliverableWatermarkedPreview
-              fileUrl={milestone.deliverable.url!}
-              watermarkText={milestone.watermarkText || "Pending Payment"}
-              fileType={getDeliverableFileType(milestone.deliverable)}
+    <div className="space-y-4 pt-4 border-t border-slate-200">
+      {/* Status Display */}
+      <div className={`flex items-center gap-3 p-3 rounded-lg border ${statusInfo.bgColor} ${statusInfo.borderColor}`}>
+        <StatusIcon className={`w-5 h-5 ${statusInfo.color}`} />
+        <span className={`text-sm font-medium ${statusInfo.color}`}>
+          {statusInfo.message}
+        </span>
+      </div>
+
+      {/* Payment Upload Section */}
+      {milestone.status === 'pending' && (
+        <div className="space-y-3">
+          <h4 className="text-sm font-semibold text-slate-700">{t('submitPaymentProof')}</h4>
+          <div className="flex items-center gap-3">
+            <input
+              type="file"
+              accept="image/*,application/pdf"
+              onChange={handleFileUpload}
+              disabled={uploading}
+              className="hidden"
+              id={`payment-upload-${milestone.id}`}
             />
-          )}
+            <label htmlFor={`payment-upload-${milestone.id}`}>
+              <Button
+                asChild
+                size="sm"
+                disabled={uploading}
+                className="bg-blue-600 hover:bg-blue-700 text-white"
+              >
+                <span className="cursor-pointer flex items-center gap-2">
+                  <Upload className="w-4 h-4" />
+                  {uploading ? t('uploading') : t('uploadPaymentProof')}
+                </span>
+              </Button>
+            </label>
+          </div>
+          <p className="text-xs text-slate-500">
+            {t('acceptedFormats')}: JPG, PNG, PDF (Max 10MB)
+          </p>
         </div>
       )}
 
-      {milestone.status === 'pending' && (
-        <div className="space-y-2">
-          <p className="text-sm font-medium text-slate-700">Upload Payment Proof:</p>
-          <div className="flex items-center space-x-2">
-            <input
-              ref={paymentInputRef}
-              type="file"
-              accept="image/*,.pdf"
-              onChange={e => handlePaymentFileUpload(e, 'pending')}
-              className="hidden"
-              id={`payment-${milestone.id}`}
-              disabled={uploading}
-            />
-            <Button 
-              size="sm" 
-              disabled={uploading}
-              onClick={() => triggerFileUpload(paymentInputRef)}
-            >
-              <Upload className="w-4 h-4 mr-2" />
-              {uploading ? 'Uploading...' : 'Upload Proof'}
-            </Button>
-          </div>
-        </div>
-      )}
-      
+      {/* Payment Submitted Info */}
       {milestone.status === 'payment_submitted' && (
-        <div className="space-y-2">
-          <p className="text-sm text-blue-600">Payment proof submitted. Waiting for approval...</p>
-          {renderPaymentProofLink()}
+        <div className="bg-blue-50 border border-blue-200 rounded-lg p-3">
+          <p className="text-sm text-blue-800">
+            {t('paymentProofSubmittedSuccessfully')}
+          </p>
+          <p className="text-xs text-blue-600 mt-1">
+            {t('freelancerWillReviewShortly')}
+          </p>
         </div>
       )}
-      
-      {milestone.status === 'approved' && (
-        <div className="space-y-2">
-          {milestone.deliverable && (
-            <Button 
-              className="w-full" 
-              size="sm"
+
+      {/* Deliverable Download Section */}
+      {milestone.status === 'approved' && milestone.deliverable_url && (
+        <div className="space-y-3">
+          <h4 className="text-sm font-semibold text-slate-700">{t('downloadDeliverable')}</h4>
+          <div className="flex items-center gap-3">
+            <Button
               onClick={() => onDeliverableDownload?.(milestone.id)}
+              size="sm"
+              className="bg-green-600 hover:bg-green-700 text-white"
             >
               <Download className="w-4 h-4 mr-2" />
-              Download {milestone.deliverable.name}
+              {t('downloadFile')}
             </Button>
-          )}
-          {renderPaymentProofLink()}
-        </div>
-      )}
-      
-      {milestone.status === 'rejected' && (
-        <div className="space-y-2">
-          <p className="text-sm text-red-600">Payment was rejected. Please resubmit with correct details.</p>
-          <div className="flex items-center space-x-2">
-            <input
-              ref={paymentResubmitInputRef}
-              type="file"
-              accept="image/*,.pdf"
-              onChange={e => handlePaymentFileUpload(e, 'rejected')}
-              className="hidden"
-              id={`payment-resubmit-${milestone.id}`}
-              disabled={uploading}
-            />
-            <Button 
-              size="sm" 
-              disabled={uploading}
-              onClick={() => triggerFileUpload(paymentResubmitInputRef)}
-            >
-              <Upload className="w-4 h-4 mr-2" />
-              {uploading ? 'Uploading...' : 'Resubmit Proof'}
-            </Button>
+            {milestone.deliverable_name && (
+              <span className="text-sm text-slate-600">
+                {milestone.deliverable_name}
+              </span>
+            )}
           </div>
-          {renderPaymentProofLink()}
+          <p className="text-xs text-green-600">
+            {t('deliverableReadyForDownload')}
+          </p>
         </div>
       )}
     </div>

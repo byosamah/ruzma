@@ -1,10 +1,12 @@
 
-import React from "react";
-import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
-import { formatCurrency, CurrencyCode } from "@/lib/currency";
-import { useT } from "@/lib/i18n";
-import { Calendar } from "lucide-react";
-import { FreelancerBranding } from "@/types/branding";
+import React from 'react';
+import { Card, CardContent } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import { Calendar, DollarSign, Target, CheckCircle } from 'lucide-react';
+import { formatCurrency, CurrencyCode } from '@/lib/currency';
+import { useT } from '@/lib/i18n';
+import { useIsMobile } from '@/hooks/use-mobile';
+import { FreelancerBranding } from '@/types/branding';
 
 interface ProjectOverviewCardProps {
   projectName: string;
@@ -13,7 +15,7 @@ interface ProjectOverviewCardProps {
   totalMilestones: number;
   completedMilestones: number;
   currency: CurrencyCode;
-  freelancerCurrency?: CurrencyCode;
+  freelancerCurrency?: CurrencyCode | null;
   startDate?: string;
   endDate?: string;
   branding?: FreelancerBranding | null;
@@ -32,83 +34,153 @@ const ProjectOverviewCard: React.FC<ProjectOverviewCardProps> = ({
   branding,
 }) => {
   const t = useT();
-  
-  // Use freelancer's preferred currency if available, otherwise fall back to the provided currency
-  const displayCurrency = freelancerCurrency || currency;
-  
+  const isMobile = useIsMobile();
   const primaryColor = branding?.primary_color || '#4B72E5';
   const secondaryColor = branding?.secondary_color || '#1D3770';
-  
-  const formatDate = (dateString?: string) => {
-    if (!dateString) return null;
-    const date = new Date(dateString);
-    return date.toLocaleDateString();
+
+  const formatDate = (dateString: string) => {
+    return new Date(dateString).toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric'
+    });
   };
-  
+
+  const progressPercentage = totalMilestones > 0 ? (completedMilestones / totalMilestones) * 100 : 0;
+
   return (
-    <Card className="bg-white/80 backdrop-blur-sm border-0 shadow-lg">
-      <CardHeader>
-        <div className="flex flex-col md:flex-row justify-between items-start md:items-center space-y-4 md:space-y-0">
-          <div className="flex-1">
-            <CardTitle className="text-2xl text-slate-800">{projectName}</CardTitle>
-            <p className="text-slate-600 mt-2">{projectBrief}</p>
-            {(startDate || endDate) && (
-              <div className="flex items-center gap-2 text-sm text-slate-500 mt-3">
-                <Calendar className="w-4 h-4" />
-                <span>
-                  {startDate && formatDate(startDate)}
-                  {startDate && endDate && ' - '}
-                  {endDate && formatDate(endDate)}
-                </span>
+    <Card className="bg-white/95 backdrop-blur-sm shadow-xl border-0 overflow-hidden">
+      <div 
+        className="h-2 w-full"
+        style={{ 
+          background: `linear-gradient(90deg, ${primaryColor} 0%, ${secondaryColor} 100%)` 
+        }}
+      />
+      <CardContent className="p-6 sm:p-8">
+        <div className="space-y-6">
+          {/* Project Title and Description */}
+          <div>
+            <h2 
+              className="text-2xl sm:text-3xl font-bold mb-3"
+              style={{ color: primaryColor }}
+            >
+              {projectName}
+            </h2>
+            <p className="text-slate-600 leading-relaxed">{projectBrief}</p>
+          </div>
+
+          {/* Key Metrics Grid */}
+          <div className={`grid ${isMobile ? 'grid-cols-1 gap-4' : 'grid-cols-2 lg:grid-cols-4 gap-6'}`}>
+            {/* Total Value */}
+            <div className="bg-slate-50 rounded-xl p-4 text-center">
+              <div className="flex items-center justify-center mb-2">
+                <DollarSign 
+                  className="w-6 h-6 mr-2" 
+                  style={{ color: primaryColor }} 
+                />
+                <span className="text-sm font-medium text-slate-600">{t('totalValue')}</span>
+              </div>
+              <div 
+                className="text-xl font-bold"
+                style={{ color: primaryColor }}
+              >
+                {formatCurrency(totalValue, freelancerCurrency || currency)}
+              </div>
+              {freelancerCurrency && freelancerCurrency !== currency && (
+                <div className="text-xs text-slate-500 mt-1">
+                  ({formatCurrency(totalValue, currency)})
+                </div>
+              )}
+            </div>
+
+            {/* Progress */}
+            <div className="bg-slate-50 rounded-xl p-4 text-center">
+              <div className="flex items-center justify-center mb-2">
+                <Target 
+                  className="w-6 h-6 mr-2" 
+                  style={{ color: primaryColor }} 
+                />
+                <span className="text-sm font-medium text-slate-600">{t('progress')}</span>
+              </div>
+              <div 
+                className="text-xl font-bold"
+                style={{ color: primaryColor }}
+              >
+                {completedMilestones}/{totalMilestones}
+              </div>
+              <div className="text-xs text-slate-500 mt-1">
+                {Math.round(progressPercentage)}% {t('complete')}
+              </div>
+            </div>
+
+            {/* Start Date */}
+            {startDate && (
+              <div className="bg-slate-50 rounded-xl p-4 text-center">
+                <div className="flex items-center justify-center mb-2">
+                  <Calendar 
+                    className="w-6 h-6 mr-2" 
+                    style={{ color: primaryColor }} 
+                  />
+                  <span className="text-sm font-medium text-slate-600">{t('startDate')}</span>
+                </div>
+                <div 
+                  className="text-lg font-semibold"
+                  style={{ color: primaryColor }}
+                >
+                  {formatDate(startDate)}
+                </div>
+              </div>
+            )}
+
+            {/* End Date */}
+            {endDate && (
+              <div className="bg-slate-50 rounded-xl p-4 text-center">
+                <div className="flex items-center justify-center mb-2">
+                  <Calendar 
+                    className="w-6 h-6 mr-2" 
+                    style={{ color: primaryColor }} 
+                  />
+                  <span className="text-sm font-medium text-slate-600">{t('deadline')}</span>
+                </div>
+                <div 
+                  className="text-lg font-semibold"
+                  style={{ color: primaryColor }}
+                >
+                  {formatDate(endDate)}
+                </div>
               </div>
             )}
           </div>
-          <div className="text-right">
-            <div 
-              className="text-3xl font-bold"
-              style={{ color: primaryColor }}
-            >
-              {formatCurrency(totalValue, displayCurrency)}
+
+          {/* Progress Bar */}
+          <div className="space-y-2">
+            <div className="flex justify-between items-center">
+              <span className="text-sm font-medium text-slate-700">{t('overallProgress')}</span>
+              <Badge 
+                variant="secondary" 
+                className="text-xs"
+                style={{ 
+                  backgroundColor: `${primaryColor}20`,
+                  color: primaryColor,
+                  border: `1px solid ${primaryColor}40`
+                }}
+              >
+                {Math.round(progressPercentage)}% {t('complete')}
+              </Badge>
             </div>
-            <div className="text-sm text-slate-600">{t('totalProjectValue')}</div>
-          </div>
-        </div>
-      </CardHeader>
-      <CardContent>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <div className="text-center">
-            <div 
-              className="text-2xl font-bold"
-              style={{ color: primaryColor }}
-            >
-              {totalMilestones}
+            <div className="w-full bg-slate-200 rounded-full h-3 overflow-hidden">
+              <div
+                className="h-full rounded-full transition-all duration-500 ease-out"
+                style={{
+                  width: `${progressPercentage}%`,
+                  background: `linear-gradient(90deg, ${primaryColor} 0%, ${secondaryColor} 100%)`
+                }}
+              />
             </div>
-            <div className="text-sm text-slate-600">{t('totalMilestones')}</div>
-          </div>
-          <div className="text-center">
-            <div className="text-2xl font-bold text-green-600">{completedMilestones}</div>
-            <div className="text-sm text-slate-600">{t('completed')}</div>
-          </div>
-          <div className="text-center">
-            <div className="text-2xl font-bold text-slate-800">
-              {totalMilestones > 0 ? Math.round((completedMilestones / totalMilestones) * 100) : 0}%
+            <div className="flex justify-between text-xs text-slate-500">
+              <span>{completedMilestones} {t('completed')}</span>
+              <span>{totalMilestones - completedMilestones} {t('remaining')}</span>
             </div>
-            <div className="text-sm text-slate-600">{t('progress')}</div>
-          </div>
-        </div>
-        <div className="mt-6">
-          <div className="flex justify-between items-center mb-2">
-            <span className="text-sm font-medium text-slate-700">{t('projectProgress')}</span>
-            <span className="text-sm text-slate-600">{completedMilestones}/{totalMilestones} {t('milestones_plural')}</span>
-          </div>
-          <div className="w-full bg-slate-200 rounded-full h-3">
-            <div 
-              className="h-3 rounded-full transition-all duration-300"
-              style={{ 
-                width: `${totalMilestones > 0 ? (completedMilestones / totalMilestones) * 100 : 0}%`,
-                background: `linear-gradient(90deg, ${primaryColor} 0%, ${secondaryColor} 100%)`
-              }}
-            ></div>
           </div>
         </div>
       </CardContent>
