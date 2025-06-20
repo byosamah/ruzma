@@ -12,6 +12,8 @@ import { FreelancerBranding } from '@/types/branding';
 interface MilestoneCardProps {
   milestone: Milestone;
   isClient?: boolean;
+  onApprove?: (milestoneId: string) => void;
+  onReject?: (milestoneId: string) => void;
   onPaymentUpload?: (milestoneId: string, file: File) => void;
   onDeliverableDownload?: (milestoneId: string) => void;
   onDeliverableUpload?: (milestoneId: string, file: File) => void;
@@ -24,6 +26,8 @@ interface MilestoneCardProps {
 const MilestoneCard: React.FC<MilestoneCardProps> = ({
   milestone,
   isClient = false,
+  onApprove,
+  onReject,
   onPaymentUpload,
   onDeliverableDownload,
   onDeliverableUpload,
@@ -57,8 +61,11 @@ const MilestoneCard: React.FC<MilestoneCardProps> = ({
         ) : (
           <FreelancerView
             milestone={milestone}
+            onApprove={onApprove}
+            onReject={onReject}
             onDeliverableUpload={onDeliverableUpload}
             onWatermarkUpdate={onWatermarkUpdate}
+            onShowPaymentProofPreview={() => {}}
           />
         )}
       </CardContent>

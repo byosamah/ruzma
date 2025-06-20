@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { CheckCircle, XCircle, Eye, ExternalLink, Download, FileUp, Upload, Pencil } from 'lucide-react';
@@ -11,7 +10,7 @@ interface FreelancerViewProps {
   onReject?: (milestoneId: string) => void;
   onDeliverableUpload?: (milestoneId: string, file: File, watermarkText?: string) => void;
   onShowPaymentProofPreview: () => void;
-  onUpdateWatermark?: (milestoneId: string, watermarkText: string) => void;
+  onWatermarkUpdate?: (milestoneId: string, watermarkText: string) => void;
 }
 
 const FreelancerView: React.FC<FreelancerViewProps> = ({
@@ -20,7 +19,7 @@ const FreelancerView: React.FC<FreelancerViewProps> = ({
   onReject,
   onDeliverableUpload,
   onShowPaymentProofPreview,
-  onUpdateWatermark
+  onWatermarkUpdate
 }) => {
   const [watermark, setWatermark] = useState(milestone.watermarkText ?? '');
   const [editing, setEditing] = useState(false);
@@ -34,7 +33,7 @@ const FreelancerView: React.FC<FreelancerViewProps> = ({
   };
 
   const handleWatermarkSave = () => {
-    onUpdateWatermark?.(milestone.id, watermark);
+    onWatermarkUpdate?.(milestone.id, watermark);
     setEditing(false);
   };
 
