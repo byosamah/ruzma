@@ -44,6 +44,7 @@ export const useBranding = (user: User | null) => {
           freelancer_name: user.user_metadata?.full_name || '',
           freelancer_title: 'Professional',
           freelancer_bio: 'Delivering quality work for your projects.',
+          primary_color: '#050c1e',
         } as FreelancerBranding);
       }
     } catch (error) {

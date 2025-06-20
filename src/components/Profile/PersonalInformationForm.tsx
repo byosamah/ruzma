@@ -235,15 +235,15 @@ export const PersonalInformationForm = ({
                     type="color"
                     id="primaryColor"
                     name="primaryColor"
-                    value={formData.primaryColor || '#4B72E5'}
+                    value={formData.primaryColor || '#050c1e'}
                     onChange={onFormChange}
                     className="w-10 h-10 border rounded-md cursor-pointer"
                   />
                   <Input
-                    value={formData.primaryColor || '#4B72E5'}
+                    value={formData.primaryColor || '#050c1e'}
                     onChange={onFormChange}
                     name="primaryColor"
-                    placeholder="#4B72E5"
+                    placeholder="#050c1e"
                     className="flex-1"
                   />
                 </div>

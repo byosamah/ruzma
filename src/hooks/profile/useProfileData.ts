@@ -19,7 +19,7 @@ export const useProfileData = () => {
     currency: 'USD',
     professionalTitle: '',
     shortBio: '',
-    primaryColor: '#4B72E5',
+    primaryColor: '#050c1e',
     logoUrl: ''
   });
   const [isLoading, setIsLoading] = useState(false);
@@ -63,7 +63,7 @@ export const useProfileData = () => {
           currency: profile.currency || 'USD',
           professionalTitle: branding?.freelancer_title || '',
           shortBio: branding?.freelancer_bio || '',
-          primaryColor: branding?.primary_color || '#4B72E5',
+          primaryColor: branding?.primary_color || '#050c1e',
           logoUrl: branding?.logo_url || ''
         });
         setProfilePicture(profile.avatar_url || null);
@@ -92,7 +92,7 @@ export const useProfileData = () => {
             currency: newProfile.currency || 'USD',
             professionalTitle: branding?.freelancer_title || '',
             shortBio: branding?.freelancer_bio || '',
-            primaryColor: branding?.primary_color || '#4B72E5',
+            primaryColor: branding?.primary_color || '#050c1e',
             logoUrl: branding?.logo_url || ''
           });
           setProfilePicture(newProfile.avatar_url || null);
@@ -171,7 +171,7 @@ export const useProfileData = () => {
         freelancer_title: formData.professionalTitle || '',
         freelancer_bio: formData.shortBio || '',
         freelancer_name: formData.name,
-        primary_color: formData.primaryColor || '#4B72E5',
+        primary_color: formData.primaryColor || '#050c1e',
         secondary_color: '#1D3770',
         logo_url: formData.logoUrl || '',
         updated_at: new Date().toISOString(),

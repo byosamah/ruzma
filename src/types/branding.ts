@@ -22,7 +22,7 @@ export interface BrandingFormData {
 }
 
 export const defaultBranding: Partial<FreelancerBranding> = {
-  primary_color: '#4B72E5',
+  primary_color: '#050c1e',
   secondary_color: '#1D3770',
   freelancer_name: '',
   freelancer_title: '',
