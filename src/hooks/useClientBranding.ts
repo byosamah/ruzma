@@ -1,6 +1,7 @@
 
 import { useState, useEffect } from 'react';
 import { FreelancerBranding, defaultBranding } from '@/types/branding';
+import { supabase } from '@/integrations/supabase/client';
 
 export const useClientBranding = (freelancerUserId?: string) => {
   const [branding, setBranding] = useState<FreelancerBranding | null>(null);
@@ -12,16 +13,41 @@ export const useClientBranding = (freelancerUserId?: string) => {
       return;
     }
 
-    // For now, use default branding until database table is created
-    setBranding({
-      user_id: freelancerUserId,
-      ...defaultBranding,
-      freelancer_name: 'Freelancer',
-      freelancer_title: 'Professional',
-      freelancer_bio: 'Delivering quality work for your projects.',
-    } as FreelancerBranding);
-    setIsLoading(false);
+    fetchBranding();
   }, [freelancerUserId]);
+
+  const fetchBranding = async () => {
+    if (!freelancerUserId) return;
+
+    try {
+      const { data, error } = await supabase
+        .from('freelancer_branding')
+        .select('*')
+        .eq('user_id', freelancerUserId)
+        .maybeSingle();
+
+      if (error) {
+        console.error('Error fetching branding:', error);
+      }
+
+      if (data) {
+        setBranding(data);
+      } else {
+        // No branding found, use defaults
+        setBranding({
+          user_id: freelancerUserId,
+          ...defaultBranding,
+          freelancer_name: 'Freelancer',
+          freelancer_title: 'Professional',
+          freelancer_bio: 'Delivering quality work for your projects.',
+        } as FreelancerBranding);
+      }
+    } catch (error) {
+      console.error('Error fetching client branding:', error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   return {
     branding,

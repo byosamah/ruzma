@@ -1,5 +1,5 @@
 
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -27,13 +27,27 @@ export const BrandingCard: React.FC<BrandingCardProps> = ({
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [showPreview, setShowPreview] = useState(false);
   const [formData, setFormData] = useState<BrandingFormData>({
-    freelancer_name: branding?.freelancer_name || '',
-    freelancer_title: branding?.freelancer_title || '',
-    freelancer_bio: branding?.freelancer_bio || '',
-    primary_color: branding?.primary_color || '#4B72E5',
-    secondary_color: branding?.secondary_color || '#1D3770',
-    logo_url: branding?.logo_url || '',
+    freelancer_name: '',
+    freelancer_title: '',
+    freelancer_bio: '',
+    primary_color: '#4B72E5',
+    secondary_color: '#1D3770',
+    logo_url: '',
   });
+
+  // Update form data when branding changes
+  useEffect(() => {
+    if (branding) {
+      setFormData({
+        freelancer_name: branding.freelancer_name || '',
+        freelancer_title: branding.freelancer_title || '',
+        freelancer_bio: branding.freelancer_bio || '',
+        primary_color: branding.primary_color || '#4B72E5',
+        secondary_color: branding.secondary_color || '#1D3770',
+        logo_url: branding.logo_url || '',
+      });
+    }
+  }, [branding]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
