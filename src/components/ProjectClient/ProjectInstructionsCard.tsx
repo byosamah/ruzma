@@ -12,47 +12,40 @@ interface ProjectInstructionsCardProps {
 const ProjectInstructionsCard: React.FC<ProjectInstructionsCardProps> = ({ branding }) => {
   const t = useT();
   const primaryColor = branding?.primary_color || '#4B72E5';
-  const secondaryColor = branding?.secondary_color || '#1D3770';
 
   const instructions = [
     {
       icon: CreditCard,
       title: t('submitPaymentProof'),
       description: t('uploadPaymentProofForEachMilestone'),
-      color: primaryColor
     },
     {
       icon: CheckCircle,
       title: t('waitForApproval'),
       description: t('freelancerWillReviewAndApprovePayment'),
-      color: secondaryColor
     },
     {
       icon: Download,
       title: t('downloadDeliverables'),
       description: t('onceApprovedDownloadYourFiles'),
-      color: primaryColor
     }
   ];
 
   return (
     <Card className="bg-white shadow-sm border border-slate-100">
-      <CardHeader className="pb-4">
-        <CardTitle className="flex items-center gap-3 text-xl font-bold text-slate-800">
+      <CardHeader className="pb-3">
+        <CardTitle className="flex items-center gap-2 text-lg font-bold text-slate-800">
           <div 
-            className="w-10 h-10 rounded-xl flex items-center justify-center"
+            className="w-8 h-8 rounded-lg flex items-center justify-center"
             style={{ backgroundColor: `${primaryColor}15` }}
           >
-            <Info className="w-5 h-5" style={{ color: primaryColor }} />
+            <Info className="w-4 h-4" style={{ color: primaryColor }} />
           </div>
           {t('howItWorks')}
         </CardTitle>
-        <p className="text-slate-600 mt-2">
-          {t('followTheseStepsToTrackYourProject')}
-        </p>
       </CardHeader>
       <CardContent>
-        <div className="grid gap-6 sm:grid-cols-1 lg:grid-cols-3">
+        <div className="grid gap-4 sm:grid-cols-3">
           {instructions.map((instruction, index) => {
             const IconComponent = instruction.icon;
             return (
@@ -61,36 +54,36 @@ const ProjectInstructionsCard: React.FC<ProjectInstructionsCardProps> = ({ brand
                 className="relative group"
               >
                 {/* Step Number */}
-                <div className="absolute -top-2 -left-2 z-10">
+                <div className="absolute -top-1 -left-1 z-10">
                   <div 
-                    className="w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold text-white"
-                    style={{ backgroundColor: instruction.color }}
+                    className="w-5 h-5 rounded-full flex items-center justify-center text-xs font-bold text-white"
+                    style={{ backgroundColor: primaryColor }}
                   >
                     {index + 1}
                   </div>
                 </div>
                 
                 {/* Card Content */}
-                <div className="p-6 rounded-xl bg-slate-50 border border-slate-100 hover:shadow-md transition-all duration-200 h-full">
-                  <div className="flex flex-col items-center text-center space-y-4">
+                <div className="p-4 rounded-lg bg-slate-50 border border-slate-100 hover:shadow-sm transition-all duration-200 h-full">
+                  <div className="flex flex-col items-center text-center space-y-3">
                     <div 
-                      className="w-16 h-16 rounded-2xl flex items-center justify-center"
-                      style={{ backgroundColor: `${instruction.color}15` }}
+                      className="w-12 h-12 rounded-xl flex items-center justify-center"
+                      style={{ backgroundColor: `${primaryColor}15` }}
                     >
                       <IconComponent 
-                        className="w-8 h-8" 
-                        style={{ color: instruction.color }} 
+                        className="w-6 h-6" 
+                        style={{ color: primaryColor }} 
                       />
                     </div>
                     
-                    <div className="space-y-2">
+                    <div className="space-y-1">
                       <h4 
-                        className="font-bold text-base"
-                        style={{ color: instruction.color }}
+                        className="font-semibold text-sm"
+                        style={{ color: primaryColor }}
                       >
                         {instruction.title}
                       </h4>
-                      <p className="text-slate-600 text-sm leading-relaxed">
+                      <p className="text-slate-600 text-xs leading-relaxed">
                         {instruction.description}
                       </p>
                     </div>

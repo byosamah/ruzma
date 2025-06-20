@@ -36,7 +36,6 @@ const ProjectOverviewCard: React.FC<ProjectOverviewCardProps> = ({
   const t = useT();
   const isMobile = useIsMobile();
   const primaryColor = branding?.primary_color || '#4B72E5';
-  const secondaryColor = branding?.secondary_color || '#1D3770';
 
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString('en-US', {
@@ -174,7 +173,7 @@ const ProjectOverviewCard: React.FC<ProjectOverviewCardProps> = ({
                   className="h-full rounded-full transition-all duration-700 ease-out"
                   style={{
                     width: `${progressPercentage}%`,
-                    background: `linear-gradient(90deg, ${primaryColor} 0%, ${secondaryColor} 100%)`
+                    backgroundColor: primaryColor
                   }}
                 />
               </div>
