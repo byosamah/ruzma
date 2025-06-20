@@ -66,7 +66,7 @@ const MilestoneList: React.FC<MilestoneListProps> = ({
               onDeliverableDownload={onDeliverableDownload}
               onPaymentUpload={onPaymentUpload}
               currency={userCurrency}
-              onUpdateWatermark={onUpdateWatermark}
+              onWatermarkUpdate={onUpdateWatermark}
             />
           ))}
         </div>
