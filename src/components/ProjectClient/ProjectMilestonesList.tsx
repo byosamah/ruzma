@@ -29,15 +29,11 @@ const ProjectMilestonesList: React.FC<ProjectMilestonesListProps> = ({
   const primaryColor = branding?.primary_color || '#4B72E5';
 
   return (
-    <Card className="bg-white/95 backdrop-blur-sm shadow-xl border-0 overflow-hidden">
-      <div 
-        className="h-1 w-full"
-        style={{ backgroundColor: primaryColor }}
-      />
-      <CardHeader className="pb-4">
+    <Card className="bg-white shadow-sm border border-slate-100">
+      <CardHeader className="pb-6">
         <CardTitle className="flex items-center gap-3 text-xl font-bold text-slate-800">
           <div 
-            className="w-10 h-10 rounded-lg flex items-center justify-center"
+            className="w-10 h-10 rounded-xl flex items-center justify-center"
             style={{ backgroundColor: `${primaryColor}15` }}
           >
             <Target 
@@ -47,38 +43,49 @@ const ProjectMilestonesList: React.FC<ProjectMilestonesListProps> = ({
           </div>
           {t('projectMilestones')}
         </CardTitle>
-        <p className="text-slate-600 mt-1">
+        <p className="text-slate-600 mt-2">
           {t('trackMilestoneProgressAndPayments')}
         </p>
       </CardHeader>
       <CardContent className="space-y-6">
         {milestones.map((milestone, index) => (
           <div key={milestone.id} className="relative">
+            {/* Connection Line */}
             {index > 0 && (
               <div 
-                className="absolute -top-3 left-6 w-0.5 h-3"
-                style={{ backgroundColor: `${primaryColor}30` }}
+                className="absolute -top-3 left-6 w-0.5 h-3 z-0"
+                style={{ backgroundColor: `${primaryColor}20` }}
               />
             )}
-            <MilestoneCard
-              milestone={milestone}
-              isClient={true}
-              onPaymentUpload={onPaymentUpload}
-              onDeliverableDownload={onDeliverableDownload}
-              currency={currency}
-              freelancerCurrency={freelancerCurrency}
-              branding={branding}
-            />
+            
+            {/* Milestone Card */}
+            <div className="relative z-10">
+              <MilestoneCard
+                milestone={milestone}
+                isClient={true}
+                onPaymentUpload={onPaymentUpload}
+                onDeliverableDownload={onDeliverableDownload}
+                currency={currency}
+                freelancerCurrency={freelancerCurrency}
+                branding={branding}
+              />
+            </div>
           </div>
         ))}
         
+        {/* Empty State */}
         {milestones.length === 0 && (
-          <div className="text-center py-12">
-            <Target 
-              className="w-16 h-16 mx-auto mb-4 opacity-20" 
-              style={{ color: primaryColor }} 
-            />
-            <p className="text-slate-500">{t('noMilestonesFound')}</p>
+          <div className="text-center py-16">
+            <div 
+              className="w-16 h-16 rounded-2xl mx-auto mb-4 flex items-center justify-center"
+              style={{ backgroundColor: `${primaryColor}10` }}
+            >
+              <Target 
+                className="w-8 h-8" 
+                style={{ color: `${primaryColor}60` }} 
+              />
+            </div>
+            <p className="text-slate-500 text-lg">{t('noMilestonesFound')}</p>
           </div>
         )}
       </CardContent>

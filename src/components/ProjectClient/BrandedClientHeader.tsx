@@ -19,79 +19,94 @@ const BrandedClientHeader: React.FC<BrandedClientHeaderProps> = ({ branding }) =
   
   return (
     <div 
-      className="relative overflow-hidden"
-      style={{ 
-        background: `linear-gradient(135deg, ${primaryColor} 0%, ${secondaryColor} 100%)` 
-      }}
+      className="relative overflow-hidden bg-white shadow-sm"
     >
-      {/* Background Pattern */}
-      <div className="absolute inset-0 opacity-10">
-        <div className="absolute inset-0" style={{
-          backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.1'%3E%3Ccircle cx='30' cy='30' r='2'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`,
-        }} />
-      </div>
-      
-      <div className="relative z-10">
-        {/* Header Navigation */}
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+      {/* Top Navigation Bar */}
+      <div className="border-b border-slate-100">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-3">
           <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-3">
-              <div className="w-8 h-8 sm:w-10 sm:h-10 bg-white/20 backdrop-blur-sm rounded-lg flex items-center justify-center">
-                <Briefcase className="w-4 h-4 sm:w-6 sm:h-6 text-white" />
+            <div className="flex items-center space-x-2">
+              <div 
+                className="w-6 h-6 rounded-md flex items-center justify-center"
+                style={{ backgroundColor: primaryColor }}
+              >
+                <Briefcase className="w-4 h-4 text-white" />
               </div>
-              <div>
-                <h1 className={`${isMobile ? 'text-lg' : 'text-2xl'} font-bold text-white`}>
-                  {t('clientProjectPortal')}
-                </h1>
-                {!isMobile && (
-                  <p className="text-white/80 text-sm">{t('trackProjectProgressAndMakePayments')}</p>
+              <span className="text-sm font-medium text-slate-600">
+                {t('clientProjectPortal')}
+              </span>
+            </div>
+            <LanguageSelector />
+          </div>
+        </div>
+      </div>
+
+      {/* Freelancer Brand Section */}
+      <div 
+        className="relative"
+        style={{ 
+          background: `linear-gradient(135deg, ${primaryColor}08 0%, ${secondaryColor}08 100%)` 
+        }}
+      >
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
+          <div className="text-center space-y-6">
+            
+            {/* Logo */}
+            <div className="flex justify-center">
+              <div 
+                className="w-20 h-20 sm:w-24 sm:h-24 rounded-2xl shadow-lg flex items-center justify-center"
+                style={{ backgroundColor: 'white' }}
+              >
+                {branding?.logo_url ? (
+                  <img
+                    src={branding.logo_url}
+                    alt={branding.freelancer_name || 'Freelancer Logo'}
+                    className="w-16 h-16 sm:w-20 sm:h-20 object-contain rounded-xl"
+                  />
+                ) : (
+                  <User 
+                    className="w-10 h-10 sm:w-12 sm:h-12" 
+                    style={{ color: primaryColor }} 
+                  />
                 )}
               </div>
             </div>
-            <div className="flex-shrink-0">
-              <LanguageSelector />
-            </div>
-          </div>
-          {isMobile && (
-            <p className="text-white/80 text-sm mt-2">{t('trackProjectProgressAndMakePayments')}</p>
-          )}
-        </div>
 
-        {/* Freelancer Info Section */}
-        {branding && (branding.freelancer_name || branding.logo_url) && (
-          <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pb-6">
-            <div className="bg-white/10 backdrop-blur-sm rounded-xl p-6 border border-white/20">
-              <div className="flex items-center gap-4">
-                <div className="w-16 h-16 bg-white rounded-xl flex items-center justify-center flex-shrink-0">
-                  {branding.logo_url ? (
-                    <img
-                      src={branding.logo_url}
-                      alt={branding.freelancer_name || 'Freelancer Logo'}
-                      className="w-12 h-12 object-contain"
-                    />
-                  ) : (
-                    <User className="w-8 h-8" style={{ color: primaryColor }} />
-                  )}
+            {/* Freelancer Info */}
+            <div className="space-y-3">
+              <h1 className="text-3xl sm:text-4xl font-bold text-slate-800">
+                {branding?.freelancer_name || 'Professional Freelancer'}
+              </h1>
+              
+              {branding?.freelancer_title && (
+                <div className="flex justify-center">
+                  <span 
+                    className="inline-flex items-center px-4 py-2 rounded-full text-sm font-medium"
+                    style={{ 
+                      backgroundColor: `${primaryColor}15`,
+                      color: primaryColor 
+                    }}
+                  >
+                    {branding.freelancer_title}
+                  </span>
                 </div>
-                <div className="min-w-0 flex-1">
-                  <h2 className="text-xl font-bold text-white">
-                    {branding.freelancer_name || 'Professional Freelancer'}
-                  </h2>
-                  {branding.freelancer_title && (
-                    <p className="text-white/90 font-medium">
-                      {branding.freelancer_title}
-                    </p>
-                  )}
-                  {branding.freelancer_bio && (
-                    <p className="text-white/70 text-sm mt-1">
-                      {branding.freelancer_bio}
-                    </p>
-                  )}
-                </div>
-              </div>
+              )}
+              
+              {branding?.freelancer_bio && (
+                <p className="text-slate-600 text-lg max-w-2xl mx-auto leading-relaxed">
+                  {branding.freelancer_bio}
+                </p>
+              )}
+            </div>
+
+            {/* Subtitle */}
+            <div className="pt-4">
+              <p className="text-slate-500 text-base">
+                {t('trackProjectProgressAndMakePayments')}
+              </p>
             </div>
           </div>
-        )}
+        </div>
       </div>
     </div>
   );

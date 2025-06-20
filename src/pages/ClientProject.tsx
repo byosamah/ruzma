@@ -50,19 +50,11 @@ const ClientProject = () => {
   // Always use freelancer's preferred currency if available, otherwise fall back to user currency
   const displayCurrency = freelancerCurrency || userCurrency;
 
-  // Create CSS custom properties for theming
-  const brandingStyles = branding ? {
-    '--brand-primary': branding.primary_color,
-    '--brand-secondary': branding.secondary_color,
-  } as React.CSSProperties : {};
-
   return (
-    <div 
-      className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50"
-      style={brandingStyles}
-    >
+    <div className="min-h-screen bg-slate-50">
       <BrandedClientHeader branding={branding} />
-      <main className={`${isMobile ? 'max-w-full' : 'max-w-6xl'} mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 space-y-6 sm:space-y-8`}>
+      
+      <main className={`${isMobile ? 'max-w-full' : 'max-w-6xl'} mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8`}>
         <ProjectOverviewCard
           projectName={project.name}
           projectBrief={project.brief}
@@ -75,7 +67,9 @@ const ClientProject = () => {
           endDate={project.end_date ?? undefined}
           branding={branding}
         />
-        <ProjectInstructionsCard />
+        
+        <ProjectInstructionsCard branding={branding} />
+        
         <ProjectMilestonesList
           milestones={project.milestones}
           onPaymentUpload={handlePaymentUpload}
@@ -85,6 +79,7 @@ const ClientProject = () => {
           branding={branding}
         />
       </main>
+      
       <ProjectFooter />
     </div>
   );
