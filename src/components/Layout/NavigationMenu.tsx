@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { Button } from '@/components/ui/button';
-import { BarChart3, User, CreditCard, LogOut } from 'lucide-react';
+import { BarChart3, User, LogOut } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { NotificationBell } from '@/components/notifications/NotificationBell';
 import { useT } from '@/lib/i18n';
@@ -37,7 +37,6 @@ const NavigationMenu: React.FC<NavigationMenuProps> = ({
   const menuItems = [
     { path: '/dashboard', label: t('dashboard'), icon: BarChart3 },
     { path: '/profile', label: t('profile'), icon: User },
-    { path: '/plans', label: t('plans'), icon: CreditCard },
   ];
 
   if (isMobile) {
@@ -63,15 +62,13 @@ const NavigationMenu: React.FC<NavigationMenuProps> = ({
         
         {shouldShowUpgradeButton && (
           <Button
-            variant="outline"
-            className="justify-start w-full border-orange-200 text-orange-600 hover:bg-orange-50"
+            className="justify-start w-full bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 text-white font-semibold shadow-lg border-0"
             onClick={() => {
               navigate('/plans');
               onMenuClick();
             }}
           >
-            <CreditCard className="w-4 h-4 mr-2" />
-            {t('upgrade')}
+            ✨ {t('upgrade')}
           </Button>
         )}
         
@@ -109,13 +106,13 @@ const NavigationMenu: React.FC<NavigationMenuProps> = ({
       
       {shouldShowUpgradeButton && (
         <Button
-          variant="outline"
           size="sm"
-          className="border-orange-200 text-orange-600 hover:bg-orange-50"
+          className="bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 text-white font-semibold shadow-lg border-0 px-4"
           onClick={() => navigate('/plans')}
         >
-          <CreditCard className="w-4 h-4 lg:mr-1" />
-          <span className="hidden lg:inline">{t('upgrade')}</span>
+          <span className="flex items-center gap-1">
+            ✨ <span className="hidden lg:inline">{t('upgrade')}</span>
+          </span>
         </Button>
       )}
       
