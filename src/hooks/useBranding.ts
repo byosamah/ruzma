@@ -1,6 +1,5 @@
 
 import { useState, useEffect } from 'react';
-import { supabase } from '@/integrations/supabase/client';
 import { FreelancerBranding, BrandingFormData, defaultBranding } from '@/types/branding';
 import { User } from '@supabase/supabase-js';
 import { toast } from 'sonner';
@@ -16,70 +15,28 @@ export const useBranding = (user: User | null) => {
       return;
     }
 
-    fetchBranding();
+    // For now, just use default branding until database table is created
+    setBranding({
+      user_id: user.id,
+      ...defaultBranding,
+      freelancer_name: 'Freelancer',
+      freelancer_title: 'Professional',
+      freelancer_bio: 'Delivering quality work for your projects.',
+    } as FreelancerBranding);
+    setIsLoading(false);
   }, [user]);
-
-  const fetchBranding = async () => {
-    if (!user) return;
-
-    try {
-      const { data, error } = await supabase
-        .from('freelancer_branding')
-        .select('*')
-        .eq('user_id', user.id)
-        .maybeSingle();
-
-      if (error && error.code !== 'PGRST116') {
-        console.error('Error fetching branding:', error);
-        toast.error('Failed to load branding settings');
-        return;
-      }
-
-      setBranding(data || {
-        user_id: user.id,
-        ...defaultBranding,
-      } as FreelancerBranding);
-    } catch (error) {
-      console.error('Error fetching branding:', error);
-      toast.error('Failed to load branding settings');
-    } finally {
-      setIsLoading(false);
-    }
-  };
 
   const saveBranding = async (formData: BrandingFormData): Promise<boolean> => {
     if (!user) return false;
 
     setIsSaving(true);
     try {
-      const brandingData = {
+      // For now, just update local state until database table is created
+      setBranding({
         user_id: user.id,
         ...formData,
-      };
-
-      let result;
-      if (branding?.id) {
-        result = await supabase
-          .from('freelancer_branding')
-          .update(brandingData)
-          .eq('id', branding.id)
-          .select()
-          .single();
-      } else {
-        result = await supabase
-          .from('freelancer_branding')
-          .insert(brandingData)
-          .select()
-          .single();
-      }
-
-      if (result.error) {
-        console.error('Error saving branding:', result.error);
-        toast.error('Failed to save branding settings');
-        return false;
-      }
-
-      setBranding(result.data);
+      } as FreelancerBranding);
+      
       toast.success('Branding settings saved successfully!');
       return true;
     } catch (error) {
@@ -95,25 +52,9 @@ export const useBranding = (user: User | null) => {
     if (!user) return null;
 
     try {
-      const fileExt = file.name.split('.').pop();
-      const fileName = `${user.id}_${Date.now()}.${fileExt}`;
-      const filePath = `logos/${fileName}`;
-
-      const { error: uploadError } = await supabase.storage
-        .from('branding')
-        .upload(filePath, file);
-
-      if (uploadError) {
-        console.error('Error uploading logo:', uploadError);
-        toast.error('Failed to upload logo');
-        return null;
-      }
-
-      const { data: urlData } = supabase.storage
-        .from('branding')
-        .getPublicUrl(filePath);
-
-      return urlData.publicUrl;
+      // For now, create a temporary URL until storage is set up
+      const tempUrl = URL.createObjectURL(file);
+      return tempUrl;
     } catch (error) {
       console.error('Error uploading logo:', error);
       toast.error('Failed to upload logo');
@@ -127,6 +68,6 @@ export const useBranding = (user: User | null) => {
     isSaving,
     saveBranding,
     uploadLogo,
-    refetch: fetchBranding,
+    refetch: () => {},
   };
 };

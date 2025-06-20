@@ -15,7 +15,6 @@ interface MilestoneCardProps {
   onPaymentUpload?: (milestoneId: string, file: File) => void;
   onDeliverableDownload?: (milestoneId: string) => void;
   onDeliverableUpload?: (milestoneId: string, file: File) => void;
-  onStatusUpdate?: (milestoneId: string, status: string) => void;
   onWatermarkUpdate?: (milestoneId: string, watermark: string) => void;
   currency?: CurrencyCode;
   freelancerCurrency?: CurrencyCode;
@@ -28,7 +27,6 @@ const MilestoneCard: React.FC<MilestoneCardProps> = ({
   onPaymentUpload,
   onDeliverableDownload,
   onDeliverableUpload,
-  onStatusUpdate,
   onWatermarkUpdate,
   currency = 'USD',
   freelancerCurrency,
@@ -60,7 +58,6 @@ const MilestoneCard: React.FC<MilestoneCardProps> = ({
           <FreelancerView
             milestone={milestone}
             onDeliverableUpload={onDeliverableUpload}
-            onStatusUpdate={onStatusUpdate}
             onWatermarkUpdate={onWatermarkUpdate}
           />
         )}

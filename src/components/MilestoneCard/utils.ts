@@ -21,6 +21,29 @@ export const getStatusIcon = (status: string) => {
   }
 };
 
+export const formatDateRange = (startDate?: string, endDate?: string) => {
+  if (!startDate && !endDate) return '';
+  
+  const formatDate = (dateStr: string) => {
+    const date = new Date(dateStr);
+    return date.toLocaleDateString('en-US', { 
+      month: 'short', 
+      day: 'numeric', 
+      year: 'numeric' 
+    });
+  };
+
+  if (startDate && endDate) {
+    return `${formatDate(startDate)} - ${formatDate(endDate)}`;
+  } else if (startDate) {
+    return `From ${formatDate(startDate)}`;
+  } else if (endDate) {
+    return `Until ${formatDate(endDate)}`;
+  }
+  
+  return '';
+};
+
 export const isPdfFile = (url: string) => {
   return url.toLowerCase().includes('.pdf') || url.toLowerCase().includes('pdf');
 };
