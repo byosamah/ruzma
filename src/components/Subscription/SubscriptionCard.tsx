@@ -6,6 +6,7 @@ import { Check, Crown } from 'lucide-react';
 import { SubscriptionPlan } from '@/hooks/useSubscription';
 import { CurrencyCode, formatCurrency } from '@/lib/currency';
 import { useLanguage } from '@/contexts/LanguageContext';
+
 interface SubscriptionCardProps {
   plan: SubscriptionPlan;
   currency: CurrencyCode;
@@ -16,6 +17,7 @@ interface SubscriptionCardProps {
   onSelectPlan: (planId: string) => void;
   isLoading?: boolean;
 }
+
 export const SubscriptionCard: React.FC<SubscriptionCardProps> = ({
   plan,
   currency,
@@ -120,7 +122,12 @@ export const SubscriptionCard: React.FC<SubscriptionCardProps> = ({
       </CardContent>
 
       <CardFooter>
-        <Button onClick={() => onSelectPlan(plan.id)} disabled={isLoading || isCurrentPlan} className="w-full" variant={getButtonVariant()}>
+        <Button 
+          onClick={() => onSelectPlan(plan.id)} 
+          disabled={true}
+          className="w-full" 
+          variant={getButtonVariant()}
+        >
           {getButtonText()}
         </Button>
       </CardFooter>
