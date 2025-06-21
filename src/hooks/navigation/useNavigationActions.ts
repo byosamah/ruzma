@@ -1,7 +1,8 @@
 
 import { useNavigate } from 'react-router-dom';
+import { Dispatch, SetStateAction } from 'react';
 
-export const useNavigationActions = (setMobileMenuOpen: (open: boolean) => void) => {
+export const useNavigationActions = (setMobileMenuOpen: Dispatch<SetStateAction<boolean>>) => {
   const navigate = useNavigate();
 
   const handleSignOut = (onSignOut?: () => void) => {
