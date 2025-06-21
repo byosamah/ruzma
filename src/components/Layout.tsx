@@ -1,13 +1,9 @@
 
-import React, { useState, useEffect } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
-import LanguageSelector from './LanguageSelector';
+import React from 'react';
 import FloatingContactButton from './FloatingContactButton';
-import LogoSection from './Layout/LogoSection';
-import NavigationMenu from './Layout/NavigationMenu';
-import MobileMenu from './Layout/MobileMenu';
-import { supabase } from '@/integrations/supabase/client';
-import { useIsMobile } from '@/hooks/use-mobile';
+import Header from './Layout/Header';
+import MainContent from './Layout/MainContent';
+import { useNavigation } from '@/hooks/navigation/useNavigation';
 import { useNotifications } from '@/hooks/useNotifications';
 
 interface LayoutProps {
@@ -21,101 +17,37 @@ const Layout: React.FC<LayoutProps> = ({
   user,
   onSignOut
 }) => {
-  const location = useLocation();
-  const navigate = useNavigate();
-  const isMobile = useIsMobile();
-  const [userProfile, setUserProfile] = useState<any>(null);
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const {
+    userProfile,
+    mobileMenuOpen,
+    isActive,
+    isLandingPage,
+    shouldShowUpgradeButton,
+    handleSignOut,
+    toggleMobileMenu
+  } = useNavigation(user);
   
   // Use notifications hook at the Layout level
   const notificationsData = useNotifications(user);
-  
-  const isActive = (path: string) => location.pathname === path;
-  const isLandingPage = location.pathname === '/';
 
-  useEffect(() => {
-    const fetchUserProfile = async () => {
-      if (!user) {
-        setUserProfile(null);
-        return;
-      }
-
-      try {
-        const { data: profile, error } = await supabase
-          .from('profiles')
-          .select('user_type')
-          .eq('id', user.id)
-          .single();
-
-        if (!error) {
-          setUserProfile(profile);
-        }
-      } catch (error) {
-        console.error('Error fetching user profile:', error);
-      }
-    };
-
-    fetchUserProfile();
-  }, [user]);
-
-  const handleSignOut = () => {
-    if (onSignOut) {
-      onSignOut();
-    }
-    navigate('/');
-    setMobileMenuOpen(false);
-  };
-
-  const shouldShowUpgradeButton = user && userProfile?.user_type !== 'pro';
+  const onSignOutHandler = () => handleSignOut(onSignOut);
 
   return (
     <div className="min-h-screen bg-auth-background">
-      <nav className="bg-background text-foreground border-b border-border sticky top-0 z-50">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-14 sm:h-16">
-            <div className="flex items-center space-x-2 sm:space-x-4 min-w-0 flex-1">
-              <LogoSection user={user} isLandingPage={isLandingPage} />
-              <div className="hidden sm:block flex-shrink-0">
-                <LanguageSelector className="border-0 shadow-none p-1" />
-              </div>
-            </div>
-            
-            {/* Desktop Navigation */}
-            <div className="hidden md:flex items-center space-x-3 lg:space-x-4 flex-shrink-0">
-              <NavigationMenu
-                user={user}
-                userProfile={userProfile}
-                isActive={isActive}
-                isMobile={false}
-                shouldShowUpgradeButton={shouldShowUpgradeButton}
-                onSignOut={handleSignOut}
-                onMenuClick={() => {}}
-                notificationsData={notificationsData}
-              />
-            </div>
-
-            {/* Mobile Menu */}
-            <div className="md:hidden flex items-center space-x-2 flex-shrink-0">
-              <div className="sm:hidden">
-                <LanguageSelector className="border-0 shadow-none p-1 text-xs" />
-              </div>
-              <MobileMenu
-                mobileMenuOpen={mobileMenuOpen}
-                onToggle={() => setMobileMenuOpen(!mobileMenuOpen)}
-                user={user}
-                userProfile={userProfile}
-                isActive={isActive}
-                shouldShowUpgradeButton={shouldShowUpgradeButton}
-                onSignOut={handleSignOut}
-                notificationsData={notificationsData}
-              />
-            </div>
-          </div>
-        </div>
-      </nav>
-      <main className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6 lg:py-8">
+      <Header
+        user={user}
+        userProfile={userProfile}
+        isActive={isActive}
+        isLandingPage={isLandingPage}
+        shouldShowUpgradeButton={shouldShowUpgradeButton}
+        mobileMenuOpen={mobileMenuOpen}
+        onToggleMobileMenu={toggleMobileMenu}
+        onSignOut={onSignOutHandler}
+        notificationsData={notificationsData}
+      />
+      <MainContent>
         {children}
-      </main>
+      </MainContent>
       <FloatingContactButton />
     </div>
   );
