@@ -6,20 +6,10 @@ import { Save } from 'lucide-react';
 import { useT } from '@/lib/i18n';
 import { PersonalInfoSection } from './PersonalInfoSection';
 import { BrandingSection } from './BrandingSection';
+import { ProfileFormData } from '@/hooks/profile/types';
 
 interface PersonalInformationFormProps {
-  formData: {
-    name: string;
-    email: string;
-    company: string;
-    website: string;
-    bio: string;
-    currency?: string;
-    professionalTitle?: string;
-    shortBio?: string;
-    primaryColor?: string;
-    logoUrl?: string;
-  };
+  formData: ProfileFormData;
   isLoading: boolean;
   isSaved: boolean;
   onFormChange: (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => void;
