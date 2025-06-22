@@ -322,6 +322,33 @@ export type Database = {
         }
         Relationships: []
       }
+      user_plan_limits: {
+        Row: {
+          created_at: string
+          id: string
+          project_limit: number
+          storage_limit_bytes: number
+          updated_at: string
+          user_type: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          project_limit: number
+          storage_limit_bytes: number
+          updated_at?: string
+          user_type: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          project_limit?: number
+          storage_limit_bytes?: number
+          updated_at?: string
+          user_type?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
@@ -334,6 +361,13 @@ export type Database = {
       check_user_limits: {
         Args: { _user_id: string; _action: string; _size?: number }
         Returns: boolean
+      }
+      get_user_limits: {
+        Args: { _user_type: string }
+        Returns: {
+          project_limit: number
+          storage_limit_bytes: number
+        }[]
       }
       update_project_count: {
         Args: { _user_id: string; _count_change: number }

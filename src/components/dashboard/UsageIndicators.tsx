@@ -3,7 +3,7 @@ import React from 'react';
 import { Progress } from '@/components/ui/progress';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Database, FolderOpen, TrendingUp, MessageCircle } from 'lucide-react';
+import { Database, FolderOpen, TrendingUp, MessageCircle, Loader2 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useUsageTracking } from '@/hooks/useUsageTracking';
 import { DatabaseProject } from '@/hooks/projectTypes';
@@ -40,6 +40,29 @@ export const UsageIndicators: React.FC<UsageIndicatorsProps> = ({
     const userType = userProfile?.user_type || 'free';
     return userType === 'pro' ? MessageCircle : TrendingUp;
   };
+
+  if (usage.loading) {
+    return (
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mb-4">
+        <Card className="border-slate-200">
+          <CardContent className="px-3 py-4">
+            <div className="flex items-center justify-center">
+              <Loader2 className="h-4 w-4 animate-spin" />
+              <span className="ml-2 text-sm text-slate-500">Loading usage...</span>
+            </div>
+          </CardContent>
+        </Card>
+        <Card className="border-slate-200">
+          <CardContent className="px-3 py-4">
+            <div className="flex items-center justify-center">
+              <Loader2 className="h-4 w-4 animate-spin" />
+              <span className="ml-2 text-sm text-slate-500">Loading usage...</span>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mb-4">

@@ -1,42 +1,35 @@
 
 import { useMemo } from 'react';
 import { DatabaseProject } from './projectTypes';
+import { useUserLimits } from './useUserLimits';
 
 interface UsageLimits {
   projects: { current: number; max: number; percentage: number };
   storage: { current: number; max: number; percentage: number; currentFormatted: string; maxFormatted: string };
   canCreateProject: boolean;
   shouldShowUpgrade: boolean;
+  loading: boolean;
 }
 
 export const useUsageTracking = (
   userProfile: any,
   projects: DatabaseProject[]
 ): UsageLimits => {
+  const userType = userProfile?.user_type || 'free';
+  const { data: limits, isLoading } = useUserLimits(userType);
+
   return useMemo(() => {
-    const userType = userProfile?.user_type || 'free';
     const currentProjects = projects.length;
     const currentStorage = userProfile?.storage_used || 0;
 
-    // Define limits based on plan
-    const limits = {
-      free: { projects: 1, storage: 524288000 }, // 500MB
-      plus: { projects: 3, storage: 10737418240 }, // 10GB
-      pro: { projects: 10, storage: 53687091200 }, // 50GB
+    // Use dynamic limits from database or fallback to defaults while loading
+    const planLimits = limits || {
+      project_limit: userType === 'plus' ? 3 : userType === 'pro' ? 10 : 1,
+      storage_limit_bytes: userType === 'plus' ? 10737418240 : userType === 'pro' ? 53687091200 : 524288000
     };
-
-    const planLimits = limits[userType as keyof typeof limits] || limits.free;
     
-    const projectsPercentage = Math.round((currentProjects / planLimits.projects) * 100);
-    const storagePercentage = Math.round((currentStorage / planLimits.storage) * 100);
-
-    const formatBytes = (bytes: number) => {
-      if (bytes === 0) return '0 B';
-      const k = 1024;
-      const sizes = ['B', 'KB', 'MB', 'GB'];
-      const i = Math.floor(Math.log(bytes) / Math.log(k));
-      return `${parseFloat((bytes / Math.pow(k, i)).toFixed(1))} ${sizes[i]}`;
-    };
+    const projectsPercentage = Math.round((currentProjects / planLimits.project_limit) * 100);
+    const storagePercentage = Math.round((currentStorage / planLimits.storage_limit_bytes) * 100);
 
     const formatStorage = (bytes: number) => {
       if (bytes >= 1073741824) { // 1GB
@@ -49,18 +42,19 @@ export const useUsageTracking = (
     return {
       projects: {
         current: currentProjects,
-        max: planLimits.projects,
+        max: planLimits.project_limit,
         percentage: projectsPercentage,
       },
       storage: {
         current: currentStorage,
-        max: planLimits.storage,
+        max: planLimits.storage_limit_bytes,
         percentage: storagePercentage,
         currentFormatted: formatStorage(currentStorage),
-        maxFormatted: formatStorage(planLimits.storage),
+        maxFormatted: formatStorage(planLimits.storage_limit_bytes),
       },
-      canCreateProject: currentProjects < planLimits.projects,
+      canCreateProject: currentProjects < planLimits.project_limit,
       shouldShowUpgrade: projectsPercentage >= 80 || storagePercentage >= 80,
+      loading: isLoading,
     };
-  }, [userProfile, projects]);
+  }, [userProfile, projects, limits, isLoading, userType]);
 };
