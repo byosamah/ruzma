@@ -1,11 +1,11 @@
 
--- Enable the pg_cron extension if not already enabled
-CREATE EXTENSION IF NOT EXISTS pg_cron;
-
--- Enable the pg_net extension in the extensions schema (not public)
+-- Move pg_net extension from public schema to extensions schema
+DROP EXTENSION IF EXISTS pg_net CASCADE;
 CREATE EXTENSION IF NOT EXISTS pg_net WITH SCHEMA extensions;
 
--- Create a cron job to run notification checks daily at 9:00 AM UTC
+-- Update the cron job to use the correct schema reference
+SELECT cron.unschedule('daily-notification-check');
+
 SELECT cron.schedule(
   'daily-notification-check',
   '0 9 * * *', -- Every day at 9:00 AM UTC
