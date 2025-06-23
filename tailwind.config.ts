@@ -20,14 +20,14 @@ export default {
 		},
 		extend: {
 			fontFamily: {
-        sans: ['Inter', 'system-ui', 'sans-serif'],
+        sans: ['"IBM Plex Sans Arabic"', 'system-ui', 'sans-serif'],
       },
 			colors: {
-				'brand-blue': '#3B82F6',
-        'brand-navy': '#1E40AF',
-        'brand-black': '#0F172A',
-        'brand-yellow': '#F59E0B',
-        'auth-background': '#FAFAFA',
+				'brand-blue': '#4B72E5',
+        'brand-navy': '#1D3770',
+        'brand-black': '#070E1B',
+        'brand-yellow': '#FFD424',
+        'auth-background': '#FDFBF5',
 				border: 'hsl(var(--border))',
 				input: 'hsl(var(--input))',
 				ring: 'hsl(var(--ring))',
@@ -68,7 +68,7 @@ export default {
 					'primary-foreground': 'hsl(var(--sidebar-primary-foreground))',
 					accent: 'hsl(var(--sidebar-accent))',
 					'accent-foreground': 'hsl(var(--sidebar-accent-foreground))',
-					border: 'hsl(var(--sidebar-border))',
+					border: 'hssl(var(--sidebar-border))',
 					ring: 'hsl(var(--sidebar-ring))'
 				}
 			},
