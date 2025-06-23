@@ -61,13 +61,13 @@ export function AppSidebar({
 
   return (
     <Sidebar className="border-r border-gray-200 bg-white" collapsible="icon">
-      <SidebarHeader className={`p-4 ${isCollapsed ? 'px-3' : ''}`}>
+      <SidebarHeader className={`${isCollapsed ? 'px-3 py-4' : 'p-4'}`}>
         <div className={`flex items-center ${isCollapsed ? 'justify-center' : 'gap-2'}`}>
           {isCollapsed ? (
             <img 
-              src="/lovable-uploads/sidebar-collapsed-logo.png" 
+              src="/lovable-uploads/sidebar-collapsed-logo-new.png" 
               alt="Ruzma Logo Collapsed" 
-              className="h-8 w-8" 
+              className="h-6 w-6" 
             />
           ) : (
             <img 
@@ -91,10 +91,10 @@ export function AppSidebar({
                   <SidebarMenuButton 
                     asChild 
                     isActive={isActive(item.url)} 
-                    className={`w-full ${isCollapsed ? 'justify-center px-3' : 'justify-start gap-3 px-3'} py-2 text-sm font-medium rounded-md transition-colors hover:bg-gray-100 data-[active=true]:bg-gray-100 data-[active=true]:text-gray-900`}
+                    className={`w-full ${isCollapsed ? 'justify-center px-0' : 'justify-start gap-3 px-3'} py-2 text-sm font-medium rounded-md transition-colors hover:bg-gray-100 data-[active=true]:bg-gray-100 data-[active=true]:text-gray-900`}
                     tooltip={isCollapsed ? item.title : undefined}
                   >
-                    <button onClick={() => navigate(item.url)}>
+                    <button onClick={() => navigate(item.url)} className={isCollapsed ? 'flex items-center justify-center w-full' : ''}>
                       <item.icon className="w-4 h-4" />
                       <span>{item.title}</span>
                     </button>
@@ -116,10 +116,10 @@ export function AppSidebar({
                   <SidebarMenuButton 
                     asChild 
                     isActive={isActive(item.url)} 
-                    className={`w-full ${isCollapsed ? 'justify-center px-3' : 'justify-start gap-3 px-3'} py-2 text-sm font-medium rounded-md transition-colors hover:bg-gray-100 data-[active=true]:bg-gray-100 data-[active=true]:text-gray-900`}
+                    className={`w-full ${isCollapsed ? 'justify-center px-0' : 'justify-start gap-3 px-3'} py-2 text-sm font-medium rounded-md transition-colors hover:bg-gray-100 data-[active=true]:bg-gray-100 data-[active=true]:text-gray-900`}
                     tooltip={isCollapsed ? item.title : undefined}
                   >
-                    <button onClick={() => navigate(item.url)}>
+                    <button onClick={() => navigate(item.url)} className={isCollapsed ? 'flex items-center justify-center w-full' : ''}>
                       <item.icon className="w-4 h-4" />
                       <span>{item.title}</span>
                     </button>
@@ -129,10 +129,10 @@ export function AppSidebar({
               <SidebarMenuItem>
                 <SidebarMenuButton 
                   asChild 
-                  className={`w-full ${isCollapsed ? 'justify-center px-3' : 'justify-start gap-3 px-3'} py-2 text-sm font-medium rounded-md transition-colors hover:bg-red-50 text-red-600 hover:text-red-700`}
+                  className={`w-full ${isCollapsed ? 'justify-center px-0' : 'justify-start gap-3 px-3'} py-2 text-sm font-medium rounded-md transition-colors hover:bg-red-50 text-red-600 hover:text-red-700`}
                   tooltip={isCollapsed ? t('signOut') : undefined}
                 >
-                  <button onClick={handleSignOut}>
+                  <button onClick={handleSignOut} className={isCollapsed ? 'flex items-center justify-center w-full' : ''}>
                     <LogOut className="w-4 h-4" />
                     <span>{t('signOut')}</span>
                   </button>
@@ -143,7 +143,7 @@ export function AppSidebar({
         </SidebarGroup>
       </SidebarContent>
 
-      <SidebarFooter className={`p-4 border-t border-gray-200 ${isCollapsed ? 'px-3' : ''}`}>
+      <SidebarFooter className={`border-t border-gray-200 ${isCollapsed ? 'px-3 py-4' : 'p-4'}`}>
         {!isCollapsed && (
           <div className="text-xs text-gray-500">© 2025 Ruzma</div>
         )}
