@@ -13,6 +13,7 @@ import {
   SidebarMenuItem,
   SidebarHeader,
   SidebarFooter,
+  useSidebar,
 } from '@/components/ui/sidebar';
 import { useT } from '@/lib/i18n';
 
@@ -25,6 +26,7 @@ export function AppSidebar({ user, onSignOut }: AppSidebarProps) {
   const navigate = useNavigate();
   const location = useLocation();
   const t = useT();
+  const { state } = useSidebar();
 
   if (!user) return null;
 
@@ -72,11 +74,25 @@ export function AppSidebar({ user, onSignOut }: AppSidebarProps) {
     }
   };
 
+  const isCollapsed = state === 'collapsed';
+
   return (
     <Sidebar className="border-r border-gray-200 bg-white">
       <SidebarHeader className="p-4">
-        <div className="flex items-center gap-2">
-          <img src="/lovable-uploads/bca9fbc0-5ee9-455b-91b3-b7eff1f56169.png" alt="Ruzma Logo" className="h-8" />
+        <div className="flex items-center justify-center">
+          {isCollapsed ? (
+            <img 
+              src="/lovable-uploads/946a5840-8d2f-4bbc-b2f3-3bc2603dbe7a.png" 
+              alt="Ruzma Logo" 
+              className="h-8 w-8" 
+            />
+          ) : (
+            <img 
+              src="/lovable-uploads/bca9fbc0-5ee9-455b-91b3-b7eff1f56169.png" 
+              alt="Ruzma Logo" 
+              className="h-8" 
+            />
+          )}
         </div>
       </SidebarHeader>
       
@@ -93,6 +109,7 @@ export function AppSidebar({ user, onSignOut }: AppSidebarProps) {
                     asChild
                     isActive={isActive(item.url)}
                     className="w-full justify-start gap-3 px-3 py-2 text-sm font-medium rounded-md transition-colors hover:bg-gray-100 data-[active=true]:bg-gray-100 data-[active=true]:text-gray-900"
+                    tooltip={isCollapsed ? item.title : undefined}
                   >
                     <button onClick={() => navigate(item.url)}>
                       <item.icon className="w-4 h-4" />
@@ -117,6 +134,7 @@ export function AppSidebar({ user, onSignOut }: AppSidebarProps) {
                     asChild
                     isActive={isActive(item.url)}
                     className="w-full justify-start gap-3 px-3 py-2 text-sm font-medium rounded-md transition-colors hover:bg-gray-100 data-[active=true]:bg-gray-100 data-[active=true]:text-gray-900"
+                    tooltip={isCollapsed ? item.title : undefined}
                   >
                     <button onClick={() => navigate(item.url)}>
                       <item.icon className="w-4 h-4" />
@@ -129,6 +147,7 @@ export function AppSidebar({ user, onSignOut }: AppSidebarProps) {
                 <SidebarMenuButton
                   asChild
                   className="w-full justify-start gap-3 px-3 py-2 text-sm font-medium rounded-md transition-colors hover:bg-red-50 text-red-600 hover:text-red-700"
+                  tooltip={isCollapsed ? t('signOut') : undefined}
                 >
                   <button onClick={handleSignOut}>
                     <LogOut className="w-4 h-4" />
