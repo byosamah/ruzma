@@ -1,4 +1,3 @@
-
 import { Toaster } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
@@ -20,6 +19,7 @@ import ProjectTemplates from "./pages/ProjectTemplates";
 import ClientProject from "./pages/ClientProject";
 import ContactUs from "./pages/ContactUs";
 import NotFound from "./pages/NotFound";
+import Invoices from "./pages/Invoices";
 
 const queryClient = new QueryClient();
 
@@ -38,6 +38,7 @@ function App() {
               <Route path="/reset-password" element={<ResetPassword />} />
               <Route path="/dashboard" element={<Dashboard />} />
               <Route path="/projects" element={<Projects />} />
+              <Route path="/invoices" element={<Invoices />} />
               <Route path="/analytics" element={<Analytics />} />
               <Route path="/profile" element={<Profile />} />
               <Route path="/plans" element={<Plans />} />
