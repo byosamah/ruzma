@@ -1,79 +1,53 @@
-
 import React from 'react';
 import { Home, User, FolderOpen, BarChart3, FileText, Settings, CreditCard, LogOut } from 'lucide-react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import {
-  Sidebar,
-  SidebarContent,
-  SidebarGroup,
-  SidebarGroupContent,
-  SidebarGroupLabel,
-  SidebarMenu,
-  SidebarMenuButton,
-  SidebarMenuItem,
-  SidebarHeader,
-  SidebarFooter,
-} from '@/components/ui/sidebar';
+import { Sidebar, SidebarContent, SidebarGroup, SidebarGroupContent, SidebarGroupLabel, SidebarMenu, SidebarMenuButton, SidebarMenuItem, SidebarHeader, SidebarFooter } from '@/components/ui/sidebar';
 import { useT } from '@/lib/i18n';
-
 interface AppSidebarProps {
   user?: any;
   onSignOut?: () => void;
 }
-
-export function AppSidebar({ user, onSignOut }: AppSidebarProps) {
+export function AppSidebar({
+  user,
+  onSignOut
+}: AppSidebarProps) {
   const navigate = useNavigate();
   const location = useLocation();
   const t = useT();
-
   if (!user) return null;
-
-  const menuItems = [
-    {
-      title: t('dashboard'),
-      url: '/dashboard',
-      icon: Home,
-    },
-    {
-      title: t('yourProjects'),
-      url: '/dashboard',
-      icon: FolderOpen,
-    },
-    {
-      title: t('analytics'),
-      url: '/analytics',
-      icon: BarChart3,
-    },
-    {
-      title: t('templates'),
-      url: '/templates',
-      icon: FileText,
-    },
-  ];
-
-  const accountItems = [
-    {
-      title: t('profile'),
-      url: '/profile',
-      icon: User,
-    },
-    {
-      title: t('plans'),
-      url: '/plans',
-      icon: CreditCard,
-    },
-  ];
-
+  const menuItems = [{
+    title: t('dashboard'),
+    url: '/dashboard',
+    icon: Home
+  }, {
+    title: t('yourProjects'),
+    url: '/dashboard',
+    icon: FolderOpen
+  }, {
+    title: t('analytics'),
+    url: '/analytics',
+    icon: BarChart3
+  }, {
+    title: t('templates'),
+    url: '/templates',
+    icon: FileText
+  }];
+  const accountItems = [{
+    title: t('profile'),
+    url: '/profile',
+    icon: User
+  }, {
+    title: t('plans'),
+    url: '/plans',
+    icon: CreditCard
+  }];
   const isActive = (url: string) => location.pathname === url;
-
   const handleSignOut = () => {
     if (onSignOut) {
       onSignOut();
     }
   };
-
-  return (
-    <Sidebar className="border-r border-gray-200 bg-white">
+  return <Sidebar className="border-r border-gray-200 bg-white">
       <SidebarHeader className="p-4">
         <div className="flex items-center gap-2">
           <img src="/lovable-uploads/bca9fbc0-5ee9-455b-91b3-b7eff1f56169.png" alt="Ruzma Logo" className="h-8" />
@@ -87,20 +61,14 @@ export function AppSidebar({ user, onSignOut }: AppSidebarProps) {
           </SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
-              {menuItems.map((item) => (
-                <SidebarMenuItem key={item.title}>
-                  <SidebarMenuButton
-                    asChild
-                    isActive={isActive(item.url)}
-                    className="w-full justify-start gap-3 px-3 py-2 text-sm font-medium rounded-md transition-colors hover:bg-gray-100 data-[active=true]:bg-gray-100 data-[active=true]:text-gray-900"
-                  >
+              {menuItems.map(item => <SidebarMenuItem key={item.title}>
+                  <SidebarMenuButton asChild isActive={isActive(item.url)} className="w-full justify-start gap-3 px-3 py-2 text-sm font-medium rounded-md transition-colors hover:bg-gray-100 data-[active=true]:bg-gray-100 data-[active=true]:text-gray-900">
                     <button onClick={() => navigate(item.url)}>
                       <item.icon className="w-4 h-4" />
                       <span>{item.title}</span>
                     </button>
                   </SidebarMenuButton>
-                </SidebarMenuItem>
-              ))}
+                </SidebarMenuItem>)}
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
@@ -111,25 +79,16 @@ export function AppSidebar({ user, onSignOut }: AppSidebarProps) {
           </SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
-              {accountItems.map((item) => (
-                <SidebarMenuItem key={item.title}>
-                  <SidebarMenuButton
-                    asChild
-                    isActive={isActive(item.url)}
-                    className="w-full justify-start gap-3 px-3 py-2 text-sm font-medium rounded-md transition-colors hover:bg-gray-100 data-[active=true]:bg-gray-100 data-[active=true]:text-gray-900"
-                  >
+              {accountItems.map(item => <SidebarMenuItem key={item.title}>
+                  <SidebarMenuButton asChild isActive={isActive(item.url)} className="w-full justify-start gap-3 px-3 py-2 text-sm font-medium rounded-md transition-colors hover:bg-gray-100 data-[active=true]:bg-gray-100 data-[active=true]:text-gray-900">
                     <button onClick={() => navigate(item.url)}>
                       <item.icon className="w-4 h-4" />
                       <span>{item.title}</span>
                     </button>
                   </SidebarMenuButton>
-                </SidebarMenuItem>
-              ))}
+                </SidebarMenuItem>)}
               <SidebarMenuItem>
-                <SidebarMenuButton
-                  asChild
-                  className="w-full justify-start gap-3 px-3 py-2 text-sm font-medium rounded-md transition-colors hover:bg-red-50 text-red-600 hover:text-red-700"
-                >
+                <SidebarMenuButton asChild className="w-full justify-start gap-3 px-3 py-2 text-sm font-medium rounded-md transition-colors hover:bg-red-50 text-red-600 hover:text-red-700">
                   <button onClick={handleSignOut}>
                     <LogOut className="w-4 h-4" />
                     <span>{t('signOut')}</span>
@@ -142,10 +101,7 @@ export function AppSidebar({ user, onSignOut }: AppSidebarProps) {
       </SidebarContent>
 
       <SidebarFooter className="p-4 border-t border-gray-200">
-        <div className="text-xs text-gray-500">
-          © 2024 ProjectFlow
-        </div>
+        <div className="text-xs text-gray-500">© 2025 Ruzma</div>
       </SidebarFooter>
-    </Sidebar>
-  );
+    </Sidebar>;
 }
