@@ -1,5 +1,6 @@
 
 import { useState, useMemo } from 'react';
+import { toast } from 'sonner';
 
 export type InvoiceStatus = 'draft' | 'sent' | 'paid' | 'overdue' | 'cancelled';
 
@@ -14,7 +15,7 @@ export interface Invoice {
 }
 
 // Mock data for demonstration
-const mockInvoices: Invoice[] = [
+const initialMockInvoices: Invoice[] = [
   {
     id: '1',
     transactionId: 'TXN-2024-001',
@@ -63,7 +64,7 @@ const mockInvoices: Invoice[] = [
 ];
 
 export const useInvoices = () => {
-  const [invoices] = useState<Invoice[]>(mockInvoices);
+  const [invoices, setInvoices] = useState<Invoice[]>(initialMockInvoices);
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState<InvoiceStatus | 'all'>('all');
 
@@ -78,24 +79,57 @@ export const useInvoices = () => {
     });
   }, [invoices, searchTerm, statusFilter]);
 
+  const generateTransactionId = () => {
+    const year = new Date().getFullYear();
+    const nextNumber = invoices.length + 1;
+    return `TXN-${year}-${nextNumber.toString().padStart(3, '0')}`;
+  };
+
   const handleDownloadPDF = (invoiceId: string) => {
-    console.log('Downloading PDF for invoice:', invoiceId);
-    // Mock download action
+    const invoice = invoices.find(inv => inv.id === invoiceId);
+    if (invoice) {
+      toast.success(`Downloading PDF for ${invoice.transactionId}`);
+      // In a real app, this would trigger a PDF download
+      console.log('Downloading PDF for invoice:', invoiceId);
+    }
   };
 
   const handleResendInvoice = (invoiceId: string) => {
-    console.log('Resending invoice:', invoiceId);
-    // Mock resend action
+    const invoice = invoices.find(inv => inv.id === invoiceId);
+    if (invoice) {
+      if (invoice.status === 'draft') {
+        toast.error('Cannot resend a draft invoice. Please send it first.');
+        return;
+      }
+      
+      toast.success(`Invoice ${invoice.transactionId} has been resent`);
+      console.log('Resending invoice:', invoiceId);
+    }
   };
 
   const handleDeleteInvoice = (invoiceId: string) => {
-    console.log('Deleting invoice:', invoiceId);
-    // Mock delete action
+    const invoice = invoices.find(inv => inv.id === invoiceId);
+    if (invoice) {
+      setInvoices(prev => prev.filter(inv => inv.id !== invoiceId));
+      toast.success(`Invoice ${invoice.transactionId} has been deleted`);
+      console.log('Deleted invoice:', invoiceId);
+    }
   };
 
   const handleCreateInvoice = () => {
-    console.log('Creating new invoice');
-    // Mock create action
+    const newInvoice: Invoice = {
+      id: Date.now().toString(),
+      transactionId: generateTransactionId(),
+      amount: 0,
+      projectName: 'New Project',
+      date: new Date(),
+      status: 'draft',
+      projectId: `proj-${Date.now()}`
+    };
+    
+    setInvoices(prev => [newInvoice, ...prev]);
+    toast.success(`New invoice ${newInvoice.transactionId} has been created`);
+    console.log('Created new invoice:', newInvoice);
   };
 
   return {

@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { Search } from 'lucide-react';
+import { Search, Plus } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import {
   Select,
@@ -30,6 +30,14 @@ const InvoiceFilters: React.FC<InvoiceFiltersProps> = ({
 }) => {
   const t = useT();
 
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    onSearchChange(e.target.value);
+  };
+
+  const handleCreateClick = () => {
+    onCreateInvoice();
+  };
+
   return (
     <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
       <div className="flex flex-1 gap-4">
@@ -38,7 +46,7 @@ const InvoiceFilters: React.FC<InvoiceFiltersProps> = ({
           <Input
             placeholder={t('searchInvoices')}
             value={searchTerm}
-            onChange={(e) => onSearchChange(e.target.value)}
+            onChange={handleSearchChange}
             className="pl-10"
           />
         </div>
@@ -56,7 +64,8 @@ const InvoiceFilters: React.FC<InvoiceFiltersProps> = ({
           </SelectContent>
         </Select>
       </div>
-      <Button onClick={onCreateInvoice}>
+      <Button onClick={handleCreateClick} className="gap-2">
+        <Plus className="h-4 w-4" />
         {t('createInvoice')}
       </Button>
     </div>

@@ -25,26 +25,43 @@ const InvoiceActionsMenu: React.FC<InvoiceActionsMenuProps> = ({
 }) => {
   const t = useT();
 
+  const handleDownload = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    onDownloadPDF(invoiceId);
+  };
+
+  const handleResend = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    onResendInvoice(invoiceId);
+  };
+
+  const handleDelete = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (window.confirm('Are you sure you want to delete this invoice?')) {
+      onDeleteInvoice(invoiceId);
+    }
+  };
+
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="ghost" size="sm">
+        <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
           <MoreHorizontal className="h-4 w-4" />
           <span className="sr-only">{t('viewMore')}</span>
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent align="end">
-        <DropdownMenuItem onClick={() => onDownloadPDF(invoiceId)}>
+      <DropdownMenuContent align="end" className="w-48">
+        <DropdownMenuItem onClick={handleDownload} className="cursor-pointer">
           <Download className="mr-2 h-4 w-4" />
           {t('downloadPDF')}
         </DropdownMenuItem>
-        <DropdownMenuItem onClick={() => onResendInvoice(invoiceId)}>
+        <DropdownMenuItem onClick={handleResend} className="cursor-pointer">
           <Send className="mr-2 h-4 w-4" />
           {t('resendInvoice')}
         </DropdownMenuItem>
         <DropdownMenuItem 
-          onClick={() => onDeleteInvoice(invoiceId)}
-          className="text-red-600 hover:text-red-700"
+          onClick={handleDelete}
+          className="text-red-600 hover:text-red-700 cursor-pointer"
         >
           <Trash2 className="mr-2 h-4 w-4" />
           {t('deleteInvoice')}
