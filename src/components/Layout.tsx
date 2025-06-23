@@ -1,7 +1,6 @@
 
 import React from 'react';
 import FloatingContactButton from './FloatingContactButton';
-import Header from './Layout/Header';
 import MainContent from './Layout/MainContent';
 import { AppSidebar } from './AppSidebar';
 import { SidebarProvider, SidebarInset, SidebarTrigger } from '@/components/ui/sidebar';
@@ -20,11 +19,8 @@ const Layout: React.FC<LayoutProps> = ({
   onSignOut
 }) => {
   const {
-    userProfile,
     mobileMenuOpen,
-    isActive,
     isLandingPage,
-    shouldShowUpgradeButton,
     handleSignOut,
     toggleMobileMenu
   } = useNavigation(user);
@@ -34,21 +30,10 @@ const Layout: React.FC<LayoutProps> = ({
 
   const onSignOutHandler = () => handleSignOut(onSignOut);
 
-  // If user is not logged in or on landing page, show normal layout
+  // If user is not logged in or on landing page, show normal layout without sidebar
   if (!user || isLandingPage) {
     return (
       <div className="min-h-screen bg-white">
-        <Header
-          user={user}
-          userProfile={userProfile}
-          isActive={isActive}
-          isLandingPage={isLandingPage}
-          shouldShowUpgradeButton={shouldShowUpgradeButton}
-          mobileMenuOpen={mobileMenuOpen}
-          onToggleMobileMenu={toggleMobileMenu}
-          onSignOut={onSignOutHandler}
-          notificationsData={notificationsData}
-        />
         <MainContent>
           {children}
         </MainContent>
@@ -62,22 +47,14 @@ const Layout: React.FC<LayoutProps> = ({
     <div className="min-h-screen bg-white">
       <SidebarProvider>
         <div className="min-h-screen flex w-full">
-          <AppSidebar user={user} />
+          <AppSidebar user={user} onSignOut={onSignOutHandler} />
           <SidebarInset className="flex-1">
-            <Header
-              user={user}
-              userProfile={userProfile}
-              isActive={isActive}
-              isLandingPage={isLandingPage}
-              shouldShowUpgradeButton={shouldShowUpgradeButton}
-              mobileMenuOpen={mobileMenuOpen}
-              onToggleMobileMenu={toggleMobileMenu}
-              onSignOut={onSignOutHandler}
-              notificationsData={notificationsData}
-            />
-            <MainContent>
-              {children}
-            </MainContent>
+            <div className="p-4">
+              <SidebarTrigger className="mb-4" />
+              <MainContent>
+                {children}
+              </MainContent>
+            </div>
           </SidebarInset>
         </div>
         <FloatingContactButton />

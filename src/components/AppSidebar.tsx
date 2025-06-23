@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { Home, User, FolderOpen, BarChart3, FileText, Settings, CreditCard } from 'lucide-react';
+import { Home, User, FolderOpen, BarChart3, FileText, Settings, CreditCard, LogOut } from 'lucide-react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import {
   Sidebar,
@@ -18,9 +18,10 @@ import { useT } from '@/lib/i18n';
 
 interface AppSidebarProps {
   user?: any;
+  onSignOut?: () => void;
 }
 
-export function AppSidebar({ user }: AppSidebarProps) {
+export function AppSidebar({ user, onSignOut }: AppSidebarProps) {
   const navigate = useNavigate();
   const location = useLocation();
   const t = useT();
@@ -65,14 +66,17 @@ export function AppSidebar({ user }: AppSidebarProps) {
 
   const isActive = (url: string) => location.pathname === url;
 
+  const handleSignOut = () => {
+    if (onSignOut) {
+      onSignOut();
+    }
+  };
+
   return (
     <Sidebar className="border-r border-gray-200 bg-white">
       <SidebarHeader className="p-4">
         <div className="flex items-center gap-2">
-          <div className="w-8 h-8 bg-black rounded-lg flex items-center justify-center">
-            <span className="text-white font-bold text-sm">P</span>
-          </div>
-          <span className="font-semibold text-gray-900">ProjectFlow</span>
+          <img src="/lovable-uploads/bca9fbc0-5ee9-455b-91b3-b7eff1f56169.png" alt="Ruzma Logo" className="h-8" />
         </div>
       </SidebarHeader>
       
@@ -121,6 +125,17 @@ export function AppSidebar({ user }: AppSidebarProps) {
                   </SidebarMenuButton>
                 </SidebarMenuItem>
               ))}
+              <SidebarMenuItem>
+                <SidebarMenuButton
+                  asChild
+                  className="w-full justify-start gap-3 px-3 py-2 text-sm font-medium rounded-md transition-colors hover:bg-red-50 text-red-600 hover:text-red-700"
+                >
+                  <button onClick={handleSignOut}>
+                    <LogOut className="w-4 h-4" />
+                    <span>{t('signOut')}</span>
+                  </button>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>

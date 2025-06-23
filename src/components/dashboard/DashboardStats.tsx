@@ -43,7 +43,7 @@ const DashboardStats: React.FC<DashboardStatsProps> = ({
         </CardContent>
       </Card>
 
-      <Card className="bg-primary text-primary-foreground">
+      <Card className="bg-secondary text-secondary-foreground">
         <CardHeader className="flex flex-row items-center justify-between pb-2">
           <CardTitle className="text-sm font-medium">
             {t("totalEarnings")}
@@ -58,7 +58,7 @@ const DashboardStats: React.FC<DashboardStatsProps> = ({
         </CardContent>
       </Card>
 
-      <Card className="bg-accent text-accent-foreground">
+      <Card className="bg-secondary text-secondary-foreground">
         <CardHeader className="flex flex-row items-center justify-between pb-2">
           <CardTitle className="text-sm font-medium">
             {t("pendingPayments")}
