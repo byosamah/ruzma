@@ -27,7 +27,7 @@ export function AppSidebar({
     icon: Home
   }, {
     title: t('yourProjects'),
-    url: '/dashboard',
+    url: '/projects',
     icon: FolderOpen
   }, {
     title: t('analytics'),
