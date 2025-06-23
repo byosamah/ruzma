@@ -8,12 +8,10 @@ import { useT } from '@/lib/i18n';
 import { useDashboard } from '@/hooks/useDashboard';
 import { useUsageTracking } from '@/hooks/useUsageTracking';
 import { useNavigate } from 'react-router-dom';
-import { useIsMobile } from '@/hooks/use-mobile';
 
 const Projects = () => {
   const navigate = useNavigate();
   const t = useT();
-  const isMobile = useIsMobile();
   const {
     user,
     profile,
@@ -50,11 +48,6 @@ const Projects = () => {
     );
   }
 
-  // Always use vertical layout on mobile for better readability
-  const projectGridClass = isMobile 
-    ? "flex flex-col space-y-4 sm:space-y-6" 
-    : "grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-4 sm:gap-6";
-
   return (
     <Layout user={user} onSignOut={handleSignOut}>
       <div className="space-y-6 sm:space-y-8">
@@ -89,7 +82,7 @@ const Projects = () => {
           </div>
         </div>
 
-        {/* Projects Grid */}
+        {/* Projects List */}
         {projects.length === 0 ? (
           <div className="text-center py-12 sm:py-16 bg-white rounded-lg border border-slate-200 mx-2 sm:mx-0">
             <FileText className="w-16 h-16 sm:w-20 sm:h-20 text-slate-300 mx-auto mb-6" />
@@ -112,7 +105,7 @@ const Projects = () => {
             </div>
           </div>
         ) : (
-          <div className={projectGridClass}>
+          <div className="flex flex-col space-y-4 sm:space-y-6">
             {projects.map((project) => (
               <ProjectCard
                 key={project.id}
