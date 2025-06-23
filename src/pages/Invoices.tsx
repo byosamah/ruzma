@@ -5,9 +5,11 @@ import { useT } from '@/lib/i18n';
 import { useInvoices } from '@/hooks/useInvoices';
 import InvoiceFilters from '@/components/Invoices/InvoiceFilters';
 import InvoiceTable from '@/components/Invoices/InvoiceTable';
+import { useAuth } from '@/hooks/dashboard/useAuth';
 
 const Invoices: React.FC = () => {
   const t = useT();
+  const { user } = useAuth();
   const {
     invoices,
     searchTerm,
@@ -21,7 +23,7 @@ const Invoices: React.FC = () => {
   } = useInvoices();
 
   return (
-    <Layout>
+    <Layout user={user}>
       <div className="space-y-6">
         <div>
           <h1 className="text-3xl font-bold text-gray-900">{t('invoices')}</h1>
