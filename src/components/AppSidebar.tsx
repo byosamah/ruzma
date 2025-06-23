@@ -61,11 +61,11 @@ export function AppSidebar({
 
   return (
     <Sidebar className="border-r border-gray-200 bg-white" collapsible="icon">
-      <SidebarHeader className="p-3">
-        <div className="flex items-center justify-center">
+      <SidebarHeader className="p-4">
+        <div className="flex items-center gap-2">
           {isCollapsed ? (
             <img 
-              src="/lovable-uploads/946a5840-8d2f-4bbc-b2f3-3bc2603dbe7a.png" 
+              src="/lovable-uploads/sidebar-collapsed-logo.png" 
               alt="Ruzma Logo Collapsed" 
               className="h-8 w-8" 
             />
@@ -91,12 +91,12 @@ export function AppSidebar({
                   <SidebarMenuButton 
                     asChild 
                     isActive={isActive(item.url)} 
-                    className={`w-full ${isCollapsed ? 'justify-center px-3' : 'justify-start px-3'} py-2 text-sm font-medium rounded-md transition-colors hover:bg-gray-100 data-[active=true]:bg-gray-100 data-[active=true]:text-gray-900`}
+                    className="w-full justify-start gap-3 px-3 py-2 text-sm font-medium rounded-md transition-colors hover:bg-gray-100 data-[active=true]:bg-gray-100 data-[active=true]:text-gray-900"
                     tooltip={isCollapsed ? item.title : undefined}
                   >
                     <button onClick={() => navigate(item.url)}>
                       <item.icon className="w-4 h-4" />
-                      {!isCollapsed && <span>{item.title}</span>}
+                      <span>{item.title}</span>
                     </button>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
@@ -116,12 +116,12 @@ export function AppSidebar({
                   <SidebarMenuButton 
                     asChild 
                     isActive={isActive(item.url)} 
-                    className={`w-full ${isCollapsed ? 'justify-center px-3' : 'justify-start px-3'} py-2 text-sm font-medium rounded-md transition-colors hover:bg-gray-100 data-[active=true]:bg-gray-100 data-[active=true]:text-gray-900`}
+                    className="w-full justify-start gap-3 px-3 py-2 text-sm font-medium rounded-md transition-colors hover:bg-gray-100 data-[active=true]:bg-gray-100 data-[active=true]:text-gray-900"
                     tooltip={isCollapsed ? item.title : undefined}
                   >
                     <button onClick={() => navigate(item.url)}>
                       <item.icon className="w-4 h-4" />
-                      {!isCollapsed && <span>{item.title}</span>}
+                      <span>{item.title}</span>
                     </button>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
@@ -129,12 +129,12 @@ export function AppSidebar({
               <SidebarMenuItem>
                 <SidebarMenuButton 
                   asChild 
-                  className={`w-full ${isCollapsed ? 'justify-center px-3' : 'justify-start px-3'} py-2 text-sm font-medium rounded-md transition-colors hover:bg-red-50 text-red-600 hover:text-red-700`}
+                  className="w-full justify-start gap-3 px-3 py-2 text-sm font-medium rounded-md transition-colors hover:bg-red-50 text-red-600 hover:text-red-700"
                   tooltip={isCollapsed ? t('signOut') : undefined}
                 >
                   <button onClick={handleSignOut}>
                     <LogOut className="w-4 h-4" />
-                    {!isCollapsed && <span>{t('signOut')}</span>}
+                    <span>{t('signOut')}</span>
                   </button>
                 </SidebarMenuButton>
               </SidebarMenuItem>
@@ -143,7 +143,7 @@ export function AppSidebar({
         </SidebarGroup>
       </SidebarContent>
 
-      <SidebarFooter className="p-3 border-t border-gray-200">
+      <SidebarFooter className="p-4 border-t border-gray-200">
         {!isCollapsed && (
           <div className="text-xs text-gray-500">© 2025 Ruzma</div>
         )}
