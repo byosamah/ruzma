@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
@@ -17,7 +16,6 @@ import FormActions from '@/components/CreateProject/FormActions';
 import { useCreateProjectForm } from '@/hooks/useCreateProjectForm';
 import { useProjectTemplates } from '@/hooks/useProjectTemplates';
 import { useIsMobile } from '@/hooks/use-mobile';
-
 const CreateProject = () => {
   const t = useT();
   const isMobile = useIsMobile();
@@ -27,56 +25,61 @@ const CreateProject = () => {
   const [saveAsTemplate, setSaveAsTemplate] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
-  
+
   // Get template data from navigation state
   const templateData = location.state?.template;
-  const { form, addMilestone, removeMilestone, loadFromTemplate, handleSubmit } = useCreateProjectForm(templateData);
-  const { saveTemplate } = useProjectTemplates(user);
-
-  const { formState: { isSubmitting } } = form;
-
+  const {
+    form,
+    addMilestone,
+    removeMilestone,
+    loadFromTemplate,
+    handleSubmit
+  } = useCreateProjectForm(templateData);
+  const {
+    saveTemplate
+  } = useProjectTemplates(user);
+  const {
+    formState: {
+      isSubmitting
+    }
+  } = form;
   useEffect(() => {
     const checkAuthAndLoadData = async () => {
       setLoading(true);
-      
-      const { data: { user }, error: userError } = await supabase.auth.getUser();
-      
+      const {
+        data: {
+          user
+        },
+        error: userError
+      } = await supabase.auth.getUser();
       if (userError || !user) {
         console.log('No user found, redirecting to login');
         navigate('/login');
         return;
       }
-
       setUser(user);
-      
-      const { data: profileData } = await supabase
-        .from('profiles')
-        .select('*')
-        .eq('id', user.id)
-        .maybeSingle();
-      
+      const {
+        data: profileData
+      } = await supabase.from('profiles').select('*').eq('id', user.id).maybeSingle();
       setProfile(profileData);
       setLoading(false);
     };
-
     checkAuthAndLoadData();
   }, [navigate]);
-
   const handleSignOut = async () => {
     await supabase.auth.signOut();
     navigate('/');
   };
-
   const onSubmit = async (data: any) => {
     if (!user) return;
-    
+
     // Save as template if requested
     if (saveAsTemplate && data.name) {
       try {
         await saveTemplate({
           name: data.name,
           brief: data.brief,
-          milestones: data.milestones as any,
+          milestones: data.milestones as any
         });
         toast.success('Template saved successfully!');
       } catch (error) {
@@ -84,42 +87,26 @@ const CreateProject = () => {
         toast.error('Failed to save template');
       }
     }
-    
     await handleSubmit(data);
   };
-
   const handleSaveAsTemplateChange = (checked: boolean | "indeterminate") => {
     setSaveAsTemplate(checked === true);
   };
-
   if (loading) {
-    return (
-      <Layout>
+    return <Layout>
         <div className="flex items-center justify-center min-h-[400px]">
           <div className="text-center">
             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
             <p className="text-slate-600">{t('loading')}</p>
           </div>
         </div>
-      </Layout>
-    );
+      </Layout>;
   }
-
   if (!user) {
     return <div>{t('loading')}</div>;
   }
-
-  return (
-    <Layout user={profile || user} onSignOut={handleSignOut}>
-      <Button
-        variant="ghost"
-        size="sm"
-        className="mb-6 flex items-center"
-        onClick={() => navigate("/dashboard")}
-      >
-        <ArrowLeft className="w-4 h-4 mr-1" />
-        {t('backToDashboard')}
-      </Button>
+  return <Layout user={profile || user} onSignOut={handleSignOut}>
+      
       
       <div className={`${isMobile ? 'max-w-full' : 'max-w-4xl'} mx-auto space-y-6 sm:space-y-8`}>
         <TemplateHeader hasTemplate={!!templateData} />
@@ -133,24 +120,16 @@ const CreateProject = () => {
               </div>
               
               <div className="mt-6">
-                <SaveAsTemplateCheckbox
-                  checked={saveAsTemplate}
-                  onCheckedChange={handleSaveAsTemplateChange}
-                />
+                <SaveAsTemplateCheckbox checked={saveAsTemplate} onCheckedChange={handleSaveAsTemplateChange} />
               </div>
 
               <div className="mt-6 sm:mt-8">
-                <FormActions
-                  isSubmitting={isSubmitting}
-                  onCancel={() => navigate('/dashboard')}
-                />
+                <FormActions isSubmitting={isSubmitting} onCancel={() => navigate('/dashboard')} />
               </div>
             </div>
           </form>
         </Form>
       </div>
-    </Layout>
-  );
+    </Layout>;
 };
-
 export default CreateProject;
