@@ -43,20 +43,20 @@ export const UsageIndicators: React.FC<UsageIndicatorsProps> = ({
 
   if (usage.loading) {
     return (
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mb-4">
-        <Card className="border-slate-200">
-          <CardContent className="px-3 py-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+        <Card className="saas-card">
+          <CardContent className="p-6">
             <div className="flex items-center justify-center">
               <Loader2 className="h-4 w-4 animate-spin" />
-              <span className="ml-2 text-sm text-slate-500">Loading usage...</span>
+              <span className="ml-2 text-sm text-gray-500">Loading usage...</span>
             </div>
           </CardContent>
         </Card>
-        <Card className="border-slate-200">
-          <CardContent className="px-3 py-4">
+        <Card className="saas-card">
+          <CardContent className="p-6">
             <div className="flex items-center justify-center">
               <Loader2 className="h-4 w-4 animate-spin" />
-              <span className="ml-2 text-sm text-slate-500">Loading usage...</span>
+              <span className="ml-2 text-sm text-gray-500">Loading usage...</span>
             </div>
           </CardContent>
         </Card>
@@ -65,36 +65,35 @@ export const UsageIndicators: React.FC<UsageIndicatorsProps> = ({
   }
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mb-4">
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
       {/* Projects Usage */}
-      <Card className="border-slate-200">
-        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-1 px-3 pt-3">
-          <CardTitle className="text-xs font-medium text-slate-600">{t('projectsUsed')}</CardTitle>
-          <FolderOpen className="h-3.5 w-3.5 text-slate-400" />
+      <Card className="saas-card">
+        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-3">
+          <CardTitle className="text-sm font-medium text-gray-600">{t('projectsUsed')}</CardTitle>
+          <FolderOpen className="h-4 w-4 text-gray-400" />
         </CardHeader>
-        <CardContent className="px-3 pb-3">
-          <div className="space-y-1.5">
+        <CardContent className="pb-4">
+          <div className="space-y-3">
             <div className="flex items-center justify-between">
-              <span className="text-lg font-bold text-slate-800">
+              <span className="text-2xl font-semibold text-gray-900">
                 {usage.projects.current} of {usage.projects.max}
               </span>
               {usage.projects.percentage >= 100 && (
                 <Button
                   size="sm"
-                  variant="outline"
+                  className="saas-accent-bg hover:bg-orange-600 text-white text-xs px-3 py-1"
                   onClick={handleUpgradeClick}
-                  className="text-xs h-6 px-2"
                 >
-                  {React.createElement(getUpgradeButtonIcon(), { className: "h-2.5 w-2.5 mr-1" })}
+                  {React.createElement(getUpgradeButtonIcon(), { className: "h-3 w-3 mr-1" })}
                   {getUpgradeButtonText()}
                 </Button>
               )}
             </div>
             <Progress
               value={usage.projects.percentage}
-              className="h-1.5"
+              className="h-2"
             />
-            <p className="text-xs text-slate-500">
+            <p className="text-xs text-gray-500">
               {usage.projects.percentage}% {t('used')}
             </p>
           </div>
@@ -102,34 +101,33 @@ export const UsageIndicators: React.FC<UsageIndicatorsProps> = ({
       </Card>
 
       {/* Storage Usage */}
-      <Card className="border-slate-200">
-        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-1 px-3 pt-3">
-          <CardTitle className="text-xs font-medium text-slate-600">{t('storageUsed')}</CardTitle>
-          <Database className="h-3.5 w-3.5 text-slate-400" />
+      <Card className="saas-card">
+        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-3">
+          <CardTitle className="text-sm font-medium text-gray-600">{t('storageUsed')}</CardTitle>
+          <Database className="h-4 w-4 text-gray-400" />
         </CardHeader>
-        <CardContent className="px-3 pb-3">
-          <div className="space-y-1.5">
+        <CardContent className="pb-4">
+          <div className="space-y-3">
             <div className="flex items-center justify-between">
-              <span className="text-lg font-bold text-slate-800">
+              <span className="text-2xl font-semibold text-gray-900">
                 {usage.storage.currentFormatted} of {usage.storage.maxFormatted}
               </span>
               {usage.storage.percentage >= 100 && (
                 <Button
                   size="sm"
-                  variant="outline"
+                  className="saas-accent-bg hover:bg-orange-600 text-white text-xs px-3 py-1"
                   onClick={handleUpgradeClick}
-                  className="text-xs h-6 px-2"
                 >
-                  {React.createElement(getUpgradeButtonIcon(), { className: "h-2.5 w-2.5 mr-1" })}
+                  {React.createElement(getUpgradeButtonIcon(), { className: "h-3 w-3 mr-1" })}
                   {getUpgradeButtonText()}
                 </Button>
               )}
             </div>
             <Progress
               value={usage.storage.percentage}
-              className="h-1.5"
+              className="h-2"
             />
-            <p className="text-xs text-slate-500">
+            <p className="text-xs text-gray-500">
               {usage.storage.percentage}% {t('used')}
             </p>
           </div>

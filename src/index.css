@@ -1,90 +1,91 @@
 
-@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-/* Definition of the design system. All colors, gradients, fonts, etc should be defined here. */
+/* Modern SaaS Design System */
 
 @layer base {
   :root {
     --background: 0 0% 100%;
-    --foreground: 223 38% 8%;
+    --foreground: 0 0% 9%;
 
     --card: 0 0% 100%;
-    --card-foreground: 223 38% 8%;
+    --card-foreground: 0 0% 9%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 223 38% 8%;
+    --popover-foreground: 0 0% 9%;
 
-    --primary: 47 100% 57%;
-    --primary-foreground: 223 38% 8%;
+    --primary: 0 0% 9%;
+    --primary-foreground: 0 0% 98%;
 
-    --secondary: 228 49% 31%;
-    --secondary-foreground: 0 0% 100%;
+    --secondary: 0 0% 96%;
+    --secondary-foreground: 0 0% 9%;
 
-    --muted: 228 50% 96%;
-    --muted-foreground: 228 10% 45%;
+    --muted: 0 0% 96%;
+    --muted-foreground: 0 0% 45%;
 
-    --accent: 47 100% 57%;
-    --accent-foreground: 223 38% 8%;
+    --accent: 24 95% 53%;
+    --accent-foreground: 0 0% 98%;
 
     --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
+    --destructive-foreground: 0 0% 98%;
 
-    --border: 228 30% 90%;
-    --input: 228 30% 90%;
-    --ring: 229 58% 60%;
+    --border: 0 0% 90%;
+    --input: 0 0% 90%;
+    --ring: 0 0% 9%;
 
-    --radius: 0.5rem;
+    --radius: 8px;
 
     --sidebar-background: 0 0% 98%;
-    --sidebar-foreground: 240 5.3% 26.1%;
-    --sidebar-primary: 240 5.9% 10%;
+    --sidebar-foreground: 0 0% 45%;
+    --sidebar-primary: 0 0% 9%;
     --sidebar-primary-foreground: 0 0% 98%;
-    --sidebar-accent: 240 4.8% 95.9%;
-    --sidebar-accent-foreground: 240 5.9% 10%;
-    --sidebar-border: 220 13% 91%;
-    --sidebar-ring: 217.2 91.2% 59.8%;
+    --sidebar-accent: 0 0% 94%;
+    --sidebar-accent-foreground: 0 0% 9%;
+    --sidebar-border: 0 0% 90%;
+    --sidebar-ring: 0 0% 9%;
   }
 
   .dark {
-    --background: 223 38% 8%;
+    --background: 0 0% 9%;
     --foreground: 0 0% 98%;
 
-    --card: 223 38% 8%;
+    --card: 0 0% 9%;
     --card-foreground: 0 0% 98%;
 
-    --popover: 223 38% 8%;
+    --popover: 0 0% 9%;
     --popover-foreground: 0 0% 98%;
 
-    --primary: 229 58% 60%;
-    --primary-foreground: 223 38% 8%;
+    --primary: 0 0% 98%;
+    --primary-foreground: 0 0% 9%;
 
-    --secondary: 228 49% 31%;
+    --secondary: 0 0% 15%;
     --secondary-foreground: 0 0% 98%;
 
-    --muted: 228 49% 15%;
-    --muted-foreground: 228 30% 70%;
+    --muted: 0 0% 15%;
+    --muted-foreground: 0 0% 64%;
 
-    --accent: 47 95% 65%;
-    --accent-foreground: 223 38% 8%;
+    --accent: 24 95% 53%;
+    --accent-foreground: 0 0% 98%;
 
     --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 210 40% 98%;
+    --destructive-foreground: 0 0% 98%;
 
-    --border: 228 49% 31%;
-    --input: 228 49% 31%;
-    --ring: 229 58% 60%;
-    --sidebar-background: 240 5.9% 10%;
-    --sidebar-foreground: 240 4.8% 95.9%;
-    --sidebar-primary: 224.3 76.3% 48%;
-    --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 240 3.7% 15.9%;
-    --sidebar-accent-foreground: 240 4.8% 95.9%;
-    --sidebar-border: 240 3.7% 15.9%;
-    --sidebar-ring: 217.2 91.2% 59.8%;
+    --border: 0 0% 15%;
+    --input: 0 0% 15%;
+    --ring: 0 0% 83%;
+    
+    --sidebar-background: 0 0% 9%;
+    --sidebar-foreground: 0 0% 64%;
+    --sidebar-primary: 0 0% 98%;
+    --sidebar-primary-foreground: 0 0% 9%;
+    --sidebar-accent: 0 0% 15%;
+    --sidebar-accent-foreground: 0 0% 98%;
+    --sidebar-border: 0 0% 15%;
+    --sidebar-ring: 0 0% 83%;
   }
 }
 
@@ -94,6 +95,40 @@
   }
 
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background text-foreground font-sans;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-semibold;
+  }
+}
+
+@layer components {
+  .saas-card {
+    @apply bg-white border border-gray-200 rounded-lg shadow-sm;
+  }
+  
+  .saas-sidebar-item {
+    @apply flex items-center gap-3 px-3 py-2 text-sm text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-md transition-colors;
+  }
+  
+  .saas-sidebar-item.active {
+    @apply text-gray-900 bg-gray-100;
+  }
+  
+  .saas-button-primary {
+    @apply bg-black text-white hover:bg-gray-800 px-4 py-2 rounded-md font-medium transition-colors;
+  }
+  
+  .saas-button-secondary {
+    @apply bg-white text-gray-700 hover:bg-gray-50 border border-gray-300 px-4 py-2 rounded-md font-medium transition-colors;
+  }
+  
+  .saas-accent {
+    @apply text-orange-500;
+  }
+  
+  .saas-accent-bg {
+    @apply bg-orange-500 text-white;
   }
 }

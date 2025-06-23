@@ -32,10 +32,10 @@ const Header: React.FC<HeaderProps> = ({
   const isMobile = useIsMobile();
 
   return (
-    <nav className="bg-background text-foreground border-b border-border sticky top-0 z-50">
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between items-center h-14 sm:h-16">
-          <div className="flex items-center space-x-2 sm:space-x-4 min-w-0 flex-1">
+    <nav className="bg-white border-b border-saas-gray-200 sticky top-0 z-50">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex justify-between items-center h-16">
+          <div className="flex items-center space-x-4 min-w-0 flex-1">
             <LogoSection user={user} isLandingPage={isLandingPage} />
             <div className="hidden sm:block flex-shrink-0">
               <LanguageSelector className="border-0 shadow-none p-1" />
@@ -43,7 +43,7 @@ const Header: React.FC<HeaderProps> = ({
           </div>
           
           {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center space-x-3 lg:space-x-4 flex-shrink-0">
+          <div className="hidden md:flex items-center space-x-4 flex-shrink-0">
             <NavigationMenu
               user={user}
               userProfile={userProfile}

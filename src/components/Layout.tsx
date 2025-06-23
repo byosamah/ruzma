@@ -33,7 +33,7 @@ const Layout: React.FC<LayoutProps> = ({
   const onSignOutHandler = () => handleSignOut(onSignOut);
 
   return (
-    <div className="min-h-screen bg-auth-background">
+    <div className="min-h-screen bg-white">
       <Header
         user={user}
         userProfile={userProfile}
