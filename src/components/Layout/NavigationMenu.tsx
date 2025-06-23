@@ -70,7 +70,7 @@ const NavigationMenu: React.FC<NavigationMenuProps> = ({
         
         {shouldShowUpgradeButton && (
           <Button 
-            className="justify-start w-full saas-accent-bg hover:bg-orange-600 font-semibold"
+            className="justify-start w-full bg-yellow-500 hover:bg-yellow-600 text-black font-semibold"
             onClick={() => {
               navigate('/plans');
               onMenuClick();
@@ -102,7 +102,7 @@ const NavigationMenu: React.FC<NavigationMenuProps> = ({
             variant={isActive(item.path) ? "default" : "ghost"}
             size="sm"
             onClick={() => navigate(item.path)}
-            className="flex items-center gap-2 text-saas-gray-600 hover:text-saas-gray-900"
+            className="flex items-center gap-2 text-gray-600 hover:text-gray-900"
           >
             <Icon className="w-4 h-4" />
             <span className="hidden lg:inline">{item.label}</span>
@@ -115,7 +115,7 @@ const NavigationMenu: React.FC<NavigationMenuProps> = ({
       {shouldShowUpgradeButton && (
         <Button 
           size="sm" 
-          className="saas-accent-bg hover:bg-orange-600 px-4 font-semibold"
+          className="bg-yellow-500 hover:bg-yellow-600 text-black px-4 font-semibold"
           onClick={() => navigate('/plans')}
         >
           {t('upgrade')}

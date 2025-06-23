@@ -23,7 +23,7 @@ export default {
         sans: ['Inter', 'system-ui', 'sans-serif'],
       },
 			colors: {
-				'saas-orange': '#f97316',
+				'saas-yellow': '#eab308',
         'saas-gray': {
           50: '#f9fafb',
           100: '#f3f4f6',

@@ -27,8 +27,8 @@
     --muted: 0 0% 96%;
     --muted-foreground: 0 0% 45%;
 
-    --accent: 24 95% 53%;
-    --accent-foreground: 0 0% 98%;
+    --accent: 45 93% 58%;
+    --accent-foreground: 0 0% 9%;
 
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 0 0% 98%;
@@ -68,8 +68,8 @@
     --muted: 0 0% 15%;
     --muted-foreground: 0 0% 64%;
 
-    --accent: 24 95% 53%;
-    --accent-foreground: 0 0% 98%;
+    --accent: 45 93% 58%;
+    --accent-foreground: 0 0% 9%;
 
     --destructive: 0 62.8% 30.6%;
     --destructive-foreground: 0 0% 98%;
@@ -105,7 +105,7 @@
 
 @layer components {
   .saas-card {
-    @apply bg-white border border-gray-200 rounded-lg shadow-sm;
+    @apply bg-white border border-gray-100 rounded-lg shadow-sm;
   }
   
   .saas-sidebar-item {
@@ -125,10 +125,10 @@
   }
   
   .saas-accent {
-    @apply text-orange-500;
+    @apply text-yellow-500;
   }
   
   .saas-accent-bg {
-    @apply bg-orange-500 text-white;
+    @apply bg-yellow-500 text-black;
   }
 }

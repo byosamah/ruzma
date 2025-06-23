@@ -81,7 +81,7 @@ export const UsageIndicators: React.FC<UsageIndicatorsProps> = ({
               {usage.projects.percentage >= 100 && (
                 <Button
                   size="sm"
-                  className="saas-accent-bg hover:bg-orange-600 text-white text-xs px-3 py-1"
+                  className="bg-yellow-500 hover:bg-yellow-600 text-black text-xs px-3 py-1 font-medium"
                   onClick={handleUpgradeClick}
                 >
                   {React.createElement(getUpgradeButtonIcon(), { className: "h-3 w-3 mr-1" })}
@@ -115,7 +115,7 @@ export const UsageIndicators: React.FC<UsageIndicatorsProps> = ({
               {usage.storage.percentage >= 100 && (
                 <Button
                   size="sm"
-                  className="saas-accent-bg hover:bg-orange-600 text-white text-xs px-3 py-1"
+                  className="bg-yellow-500 hover:bg-yellow-600 text-black text-xs px-3 py-1 font-medium"
                   onClick={handleUpgradeClick}
                 >
                   {React.createElement(getUpgradeButtonIcon(), { className: "h-3 w-3 mr-1" })}
