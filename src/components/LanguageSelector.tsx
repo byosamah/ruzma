@@ -23,8 +23,9 @@ const LanguageSelector = ({ className }: { className?: string }) => {
 
   return (
     <Select value={language} onValueChange={onSelectLanguage}>
-      <SelectTrigger className={`w-auto ${className || ''}`}>
+      <SelectTrigger className={`w-auto gap-2 ${className || ''}`}>
         <Globe className="h-4 w-4" />
+        <SelectValue placeholder={getLanguageName(language)} />
       </SelectTrigger>
       <SelectContent>
         <SelectItem value="en">English</SelectItem>
