@@ -49,6 +49,7 @@ export const useCreateProjectSubmission = () => {
           user_id: user.id,
           start_date,
           end_date,
+          slug: '', // Temporary value, will be overwritten by trigger
         })
         .select()
         .single();
