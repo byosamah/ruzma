@@ -55,13 +55,13 @@ const ProjectManagement: React.FC = () => {
     return (
       <Layout>
         <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50/30 to-indigo-50/20">
-          <div className="flex items-center justify-center min-h-[40vh] sm:min-h-[60vh] px-4">
+          <div className="flex items-center justify-center min-h-[60vh]">
             <div className="text-center space-y-4">
               <div className="relative">
-                <div className="w-12 h-12 sm:w-16 sm:h-16 border-4 border-brand-blue/30 border-t-brand-blue rounded-full animate-spin mx-auto"></div>
-                <div className="absolute inset-0 w-12 h-12 sm:w-16 sm:h-16 border-4 border-transparent border-r-brand-yellow/60 rounded-full animate-spin mx-auto" style={{ animationDirection: 'reverse', animationDuration: '1.5s' }}></div>
+                <div className="w-16 h-16 border-4 border-brand-blue/30 border-t-brand-blue rounded-full animate-spin mx-auto"></div>
+                <div className="absolute inset-0 w-16 h-16 border-4 border-transparent border-r-brand-yellow/60 rounded-full animate-spin mx-auto" style={{ animationDirection: 'reverse', animationDuration: '1.5s' }}></div>
               </div>
-              <p className="text-brand-black/70 font-medium text-sm sm:text-base">{t('loadingProject')}</p>
+              <p className="text-brand-black/70 font-medium">{t('loadingProject')}</p>
             </div>
           </div>
         </div>
@@ -69,22 +69,22 @@ const ProjectManagement: React.FC = () => {
     );
   }
 
-  if (!user) return <div className="p-4">{t('loading')}</div>;
+  if (!user) return <div>{t('loading')}</div>;
   
   if (!project) {
     return (
       <Layout user={profile || user}>
         <div className="min-h-screen bg-gradient-to-br from-auth-background via-brand-yellow/5 to-brand-blue/5">
-          <div className="flex items-center justify-center min-h-[40vh] sm:min-h-[60vh] px-4">
-            <div className="max-w-md mx-auto text-center">
-              <div className="w-16 h-16 sm:w-20 sm:h-20 bg-gradient-to-br from-brand-blue/10 to-brand-navy/20 rounded-2xl flex items-center justify-center mx-auto mb-6">
-                <div className="w-6 h-6 sm:w-8 sm:h-8 bg-brand-blue/40 rounded-lg"></div>
+          <div className="flex items-center justify-center min-h-[60vh]">
+            <div className="max-w-md mx-auto text-center px-6">
+              <div className="w-20 h-20 bg-gradient-to-br from-brand-blue/10 to-brand-navy/20 rounded-2xl flex items-center justify-center mx-auto mb-6">
+                <div className="w-8 h-8 bg-brand-blue/40 rounded-lg"></div>
               </div>
-              <h2 className="text-xl sm:text-2xl font-bold text-brand-black mb-3">{t('projectNotFound')}</h2>
-              <p className="text-sm sm:text-base text-brand-black/60 mb-6">{t('projectNotFoundDesc')}</p>
+              <h2 className="text-2xl font-bold text-brand-black mb-3">{t('projectNotFound')}</h2>
+              <p className="text-brand-black/60 mb-6">{t('projectNotFoundDesc')}</p>
               <Button 
                 onClick={() => navigate("/dashboard")}
-                className="bg-gradient-to-r from-brand-blue to-brand-navy hover:from-brand-blue/90 hover:to-brand-navy/90 text-white px-4 sm:px-6 py-2 text-sm sm:text-base"
+                className="bg-gradient-to-r from-brand-blue to-brand-navy hover:from-brand-blue/90 hover:to-brand-navy/90 text-white px-6 py-2"
               >
                 {t('goToDashboard')}
               </Button>
@@ -98,14 +98,14 @@ const ProjectManagement: React.FC = () => {
   return (
     <Layout user={profile || user}>
       <div className="min-h-screen bg-gradient-to-br from-auth-background via-brand-yellow/5 to-brand-blue/5">
-        <div className="container mx-auto px-3 sm:px-4 lg:px-8 py-4 sm:py-6 lg:py-8 max-w-7xl">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
           {/* Back Navigation */}
-          <div className="mb-4 sm:mb-6">
+          <div className="mb-6">
             <Button
               variant="ghost"
-              size={isMobile ? "sm" : "default"}
+              size="sm"
               onClick={handleBackClick}
-              className="text-brand-black/60 hover:text-brand-black hover:bg-white/60 -ml-2 text-sm sm:text-base"
+              className="text-brand-black/60 hover:text-brand-black hover:bg-white/60 -ml-2"
             >
               <ArrowLeft className="w-4 h-4 mr-2" />
               {t('backToDashboard')}
@@ -113,10 +113,10 @@ const ProjectManagement: React.FC = () => {
           </div>
 
           {/* Main Content */}
-          <div className="space-y-6 sm:space-y-8">
+          <div className="space-y-8">
             {/* Project Header Card */}
-            <div className="bg-white/70 backdrop-blur-sm rounded-xl sm:rounded-2xl border border-white/50 shadow-lg shadow-brand-blue/5 overflow-hidden">
-              <div className="bg-gradient-to-r from-brand-blue/5 via-brand-yellow/5 to-brand-navy/5 p-4 sm:p-6 lg:p-8">
+            <div className="bg-white/70 backdrop-blur-sm rounded-2xl border border-white/50 shadow-lg shadow-brand-blue/5 overflow-hidden">
+              <div className="bg-gradient-to-r from-brand-blue/5 via-brand-yellow/5 to-brand-navy/5 p-6 sm:p-8">
                 <ProjectHeader 
                   project={project} 
                   onBackClick={handleBackClick}
@@ -128,16 +128,16 @@ const ProjectManagement: React.FC = () => {
             </div>
 
             {/* Milestones Section */}
-            <div className="bg-white/70 backdrop-blur-sm rounded-xl sm:rounded-2xl border border-white/50 shadow-lg shadow-brand-blue/5 overflow-hidden">
-              <div className="p-4 sm:p-6 lg:p-8">
-                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-4 sm:mb-6 space-y-3 sm:space-y-0">
+            <div className="bg-white/70 backdrop-blur-sm rounded-2xl border border-white/50 shadow-lg shadow-brand-blue/5 overflow-hidden">
+              <div className="p-6 sm:p-8">
+                <div className="flex items-center justify-between mb-6">
                   <div>
-                    <h2 className="text-xl sm:text-2xl font-bold text-brand-black">{t('projectMilestones')}</h2>
-                    <p className="text-brand-black/60 mt-1 text-sm sm:text-base">{t('trackProgressAndDeliverables')}</p>
+                    <h2 className="text-2xl font-bold text-brand-black">{t('projectMilestones')}</h2>
+                    <p className="text-brand-black/60 mt-1">{t('trackProgressAndDeliverables')}</p>
                   </div>
-                  <div className="text-left sm:text-right">
-                    <div className="text-xs sm:text-sm text-brand-black/50">{t('totalMilestones')}</div>
-                    <div className="text-xl sm:text-2xl font-bold text-brand-black">{project.milestones.length}</div>
+                  <div className="text-right">
+                    <div className="text-sm text-brand-black/50">{t('totalMilestones')}</div>
+                    <div className="text-2xl font-bold text-brand-black">{project.milestones.length}</div>
                   </div>
                 </div>
                 

@@ -96,49 +96,10 @@
 
   body {
     @apply bg-background text-foreground font-sans;
-    /* Prevent horizontal scrolling on mobile */
-    overflow-x: hidden;
-    /* Smooth scrolling for better UX */
-    scroll-behavior: smooth;
   }
 
   h1, h2, h3, h4, h5, h6 {
     @apply font-semibold;
-    /* Prevent long text from breaking layout */
-    word-wrap: break-word;
-    hyphens: auto;
-  }
-
-  /* Ensure images and media are responsive by default */
-  img, video, canvas, svg {
-    @apply max-w-full h-auto;
-  }
-
-  /* Better button touch targets on mobile */
-  button, [role="button"] {
-    @apply min-h-[44px] min-w-[44px];
-  }
-
-  /* Better form control touch targets */
-  input, select, textarea {
-    @apply min-h-[44px];
-  }
-
-  /* Safe area handling for mobile devices */
-  .safe-area-top {
-    padding-top: env(safe-area-inset-top);
-  }
-  
-  .safe-area-bottom {
-    padding-bottom: env(safe-area-inset-bottom);
-  }
-  
-  .safe-area-left {
-    padding-left: env(safe-area-inset-left);
-  }
-  
-  .safe-area-right {
-    padding-right: env(safe-area-inset-right);
   }
 }
 
@@ -148,7 +109,7 @@
   }
   
   .saas-sidebar-item {
-    @apply flex items-center gap-3 px-3 py-2 text-sm text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-md transition-colors min-h-[44px];
+    @apply flex items-center gap-3 px-3 py-2 text-sm text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-md transition-colors;
   }
   
   .saas-sidebar-item.active {
@@ -156,11 +117,11 @@
   }
   
   .saas-button-primary {
-    @apply bg-black text-white hover:bg-gray-800 px-4 py-2 rounded-md font-medium transition-colors min-h-[44px];
+    @apply bg-black text-white hover:bg-gray-800 px-4 py-2 rounded-md font-medium transition-colors;
   }
   
   .saas-button-secondary {
-    @apply bg-white text-gray-700 hover:bg-gray-50 border border-gray-300 px-4 py-2 rounded-md font-medium transition-colors min-h-[44px];
+    @apply bg-white text-gray-700 hover:bg-gray-50 border border-gray-300 px-4 py-2 rounded-md font-medium transition-colors;
   }
   
   .saas-accent {
@@ -169,83 +130,5 @@
   
   .saas-accent-bg {
     @apply bg-yellow-500 text-black;
-  }
-
-  /* Mobile-first responsive text sizes */
-  .responsive-text-xs {
-    @apply text-xs sm:text-sm;
-  }
-  
-  .responsive-text-sm {
-    @apply text-sm sm:text-base;
-  }
-  
-  .responsive-text-base {
-    @apply text-base sm:text-lg;
-  }
-  
-  .responsive-text-lg {
-    @apply text-lg sm:text-xl;
-  }
-  
-  .responsive-text-xl {
-    @apply text-xl sm:text-2xl;
-  }
-  
-  .responsive-text-2xl {
-    @apply text-2xl sm:text-3xl;
-  }
-
-  /* Mobile-first responsive spacing */
-  .responsive-spacing-sm {
-    @apply space-y-2 sm:space-y-4;
-  }
-  
-  .responsive-spacing-md {
-    @apply space-y-4 sm:space-y-6;
-  }
-  
-  .responsive-spacing-lg {
-    @apply space-y-6 sm:space-y-8;
-  }
-
-  /* Mobile-friendly containers */
-  .mobile-container {
-    @apply px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto;
-  }
-}
-
-/* Mobile-specific optimizations */
-@media (max-width: 640px) {
-  /* Optimize font sizes for mobile readability */
-  html {
-    font-size: 16px; /* Ensure base font is at least 16px for iOS zoom prevention */
-  }
-  
-  /* Better spacing for touch interfaces */
-  .mobile-spacing {
-    margin: 0.5rem 0;
-  }
-  
-  /* Optimize modal and dialog sizes for mobile */
-  [role="dialog"], [role="alertdialog"] {
-    max-height: 90vh;
-    margin: 5vh auto;
-  }
-}
-
-/* Landscape mobile optimization */
-@media (max-height: 500px) and (orientation: landscape) {
-  .landscape-mobile-adjust {
-    padding-top: 0.5rem;
-    padding-bottom: 0.5rem;
-  }
-}
-
-/* High DPI display optimization */
-@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
-  .retina-optimize {
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
   }
 }
