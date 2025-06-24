@@ -101,6 +101,63 @@
   h1, h2, h3, h4, h5, h6 {
     @apply font-semibold;
   }
+
+  /* Mobile-first responsive improvements */
+  html {
+    -webkit-text-size-adjust: 100%;
+    -ms-text-size-adjust: 100%;
+  }
+
+  /* Improve touch targets on mobile */
+  button, 
+  input[type="button"], 
+  input[type="submit"],
+  input[type="reset"],
+  [role="button"] {
+    @apply touch-manipulation;
+    min-height: 44px;
+  }
+
+  /* Ensure proper mobile viewport */
+  @media (max-width: 767px) {
+    body {
+      @apply text-base leading-relaxed;
+    }
+    
+    /* Improve readability on mobile */
+    p, span, div {
+      @apply text-sm leading-relaxed;
+    }
+    
+    /* Better mobile spacing */
+    .mobile-container {
+      @apply px-4 py-2;
+    }
+    
+    /* Mobile-friendly cards */
+    .mobile-card {
+      @apply rounded-lg shadow-sm border border-gray-100 p-4 mb-4;
+    }
+  }
+
+  /* Improve focus visibility for keyboard navigation */
+  button:focus-visible,
+  input:focus-visible,
+  select:focus-visible,
+  textarea:focus-visible,
+  [tabindex]:focus-visible {
+    @apply outline-2 outline-offset-2 outline-blue-500;
+  }
+
+  /* Smooth scrolling for better UX */
+  html {
+    scroll-behavior: smooth;
+  }
+
+  /* Prevent horizontal scroll on mobile */
+  body {
+    overflow-x: hidden;
+  }
 }
 
 @layer components {
@@ -117,11 +174,11 @@
   }
   
   .saas-button-primary {
-    @apply bg-black text-white hover:bg-gray-800 px-4 py-2 rounded-md font-medium transition-colors;
+    @apply bg-black text-white hover:bg-gray-800 px-4 py-2 rounded-md font-medium transition-colors min-h-[44px] touch-manipulation;
   }
   
   .saas-button-secondary {
-    @apply bg-white text-gray-700 hover:bg-gray-50 border border-gray-300 px-4 py-2 rounded-md font-medium transition-colors;
+    @apply bg-white text-gray-700 hover:bg-gray-50 border border-gray-300 px-4 py-2 rounded-md font-medium transition-colors min-h-[44px] touch-manipulation;
   }
   
   .saas-accent {
@@ -130,5 +187,84 @@
   
   .saas-accent-bg {
     @apply bg-yellow-500 text-black;
+  }
+
+  /* Mobile-specific responsive classes */
+  .mobile-responsive-grid {
+    @apply grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4;
+  }
+  
+  .mobile-responsive-flex {
+    @apply flex flex-col sm:flex-row gap-4 sm:gap-6;
+  }
+  
+  .mobile-button-group {
+    @apply flex flex-col sm:flex-row gap-2 sm:gap-3;
+  }
+  
+  .mobile-touch-target {
+    @apply min-h-[44px] min-w-[44px] touch-manipulation;
+  }
+
+  /* Dropdown menu improvements for mobile */
+  .mobile-dropdown-content {
+    @apply bg-white border border-gray-200 shadow-lg rounded-lg z-50;
+    max-height: 80vh;
+    overflow-y: auto;
+  }
+  
+  .mobile-dropdown-item {
+    @apply flex items-center gap-3 px-4 py-3 hover:bg-gray-50 transition-colors min-h-[44px];
+  }
+}
+
+/* Mobile-specific media queries */
+@media (max-width: 640px) {
+  .responsive-hide-mobile {
+    @apply hidden;
+  }
+  
+  .responsive-show-mobile {
+    @apply block;
+  }
+  
+  /* Improve mobile card layouts */
+  .project-card-mobile {
+    @apply p-4 space-y-3;
+  }
+  
+  .project-card-mobile .button-group {
+    @apply flex flex-col gap-2;
+  }
+  
+  .project-card-mobile button {
+    @apply w-full justify-start text-left;
+  }
+}
+
+/* Tablet-specific optimizations */
+@media (min-width: 641px) and (max-width: 1024px) {
+  .responsive-hide-tablet {
+    @apply hidden;
+  }
+  
+  .responsive-show-tablet {
+    @apply block;
+  }
+}
+
+/* Improve accessibility */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  button, input, select, textarea {
+    @apply border-2 border-gray-800;
   }
 }

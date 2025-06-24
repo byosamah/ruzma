@@ -6,6 +6,7 @@ import { AppSidebar } from './AppSidebar';
 import { SidebarProvider, SidebarInset, SidebarTrigger } from '@/components/ui/sidebar';
 import { useNavigation } from '@/hooks/navigation/useNavigation';
 import { useNotifications } from '@/hooks/useNotifications';
+import { useIsMobile } from '@/hooks/use-mobile';
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -25,6 +26,8 @@ const Layout: React.FC<LayoutProps> = ({
     toggleMobileMenu
   } = useNavigation(user);
   
+  const isMobile = useIsMobile();
+  
   // Use notifications hook at the Layout level
   const notificationsData = useNotifications(user);
 
@@ -35,7 +38,9 @@ const Layout: React.FC<LayoutProps> = ({
     return (
       <div className="min-h-screen bg-white">
         <MainContent>
-          {children}
+          <div className={`${isMobile ? 'px-4 py-4' : 'px-6 py-6'}`}>
+            {children}
+          </div>
         </MainContent>
         <FloatingContactButton />
       </div>
@@ -48,11 +53,15 @@ const Layout: React.FC<LayoutProps> = ({
       <SidebarProvider>
         <div className="min-h-screen flex w-full">
           <AppSidebar user={user} onSignOut={onSignOutHandler} />
-          <SidebarInset className="flex-1">
-            <div className="p-4">
-              <SidebarTrigger className="mb-4" />
+          <SidebarInset className="flex-1 min-w-0">
+            <div className={`${isMobile ? 'p-3' : 'p-4'}`}>
+              <div className="mb-4">
+                <SidebarTrigger className={`${isMobile ? 'min-h-[44px] min-w-[44px]' : ''} touch-manipulation`} />
+              </div>
               <MainContent>
-                {children}
+                <div className={`${isMobile ? 'space-y-4' : 'space-y-6'}`}>
+                  {children}
+                </div>
               </MainContent>
             </div>
           </SidebarInset>

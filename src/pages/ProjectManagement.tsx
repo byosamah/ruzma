@@ -84,7 +84,7 @@ const ProjectManagement: React.FC = () => {
               <p className="text-brand-black/60 mb-6">{t('projectNotFoundDesc')}</p>
               <Button 
                 onClick={() => navigate("/dashboard")}
-                className="bg-gradient-to-r from-brand-blue to-brand-navy hover:from-brand-blue/90 hover:to-brand-navy/90 text-white px-6 py-2"
+                className="bg-gradient-to-r from-brand-blue to-brand-navy hover:from-brand-blue/90 hover:to-brand-navy/90 text-white px-6 py-2 min-h-[44px] touch-manipulation"
               >
                 {t('goToDashboard')}
               </Button>
@@ -98,14 +98,14 @@ const ProjectManagement: React.FC = () => {
   return (
     <Layout user={profile || user}>
       <div className="min-h-screen bg-gradient-to-br from-auth-background via-brand-yellow/5 to-brand-blue/5">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
+        <div className={`container mx-auto ${isMobile ? 'px-4 py-4' : 'px-4 sm:px-6 lg:px-8 py-6 sm:py-8'}`}>
           {/* Back Navigation */}
           <div className="mb-6">
             <Button
               variant="ghost"
               size="sm"
               onClick={handleBackClick}
-              className="text-brand-black/60 hover:text-brand-black hover:bg-white/60 -ml-2"
+              className={`text-brand-black/60 hover:text-brand-black hover:bg-white/60 -ml-2 ${isMobile ? 'min-h-[44px] touch-manipulation' : ''}`}
             >
               <ArrowLeft className="w-4 h-4 mr-2" />
               {t('backToDashboard')}
@@ -113,10 +113,10 @@ const ProjectManagement: React.FC = () => {
           </div>
 
           {/* Main Content */}
-          <div className="space-y-8">
+          <div className={`space-y-6 ${isMobile ? 'space-y-4' : 'sm:space-y-8'}`}>
             {/* Project Header Card */}
             <div className="bg-white/70 backdrop-blur-sm rounded-2xl border border-white/50 shadow-lg shadow-brand-blue/5 overflow-hidden">
-              <div className="bg-gradient-to-r from-brand-blue/5 via-brand-yellow/5 to-brand-navy/5 p-6 sm:p-8">
+              <div className={`bg-gradient-to-r from-brand-blue/5 via-brand-yellow/5 to-brand-navy/5 ${isMobile ? 'p-4' : 'p-6 sm:p-8'}`}>
                 <ProjectHeader 
                   project={project} 
                   onBackClick={handleBackClick}
@@ -129,13 +129,13 @@ const ProjectManagement: React.FC = () => {
 
             {/* Milestones Section */}
             <div className="bg-white/70 backdrop-blur-sm rounded-2xl border border-white/50 shadow-lg shadow-brand-blue/5 overflow-hidden">
-              <div className="p-6 sm:p-8">
-                <div className="flex items-center justify-between mb-6">
+              <div className={`${isMobile ? 'p-4' : 'p-6 sm:p-8'}`}>
+                <div className={`flex ${isMobile ? 'flex-col space-y-4' : 'items-center justify-between'} mb-6`}>
                   <div>
-                    <h2 className="text-2xl font-bold text-brand-black">{t('projectMilestones')}</h2>
+                    <h2 className={`${isMobile ? 'text-xl' : 'text-2xl'} font-bold text-brand-black`}>{t('projectMilestones')}</h2>
                     <p className="text-brand-black/60 mt-1">{t('trackProgressAndDeliverables')}</p>
                   </div>
-                  <div className="text-right">
+                  <div className={`${isMobile ? 'text-left' : 'text-right'}`}>
                     <div className="text-sm text-brand-black/50">{t('totalMilestones')}</div>
                     <div className="text-2xl font-bold text-brand-black">{project.milestones.length}</div>
                   </div>

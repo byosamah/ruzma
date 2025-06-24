@@ -1,3 +1,4 @@
+
 import React from 'react';
 import Layout from '@/components/Layout';
 import DashboardHeader from '@/components/dashboard/DashboardHeader';
@@ -48,14 +49,18 @@ const Dashboard = () => {
       }
     }
   };
+
   const handleViewProject = (projectId: string) => {
     navigate(`/project/${projectId}`);
   };
+
   const handleEditProjectCard = (projectId: string) => {
     navigate(`/edit-project/${projectId}`);
   };
+
   if (loading) {
-    return <Layout user={user} onSignOut={handleSignOut}>
+    return (
+      <Layout user={user} onSignOut={handleSignOut}>
         <SEOHead 
           title="Loading Dashboard | Ruzma"
           description="Loading your freelancer dashboard..."
@@ -64,33 +69,45 @@ const Dashboard = () => {
         <div className="flex items-center justify-center min-h-[50vh] sm:min-h-[60vh]">
           <div className="animate-spin rounded-full h-16 w-16 sm:h-32 sm:w-32 border-b-2 border-slate-900"></div>
         </div>
-      </Layout>;
+      </Layout>
+    );
   }
+
   const EmptyProjectsButton = () => {
     const userType = profile?.user_type || 'free';
     const buttonText = !usage.canCreateProject && userType === 'pro' ? t('contactUsForMoreProjects') : t('createFirstProject');
     const ButtonIcon = !usage.canCreateProject && userType === 'pro' ? MessageCircle : Plus;
     const tooltipMessage = !usage.canCreateProject ? userType === 'pro' ? t('projectLimitReachedPro') : t('projectLimitReached') : '';
-    const button = <Button onClick={handleNewProject} size="lg" className="w-full sm:w-auto px-6 py-3 text-base" disabled={false}>
+    
+    const button = (
+      <Button 
+        onClick={handleNewProject} 
+        size="lg" 
+        className={`${isMobile ? 'w-full' : 'w-full sm:w-auto'} px-6 py-3 text-base min-h-[44px] touch-manipulation`} 
+        disabled={false}
+      >
         <ButtonIcon className="w-5 h-5 mr-2" />
         {buttonText}
-      </Button>;
+      </Button>
+    );
+
     if (tooltipMessage && !isMobile) {
-      return <Tooltip>
+      return (
+        <Tooltip>
           <TooltipTrigger asChild>
             {button}
           </TooltipTrigger>
           <TooltipContent>
             <p>{tooltipMessage}</p>
           </TooltipContent>
-        </Tooltip>;
+        </Tooltip>
+      );
     }
     return button;
   };
 
-  // Always use vertical layout on mobile for better readability
-  const projectGridClass = isMobile ? "flex flex-col space-y-4 sm:space-y-6" : "grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6";
-  return <Layout user={user} onSignOut={handleSignOut}>
+  return (
+    <Layout user={user} onSignOut={handleSignOut}>
       <SEOHead 
         title={seoData.title}
         description={seoData.description}
@@ -100,7 +117,7 @@ const Dashboard = () => {
         author={seoData.author}
         structuredData={seoData.structuredData}
       />
-      <div className="space-y-6 sm:space-y-8">
+      <div className={`space-y-6 ${isMobile ? 'px-2' : 'sm:space-y-8'}`}>
         {/* Dashboard Header with semantic HTML structure */}
         <header>
           <DashboardHeader 
@@ -136,7 +153,7 @@ const Dashboard = () => {
             </div>
 
             {projects.length === 0 ? (
-              <div className="text-center py-8 sm:py-12 bg-white rounded-lg border border-slate-200 mx-2 sm:mx-0">
+              <div className={`text-center py-8 sm:py-12 bg-white rounded-lg border border-slate-200 ${isMobile ? 'mx-0' : 'mx-2 sm:mx-0'}`}>
                 <FileText className="w-12 h-12 sm:w-16 sm:h-16 text-slate-300 mx-auto mb-4" aria-hidden="true" />
                 <h2 className="text-lg sm:text-xl font-medium text-slate-600 mb-2 px-4">
                   {t('noProjectsYet')}
@@ -149,24 +166,26 @@ const Dashboard = () => {
                 </div>
               </div>
             ) : (
-              <section aria-label="Your projects" className={projectGridClass}>
+              <section aria-label="Your projects" className="space-y-4 sm:space-y-6">
                 {projects.map(project => (
-                  <ProjectCard 
-                    key={project.id} 
-                    project={project} 
-                    onViewClick={handleViewProject} 
-                    onEditClick={handleEditProjectCard} 
-                    onDeleteClick={handleDeleteProject} 
-                    currency={userCurrency.currency} 
-                    isVerticalLayout={true} 
-                  />
+                  <div key={project.id} className={isMobile ? 'project-card-mobile' : ''}>
+                    <ProjectCard 
+                      project={project} 
+                      onViewClick={handleViewProject} 
+                      onEditClick={handleEditProjectCard} 
+                      onDeleteClick={handleDeleteProject} 
+                      currency={userCurrency.currency} 
+                      isVerticalLayout={true} 
+                    />
+                  </div>
                 ))}
               </section>
             )}
           </div>
         </main>
       </div>
-    </Layout>;
+    </Layout>
+  );
 };
 
 export default Dashboard;
