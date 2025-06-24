@@ -1,4 +1,3 @@
-
 import React from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import Layout from "@/components/Layout";
@@ -12,7 +11,7 @@ import MilestoneList from "@/components/ProjectManagement/MilestoneList";
 import { useIsMobile } from "@/hooks/use-mobile";
 
 const ProjectManagement: React.FC = () => {
-  const { id } = useParams<{ id: string }>();
+  const { slug } = useParams<{ slug: string }>();
   const navigate = useNavigate();
   const t = useT();
   const isMobile = useIsMobile();
@@ -28,7 +27,7 @@ const ProjectManagement: React.FC = () => {
     uploadDeliverable,
     downloadDeliverable,
     updateMilestoneWatermark,
-  } = useProjectManagement(id);
+  } = useProjectManagement(slug);
 
   const { deleteProject } = useProjects(user);
 
@@ -37,14 +36,16 @@ const ProjectManagement: React.FC = () => {
   };
 
   const handleEditClick = () => {
-    navigate(`/edit-project/${id}`);
+    if (project?.slug) {
+      navigate(`/edit-project/${project.slug}`);
+    }
   };
 
   const handleDeleteClick = async () => {
-    if (!id) return;
+    if (!project?.id) return;
     
     if (confirm(t('areYouSureDeleteProject'))) {
-      const success = await deleteProject(id);
+      const success = await deleteProject(project.id);
       if (success) {
         navigate('/dashboard');
       }

@@ -5,8 +5,8 @@ import { supabase } from '@/integrations/supabase/client';
 
 export const useProjectCardActions = (
   project: any,
-  onViewClick: (id: string) => void,
-  onEditClick: (id: string) => void,
+  onViewClick: (slug: string) => void,
+  onEditClick: (slug: string) => void,
   onDeleteClick?: (id: string) => void
 ) => {
   const handleCopyClientLink = (e: React.MouseEvent) => {
@@ -62,23 +62,23 @@ export const useProjectCardActions = (
 
   const handleEditClick = (e: React.MouseEvent) => {
     e.stopPropagation();
-    onEditClick(project.id);
+    onEditClick(project.slug);
   };
 
   const handleDeleteClick = (e: React.MouseEvent) => {
     e.stopPropagation();
     if (onDeleteClick) {
-      onDeleteClick(project.id);
+      onDeleteClick(project.id); // Still use ID for delete operations
     }
   };
 
   const handleViewClick = (e: React.MouseEvent) => {
     e.stopPropagation();
-    onViewClick(project.id);
+    onViewClick(project.slug);
   };
 
   const handleCardClick = () => {
-    onViewClick(project.id);
+    onViewClick(project.slug);
   };
 
   return {

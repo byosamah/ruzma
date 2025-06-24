@@ -2,11 +2,9 @@
 import { useState, useEffect } from 'react';
 import { DatabaseProject } from '@/hooks/projectTypes';
 import { MilestoneFormData } from '@/components/EditProject/types';
+import { isUUID } from '@/lib/slugUtils';
 
-export const useEditProjectData = (
-  projects: DatabaseProject[],
-  projectId: string | undefined
-) => {
+export const useEditProjectData = (projects: DatabaseProject[], slugOrId: string | undefined) => {
   const [project, setProject] = useState<DatabaseProject | null>(null);
   const [name, setName] = useState('');
   const [brief, setBrief] = useState('');
@@ -14,25 +12,34 @@ export const useEditProjectData = (
   const [milestones, setMilestones] = useState<MilestoneFormData[]>([]);
 
   useEffect(() => {
-    if (projects.length > 0 && projectId) {
-      const projectToEdit = projects.find(p => p.id === projectId);
-      if (projectToEdit) {
-        setProject(projectToEdit);
-        setName(projectToEdit.name);
-        setBrief(projectToEdit.brief);
-        setClientEmail(projectToEdit.client_email || '');
-        setMilestones(projectToEdit.milestones.map(m => ({
-          id: m.id,
-          title: m.title,
-          description: m.description,
-          price: m.price,
-          status: m.status,
-          start_date: m.start_date || '',
-          end_date: m.end_date || '',
-        })));
+    if (projects.length > 0 && slugOrId) {
+      let found: DatabaseProject | undefined;
+      
+      // Check if it's a UUID (backward compatibility) or slug
+      if (isUUID(slugOrId)) {
+        found = projects.find((p) => p.id === slugOrId);
+      } else {
+        found = projects.find((p) => p.slug === slugOrId);
+      }
+
+      if (found) {
+        setProject(found);
+        setName(found.name);
+        setBrief(found.brief);
+        setClientEmail(found.client_email || '');
+        
+        const formattedMilestones = found.milestones.map((milestone) => ({
+          title: milestone.title,
+          description: milestone.description,
+          price: milestone.price,
+          startDate: milestone.start_date || '',
+          endDate: milestone.end_date || '',
+        }));
+        
+        setMilestones(formattedMilestones);
       }
     }
-  }, [projects, projectId]);
+  }, [projects, slugOrId]);
 
   return {
     project,

@@ -5,8 +5,8 @@ import { useEditProjectData } from './editProject/useEditProjectData';
 import { useEditProjectActions } from './editProject/useEditProjectActions';
 import { MilestoneFormData } from '@/components/EditProject/types';
 
-export const useEditProject = (projectId: string | undefined) => {
-  const { user, profile, loading, handleSignOut } = useEditProjectAuth(projectId);
+export const useEditProject = (slugOrId: string | undefined) => {
+  const { user, profile, loading, handleSignOut } = useEditProjectAuth(slugOrId);
   const { projects, updateProject } = useProjects(user);
   
   const {
@@ -19,7 +19,7 @@ export const useEditProject = (projectId: string | undefined) => {
     setBrief,
     setClientEmail,
     setMilestones,
-  } = useEditProjectData(projects, projectId);
+  } = useEditProjectData(projects, slugOrId);
 
   const {
     updating,
@@ -43,6 +43,7 @@ export const useEditProject = (projectId: string | undefined) => {
   };
 
   const wrappedHandleSubmit = (e: React.FormEvent) => {
+    const projectId = project?.id;
     handleSubmit(e, projectId, name, brief, clientEmail, milestones);
   };
 

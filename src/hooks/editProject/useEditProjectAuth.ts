@@ -4,14 +4,14 @@ import { useNavigate } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 import { User } from '@supabase/supabase-js';
 
-export const useEditProjectAuth = (projectId: string | undefined) => {
-  const navigate = useNavigate();
+export const useEditProjectAuth = (slugOrId: string | undefined) => {
   const [user, setUser] = useState<User | null>(null);
   const [profile, setProfile] = useState<any>(null);
   const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
 
   useEffect(() => {
-    const checkAuthAndLoadProject = async () => {
+    const checkAuthAndLoadData = async () => {
       setLoading(true);
       
       const { data: { user }, error: userError } = await supabase.auth.getUser();
@@ -34,12 +34,12 @@ export const useEditProjectAuth = (projectId: string | undefined) => {
       setLoading(false);
     };
 
-    checkAuthAndLoadProject();
-  }, [projectId, navigate]);
+    checkAuthAndLoadData();
+  }, [navigate]);
 
   const handleSignOut = async () => {
     await supabase.auth.signOut();
-    navigate('/');
+    navigate('/login');
   };
 
   return {

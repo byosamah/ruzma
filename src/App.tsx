@@ -1,3 +1,4 @@
+
 import { Toaster } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
@@ -43,8 +44,8 @@ function App() {
               <Route path="/profile" element={<Profile />} />
               <Route path="/plans" element={<Plans />} />
               <Route path="/create-project" element={<CreateProject />} />
-              <Route path="/edit-project/:id" element={<EditProject />} />
-              <Route path="/project/:id" element={<ProjectManagement />} />
+              <Route path="/edit-project/:slug" element={<EditProject />} />
+              <Route path="/project/:slug" element={<ProjectManagement />} />
               <Route path="/templates" element={<ProjectTemplates />} />
               <Route path="/contact" element={<ContactUs />} />
               <Route path="/client/:token" element={<ClientProject />} />

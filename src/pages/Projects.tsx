@@ -1,4 +1,3 @@
-
 import React from 'react';
 import Layout from '@/components/Layout';
 import ProjectCard from '@/components/ProjectCard';
@@ -30,12 +29,12 @@ const Projects = () => {
     }
   };
 
-  const handleViewProject = (projectId: string) => {
-    navigate(`/project/${projectId}`);
+  const handleViewProject = (projectSlug: string) => {
+    navigate(`/project/${projectSlug}`);
   };
 
-  const handleEditProjectCard = (projectId: string) => {
-    navigate(`/edit-project/${projectId}`);
+  const handleEditProjectCard = (projectSlug: string) => {
+    navigate(`/edit-project/${projectSlug}`);
   };
 
   if (loading) {
@@ -110,8 +109,8 @@ const Projects = () => {
               <ProjectCard
                 key={project.id}
                 project={project}
-                onViewClick={handleViewProject}
-                onEditClick={handleEditProjectCard}
+                onViewClick={() => handleViewProject(project.slug)}
+                onEditClick={() => handleEditProjectCard(project.slug)}
                 onDeleteClick={handleDeleteProject}
                 currency={userCurrency.currency}
                 isVerticalLayout={true}

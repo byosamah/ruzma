@@ -5,8 +5,9 @@ import { supabase } from '@/integrations/supabase/client';
 import { User } from '@supabase/supabase-js';
 import { useProjects, DatabaseProject } from '@/hooks/useProjects';
 import { useUserCurrency } from '@/hooks/useUserCurrency';
+import { isUUID } from '@/lib/slugUtils';
 
-export function useProjectManagement(projectId: string | undefined) {
+export function useProjectManagement(slugOrId: string | undefined) {
   const [user, setUser] = useState<User | null>(null);
   const [profile, setProfile] = useState<any>(null);
   const [project, setProject] = useState<DatabaseProject | null>(null);
@@ -44,11 +45,25 @@ export function useProjectManagement(projectId: string | undefined) {
   }, [navigate]);
 
   useEffect(() => {
-    if (projects.length > 0 && projectId) {
-      const found = projects.find((p) => p.id === projectId);
+    if (projects.length > 0 && slugOrId) {
+      let found: DatabaseProject | undefined;
+      
+      // Check if it's a UUID (backward compatibility)
+      if (isUUID(slugOrId)) {
+        found = projects.find((p) => p.id === slugOrId);
+        // If found by UUID, redirect to slug URL
+        if (found) {
+          navigate(`/project/${found.slug}`, { replace: true });
+          return;
+        }
+      } else {
+        // Find by slug
+        found = projects.find((p) => p.slug === slugOrId);
+      }
+      
       setProject(found || null);
     }
-  }, [projects, projectId]);
+  }, [projects, slugOrId, navigate]);
 
   return {
     user,

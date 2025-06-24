@@ -253,6 +253,7 @@ export type Database = {
           end_date: string | null
           id: string
           name: string
+          slug: string
           start_date: string | null
           updated_at: string
           user_id: string
@@ -265,6 +266,7 @@ export type Database = {
           end_date?: string | null
           id?: string
           name: string
+          slug: string
           start_date?: string | null
           updated_at?: string
           user_id: string
@@ -277,6 +279,7 @@ export type Database = {
           end_date?: string | null
           id?: string
           name?: string
+          slug?: string
           start_date?: string | null
           updated_at?: string
           user_id?: string
@@ -361,6 +364,18 @@ export type Database = {
       check_user_limits: {
         Args: { _user_id: string; _action: string; _size?: number }
         Returns: boolean
+      }
+      ensure_unique_slug: {
+        Args: {
+          base_slug: string
+          user_id_param: string
+          project_id_param?: string
+        }
+        Returns: string
+      }
+      generate_slug: {
+        Args: { input_text: string }
+        Returns: string
       }
       get_user_limits: {
         Args: { _user_type: string }
