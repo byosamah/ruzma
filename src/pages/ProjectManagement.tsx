@@ -56,16 +56,8 @@ const ProjectManagement: React.FC = () => {
   if (loading) {
     return (
       <Layout>
-        <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50/30 to-indigo-50/20">
-          <div className="flex items-center justify-center min-h-[60vh]">
-            <div className="text-center space-y-4">
-              <div className="relative">
-                <div className="w-16 h-16 border-4 border-brand-blue/30 border-t-brand-blue rounded-full animate-spin mx-auto"></div>
-                <div className="absolute inset-0 w-16 h-16 border-4 border-transparent border-r-brand-yellow/60 rounded-full animate-spin mx-auto" style={{ animationDirection: 'reverse', animationDuration: '1.5s' }}></div>
-              </div>
-              <p className="text-brand-black/70 font-medium">{t('loadingProject')}</p>
-            </div>
-          </div>
+        <div className="flex items-center justify-center min-h-[50vh]">
+          <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-gray-900"></div>
         </div>
       </Layout>
     );
@@ -76,21 +68,19 @@ const ProjectManagement: React.FC = () => {
   if (!project) {
     return (
       <Layout user={profile || user}>
-        <div className="min-h-screen bg-gradient-to-br from-auth-background via-brand-yellow/5 to-brand-blue/5">
-          <div className="flex items-center justify-center min-h-[60vh]">
-            <div className="max-w-md mx-auto text-center px-6">
-              <div className="w-20 h-20 bg-gradient-to-br from-brand-blue/10 to-brand-navy/20 rounded-2xl flex items-center justify-center mx-auto mb-6">
-                <div className="w-8 h-8 bg-brand-blue/40 rounded-lg"></div>
-              </div>
-              <h2 className="text-2xl font-bold text-brand-black mb-3">{t('projectNotFound')}</h2>
-              <p className="text-brand-black/60 mb-6">{t('projectNotFoundDesc')}</p>
-              <Button 
-                onClick={() => navigate("/dashboard")}
-                className="bg-gradient-to-r from-brand-blue to-brand-navy hover:from-brand-blue/90 hover:to-brand-navy/90 text-white px-6 py-2 min-h-[44px] touch-manipulation"
-              >
-                {t('goToDashboard')}
-              </Button>
+        <div className="flex items-center justify-center min-h-[50vh]">
+          <div className="max-w-md mx-auto text-center px-6">
+            <div className="w-20 h-20 bg-gray-100 rounded-2xl flex items-center justify-center mx-auto mb-6">
+              <div className="w-8 h-8 bg-gray-400 rounded-lg"></div>
             </div>
+            <h2 className="text-2xl font-bold text-gray-900 mb-3">{t('projectNotFound')}</h2>
+            <p className="text-gray-600 mb-6">{t('projectNotFoundDesc')}</p>
+            <Button 
+              onClick={() => navigate("/dashboard")}
+              className="bg-gray-900 hover:bg-gray-800 text-white"
+            >
+              {t('goToDashboard')}
+            </Button>
           </div>
         </div>
       </Layout>
@@ -99,61 +89,58 @@ const ProjectManagement: React.FC = () => {
 
   return (
     <Layout user={profile || user}>
-      <div className="min-h-screen bg-gradient-to-br from-auth-background via-brand-yellow/5 to-brand-blue/5">
-        <div className={`container mx-auto ${isMobile ? 'px-4 py-4' : 'px-4 sm:px-6 lg:px-8 py-6 sm:py-8'}`}>
-          {/* Back Navigation */}
-          <div className="mb-6">
+      <div className="space-y-6">
+        {/* Header with back button */}
+        <div className="flex items-center justify-between">
+          <div className="flex items-center space-x-4">
             <Button
               variant="ghost"
               size="sm"
               onClick={handleBackClick}
-              className={`text-brand-black/60 hover:text-brand-black hover:bg-white/60 -ml-2 ${isMobile ? 'min-h-[44px] touch-manipulation' : ''}`}
+              className="text-gray-600 hover:text-gray-900 hover:bg-gray-100"
             >
               <ArrowLeft className="w-4 h-4 mr-2" />
               Back to projects
             </Button>
           </div>
+        </div>
 
-          {/* Main Content */}
-          <div className={`space-y-6 ${isMobile ? 'space-y-4' : 'sm:space-y-8'}`}>
-            {/* Project Header Card */}
-            <div className="bg-white/70 backdrop-blur-sm rounded-2xl border border-white/50 shadow-lg shadow-brand-blue/5 overflow-hidden">
-              <div className={`bg-gradient-to-r from-brand-blue/5 via-brand-yellow/5 to-brand-navy/5 ${isMobile ? 'p-4' : 'p-6 sm:p-8'}`}>
-                <ProjectHeader 
-                  project={project} 
-                  onBackClick={handleBackClick}
-                  onEditClick={handleEditClick}
-                  onDeleteClick={handleDeleteClick}
-                  userCurrency={userCurrency.currency}
-                />
+        {/* Project Header Card */}
+        <div className="bg-white rounded-lg border border-gray-200 shadow-sm">
+          <div className="p-6">
+            <ProjectHeader 
+              project={project} 
+              onBackClick={handleBackClick}
+              onEditClick={handleEditClick}
+              onDeleteClick={handleDeleteClick}
+              userCurrency={userCurrency.currency}
+            />
+          </div>
+        </div>
+
+        {/* Milestones Section */}
+        <div className="bg-white rounded-lg border border-gray-200 shadow-sm">
+          <div className="p-6">
+            <div className="flex items-center justify-between mb-6">
+              <div>
+                <h2 className="text-2xl font-bold text-gray-900">{t('projectMilestones')}</h2>
+                <p className="text-gray-600 mt-1">{t('trackProgressAndDeliverables')}</p>
+              </div>
+              <div className="text-right">
+                <div className="text-sm text-gray-500">{t('totalMilestones')}</div>
+                <div className="text-2xl font-bold text-gray-900">{project.milestones.length}</div>
               </div>
             </div>
-
-            {/* Milestones Section */}
-            <div className="bg-white/70 backdrop-blur-sm rounded-2xl border border-white/50 shadow-lg shadow-brand-blue/5 overflow-hidden">
-              <div className={`${isMobile ? 'p-4' : 'p-6 sm:p-8'}`}>
-                <div className={`flex ${isMobile ? 'flex-col space-y-4' : 'items-center justify-between'} mb-6`}>
-                  <div>
-                    <h2 className={`${isMobile ? 'text-xl' : 'text-2xl'} font-bold text-brand-black`}>{t('projectMilestones')}</h2>
-                    <p className="text-brand-black/60 mt-1">{t('trackProgressAndDeliverables')}</p>
-                  </div>
-                  <div className={`${isMobile ? 'text-left' : 'text-right'}`}>
-                    <div className="text-sm text-brand-black/50">{t('totalMilestones')}</div>
-                    <div className="text-2xl font-bold text-brand-black">{project.milestones.length}</div>
-                  </div>
-                </div>
-                
-                <MilestoneList
-                  milestones={project.milestones}
-                  userCurrency={userCurrency.currency}
-                  onUpdateMilestoneStatus={updateMilestoneStatus}
-                  onPaymentUpload={uploadPaymentProof}
-                  onDeliverableUpload={uploadDeliverable}
-                  onDeliverableDownload={downloadDeliverable}
-                  onUpdateWatermark={updateMilestoneWatermark}
-                />
-              </div>
-            </div>
+            
+            <MilestoneList
+              milestones={project.milestones}
+              userCurrency={userCurrency.currency}
+              onUpdateMilestoneStatus={updateMilestoneStatus}
+              onPaymentUpload={uploadPaymentProof}
+              onDeliverableUpload={uploadDeliverable}
+              onDeliverableDownload={downloadDeliverable}
+              onUpdateWatermark={updateMilestoneWatermark}
+            />
           </div>
         </div>
       </div>
