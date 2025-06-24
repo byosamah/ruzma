@@ -142,7 +142,10 @@ export function AppSidebar({
       <SidebarFooter className={`border-t border-gray-200 ${isCollapsed ? 'px-3 py-4' : 'p-4'} space-y-3`}>
         {/* Language Selector */}
         <div className={`${isCollapsed ? 'flex justify-center' : ''}`}>
-          <LanguageSelector className={`${isCollapsed ? 'border-0 shadow-none p-1' : 'w-full'}`} />
+          <LanguageSelector 
+            className={`${isCollapsed ? 'border-0 shadow-none p-1' : 'w-full'}`} 
+            showTextWhenCollapsed={!isCollapsed}
+          />
         </div>
         
         {/* Sign Out Button */}
