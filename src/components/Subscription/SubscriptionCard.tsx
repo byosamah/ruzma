@@ -52,7 +52,7 @@ export const SubscriptionCard: React.FC<SubscriptionCardProps> = ({
     if (isPopular) {
       return (
         <Badge className="absolute -top-2 left-1/2 transform -translate-x-1/2 bg-primary">
-          {popularText}
+          Coming Soon
         </Badge>
       );
     }
