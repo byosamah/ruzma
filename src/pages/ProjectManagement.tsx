@@ -1,3 +1,4 @@
+
 import React from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import Layout from "@/components/Layout";
@@ -32,7 +33,7 @@ const ProjectManagement: React.FC = () => {
   const { deleteProject } = useProjects(user);
 
   const handleBackClick = () => {
-    navigate("/dashboard");
+    navigate("/projects");
   };
 
   const handleEditClick = () => {
@@ -47,7 +48,7 @@ const ProjectManagement: React.FC = () => {
     if (confirm(t('areYouSureDeleteProject'))) {
       const success = await deleteProject(project.id);
       if (success) {
-        navigate('/dashboard');
+        navigate('/projects');
       }
     }
   };
@@ -109,7 +110,7 @@ const ProjectManagement: React.FC = () => {
               className={`text-brand-black/60 hover:text-brand-black hover:bg-white/60 -ml-2 ${isMobile ? 'min-h-[44px] touch-manipulation' : ''}`}
             >
               <ArrowLeft className="w-4 h-4 mr-2" />
-              {t('backToDashboard')}
+              Back to projects
             </Button>
           </div>
 
