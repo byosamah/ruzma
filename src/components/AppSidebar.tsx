@@ -1,8 +1,10 @@
+
 import React from 'react';
 import { Home, User, FolderOpen, BarChart3, Settings, CreditCard, LogOut, FileText } from 'lucide-react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { Sidebar, SidebarContent, SidebarGroup, SidebarGroupContent, SidebarGroupLabel, SidebarMenu, SidebarMenuButton, SidebarMenuItem, SidebarHeader, SidebarFooter, useSidebar } from '@/components/ui/sidebar';
 import { useT } from '@/lib/i18n';
+import { useLanguage } from '@/contexts/LanguageContext';
 import LanguageSelector from './LanguageSelector';
 
 interface AppSidebarProps {
@@ -17,6 +19,7 @@ export function AppSidebar({
   const navigate = useNavigate();
   const location = useLocation();
   const t = useT();
+  const { language } = useLanguage();
   const {
     state
   } = useSidebar();
@@ -60,9 +63,14 @@ export function AppSidebar({
   };
 
   const isCollapsed = state === 'collapsed';
+  const sidebarSide = language === 'ar' ? 'right' : 'left';
 
   return (
-    <Sidebar className="border-r border-gray-200 bg-white" collapsible="icon">
+    <Sidebar 
+      className={`border-gray-200 bg-white ${language === 'ar' ? 'border-l' : 'border-r'}`} 
+      collapsible="icon"
+      side={sidebarSide}
+    >
       <SidebarHeader className={`${isCollapsed ? 'px-3 py-4' : 'p-4'}`}>
         <div className={`flex items-center ${isCollapsed ? 'justify-center' : 'gap-2'}`}>
           {isCollapsed ? (
