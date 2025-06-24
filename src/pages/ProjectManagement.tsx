@@ -3,7 +3,8 @@ import React from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import Layout from "@/components/Layout";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft } from "lucide-react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { ArrowLeft, Calendar, DollarSign, CheckCircle2 } from "lucide-react";
 import { useT, TranslationKey } from "@/lib/i18n";
 import { useProjectManagement } from "@/hooks/useProjectManagement";
 import { useProjects } from "@/hooks/useProjects";
@@ -69,45 +70,51 @@ const ProjectManagement: React.FC = () => {
     return (
       <Layout user={profile || user}>
         <div className="flex items-center justify-center min-h-[50vh]">
-          <div className="max-w-md mx-auto text-center px-6">
-            <div className="w-20 h-20 bg-gray-100 rounded-2xl flex items-center justify-center mx-auto mb-6">
-              <div className="w-8 h-8 bg-gray-400 rounded-lg"></div>
-            </div>
-            <h2 className="text-2xl font-bold text-gray-900 mb-3">{t('projectNotFound')}</h2>
-            <p className="text-gray-600 mb-6">{t('projectNotFoundDesc')}</p>
-            <Button 
-              onClick={() => navigate("/dashboard")}
-              className="bg-gray-900 hover:bg-gray-800 text-white"
-            >
-              {t('goToDashboard')}
-            </Button>
-          </div>
+          <Card className="max-w-md mx-auto">
+            <CardContent className="text-center pt-12 pb-8">
+              <div className="w-20 h-20 bg-gray-100 rounded-2xl flex items-center justify-center mx-auto mb-6">
+                <div className="w-8 h-8 bg-gray-400 rounded-lg"></div>
+              </div>
+              <CardTitle className="text-2xl mb-3">{t('projectNotFound')}</CardTitle>
+              <p className="text-gray-600 mb-6">{t('projectNotFoundDesc')}</p>
+              <Button 
+                onClick={() => navigate("/dashboard")}
+                className="bg-gray-900 hover:bg-gray-800 text-white"
+              >
+                {t('goToDashboard')}
+              </Button>
+            </CardContent>
+          </Card>
         </div>
       </Layout>
     );
   }
 
+  const completedMilestones = project.milestones.filter(m => m.status === 'approved').length;
+  const totalValue = project.milestones.reduce((sum, m) => sum + m.price, 0);
+  const completedValue = project.milestones
+    .filter(m => m.status === 'approved')
+    .reduce((sum, m) => sum + m.price, 0);
+
   return (
     <Layout user={profile || user}>
       <div className="space-y-6">
-        {/* Header with back button */}
+        {/* Header Section */}
         <div className="flex items-center justify-between">
-          <div className="flex items-center space-x-4">
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={handleBackClick}
-              className="text-gray-600 hover:text-gray-900 hover:bg-gray-100"
-            >
-              <ArrowLeft className="w-4 h-4 mr-2" />
-              Back to projects
-            </Button>
-          </div>
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={handleBackClick}
+            className="text-gray-600 hover:text-gray-900 hover:bg-gray-100"
+          >
+            <ArrowLeft className="w-4 h-4 mr-2" />
+            Back to projects
+          </Button>
         </div>
 
-        {/* Project Header Card */}
-        <div className="bg-white rounded-lg border border-gray-200 shadow-sm">
-          <div className="p-6">
+        {/* Project Overview Card */}
+        <Card>
+          <CardContent className="p-6">
             <ProjectHeader 
               project={project} 
               onBackClick={handleBackClick}
@@ -115,15 +122,66 @@ const ProjectManagement: React.FC = () => {
               onDeleteClick={handleDeleteClick}
               userCurrency={userCurrency.currency}
             />
-          </div>
+          </CardContent>
+        </Card>
+
+        {/* Quick Stats Cards */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <Card>
+            <CardContent className="p-6">
+              <div className="flex items-center space-x-3">
+                <div className="p-2 bg-blue-100 rounded-lg">
+                  <CheckCircle2 className="w-5 h-5 text-blue-600" />
+                </div>
+                <div>
+                  <p className="text-sm text-gray-600">Progress</p>
+                  <p className="text-2xl font-bold text-gray-900">
+                    {completedMilestones}/{project.milestones.length}
+                  </p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardContent className="p-6">
+              <div className="flex items-center space-x-3">
+                <div className="p-2 bg-green-100 rounded-lg">
+                  <DollarSign className="w-5 h-5 text-green-600" />
+                </div>
+                <div>
+                  <p className="text-sm text-gray-600">Total Value</p>
+                  <p className="text-2xl font-bold text-gray-900">
+                    {userCurrency.formatCurrency(totalValue)}
+                  </p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardContent className="p-6">
+              <div className="flex items-center space-x-3">
+                <div className="p-2 bg-purple-100 rounded-lg">
+                  <DollarSign className="w-5 h-5 text-purple-600" />
+                </div>
+                <div>
+                  <p className="text-sm text-gray-600">Completed Value</p>
+                  <p className="text-2xl font-bold text-gray-900">
+                    {userCurrency.formatCurrency(completedValue)}
+                  </p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
         </div>
 
         {/* Milestones Section */}
-        <div className="bg-white rounded-lg border border-gray-200 shadow-sm">
-          <div className="p-6">
-            <div className="flex items-center justify-between mb-6">
+        <Card>
+          <CardHeader>
+            <div className="flex items-center justify-between">
               <div>
-                <h2 className="text-2xl font-bold text-gray-900">{t('projectMilestones')}</h2>
+                <CardTitle className="text-2xl">{t('projectMilestones')}</CardTitle>
                 <p className="text-gray-600 mt-1">{t('trackProgressAndDeliverables')}</p>
               </div>
               <div className="text-right">
@@ -131,7 +189,8 @@ const ProjectManagement: React.FC = () => {
                 <div className="text-2xl font-bold text-gray-900">{project.milestones.length}</div>
               </div>
             </div>
-            
+          </CardHeader>
+          <CardContent>
             <MilestoneList
               milestones={project.milestones}
               userCurrency={userCurrency.currency}
@@ -141,8 +200,8 @@ const ProjectManagement: React.FC = () => {
               onDeliverableDownload={downloadDeliverable}
               onUpdateWatermark={updateMilestoneWatermark}
             />
-          </div>
-        </div>
+          </CardContent>
+        </Card>
       </div>
     </Layout>
   );
