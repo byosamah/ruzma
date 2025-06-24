@@ -32,8 +32,9 @@ export const useEditProjectData = (projects: DatabaseProject[], slugOrId: string
           title: milestone.title,
           description: milestone.description,
           price: milestone.price,
-          startDate: milestone.start_date || '',
-          endDate: milestone.end_date || '',
+          status: milestone.status,
+          start_date: milestone.start_date || '',
+          end_date: milestone.end_date || '',
         }));
         
         setMilestones(formattedMilestones);

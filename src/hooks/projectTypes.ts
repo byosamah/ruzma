@@ -30,4 +30,6 @@ export interface DatabaseProject {
   created_at: string;
   updated_at: string;
   milestones: DatabaseMilestone[];
+  freelancer_currency?: string;
+  currency?: string;
 }
