@@ -23,8 +23,8 @@ export const useDashboardSEO = (
     
     const description = `Freelance dashboard for ${displayName}. Managing ${stats.totalProjects} active projects with ${formatCurrency(stats.totalEarnings, userCurrency)} in total earnings. ${stats.completedMilestones} of ${stats.totalMilestones} milestones completed.`;
     
-    // Generate keywords based on user data
-    const projectTypes = projects.map(p => p.title.toLowerCase()).join(', ');
+    // Generate keywords based on user data using the correct property name
+    const projectTypes = projects.map(p => (p.name || '').toLowerCase()).join(', ');
     const keywords = [
       'freelance dashboard',
       'project management',
@@ -35,7 +35,7 @@ export const useDashboardSEO = (
       projectTypes
     ].filter(Boolean).join(', ');
 
-    // Generate structured data for the dashboard
+    // Generate structured data for the dashboard using the correct property name
     const structuredData = {
       "@context": "https://schema.org",
       "@type": "ProfilePage",
@@ -47,7 +47,7 @@ export const useDashboardSEO = (
           "@type": "Organization",
           "name": "Independent Freelancer"
         },
-        "knowsAbout": projects.map(p => p.title).slice(0, 5),
+        "knowsAbout": projects.map(p => p.name || 'Project').slice(0, 5),
         "mainEntityOfPage": {
           "@type": "WebPage",
           "@id": `${baseUrl}/dashboard`
