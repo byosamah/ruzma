@@ -10,7 +10,7 @@ export interface DatabaseInvoice {
   amount: number;
   project_name: string;
   date: string;
-  status: InvoiceStatus;
+  status: string;
   project_id: string | null;
   invoice_data: any;
   created_at: string;
@@ -23,7 +23,7 @@ const convertToInvoice = (dbInvoice: DatabaseInvoice): Invoice => ({
   amount: Number(dbInvoice.amount),
   projectName: dbInvoice.project_name,
   date: new Date(dbInvoice.date),
-  status: dbInvoice.status,
+  status: dbInvoice.status as InvoiceStatus,
   projectId: dbInvoice.project_id || crypto.randomUUID()
 });
 
@@ -33,9 +33,9 @@ const convertFromInvoice = (invoice: Invoice, userId: string, invoiceData?: Invo
   amount: invoice.amount,
   project_name: invoice.projectName,
   date: invoice.date.toISOString().split('T')[0],
-  status: invoice.status,
+  status: invoice.status as string,
   project_id: invoice.projectId,
-  invoice_data: invoiceData || null
+  invoice_data: invoiceData ? JSON.parse(JSON.stringify(invoiceData)) : null
 });
 
 export const invoiceService = {
@@ -68,7 +68,7 @@ export const invoiceService = {
       throw error;
     }
 
-    return convertToInvoice(data);
+    return convertToInvoice(data as DatabaseInvoice);
   },
 
   async updateInvoice(id: string, updates: Partial<Invoice>): Promise<void> {
