@@ -1,5 +1,4 @@
-
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
@@ -9,6 +8,8 @@ import { CalendarIcon, Upload } from 'lucide-react';
 import { format } from 'date-fns';
 import { cn } from '@/lib/utils';
 import { InvoiceFormData } from './types';
+import { useBranding } from '@/hooks/useBranding';
+import { useAuth } from '@/hooks/dashboard/useAuth';
 
 interface InvoiceHeaderProps {
   invoiceData: InvoiceFormData;
@@ -16,6 +17,16 @@ interface InvoiceHeaderProps {
 }
 
 const InvoiceHeader: React.FC<InvoiceHeaderProps> = ({ invoiceData, updateField }) => {
+  const { user } = useAuth();
+  const { branding } = useBranding(user);
+
+  // Set the profile logo as default when branding data loads
+  useEffect(() => {
+    if (branding?.logo_url && !invoiceData.logoUrl) {
+      updateField('logoUrl', branding.logo_url);
+    }
+  }, [branding, invoiceData.logoUrl, updateField]);
+
   const handleLogoUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file) {
@@ -43,14 +54,18 @@ const InvoiceHeader: React.FC<InvoiceHeaderProps> = ({ invoiceData, updateField 
             />
           </div>
           <div className="flex flex-col items-end">
-            <label className="text-sm text-gray-600 mb-2">Add Logo</label>
+            <label className="text-sm text-gray-600 mb-2">
+              {branding?.logo_url && !invoiceData.logoUrl ? 'Using Profile Logo' : 'Add Logo'}
+            </label>
             <div className="relative w-24 h-24 border-2 border-dashed border-gray-300 rounded-lg flex items-center justify-center bg-gray-50 cursor-pointer hover:bg-gray-100 transition-colors">
               {invoiceData.logoUrl ? (
                 <img src={invoiceData.logoUrl} alt="Logo" className="w-full h-full object-contain rounded-lg" />
               ) : (
                 <div className="text-center">
                   <Upload className="w-6 h-6 text-gray-400 mx-auto mb-1" />
-                  <span className="text-xs text-gray-500">Add logo</span>
+                  <span className="text-xs text-gray-500">
+                    {branding?.logo_url ? 'Use different logo' : 'Add logo'}
+                  </span>
                 </div>
               )}
               <input
@@ -60,6 +75,11 @@ const InvoiceHeader: React.FC<InvoiceHeaderProps> = ({ invoiceData, updateField 
                 className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
               />
             </div>
+            {branding?.logo_url && !invoiceData.logoUrl && (
+              <p className="text-xs text-gray-500 mt-1 text-center">
+                Using logo from profile
+              </p>
+            )}
           </div>
         </div>
 
