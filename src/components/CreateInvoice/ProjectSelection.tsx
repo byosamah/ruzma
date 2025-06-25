@@ -33,11 +33,11 @@ const ProjectSelection: React.FC<ProjectSelectionProps> = ({
             onValueChange={(value) => updateField('projectId', value)}
           >
             <SelectTrigger>
-              <SelectValue />
+              <SelectValue placeholder="Select a project" />
             </SelectTrigger>
             <SelectContent>
               {loading ? (
-                <SelectItem value="" disabled>Loading projects...</SelectItem>
+                <SelectItem value="loading" disabled>Loading projects...</SelectItem>
               ) : activeProjects.length > 0 ? (
                 activeProjects.map((project) => (
                   <SelectItem key={project.id} value={project.id}>
@@ -45,7 +45,7 @@ const ProjectSelection: React.FC<ProjectSelectionProps> = ({
                   </SelectItem>
                 ))
               ) : (
-                <SelectItem value="" disabled>No active projects found</SelectItem>
+                <SelectItem value="no-projects" disabled>No active projects found</SelectItem>
               )}
             </SelectContent>
           </Select>
