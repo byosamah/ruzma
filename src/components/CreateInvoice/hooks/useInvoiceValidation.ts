@@ -1,8 +1,13 @@
 
 import { InvoiceFormData } from '../types';
 import { toast } from 'sonner';
+import { useNavigate } from 'react-router-dom';
+import { useInvoiceContext } from '@/contexts/InvoiceContext';
 
 export const useInvoiceValidation = (invoiceData: InvoiceFormData) => {
+  const navigate = useNavigate();
+  const { addInvoice } = useInvoiceContext();
+
   const validateBasicFields = () => {
     if (!invoiceData.invoiceId.trim()) {
       toast.error('Please enter an invoice ID');
@@ -27,13 +32,21 @@ export const useInvoiceValidation = (invoiceData: InvoiceFormData) => {
 
   const handleSave = () => {
     if (validateBasicFields()) {
-      toast.success('Invoice saved as draft');
+      const transactionId = addInvoice(invoiceData);
+      toast.success(`Invoice ${transactionId} saved as draft`);
+      setTimeout(() => {
+        navigate('/invoices');
+      }, 1500);
     }
   };
 
   const handleSend = () => {
     if (validateForSending()) {
-      toast.success('Invoice sent successfully');
+      const transactionId = addInvoice(invoiceData);
+      toast.success(`Invoice ${transactionId} sent successfully`);
+      setTimeout(() => {
+        navigate('/invoices');
+      }, 1500);
     }
   };
 

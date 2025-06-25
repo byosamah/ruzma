@@ -7,7 +7,7 @@ import { useInvoiceActions } from './invoices/useInvoiceActions';
 export type { InvoiceStatus, Invoice } from './invoices/types';
 
 export const useInvoices = () => {
-  const { invoices, setInvoices, generateTransactionId } = useInvoiceData();
+  const { invoices, setInvoices, generateTransactionId, generateInvoiceId, addInvoice } = useInvoiceData();
   const {
     searchTerm,
     setSearchTerm,
@@ -30,6 +30,8 @@ export const useInvoices = () => {
     setStatusFilter,
     handleDownloadPDF,
     handleResendInvoice,
-    handleDeleteInvoice
+    handleDeleteInvoice,
+    addInvoice,
+    generateInvoiceId
   };
 };

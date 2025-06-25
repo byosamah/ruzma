@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Layout from '@/components/Layout';
 import { useAuth } from '@/hooks/dashboard/useAuth';
@@ -7,24 +7,26 @@ import { useUserProfile } from '@/hooks/dashboard/useUserProfile';
 import InvoiceForm from '@/components/CreateInvoice/InvoiceForm';
 import InvoicePreview from '@/components/CreateInvoice/InvoicePreview';
 import { InvoiceFormData } from '@/components/CreateInvoice/types';
+import { InvoiceProvider, useInvoiceContext } from '@/contexts/InvoiceContext';
 
-const CreateInvoice: React.FC = () => {
+const CreateInvoiceContent: React.FC = () => {
   const navigate = useNavigate();
   const { user, loading: authLoading, authChecked } = useAuth();
   const { profile, loading: profileLoading } = useUserProfile(user);
+  const { generateInvoiceId } = useInvoiceContext();
 
   const [invoiceData, setInvoiceData] = useState<InvoiceFormData>({
     invoiceId: '',
     invoiceDate: new Date(),
     dueDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000), // 30 days from now
     purchaseOrder: '',
-    paymentTerms: '',
+    paymentTerms: 'Net 30',
     billedTo: {
       name: '',
       address: ''
     },
     payTo: {
-      name: '',
+      name: profile?.full_name || '',
       address: ''
     },
     currency: 'USD',
@@ -41,6 +43,29 @@ const CreateInvoice: React.FC = () => {
     total: 0,
     logoUrl: null
   });
+
+  // Auto-generate invoice ID when component mounts
+  useEffect(() => {
+    if (!invoiceData.invoiceId) {
+      setInvoiceData(prev => ({
+        ...prev,
+        invoiceId: generateInvoiceId()
+      }));
+    }
+  }, [generateInvoiceId, invoiceData.invoiceId]);
+
+  // Pre-fill user information when profile loads
+  useEffect(() => {
+    if (profile && !invoiceData.payTo.name) {
+      setInvoiceData(prev => ({
+        ...prev,
+        payTo: {
+          ...prev.payTo,
+          name: profile.full_name || ''
+        }
+      }));
+    }
+  }, [profile, invoiceData.payTo.name]);
 
   // Show loading while auth is being checked
   if (!authChecked || authLoading) {
@@ -94,6 +119,14 @@ const CreateInvoice: React.FC = () => {
         </div>
       </div>
     </Layout>
+  );
+};
+
+const CreateInvoice: React.FC = () => {
+  return (
+    <InvoiceProvider>
+      <CreateInvoiceContent />
+    </InvoiceProvider>
   );
 };
 
