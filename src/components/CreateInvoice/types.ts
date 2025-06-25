@@ -20,6 +20,7 @@ export interface InvoiceFormData {
   billedTo: AddressInfo;
   payTo: AddressInfo;
   currency: string;
+  projectId?: string;
   lineItems: LineItem[];
   subtotal: number;
   tax: number;
