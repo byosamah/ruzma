@@ -9,4 +9,5 @@ export interface Invoice {
   date: Date;
   status: InvoiceStatus;
   projectId: string;
+  invoiceData?: any; // Store the original InvoiceFormData
 }

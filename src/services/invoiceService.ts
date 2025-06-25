@@ -1,4 +1,3 @@
-
 import { supabase } from '@/integrations/supabase/client';
 import { Invoice, InvoiceStatus } from '@/hooks/invoices/types';
 import { InvoiceFormData } from '@/components/CreateInvoice/types';
@@ -24,7 +23,8 @@ const convertToInvoice = (dbInvoice: DatabaseInvoice): Invoice => ({
   projectName: dbInvoice.project_name,
   date: new Date(dbInvoice.date),
   status: dbInvoice.status as InvoiceStatus,
-  projectId: dbInvoice.project_id || crypto.randomUUID()
+  projectId: dbInvoice.project_id || crypto.randomUUID(),
+  invoiceData: dbInvoice.invoice_data
 });
 
 const convertFromInvoice = (invoice: Invoice, userId: string, invoiceData?: InvoiceFormData) => ({
@@ -35,7 +35,7 @@ const convertFromInvoice = (invoice: Invoice, userId: string, invoiceData?: Invo
   date: invoice.date.toISOString().split('T')[0],
   status: invoice.status as string,
   project_id: invoice.projectId,
-  invoice_data: invoiceData ? JSON.parse(JSON.stringify(invoiceData)) : null
+  invoice_data: invoiceData ? JSON.stringify(invoiceData) : null
 });
 
 export const invoiceService = {

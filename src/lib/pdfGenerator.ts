@@ -1,4 +1,3 @@
-
 import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
 import { Invoice } from '@/hooks/useInvoices';
@@ -39,13 +38,34 @@ export const generateInvoicePDF = async (invoiceData: InvoicePDFData): Promise<v
     container.innerHTML = generateInvoiceHTML(invoiceData);
     document.body.appendChild(container);
 
+    // Wait for images to load if logo is present
+    if (invoiceData.logoUrl) {
+      await new Promise((resolve) => {
+        const img = container.querySelector('img');
+        if (img) {
+          if (img.complete) {
+            resolve(null);
+          } else {
+            img.onload = () => resolve(null);
+            img.onerror = () => resolve(null);
+            // Fallback timeout
+            setTimeout(resolve, 2000);
+          }
+        } else {
+          resolve(null);
+        }
+      });
+    }
+
     // Convert to canvas
     const canvas = await html2canvas(container, {
       scale: 2,
       useCORS: true,
       backgroundColor: '#ffffff',
       width: 800,
-      height: container.scrollHeight
+      height: container.scrollHeight,
+      allowTaint: true,
+      foreignObjectRendering: true
     });
 
     // Remove temporary container
@@ -111,8 +131,8 @@ const generateInvoiceHTML = (data: InvoicePDFData): string => {
         </div>
         
         ${data.logoUrl ? `
-          <div style="width: 100px; height: 100px; background: #f3f4f6; border-radius: 8px; display: flex; align-items: center; justify-content: center;">
-            <img src="${data.logoUrl}" alt="Logo" style="max-width: 100%; max-height: 100%; object-fit: contain; border-radius: 8px;" />
+          <div style="width: 100px; height: 100px; background: #f3f4f6; border-radius: 8px; display: flex; align-items: center; justify-content: center; overflow: hidden;">
+            <img src="${data.logoUrl}" alt="Logo" style="max-width: 100%; max-height: 100%; object-fit: contain; border-radius: 8px;" crossorigin="anonymous" />
           </div>
         ` : `
           <div style="width: 100px; height: 100px; background: #f3f4f6; border-radius: 8px; display: flex; align-items: center; justify-content: center;">
