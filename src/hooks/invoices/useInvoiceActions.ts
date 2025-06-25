@@ -1,3 +1,4 @@
+
 import { toast } from 'sonner';
 import { Invoice } from './types';
 import { generateInvoicePDF, InvoicePDFData } from '@/lib/pdfGenerator';
@@ -61,7 +62,7 @@ export const useInvoiceActions = (
         }
       }
 
-      // Create invoice PDF data with proper fallbacks
+      // Create invoice PDF data with all the correct information
       const invoicePDFData: InvoicePDFData = {
         invoice,
         billedTo: {
@@ -82,7 +83,12 @@ export const useInvoiceActions = (
               }
             ],
         currency: originalData?.currency || profile?.currency || 'USD',
-        logoUrl: originalData?.logoUrl || branding?.logo_url
+        logoUrl: originalData?.logoUrl || branding?.logo_url,
+        purchaseOrder: originalData?.purchaseOrder || '',
+        paymentTerms: originalData?.paymentTerms || '',
+        tax: originalData?.tax || 0,
+        invoiceDate: originalData?.invoiceDate ? new Date(originalData.invoiceDate) : invoice.date,
+        dueDate: originalData?.dueDate ? new Date(originalData.dueDate) : new Date(invoice.date.getTime() + 30 * 24 * 60 * 60 * 1000)
       };
 
       console.log('Final PDF data to be generated:', invoicePDFData);

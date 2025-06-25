@@ -21,6 +21,11 @@ export interface InvoicePDFData {
   }>;
   currency: string;
   logoUrl?: string;
+  purchaseOrder?: string;
+  paymentTerms?: string;
+  tax: number;
+  invoiceDate: Date;
+  dueDate: Date;
 }
 
 export const generateInvoicePDF = async (invoiceData: InvoicePDFData): Promise<void> => {
@@ -159,7 +164,7 @@ const generateInvoiceHTML = (data: InvoicePDFData): string => {
   console.log('Generating HTML for invoice data:', data);
   
   const subtotal = data.lineItems.reduce((sum, item) => sum + (item.quantity * item.amount), 0);
-  const tax = 0; // You can add tax calculation here if needed
+  const tax = data.tax || 0;
   const total = subtotal + tax;
 
   // Use table-based layout for better compatibility with html2canvas
@@ -177,12 +182,24 @@ const generateInvoiceHTML = (data: InvoicePDFData): string => {
               </tr>
               <tr>
                 <td style="color: #666666; width: 140px; padding: 4px 0;">Invoice Date:</td>
-                <td style="color: #000000; padding: 4px 0;">${format(data.invoice.date, 'MM/dd/yyyy')}</td>
+                <td style="color: #000000; padding: 4px 0;">${format(data.invoiceDate, 'MM/dd/yyyy')}</td>
               </tr>
               <tr>
                 <td style="color: #666666; width: 140px; padding: 4px 0;">Due date:</td>
-                <td style="color: #000000; padding: 4px 0;">${format(new Date(data.invoice.date.getTime() + 30 * 24 * 60 * 60 * 1000), 'MM/dd/yyyy')}</td>
+                <td style="color: #000000; padding: 4px 0;">${format(data.dueDate, 'MM/dd/yyyy')}</td>
               </tr>
+              ${data.purchaseOrder ? `
+                <tr>
+                  <td style="color: #666666; width: 140px; padding: 4px 0;">Purchase Order:</td>
+                  <td style="color: #000000; padding: 4px 0;">${data.purchaseOrder}</td>
+                </tr>
+              ` : ''}
+              ${data.paymentTerms ? `
+                <tr>
+                  <td style="color: #666666; width: 140px; padding: 4px 0;">Payment Terms:</td>
+                  <td style="color: #000000; padding: 4px 0;">${data.paymentTerms}</td>
+                </tr>
+              ` : ''}
             </table>
           </td>
           <td width="40%" style="text-align: right; vertical-align: top;">
