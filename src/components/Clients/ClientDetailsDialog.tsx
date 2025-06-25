@@ -47,7 +47,17 @@ const ClientDetailsDialog: React.FC<ClientDetailsDialogProps> = ({
         return;
       }
 
-      setProjects(data || []);
+      // Type the data properly to match DatabaseProject interface
+      const typedProjects = (data || []).map(project => ({
+        ...project,
+        milestones: project.milestones.map((milestone: any) => ({
+          ...milestone,
+          status: milestone.status as 'pending' | 'payment_submitted' | 'approved' | 'rejected',
+          watermark_text: milestone.watermark_text ?? null,
+        }))
+      })) as DatabaseProject[];
+
+      setProjects(typedProjects);
     } catch (error) {
       console.error('Error:', error);
     } finally {
