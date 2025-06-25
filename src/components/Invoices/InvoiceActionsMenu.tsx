@@ -1,6 +1,6 @@
 
-import React from 'react';
-import { MoreHorizontal, Download, Send, Trash2 } from 'lucide-react';
+import React, { useState } from 'react';
+import { MoreHorizontal, Download, Send, Trash2, Loader2 } from 'lucide-react';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -12,7 +12,7 @@ import { useT } from '@/lib/i18n';
 
 interface InvoiceActionsMenuProps {
   invoiceId: string;
-  onDownloadPDF: (id: string) => void;
+  onDownloadPDF: (id: string) => Promise<void>;
   onResendInvoice: (id: string) => void;
   onDeleteInvoice: (id: string) => void;
 }
@@ -24,10 +24,18 @@ const InvoiceActionsMenu: React.FC<InvoiceActionsMenuProps> = ({
   onDeleteInvoice
 }) => {
   const t = useT();
+  const [isDownloading, setIsDownloading] = useState(false);
 
-  const handleDownload = (e: React.MouseEvent) => {
+  const handleDownload = async (e: React.MouseEvent) => {
     e.stopPropagation();
-    onDownloadPDF(invoiceId);
+    if (isDownloading) return;
+    
+    setIsDownloading(true);
+    try {
+      await onDownloadPDF(invoiceId);
+    } finally {
+      setIsDownloading(false);
+    }
   };
 
   const handleResend = (e: React.MouseEvent) => {
@@ -51,9 +59,13 @@ const InvoiceActionsMenu: React.FC<InvoiceActionsMenuProps> = ({
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="w-48">
-        <DropdownMenuItem onClick={handleDownload} className="cursor-pointer">
-          <Download className="mr-2 h-4 w-4" />
-          {t('downloadPDF')}
+        <DropdownMenuItem onClick={handleDownload} className="cursor-pointer" disabled={isDownloading}>
+          {isDownloading ? (
+            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+          ) : (
+            <Download className="mr-2 h-4 w-4" />
+          )}
+          {isDownloading ? 'Generating PDF...' : t('downloadPDF')}
         </DropdownMenuItem>
         <DropdownMenuItem onClick={handleResend} className="cursor-pointer">
           <Send className="mr-2 h-4 w-4" />

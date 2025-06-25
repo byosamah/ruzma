@@ -16,7 +16,7 @@ import InvoiceActionsMenu from './InvoiceActionsMenu';
 
 interface InvoiceTableProps {
   invoices: Invoice[];
-  onDownloadPDF: (id: string) => void;
+  onDownloadPDF: (id: string) => Promise<void>;
   onResendInvoice: (id: string) => void;
   onDeleteInvoice: (id: string) => void;
 }
