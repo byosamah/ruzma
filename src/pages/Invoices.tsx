@@ -8,6 +8,7 @@ import { FileText, DollarSign, Clock, CheckCircle, Plus } from 'lucide-react';
 import { useInvoices } from '@/hooks/useInvoices';
 import { useAuth } from '@/hooks/dashboard/useAuth';
 import { useUserProfile } from '@/hooks/dashboard/useUserProfile';
+import { useUserCurrency } from '@/hooks/useUserCurrency';
 import { useT } from '@/lib/i18n';
 import InvoiceFilters from '@/components/Invoices/InvoiceFilters';
 import InvoiceTable from '@/components/Invoices/InvoiceTable';
@@ -24,6 +25,7 @@ const Invoices: React.FC = () => {
     profile,
     loading: profileLoading
   } = useUserProfile(user);
+  const { formatCurrency } = useUserCurrency(user);
   const {
     invoices,
     loading: invoicesLoading,
@@ -65,13 +67,6 @@ const Invoices: React.FC = () => {
         </div>
       </Layout>;
   }
-
-  const formatCurrency = (amount: number) => {
-    return new Intl.NumberFormat('en-US', {
-      style: 'currency',
-      currency: 'USD'
-    }).format(amount);
-  };
 
   return <Layout user={profile || user}>
       <div className="space-y-6">
