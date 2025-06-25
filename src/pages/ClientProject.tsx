@@ -11,6 +11,7 @@ import ProjectInstructionsCard from "@/components/ProjectClient/ProjectInstructi
 import ProjectMilestonesList from "@/components/ProjectClient/ProjectMilestonesList";
 import ProjectFooter from "@/components/ProjectClient/ProjectFooter";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { parseClientToken } from "@/lib/clientUrlUtils";
 
 const ClientProject = () => {
   const { token } = useParams<{ token: string }>();
@@ -18,6 +19,10 @@ const ClientProject = () => {
   
   console.log('ClientProject: token from params:', token);
   console.log('ClientProject: current pathname:', window.location.pathname);
+  
+  // Parse the token to handle both legacy and hybrid formats
+  const parsedToken = token ? parseClientToken(token) : null;
+  console.log('ClientProject: parsed token:', parsedToken);
   
   const {
     project,
@@ -27,7 +32,7 @@ const ClientProject = () => {
     handleDeliverableDownload,
     userCurrency,
     freelancerCurrency,
-  } = useClientProject(token);
+  } = useClientProject(parsedToken?.token, parsedToken?.isHybrid);
 
   const {
     branding,
@@ -38,8 +43,8 @@ const ClientProject = () => {
     return <ClientProjectLoading />;
   }
 
-  if (error || !project) {
-    console.log('ClientProject: error or no project:', { error, project });
+  if (error || !project || !parsedToken) {
+    console.log('ClientProject: error or no project:', { error, project, parsedToken });
     return <ClientProjectError error={error} />;
   }
 

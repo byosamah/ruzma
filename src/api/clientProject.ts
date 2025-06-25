@@ -2,11 +2,11 @@
 import { supabase } from '@/integrations/supabase/client';
 import { DatabaseProject } from '@/hooks/projectTypes';
 
-export const getClientProject = async (token: string): Promise<DatabaseProject> => {
-  console.log('Fetching project with token:', token);
+export const getClientProject = async (token: string, isHybrid?: boolean): Promise<DatabaseProject> => {
+  console.log('Fetching project with token:', token, 'isHybrid:', isHybrid);
   
   const { data, error: invokeError } = await supabase.functions.invoke('get-client-project', {
-    body: { token },
+    body: { token, isHybrid },
   });
 
   console.log('Edge function response:', { data, invokeError });

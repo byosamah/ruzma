@@ -11,15 +11,15 @@ const isValidCurrencyCode = (currency: string): currency is CurrencyCode => {
   return validCurrencies.includes(currency as CurrencyCode);
 };
 
-export const useClientProject = (token?: string) => {
+export const useClientProject = (token?: string, isHybrid?: boolean) => {
   const queryClient = useQueryClient();
   const userCurrency = useUserCurrency();
 
   const { data: project, isLoading, error: queryError } = useQuery({
-    queryKey: ['clientProject', token],
+    queryKey: ['clientProject', token, isHybrid],
     queryFn: () => {
       if (!token) throw new Error('No project token provided.');
-      return getClientProject(token);
+      return getClientProject(token, isHybrid);
     },
     enabled: !!token,
   });
@@ -28,7 +28,7 @@ export const useClientProject = (token?: string) => {
     mutationFn: uploadPaymentProof,
     onSuccess: () => {
       toast.success('Payment proof uploaded successfully!');
-      queryClient.invalidateQueries({ queryKey: ['clientProject', token] });
+      queryClient.invalidateQueries({ queryKey: ['clientProject', token, isHybrid] });
     },
     onError: (err: any) => {
       toast.error(err.message || 'An unexpected error occurred during upload.');

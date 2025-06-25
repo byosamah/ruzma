@@ -23,6 +23,23 @@ interface SendClientLinkRequest {
   userId?: string;
 }
 
+// Generate hybrid token from slug and full token
+const generateHybridToken = (projectName: string, fullToken: string): string => {
+  // Generate slug from project name
+  const slug = projectName
+    .toLowerCase()
+    .trim()
+    .replace(/[^a-z0-9\s-]/g, '')
+    .replace(/\s+/g, '-')
+    .replace(/-+/g, '-')
+    .replace(/^-|-$/g, '') || 'project';
+  
+  // Use first 8 characters of UUID
+  const shortToken = fullToken.substring(0, 8);
+  
+  return `${slug}-${shortToken}`;
+};
+
 const handler = async (req: Request): Promise<Response> => {
   // Handle CORS preflight requests
   if (req.method === "OPTIONS") {
@@ -48,8 +65,11 @@ const handler = async (req: Request): Promise<Response> => {
       }
     }
 
-    // Use the correct app domain
-    const clientUrl = `https://hub.ruzma.co/client/project/${clientToken}`;
+    // Generate hybrid token for user-friendly URL
+    const hybridToken = generateHybridToken(projectName, clientToken);
+    
+    // Use the hybrid URL format
+    const clientUrl = `https://hub.ruzma.co/client/project/${hybridToken}`;
 
     const emailResponse = await resend.emails.send({
       from: "Ruzma <notifications@ruzma.co>",

@@ -1,133 +1,182 @@
-import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
+
+import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
+import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.50.0';
+
+const supabase = createClient(
+  Deno.env.get('SUPABASE_URL') ?? '',
+  Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
+);
 
 const corsHeaders = {
-  'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
-}
+  "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
+};
 
-Deno.serve(async (req) => {
-  // Handle CORS preflight requests
-  if (req.method === 'OPTIONS') {
-    return new Response('ok', { headers: corsHeaders })
+// Check if a string is a valid UUID
+const isUUID = (str: string): boolean => {
+  const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+  return uuidRegex.test(str);
+};
+
+// Parse hybrid token format: slug-shorttoken
+const parseHybridToken = (token: string): { slug?: string; shortToken: string; isHybrid: boolean } => {
+  // Check if it's a full UUID (legacy format)
+  if (isUUID(token)) {
+    return { shortToken: token, isHybrid: false };
+  }
+
+  // Try to parse hybrid format
+  const lastDashIndex = token.lastIndexOf('-');
+  if (lastDashIndex === -1) {
+    return { shortToken: token, isHybrid: false };
+  }
+
+  const potentialSlug = token.substring(0, lastDashIndex);
+  const potentialShortToken = token.substring(lastDashIndex + 1);
+
+  // Validate short token format (8 hex chars)
+  const shortTokenRegex = /^[0-9a-f]{8}$/i;
+  if (shortTokenRegex.test(potentialShortToken)) {
+    return {
+      slug: potentialSlug,
+      shortToken: potentialShortToken,
+      isHybrid: true
+    };
+  }
+
+  return { shortToken: token, isHybrid: false };
+};
+
+const handler = async (req: Request): Promise<Response> => {
+  if (req.method === "OPTIONS") {
+    return new Response(null, { headers: corsHeaders });
   }
 
   try {
-    console.log('get-client-project function called')
-    console.log('Request method:', req.method)
+    const { token, isHybrid } = await req.json();
     
-    const requestBody = await req.json().catch((e) => {
-      console.error('Failed to parse request body as JSON:', e.message)
-      return null
-    })
+    console.log('Received token:', token, 'isHybrid flag:', isHybrid);
 
-    if (!requestBody) {
-      return new Response(JSON.stringify({ error: 'Invalid or empty JSON body' }), {
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-        status: 400,
-      })
-    }
-    
-    const { token } = requestBody;
-    console.log('Received token:', token)
-    
     if (!token) {
-      console.error('No token provided in request body')
-      return new Response(JSON.stringify({ error: 'Token is required' }), {
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-        status: 400,
-      })
+      return new Response(
+        JSON.stringify({ error: "Token is required" }),
+        { 
+          status: 400, 
+          headers: { "Content-Type": "application/json", ...corsHeaders } 
+        }
+      );
     }
 
-    const supabaseUrl = Deno.env.get('SUPABASE_URL')
-    const supabaseServiceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')
+    // Parse the token
+    const parsedToken = parseHybridToken(token);
+    console.log('Parsed token:', parsedToken);
+
+    let query;
     
-    if (!supabaseUrl || !supabaseServiceKey) {
-      console.error('Missing Supabase environment variables')
-      return new Response(JSON.stringify({ error: 'Server configuration error' }), {
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-        status: 500,
-      })
-    }
-
-    const supabaseAdmin = createClient(supabaseUrl, supabaseServiceKey)
-
-    console.log('Searching for project...')
-    
-    // Try to find project by client_access_token first
-    let { data: projectData, error: projectError } = await supabaseAdmin
-      .from('projects')
-      .select('*, milestones (*)')
-      .eq('client_access_token', token)
-      .maybeSingle();
-
-    console.log('Search by client_access_token result:', { projectData, projectError })
-
-    // If not found by client_access_token, try by project ID (for backward compatibility)
-    if (!projectData && !projectError) {
-      console.log('Not found by client_access_token, trying by project ID...')
-      const { data: projectByIdData, error: projectByIdError } = await supabaseAdmin
-        .from('projects')
-        .select('*, milestones (*)')
-        .eq('id', token)
-        .maybeSingle();
-        
-      console.log('Search by project ID result:', { projectByIdData, projectByIdError })
+    if (parsedToken.isHybrid && parsedToken.shortToken) {
+      // For hybrid tokens, search by the short token prefix
+      console.log('Searching for project with short token:', parsedToken.shortToken);
       
-      if (projectByIdData) {
-        projectData = projectByIdData;
-        projectError = projectByIdError;
+      query = supabase
+        .from('projects')
+        .select(`
+          *,
+          milestones (*),
+          profiles!projects_user_id_fkey (
+            currency,
+            full_name
+          )
+        `)
+        .like('client_access_token', `${parsedToken.shortToken}%`);
+    } else {
+      // For legacy full tokens
+      console.log('Searching for project with full token:', parsedToken.shortToken);
+      
+      query = supabase
+        .from('projects')
+        .select(`
+          *,
+          milestones (*),
+          profiles!projects_user_id_fkey (
+            currency,
+            full_name
+          )
+        `)
+        .eq('client_access_token', parsedToken.shortToken);
+    }
+
+    const { data: projects, error } = await query;
+
+    if (error) {
+      console.error('Database error:', error);
+      return new Response(
+        JSON.stringify({ error: "Database error occurred" }),
+        { 
+          status: 500, 
+          headers: { "Content-Type": "application/json", ...corsHeaders } 
+        }
+      );
+    }
+
+    if (!projects || projects.length === 0) {
+      console.log('No project found for token');
+      return new Response(
+        JSON.stringify({ error: "Project not found or access denied" }),
+        { 
+          status: 404, 
+          headers: { "Content-Type": "application/json", ...corsHeaders } 
+        }
+      );
+    }
+
+    let project = projects[0];
+
+    // If we have multiple matches (for hybrid tokens), validate the slug
+    if (parsedToken.isHybrid && parsedToken.slug && projects.length > 1) {
+      // Generate slug from project name and compare
+      const projectWithMatchingSlug = projects.find(p => {
+        const generatedSlug = p.name
+          .toLowerCase()
+          .trim()
+          .replace(/[^a-z0-9\s-]/g, '')
+          .replace(/\s+/g, '-')
+          .replace(/-+/g, '-')
+          .replace(/^-|-$/g, '') || 'project';
+        
+        return generatedSlug === parsedToken.slug;
+      });
+
+      if (projectWithMatchingSlug) {
+        project = projectWithMatchingSlug;
       }
     }
 
-    if (projectError) {
-      console.error('Database error:', projectError)
-      return new Response(JSON.stringify({ error: 'Database error occurred' }), {
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-        status: 500,
-      })
-    }
+    // Add freelancer currency from profile
+    const projectWithCurrency = {
+      ...project,
+      freelancer_currency: project.profiles?.currency || null
+    };
 
-    if (!projectData) {
-      console.error('Project not found with token:', token)
-      return new Response(JSON.stringify({ error: 'Project not found or access denied' }), {
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-        status: 404,
-      })
-    }
+    console.log('Found project:', projectWithCurrency.name);
 
-    // Fetch the freelancer's profile to get their preferred currency
-    const { data: profileData, error: profileError } = await supabaseAdmin
-      .from('profiles')
-      .select('currency')
-      .eq('id', projectData.user_id)
-      .maybeSingle();
+    return new Response(
+      JSON.stringify(projectWithCurrency),
+      { 
+        status: 200, 
+        headers: { "Content-Type": "application/json", ...corsHeaders } 
+      }
+    );
 
-    console.log('Freelancer profile result:', { profileData, profileError })
-
-    // Add freelancer's currency to the project data
-    if (profileData && profileData.currency) {
-      projectData.freelancer_currency = profileData.currency;
-    }
-
-    // Keep the user_id for branding lookup but don't expose it in the final response
-    const freelancerUserId = projectData.user_id;
-
-    // Sanitize response and do not leak internal details
-    delete projectData.user_id;
-
-    // Add the freelancer user ID back for branding purposes (this is safe for client access)
-    projectData.user_id = freelancerUserId;
-
-    console.log('Successfully found project:', projectData.name)
-    return new Response(JSON.stringify(projectData), {
-      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-      status: 200,
-    })
   } catch (error) {
-    console.error('Unexpected error:', error)
-    return new Response(JSON.stringify({ error: 'Internal server error', details: error.message }), {
-      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-      status: 500,
-    })
+    console.error('Function error:', error);
+    return new Response(
+      JSON.stringify({ error: "Internal server error" }),
+      { 
+        status: 500, 
+        headers: { "Content-Type": "application/json", ...corsHeaders } 
+      }
+    );
   }
-})
+};
+
+serve(handler);
