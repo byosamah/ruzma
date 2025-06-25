@@ -1,6 +1,7 @@
+
 import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
-import { Invoice } from '@/hooks/useInvoices';
+import { Invoice } from '@/hooks/invoices/types';
 import { format } from 'date-fns';
 
 export interface InvoicePDFData {
@@ -24,6 +25,8 @@ export interface InvoicePDFData {
 
 export const generateInvoicePDF = async (invoiceData: InvoicePDFData): Promise<void> => {
   try {
+    console.log('Starting PDF generation with data:', invoiceData);
+    
     // Create a temporary container for the invoice
     const container = document.createElement('div');
     container.style.position = 'absolute';
@@ -33,46 +36,69 @@ export const generateInvoicePDF = async (invoiceData: InvoicePDFData): Promise<v
     container.style.backgroundColor = 'white';
     container.style.padding = '40px';
     container.style.fontFamily = 'Arial, sans-serif';
+    container.style.color = '#000000';
 
     // Generate HTML content for the invoice
-    container.innerHTML = generateInvoiceHTML(invoiceData);
+    const htmlContent = generateInvoiceHTML(invoiceData);
+    console.log('Generated HTML content length:', htmlContent.length);
+    
+    container.innerHTML = htmlContent;
     document.body.appendChild(container);
 
     // Wait for images to load if logo is present
     if (invoiceData.logoUrl) {
+      console.log('Waiting for logo to load:', invoiceData.logoUrl);
       await new Promise((resolve) => {
         const img = container.querySelector('img');
         if (img) {
           if (img.complete) {
+            console.log('Logo already loaded');
             resolve(null);
           } else {
-            img.onload = () => resolve(null);
-            img.onerror = () => resolve(null);
+            img.onload = () => {
+              console.log('Logo loaded successfully');
+              resolve(null);
+            };
+            img.onerror = () => {
+              console.log('Logo failed to load');
+              resolve(null);
+            };
             // Fallback timeout
-            setTimeout(resolve, 2000);
+            setTimeout(() => {
+              console.log('Logo load timeout');
+              resolve(null);
+            }, 3000);
           }
         } else {
+          console.log('No image found in container');
           resolve(null);
         }
       });
     }
 
+    console.log('Converting to canvas...');
+    
     // Convert to canvas
     const canvas = await html2canvas(container, {
       scale: 2,
       useCORS: true,
       backgroundColor: '#ffffff',
       width: 800,
-      height: container.scrollHeight,
+      height: Math.max(container.scrollHeight, 1000),
       allowTaint: true,
-      foreignObjectRendering: true
+      foreignObjectRendering: true,
+      logging: true
     });
+
+    console.log('Canvas created with dimensions:', canvas.width, 'x', canvas.height);
 
     // Remove temporary container
     document.body.removeChild(container);
 
     // Create PDF
     const imgData = canvas.toDataURL('image/png');
+    console.log('Image data URL created, length:', imgData.length);
+    
     const pdf = new jsPDF('p', 'mm', 'a4');
     
     const imgWidth = 210; // A4 width in mm
@@ -95,6 +121,7 @@ export const generateInvoicePDF = async (invoiceData: InvoicePDFData): Promise<v
 
     // Generate filename and download
     const filename = `Invoice-${invoiceData.invoice.transactionId}-${format(invoiceData.invoice.date, 'yyyy-MM-dd')}.pdf`;
+    console.log('Saving PDF as:', filename);
     pdf.save(filename);
 
   } catch (error) {
@@ -104,12 +131,14 @@ export const generateInvoicePDF = async (invoiceData: InvoicePDFData): Promise<v
 };
 
 const generateInvoiceHTML = (data: InvoicePDFData): string => {
+  console.log('Generating HTML for invoice data:', data);
+  
   const subtotal = data.lineItems.reduce((sum, item) => sum + (item.quantity * item.amount), 0);
   const tax = 0; // You can add tax calculation here if needed
   const total = subtotal + tax;
 
-  return `
-    <div style="max-width: 800px; margin: 0 auto; padding: 40px; background: white; color: #000;">
+  const html = `
+    <div style="max-width: 800px; margin: 0 auto; padding: 40px; background: white; color: #000; font-family: Arial, sans-serif;">
       <!-- Header -->
       <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 40px;">
         <div>
@@ -147,17 +176,17 @@ const generateInvoiceHTML = (data: InvoicePDFData): string => {
       <!-- Billing Information -->
       <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 40px; margin-bottom: 40px;">
         <div>
-          <h3 style="font-weight: 600; margin-bottom: 12px; font-size: 16px;">Billed to:</h3>
+          <h3 style="font-weight: 600; margin-bottom: 12px; font-size: 16px; color: #000;">Billed to:</h3>
           <div style="color: #4b5563; font-size: 14px; line-height: 1.6;">
-            <div style="margin-bottom: 4px; font-weight: 500;">${data.billedTo.name || 'Client name'}</div>
-            <div style="white-space: pre-line;">${data.billedTo.address || 'Address'}</div>
+            <div style="margin-bottom: 4px; font-weight: 500; color: #000;">${data.billedTo.name}</div>
+            <div style="white-space: pre-line; color: #666;">${data.billedTo.address}</div>
           </div>
         </div>
         <div>
-          <h3 style="font-weight: 600; margin-bottom: 12px; font-size: 16px;">Pay to:</h3>
+          <h3 style="font-weight: 600; margin-bottom: 12px; font-size: 16px; color: #000;">Pay to:</h3>
           <div style="color: #4b5563; font-size: 14px; line-height: 1.6;">
-            <div style="margin-bottom: 4px; font-weight: 500;">${data.payTo.name || 'Your name'}</div>
-            <div style="white-space: pre-line;">${data.payTo.address || 'Address'}</div>
+            <div style="margin-bottom: 4px; font-weight: 500; color: #000;">${data.payTo.name}</div>
+            <div style="white-space: pre-line; color: #666;">${data.payTo.address}</div>
           </div>
         </div>
       </div>
@@ -165,8 +194,8 @@ const generateInvoiceHTML = (data: InvoicePDFData): string => {
       <!-- Currency -->
       <div style="text-align: right; margin-bottom: 30px;">
         <div style="font-size: 14px;">
-          <span style="color: #666; margin-right: 16px;">SET CURRENCY</span>
-          <span style="background: #f3f4f6; padding: 4px 12px; border-radius: 4px;">${data.currency}</span>
+          <span style="color: #666; margin-right: 16px;">CURRENCY</span>
+          <span style="background: #f3f4f6; padding: 4px 12px; border-radius: 4px; color: #000;">${data.currency}</span>
         </div>
       </div>
 
@@ -179,8 +208,8 @@ const generateInvoiceHTML = (data: InvoicePDFData): string => {
         </div>
 
         ${data.lineItems.map(item => `
-          <div style="display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 16px; font-size: 14px; margin-bottom: 16px;">
-            <div>${item.description || 'Description'}</div>
+          <div style="display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 16px; font-size: 14px; margin-bottom: 16px; color: #000;">
+            <div>${item.description}</div>
             <div style="text-align: center;">${item.quantity}</div>
             <div style="text-align: right;">${(item.quantity * item.amount).toFixed(2)}</div>
           </div>
@@ -189,13 +218,13 @@ const generateInvoiceHTML = (data: InvoicePDFData): string => {
 
       <!-- Totals -->
       <div style="margin-left: auto; width: 300px;">
-        <div style="margin-bottom: 12px; font-size: 14px; display: flex; justify-content: space-between;">
+        <div style="margin-bottom: 12px; font-size: 14px; display: flex; justify-content: space-between; color: #000;">
           <span style="color: #666;">SUBTOTAL</span>
           <span>${subtotal.toFixed(2)} ${data.currency}</span>
         </div>
         
         ${tax > 0 ? `
-          <div style="margin-bottom: 12px; font-size: 14px; display: flex; justify-content: space-between;">
+          <div style="margin-bottom: 12px; font-size: 14px; display: flex; justify-content: space-between; color: #000;">
             <span style="color: #666;">TAX</span>
             <span>${tax.toFixed(2)} ${data.currency}</span>
           </div>
@@ -203,11 +232,14 @@ const generateInvoiceHTML = (data: InvoicePDFData): string => {
 
         <div style="border-top: 1px solid #e5e7eb; padding-top: 12px;">
           <div style="display: flex; justify-content: space-between; align-items: center;">
-            <span style="font-weight: 600; font-size: 16px;">TOTAL</span>
-            <span style="font-size: 20px; font-weight: bold;">${total.toFixed(2)} ${data.currency}</span>
+            <span style="font-weight: 600; font-size: 16px; color: #000;">TOTAL</span>
+            <span style="font-size: 20px; font-weight: bold; color: #000;">${total.toFixed(2)} ${data.currency}</span>
           </div>
         </div>
       </div>
     </div>
   `;
+  
+  console.log('Generated HTML length:', html.length);
+  return html;
 };

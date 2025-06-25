@@ -41,12 +41,15 @@ export const useInvoiceActions = (
         .eq('user_id', user.id)
         .maybeSingle();
 
-      // Use stored invoice data if available, otherwise create fallback data
+      // Create invoice PDF data - use stored data if available, otherwise create fallback
       let invoicePDFData: InvoicePDFData;
       
-      if (invoice.invoiceData) {
-        // Use the stored invoice data
-        const originalData = invoice.invoiceData;
+      if (invoice.invoiceData && typeof invoice.invoiceData === 'object') {
+        // Parse the stored invoice data if it's a string
+        const originalData = typeof invoice.invoiceData === 'string' 
+          ? JSON.parse(invoice.invoiceData) 
+          : invoice.invoiceData;
+          
         invoicePDFData = {
           invoice,
           billedTo: {
@@ -57,13 +60,15 @@ export const useInvoiceActions = (
             name: originalData.payTo?.name || branding?.freelancer_name || profile?.full_name || 'Your Business Name',
             address: originalData.payTo?.address || 'Your Address\nCity, State, ZIP'
           },
-          lineItems: originalData.lineItems || [
-            {
-              description: `Project: ${invoice.projectName}`,
-              quantity: 1,
-              amount: invoice.amount
-            }
-          ],
+          lineItems: originalData.lineItems && originalData.lineItems.length > 0 
+            ? originalData.lineItems 
+            : [
+                {
+                  description: `Project: ${invoice.projectName}`,
+                  quantity: 1,
+                  amount: invoice.amount
+                }
+              ],
           currency: originalData.currency || profile?.currency || 'USD',
           logoUrl: originalData.logoUrl || branding?.logo_url
         };
@@ -91,6 +96,8 @@ export const useInvoiceActions = (
         };
       }
 
+      console.log('Generated invoice PDF data:', invoicePDFData);
+      
       await generateInvoicePDF(invoicePDFData);
       
       toast.success(`PDF downloaded successfully for ${invoice.transactionId}`, { id: 'pdf-generation' });
