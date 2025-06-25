@@ -10,7 +10,7 @@ export const useInvoiceValidation = (invoiceData: InvoiceFormData) => {
   const { addInvoice } = useInvoiceContext();
   const navigate = useNavigate();
 
-  const validateBasicFields = () => {
+  const validateForSending = () => {
     if (!invoiceData.invoiceId.trim()) {
       toast.error('Please enter an invoice ID');
       return false;
@@ -19,34 +19,11 @@ export const useInvoiceValidation = (invoiceData: InvoiceFormData) => {
       toast.error('Please enter client name');
       return false;
     }
-    return true;
-  };
-
-  const validateForSending = () => {
-    if (!validateBasicFields()) return false;
-    
     if (invoiceData.lineItems.every(item => !item.description.trim())) {
       toast.error('Please add at least one line item with description');
       return false;
     }
     return true;
-  };
-
-  const handleSave = async () => {
-    if (!validateBasicFields()) return;
-    
-    setIsLoading(true);
-    try {
-      addInvoice(invoiceData, 'draft');
-      // Navigate to invoices page after successful save
-      setTimeout(() => {
-        navigate('/invoices');
-      }, 1000);
-    } catch (error) {
-      toast.error('Failed to save invoice');
-    } finally {
-      setIsLoading(false);
-    }
   };
 
   const handleSend = async () => {
@@ -60,14 +37,13 @@ export const useInvoiceValidation = (invoiceData: InvoiceFormData) => {
         navigate('/invoices');
       }, 1000);
     } catch (error) {
-      toast.error('Failed to send invoice');
+      toast.error('Failed to create invoice');
     } finally {
       setIsLoading(false);
     }
   };
 
   return {
-    handleSave,
     handleSend,
     isLoading
   };

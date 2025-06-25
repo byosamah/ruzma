@@ -38,7 +38,7 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({ invoiceData, setInvoiceData }
     updateTax
   } = useInvoiceCalculations(invoiceData, setInvoiceData);
 
-  const { handleSave, handleSend, isLoading } = useInvoiceValidation(invoiceData);
+  const { handleSend, isLoading } = useInvoiceValidation(invoiceData);
 
   return (
     <div className="space-y-6">
@@ -68,7 +68,6 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({ invoiceData, setInvoiceData }
       />
 
       <InvoiceActions 
-        onSave={handleSave}
         onSend={handleSend}
         isLoading={isLoading}
       />
