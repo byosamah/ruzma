@@ -5,8 +5,8 @@ import { generateInvoicePDF, InvoicePDFData } from '@/lib/pdfGenerator';
 
 export const useInvoiceActions = (
   invoices: Invoice[],
-  updateInvoice: (id: string, updates: Partial<Invoice>) => void,
-  deleteInvoice: (id: string) => void
+  updateInvoice: (id: string, updates: Partial<Invoice>) => Promise<void>,
+  deleteInvoice: (id: string) => Promise<void>
 ) => {
   const handleDownloadPDF = async (invoiceId: string) => {
     const invoice = invoices.find(inv => inv.id === invoiceId);
@@ -48,7 +48,7 @@ export const useInvoiceActions = (
     }
   };
 
-  const handleResendInvoice = (invoiceId: string) => {
+  const handleResendInvoice = async (invoiceId: string) => {
     const invoice = invoices.find(inv => inv.id === invoiceId);
     if (invoice) {
       if (invoice.status === 'draft') {
@@ -61,8 +61,12 @@ export const useInvoiceActions = (
     }
   };
 
-  const handleDeleteInvoice = (invoiceId: string) => {
-    deleteInvoice(invoiceId);
+  const handleDeleteInvoice = async (invoiceId: string) => {
+    try {
+      await deleteInvoice(invoiceId);
+    } catch (error) {
+      console.error('Error deleting invoice:', error);
+    }
   };
 
   return {

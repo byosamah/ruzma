@@ -75,6 +75,48 @@ export type Database = {
         }
         Relationships: []
       }
+      invoices: {
+        Row: {
+          amount: number
+          created_at: string
+          date: string
+          id: string
+          invoice_data: Json | null
+          project_id: string | null
+          project_name: string
+          status: string
+          transaction_id: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          amount: number
+          created_at?: string
+          date: string
+          id?: string
+          invoice_data?: Json | null
+          project_id?: string | null
+          project_name: string
+          status?: string
+          transaction_id: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          amount?: number
+          created_at?: string
+          date?: string
+          id?: string
+          invoice_data?: Json | null
+          project_id?: string | null
+          project_name?: string
+          status?: string
+          transaction_id?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       milestones: {
         Row: {
           created_at: string

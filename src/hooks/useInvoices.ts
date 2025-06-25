@@ -7,7 +7,7 @@ import { useInvoiceActions } from './invoices/useInvoiceActions';
 export type { InvoiceStatus, Invoice } from './invoices/types';
 
 export const useInvoices = () => {
-  const { invoices, updateInvoice, deleteInvoice } = useInvoiceContext();
+  const { invoices, loading, updateInvoice, deleteInvoice } = useInvoiceContext();
   const {
     searchTerm,
     setSearchTerm,
@@ -24,6 +24,7 @@ export const useInvoices = () => {
 
   return {
     invoices: filteredInvoices,
+    loading,
     searchTerm,
     setSearchTerm,
     statusFilter,

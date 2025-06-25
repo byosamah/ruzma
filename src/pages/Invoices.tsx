@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import Layout from '@/components/Layout';
@@ -10,6 +11,7 @@ import { useUserProfile } from '@/hooks/dashboard/useUserProfile';
 import { useT } from '@/lib/i18n';
 import InvoiceFilters from '@/components/Invoices/InvoiceFilters';
 import InvoiceTable from '@/components/Invoices/InvoiceTable';
+
 const Invoices: React.FC = () => {
   const navigate = useNavigate();
   const t = useT();
@@ -24,6 +26,7 @@ const Invoices: React.FC = () => {
   } = useUserProfile(user);
   const {
     invoices,
+    loading: invoicesLoading,
     searchTerm,
     setSearchTerm,
     statusFilter,
@@ -55,19 +58,21 @@ const Invoices: React.FC = () => {
   }
 
   // Show loading for other data
-  if (profileLoading) {
+  if (profileLoading || invoicesLoading) {
     return <Layout user={profile || user}>
         <div className="flex items-center justify-center min-h-[50vh]">
           <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-gray-900"></div>
         </div>
       </Layout>;
   }
+
   const formatCurrency = (amount: number) => {
     return new Intl.NumberFormat('en-US', {
       style: 'currency',
       currency: 'USD'
     }).format(amount);
   };
+
   return <Layout user={profile || user}>
       <div className="space-y-6">
         {/* Header */}
@@ -153,4 +158,5 @@ const Invoices: React.FC = () => {
       </div>
     </Layout>;
 };
+
 export default Invoices;
