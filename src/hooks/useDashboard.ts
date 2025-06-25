@@ -15,7 +15,7 @@ export const useDashboard = () => {
   const { profile, loading: profileLoading } = useUserProfile(user);
   const { projects, loading: projectsLoading, deleteProject } = useProjects(user);
   const userCurrency = useUserCurrency(user);
-  const stats = useDashboardStats(projects, userCurrency.currency);
+  const stats = useDashboardStats(projects);
   const displayName = useDisplayName(profile, user);
   const handlers = useDashboardHandlers(profile, user, deleteProject);
   const { syncProjectCount } = useProjectCountSync();
