@@ -1,17 +1,17 @@
 
-import React from 'react';
+import React, { useState, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Layout from '@/components/Layout';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { FileText, DollarSign, Clock, CheckCircle } from 'lucide-react';
+import { useInvoices } from '@/hooks/useInvoices';
 import { useAuth } from '@/hooks/dashboard/useAuth';
 import { useUserProfile } from '@/hooks/dashboard/useUserProfile';
 import { useT } from '@/lib/i18n';
 import InvoiceFilters from '@/components/Invoices/InvoiceFilters';
 import InvoiceTable from '@/components/Invoices/InvoiceTable';
-import { InvoiceProvider, useInvoiceContext } from '@/contexts/InvoiceContext';
 
-const InvoicesContent: React.FC = () => {
+const Invoices: React.FC = () => {
   const navigate = useNavigate();
   const t = useT();
   const { user, loading: authLoading, authChecked } = useAuth();
@@ -25,7 +25,7 @@ const InvoicesContent: React.FC = () => {
     handleDownloadPDF,
     handleResendInvoice,
     handleDeleteInvoice
-  } = useInvoiceContext();
+  } = useInvoices();
 
   // Calculate stats
   const totalInvoices = invoices.length;
@@ -159,14 +159,6 @@ const InvoicesContent: React.FC = () => {
         </Card>
       </div>
     </Layout>
-  );
-};
-
-const Invoices: React.FC = () => {
-  return (
-    <InvoiceProvider>
-      <InvoicesContent />
-    </InvoiceProvider>
   );
 };
 
