@@ -4,8 +4,8 @@ import { Invoice } from './types';
 
 export const useInvoiceActions = (
   invoices: Invoice[],
-  setInvoices: React.Dispatch<React.SetStateAction<Invoice[]>>,
-  generateTransactionId: () => string
+  updateInvoice: (id: string, updates: Partial<Invoice>) => void,
+  deleteInvoice: (id: string) => void
 ) => {
   const handleDownloadPDF = (invoiceId: string) => {
     const invoice = invoices.find(inv => inv.id === invoiceId);
@@ -30,12 +30,7 @@ export const useInvoiceActions = (
   };
 
   const handleDeleteInvoice = (invoiceId: string) => {
-    const invoice = invoices.find(inv => inv.id === invoiceId);
-    if (invoice) {
-      setInvoices(prev => prev.filter(inv => inv.id !== invoiceId));
-      toast.success(`Invoice ${invoice.transactionId} has been deleted`);
-      console.log('Deleted invoice:', invoiceId);
-    }
+    deleteInvoice(invoiceId);
   };
 
   return {

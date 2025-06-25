@@ -1,5 +1,5 @@
 
-import { useInvoiceData } from './invoices/useInvoiceData';
+import { useInvoiceContext } from '@/contexts/InvoiceContext';
 import { useInvoiceFilters } from './invoices/useInvoiceFilters';
 import { useInvoiceActions } from './invoices/useInvoiceActions';
 
@@ -7,7 +7,7 @@ import { useInvoiceActions } from './invoices/useInvoiceActions';
 export type { InvoiceStatus, Invoice } from './invoices/types';
 
 export const useInvoices = () => {
-  const { invoices, setInvoices, generateTransactionId } = useInvoiceData();
+  const { invoices, updateInvoice, deleteInvoice } = useInvoiceContext();
   const {
     searchTerm,
     setSearchTerm,
@@ -20,7 +20,7 @@ export const useInvoices = () => {
     handleDownloadPDF,
     handleResendInvoice,
     handleDeleteInvoice
-  } = useInvoiceActions(invoices, setInvoices, generateTransactionId);
+  } = useInvoiceActions(invoices, updateInvoice, deleteInvoice);
 
   return {
     invoices: filteredInvoices,

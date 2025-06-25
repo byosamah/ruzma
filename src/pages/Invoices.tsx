@@ -1,9 +1,10 @@
 
-import React, { useState, useMemo } from 'react';
+import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import Layout from '@/components/Layout';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { FileText, DollarSign, Clock, CheckCircle } from 'lucide-react';
+import { Card, CardContent } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { FileText, DollarSign, Clock, CheckCircle, Plus } from 'lucide-react';
 import { useInvoices } from '@/hooks/useInvoices';
 import { useAuth } from '@/hooks/dashboard/useAuth';
 import { useUserProfile } from '@/hooks/dashboard/useUserProfile';
@@ -72,9 +73,15 @@ const Invoices: React.FC = () => {
     <Layout user={profile || user}>
       <div className="space-y-6">
         {/* Header */}
-        <div>
-          <h1 className="text-3xl font-bold text-gray-900">{t('invoices')}</h1>
-          <p className="text-gray-600 mt-1">Manage and track all your invoices in one place</p>
+        <div className="flex justify-between items-center">
+          <div>
+            <h1 className="text-3xl font-bold text-gray-900">{t('invoices')}</h1>
+            <p className="text-gray-600 mt-1">Manage and track all your invoices in one place</p>
+          </div>
+          <Button onClick={() => navigate('/create-invoice')} className="flex items-center gap-2">
+            <Plus className="w-4 h-4" />
+            Create Invoice
+          </Button>
         </div>
 
         {/* Stats Cards */}
@@ -138,10 +145,11 @@ const Invoices: React.FC = () => {
 
         {/* Invoices Table */}
         <Card>
-          <CardHeader>
-            <CardTitle>All Invoices</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-4">
+          <CardContent className="p-6 space-y-4">
+            <div className="flex justify-between items-center">
+              <h2 className="text-xl font-semibold">All Invoices</h2>
+            </div>
+            
             <InvoiceFilters
               searchTerm={searchTerm}
               onSearchChange={setSearchTerm}

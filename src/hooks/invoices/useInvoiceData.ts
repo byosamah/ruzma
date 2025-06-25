@@ -1,20 +1,12 @@
 
-import { useState } from 'react';
-import { Invoice } from './types';
-import { initialMockInvoices } from './mockInvoiceData';
+import { useInvoiceContext } from '@/contexts/InvoiceContext';
 
 export const useInvoiceData = () => {
-  const [invoices, setInvoices] = useState<Invoice[]>(initialMockInvoices);
-
-  const generateTransactionId = () => {
-    const year = new Date().getFullYear();
-    const nextNumber = invoices.length + 1;
-    return `TXN-${year}-${nextNumber.toString().padStart(3, '0')}`;
-  };
+  const { invoices, generateTransactionId } = useInvoiceContext();
 
   return {
     invoices,
-    setInvoices,
+    setInvoices: () => {}, // This is handled by the context now
     generateTransactionId
   };
 };

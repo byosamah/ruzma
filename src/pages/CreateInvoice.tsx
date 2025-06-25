@@ -1,9 +1,10 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Layout from '@/components/Layout';
 import { useAuth } from '@/hooks/dashboard/useAuth';
 import { useUserProfile } from '@/hooks/dashboard/useUserProfile';
+import { useInvoiceContext } from '@/contexts/InvoiceContext';
 import InvoiceForm from '@/components/CreateInvoice/InvoiceForm';
 import InvoicePreview from '@/components/CreateInvoice/InvoicePreview';
 import { InvoiceFormData } from '@/components/CreateInvoice/types';
@@ -12,6 +13,7 @@ const CreateInvoice: React.FC = () => {
   const navigate = useNavigate();
   const { user, loading: authLoading, authChecked } = useAuth();
   const { profile, loading: profileLoading } = useUserProfile(user);
+  const { generateInvoiceId } = useInvoiceContext();
 
   const [invoiceData, setInvoiceData] = useState<InvoiceFormData>({
     invoiceId: '',
@@ -41,6 +43,21 @@ const CreateInvoice: React.FC = () => {
     total: 0,
     logoUrl: null
   });
+
+  // Auto-generate invoice ID and pre-fill user data when component mounts
+  useEffect(() => {
+    if (profile || user) {
+      setInvoiceData(prev => ({
+        ...prev,
+        invoiceId: prev.invoiceId || generateInvoiceId(),
+        payTo: {
+          name: profile?.full_name || user?.user_metadata?.full_name || '',
+          address: profile?.business_address || ''
+        },
+        currency: profile?.currency || 'USD'
+      }));
+    }
+  }, [profile, user, generateInvoiceId]);
 
   // Show loading while auth is being checked
   if (!authChecked || authLoading) {

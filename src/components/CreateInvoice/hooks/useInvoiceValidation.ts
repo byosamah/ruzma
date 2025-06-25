@@ -1,8 +1,15 @@
 
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { InvoiceFormData } from '../types';
+import { useInvoiceContext } from '@/contexts/InvoiceContext';
 import { toast } from 'sonner';
 
 export const useInvoiceValidation = (invoiceData: InvoiceFormData) => {
+  const [isLoading, setIsLoading] = useState(false);
+  const { addInvoice } = useInvoiceContext();
+  const navigate = useNavigate();
+
   const validateBasicFields = () => {
     if (!invoiceData.invoiceId.trim()) {
       toast.error('Please enter an invoice ID');
@@ -25,20 +32,43 @@ export const useInvoiceValidation = (invoiceData: InvoiceFormData) => {
     return true;
   };
 
-  const handleSave = () => {
-    if (validateBasicFields()) {
-      toast.success('Invoice saved as draft');
+  const handleSave = async () => {
+    if (!validateBasicFields()) return;
+    
+    setIsLoading(true);
+    try {
+      addInvoice(invoiceData, 'draft');
+      // Navigate to invoices page after successful save
+      setTimeout(() => {
+        navigate('/invoices');
+      }, 1000);
+    } catch (error) {
+      toast.error('Failed to save invoice');
+    } finally {
+      setIsLoading(false);
     }
   };
 
-  const handleSend = () => {
-    if (validateForSending()) {
-      toast.success('Invoice sent successfully');
+  const handleSend = async () => {
+    if (!validateForSending()) return;
+    
+    setIsLoading(true);
+    try {
+      addInvoice(invoiceData, 'sent');
+      // Navigate to invoices page after successful send
+      setTimeout(() => {
+        navigate('/invoices');
+      }, 1000);
+    } catch (error) {
+      toast.error('Failed to send invoice');
+    } finally {
+      setIsLoading(false);
     }
   };
 
   return {
     handleSave,
-    handleSend
+    handleSend,
+    isLoading
   };
 };
