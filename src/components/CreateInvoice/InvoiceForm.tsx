@@ -11,7 +11,7 @@ import { CalendarIcon, Upload, Plus, Trash2, Save, Send } from 'lucide-react';
 import { format } from 'date-fns';
 import { cn } from '@/lib/utils';
 import { InvoiceFormData, LineItem } from './types';
-import { CURRENCIES, CurrencyCode } from '@/lib/currency';
+import { CURRENCIES } from '@/lib/currency';
 import { toast } from 'sonner';
 
 interface InvoiceFormProps {
@@ -20,6 +20,8 @@ interface InvoiceFormProps {
 }
 
 const InvoiceForm: React.FC<InvoiceFormProps> = ({ invoiceData, setInvoiceData }) => {
+  const [showTaxInput, setShowTaxInput] = React.useState(false);
+
   const updateField = (field: keyof InvoiceFormData, value: any) => {
     setInvoiceData(prev => ({ ...prev, [field]: value }));
   };
@@ -48,35 +50,47 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({ invoiceData, setInvoiceData }
   };
 
   const updateLineItem = (id: string, field: keyof LineItem, value: any) => {
-    setInvoiceData(prev => ({
-      ...prev,
-      lineItems: prev.lineItems.map(item =>
+    setInvoiceData(prev => {
+      const updatedItems = prev.lineItems.map(item =>
         item.id === id ? { ...item, [field]: value } : item
-      )
-    }));
-    calculateTotals();
+      );
+      
+      // Calculate totals immediately
+      const subtotal = updatedItems.reduce((sum, item) => sum + (item.quantity * item.amount), 0);
+      const total = subtotal + prev.tax;
+      
+      return {
+        ...prev,
+        lineItems: updatedItems,
+        subtotal,
+        total
+      };
+    });
   };
 
   const removeLineItem = (id: string) => {
-    setInvoiceData(prev => ({
-      ...prev,
-      lineItems: prev.lineItems.filter(item => item.id !== id)
-    }));
-    calculateTotals();
+    setInvoiceData(prev => {
+      const updatedItems = prev.lineItems.filter(item => item.id !== id);
+      
+      // Recalculate totals
+      const subtotal = updatedItems.reduce((sum, item) => sum + (item.quantity * item.amount), 0);
+      const total = subtotal + prev.tax;
+      
+      return {
+        ...prev,
+        lineItems: updatedItems,
+        subtotal,
+        total
+      };
+    });
   };
 
-  const calculateTotals = () => {
-    setTimeout(() => {
-      setInvoiceData(prev => {
-        const subtotal = prev.lineItems.reduce((sum, item) => sum + (item.quantity * item.amount), 0);
-        const total = subtotal + prev.tax;
-        return {
-          ...prev,
-          subtotal,
-          total
-        };
-      });
-    }, 0);
+  const updateTax = (taxAmount: number) => {
+    setInvoiceData(prev => ({
+      ...prev,
+      tax: taxAmount,
+      total: prev.subtotal + taxAmount
+    }));
   };
 
   const handleLogoUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -91,10 +105,30 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({ invoiceData, setInvoiceData }
   };
 
   const handleSave = () => {
+    if (!invoiceData.invoiceId.trim()) {
+      toast.error('Please enter an invoice ID');
+      return;
+    }
+    if (!invoiceData.billedTo.name.trim()) {
+      toast.error('Please enter client name');
+      return;
+    }
     toast.success('Invoice saved as draft');
   };
 
   const handleSend = () => {
+    if (!invoiceData.invoiceId.trim()) {
+      toast.error('Please enter an invoice ID');
+      return;
+    }
+    if (!invoiceData.billedTo.name.trim()) {
+      toast.error('Please enter client name');
+      return;
+    }
+    if (invoiceData.lineItems.every(item => !item.description.trim())) {
+      toast.error('Please add at least one line item with description');
+      return;
+    }
     toast.success('Invoice sent successfully');
   };
 
@@ -117,7 +151,7 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({ invoiceData, setInvoiceData }
             </div>
             <div className="flex flex-col items-end">
               <label className="text-sm text-gray-600 mb-2">Add Logo</label>
-              <div className="w-24 h-24 border-2 border-dashed border-gray-300 rounded-lg flex items-center justify-center bg-gray-50">
+              <div className="relative w-24 h-24 border-2 border-dashed border-gray-300 rounded-lg flex items-center justify-center bg-gray-50 cursor-pointer hover:bg-gray-100 transition-colors">
                 {invoiceData.logoUrl ? (
                   <img src={invoiceData.logoUrl} alt="Logo" className="w-full h-full object-contain rounded-lg" />
                 ) : (
@@ -270,7 +304,7 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({ invoiceData, setInvoiceData }
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
-                {Object.entries(CURRENCIES).map(([code, currency]) => (
+                {Object.entries(CURRENCIES).map(([code]) => (
                   <SelectItem key={code} value={code}>
                     {code}
                   </SelectItem>
@@ -349,13 +383,31 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({ invoiceData, setInvoiceData }
               <span className="font-medium">{invoiceData.subtotal.toFixed(2)} {invoiceData.currency}</span>
             </div>
 
-            <Button
-              variant="ghost"
-              className="text-blue-600 hover:text-blue-700 p-0 h-auto"
-            >
-              <Plus className="w-4 h-4 mr-2" />
-              Add tax
-            </Button>
+            {!showTaxInput ? (
+              <Button
+                variant="ghost"
+                className="text-blue-600 hover:text-blue-700 p-0 h-auto"
+                onClick={() => setShowTaxInput(true)}
+              >
+                <Plus className="w-4 h-4 mr-2" />
+                Add tax
+              </Button>
+            ) : (
+              <div className="flex justify-between items-center text-sm">
+                <span className="text-gray-600">TAX</span>
+                <div className="flex items-center gap-2">
+                  <Input
+                    type="number"
+                    value={invoiceData.tax}
+                    onChange={(e) => updateTax(parseFloat(e.target.value) || 0)}
+                    min="0"
+                    step="0.01"
+                    className="w-24 h-8"
+                  />
+                  <span className="text-gray-600">{invoiceData.currency}</span>
+                </div>
+              </div>
+            )}
 
             <div className="border-t pt-4">
               <div className="flex justify-between items-center">
