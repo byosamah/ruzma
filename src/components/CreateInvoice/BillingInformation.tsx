@@ -53,7 +53,7 @@ const BillingInformation: React.FC<BillingInformationProps> = ({ invoiceData, up
             <div>
               <Select onValueChange={handleClientSelect}>
                 <SelectTrigger>
-                  <SelectValue placeholder="Select client or enter manually" />
+                  <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
                   {clients.map(client => (
