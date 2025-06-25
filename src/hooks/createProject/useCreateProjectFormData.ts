@@ -10,7 +10,7 @@ export const useCreateProjectFormData = (templateData?: any) => {
     defaultValues: {
       name: templateData?.name || '',
       brief: templateData?.brief || '',
-      clientEmail: '',
+      clientEmail: templateData?.clientEmail || '',
       milestones: templateData?.milestones?.map((milestone: any) => ({
         title: milestone.title || '',
         description: milestone.description || '',
@@ -46,6 +46,7 @@ export const useCreateProjectFormData = (templateData?: any) => {
 
     form.setValue('name', template.name || '');
     form.setValue('brief', template.brief || '');
+    form.setValue('clientEmail', template.clientEmail || '');
     form.setValue('milestones', templateMilestones);
   }, [form]);
 

@@ -7,6 +7,7 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { useT } from '@/lib/i18n';
 import { CreateProjectFormData } from '@/lib/validators/project';
+import ClientDropdown from './ClientDropdown';
 
 const ProjectDetailsForm = () => {
   const t = useT();
@@ -55,12 +56,11 @@ const ProjectDetailsForm = () => {
           name="clientEmail"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Client Email</FormLabel>
+              <FormLabel>Client</FormLabel>
               <FormControl>
-                <Input 
-                  type="email" 
-                  placeholder="Enter client email (optional)" 
-                  {...field} 
+                <ClientDropdown
+                  value={field.value}
+                  onChange={field.onChange}
                 />
               </FormControl>
               <FormMessage />
