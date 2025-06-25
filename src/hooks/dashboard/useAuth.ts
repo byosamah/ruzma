@@ -65,26 +65,26 @@ export const useAuth = () => {
         if (!isMounted) return;
         
         if (userError || !user) {
-          console.log('Dashboard: No authenticated user, redirecting to login');
+          console.log('Dashboard: No authenticated user found');
           logSecurityEvent('dashboard_auth_failed', { error: userError?.message });
+          setUser(null);
           setLoading(false);
           setAuthChecked(true);
-          navigate('/login');
           return;
         }
 
         // Check if user's email is confirmed
         if (!user.email_confirmed_at) {
-          console.log('Dashboard: User email not confirmed, redirecting to login');
+          console.log('Dashboard: User email not confirmed');
           logSecurityEvent('dashboard_unconfirmed_email', { userId: user.id });
           toast.error('Please confirm your email address before accessing your account.');
           
           // Sign out the unconfirmed user
           await supabase.auth.signOut();
           
+          setUser(null);
           setLoading(false);
           setAuthChecked(true);
-          navigate('/login');
           return;
         }
 
@@ -95,9 +95,9 @@ export const useAuth = () => {
         console.error('Dashboard: Unexpected error:', error);
         logSecurityEvent('dashboard_unexpected_error', { error: error instanceof Error ? error.message : 'Unknown error' });
         if (isMounted) {
+          setUser(null);
           setLoading(false);
           setAuthChecked(true);
-          navigate('/login');
         }
       } finally {
         if (isMounted) {

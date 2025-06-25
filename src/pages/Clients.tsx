@@ -5,7 +5,8 @@ import Layout from '@/components/Layout';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Users, Mail, FolderOpen } from 'lucide-react';
 import { useClients } from '@/hooks/useClients';
-import { useDashboard } from '@/hooks/useDashboard';
+import { useAuth } from '@/hooks/dashboard/useAuth';
+import { useUserProfile } from '@/hooks/dashboard/useUserProfile';
 import ClientFilters from '@/components/Clients/ClientFilters';
 import ClientTable from '@/components/Clients/ClientTable';
 import AddClientDialog from '@/components/Clients/AddClientDialog';
@@ -16,8 +17,9 @@ import { ClientWithProjectCount } from '@/types/client';
 
 const Clients: React.FC = () => {
   const navigate = useNavigate();
-  const { user, profile } = useDashboard();
-  const { clients, loading, createClient, updateClient, deleteClient } = useClients(user);
+  const { user, loading: authLoading, authChecked } = useAuth();
+  const { profile, loading: profileLoading } = useUserProfile(user);
+  const { clients, loading: clientsLoading, createClient, updateClient, deleteClient } = useClients(user);
 
   const [searchTerm, setSearchTerm] = useState('');
   const [showAddDialog, setShowAddDialog] = useState(false);
@@ -61,12 +63,25 @@ const Clients: React.FC = () => {
     return await deleteClient(clientId);
   };
 
-  if (!user) {
+  // Show loading while auth is being checked
+  if (!authChecked || authLoading) {
+    return (
+      <Layout user={profile || user}>
+        <div className="flex items-center justify-center min-h-[50vh]">
+          <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-gray-900"></div>
+        </div>
+      </Layout>
+    );
+  }
+
+  // Redirect to login if not authenticated (only after auth check is complete)
+  if (authChecked && !user) {
     navigate('/login');
     return null;
   }
 
-  if (loading) {
+  // Show loading for other data
+  if (profileLoading || clientsLoading) {
     return (
       <Layout user={profile || user}>
         <div className="flex items-center justify-center min-h-[50vh]">
