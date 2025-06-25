@@ -1,6 +1,5 @@
-
 import React from 'react';
-import { Home, User, FolderOpen, BarChart3, Settings, CreditCard, LogOut, FileText } from 'lucide-react';
+import { Home, User, FolderOpen, BarChart3, Settings, CreditCard, LogOut, FileText, Users } from 'lucide-react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { Sidebar, SidebarContent, SidebarGroup, SidebarGroupContent, SidebarGroupLabel, SidebarMenu, SidebarMenuButton, SidebarMenuItem, SidebarHeader, SidebarFooter, useSidebar } from '@/components/ui/sidebar';
 import { useT } from '@/lib/i18n';
@@ -34,6 +33,10 @@ export function AppSidebar({
     title: t('yourProjects'),
     url: '/projects',
     icon: FolderOpen
+  }, {
+    title: 'Clients',
+    url: '/clients',
+    icon: Users
   }, {
     title: t('invoices'),
     url: '/invoices',
