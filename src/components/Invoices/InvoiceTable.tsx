@@ -11,6 +11,8 @@ import {
 import { Card, CardContent } from '@/components/ui/card';
 import { useT } from '@/lib/i18n';
 import { Invoice } from '@/hooks/useInvoices';
+import { useAuth } from '@/hooks/dashboard/useAuth';
+import { useUserCurrency } from '@/hooks/useUserCurrency';
 import InvoiceStatusBadge from './InvoiceStatusBadge';
 import InvoiceActionsMenu from './InvoiceActionsMenu';
 
@@ -28,13 +30,8 @@ const InvoiceTable: React.FC<InvoiceTableProps> = ({
   onDeleteInvoice
 }) => {
   const t = useT();
-
-  const formatCurrency = (amount: number) => {
-    return new Intl.NumberFormat('en-US', {
-      style: 'currency',
-      currency: 'USD',
-    }).format(amount);
-  };
+  const { user } = useAuth();
+  const { formatCurrency } = useUserCurrency(user);
 
   const formatDate = (date: Date) => {
     return new Intl.DateTimeFormat('en-US', {
