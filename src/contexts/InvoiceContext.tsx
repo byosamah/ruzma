@@ -22,7 +22,15 @@ const InvoiceContext = createContext<InvoiceContextType | undefined>(undefined);
 export const InvoiceProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [invoices, setInvoices] = useState<Invoice[]>([]);
   const [loading, setLoading] = useState(true);
-  const { user } = useAuth();
+  
+  // Safely use useAuth with error handling
+  let user = null;
+  try {
+    const authData = useAuth();
+    user = authData.user;
+  } catch (error) {
+    console.log('Auth not available in current context');
+  }
 
   const generateInvoiceId = () => {
     const year = new Date().getFullYear();

@@ -31,10 +31,10 @@ function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <LanguageProvider>
-        <InvoiceProvider>
-          <TooltipProvider>
-            <Toaster />
-            <BrowserRouter>
+        <TooltipProvider>
+          <Toaster />
+          <BrowserRouter>
+            <InvoiceProvider>
               <Routes>
                 <Route path="/" element={<Navigate to="/dashboard" replace />} />
                 <Route path="/login" element={<Login />} />
@@ -58,9 +58,9 @@ function App() {
                 <Route path="/client/project/:token" element={<ClientProject />} />
                 <Route path="*" element={<NotFound />} />
               </Routes>
-            </BrowserRouter>
-          </TooltipProvider>
-        </InvoiceProvider>
+            </InvoiceProvider>
+          </BrowserRouter>
+        </TooltipProvider>
       </LanguageProvider>
     </QueryClientProvider>
   );
