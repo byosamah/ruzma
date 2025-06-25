@@ -56,7 +56,7 @@ const ClientProject = () => {
       
       <main className={`${isMobile ? 'max-w-full' : 'max-w-6xl'} mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8`}>
         <ProjectOverviewCard
-          projectName={token || 'Unknown Project'}
+          projectName={project.name}
           projectBrief={project.brief}
           totalValue={totalValue}
           totalMilestones={totalMilestones}
