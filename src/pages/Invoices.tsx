@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import Layout from '@/components/Layout';
@@ -11,12 +10,18 @@ import { useUserProfile } from '@/hooks/dashboard/useUserProfile';
 import { useT } from '@/lib/i18n';
 import InvoiceFilters from '@/components/Invoices/InvoiceFilters';
 import InvoiceTable from '@/components/Invoices/InvoiceTable';
-
 const Invoices: React.FC = () => {
   const navigate = useNavigate();
   const t = useT();
-  const { user, loading: authLoading, authChecked } = useAuth();
-  const { profile, loading: profileLoading } = useUserProfile(user);
+  const {
+    user,
+    loading: authLoading,
+    authChecked
+  } = useAuth();
+  const {
+    profile,
+    loading: profileLoading
+  } = useUserProfile(user);
   const {
     invoices,
     searchTerm,
@@ -36,13 +41,11 @@ const Invoices: React.FC = () => {
 
   // Show loading while auth is being checked
   if (!authChecked || authLoading) {
-    return (
-      <Layout user={profile || user}>
+    return <Layout user={profile || user}>
         <div className="flex items-center justify-center min-h-[50vh]">
           <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-gray-900"></div>
         </div>
-      </Layout>
-    );
+      </Layout>;
   }
 
   // Redirect to login if not authenticated (only after auth check is complete)
@@ -53,24 +56,19 @@ const Invoices: React.FC = () => {
 
   // Show loading for other data
   if (profileLoading) {
-    return (
-      <Layout user={profile || user}>
+    return <Layout user={profile || user}>
         <div className="flex items-center justify-center min-h-[50vh]">
           <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-gray-900"></div>
         </div>
-      </Layout>
-    );
+      </Layout>;
   }
-
   const formatCurrency = (amount: number) => {
     return new Intl.NumberFormat('en-US', {
       style: 'currency',
-      currency: 'USD',
+      currency: 'USD'
     }).format(amount);
   };
-
-  return (
-    <Layout user={profile || user}>
+  return <Layout user={profile || user}>
       <div className="space-y-6">
         {/* Header */}
         <div className="flex justify-between items-center">
@@ -78,10 +76,7 @@ const Invoices: React.FC = () => {
             <h1 className="text-3xl font-bold text-gray-900">{t('invoices')}</h1>
             <p className="text-gray-600 mt-1">Manage and track all your invoices in one place</p>
           </div>
-          <Button onClick={() => navigate('/create-invoice')} className="flex items-center gap-2">
-            <Plus className="w-4 h-4" />
-            Create Invoice
-          </Button>
+          
         </div>
 
         {/* Stats Cards */}
@@ -150,24 +145,12 @@ const Invoices: React.FC = () => {
               <h2 className="text-xl font-semibold">All Invoices</h2>
             </div>
             
-            <InvoiceFilters
-              searchTerm={searchTerm}
-              onSearchChange={setSearchTerm}
-              statusFilter={statusFilter}
-              onStatusChange={setStatusFilter}
-            />
+            <InvoiceFilters searchTerm={searchTerm} onSearchChange={setSearchTerm} statusFilter={statusFilter} onStatusChange={setStatusFilter} />
             
-            <InvoiceTable
-              invoices={invoices}
-              onDownloadPDF={handleDownloadPDF}
-              onResendInvoice={handleResendInvoice}
-              onDeleteInvoice={handleDeleteInvoice}
-            />
+            <InvoiceTable invoices={invoices} onDownloadPDF={handleDownloadPDF} onResendInvoice={handleResendInvoice} onDeleteInvoice={handleDeleteInvoice} />
           </CardContent>
         </Card>
       </div>
-    </Layout>
-  );
+    </Layout>;
 };
-
 export default Invoices;
