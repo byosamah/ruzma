@@ -24,8 +24,7 @@ const Invoices: React.FC = () => {
     setStatusFilter,
     handleDownloadPDF,
     handleResendInvoice,
-    handleDeleteInvoice,
-    handleCreateInvoice
+    handleDeleteInvoice
   } = useInvoices();
 
   // Calculate stats
@@ -148,7 +147,6 @@ const Invoices: React.FC = () => {
               onSearchChange={setSearchTerm}
               statusFilter={statusFilter}
               onStatusChange={setStatusFilter}
-              onCreateInvoice={handleCreateInvoice}
             />
             
             <InvoiceTable

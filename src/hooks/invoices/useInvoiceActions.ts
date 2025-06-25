@@ -38,26 +38,9 @@ export const useInvoiceActions = (
     }
   };
 
-  const handleCreateInvoice = () => {
-    const newInvoice: Invoice = {
-      id: Date.now().toString(),
-      transactionId: generateTransactionId(),
-      amount: 0,
-      projectName: 'New Project',
-      date: new Date(),
-      status: 'draft',
-      projectId: `proj-${Date.now()}`
-    };
-    
-    setInvoices(prev => [newInvoice, ...prev]);
-    toast.success(`New invoice ${newInvoice.transactionId} has been created`);
-    console.log('Created new invoice:', newInvoice);
-  };
-
   return {
     handleDownloadPDF,
     handleResendInvoice,
-    handleDeleteInvoice,
-    handleCreateInvoice
+    handleDeleteInvoice
   };
 };

@@ -19,8 +19,7 @@ export const useInvoices = () => {
   const {
     handleDownloadPDF,
     handleResendInvoice,
-    handleDeleteInvoice,
-    handleCreateInvoice
+    handleDeleteInvoice
   } = useInvoiceActions(invoices, setInvoices, generateTransactionId);
 
   return {
@@ -31,7 +30,6 @@ export const useInvoices = () => {
     setStatusFilter,
     handleDownloadPDF,
     handleResendInvoice,
-    handleDeleteInvoice,
-    handleCreateInvoice
+    handleDeleteInvoice
   };
 };
