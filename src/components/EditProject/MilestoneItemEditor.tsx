@@ -6,6 +6,8 @@ import { Button } from '@/components/ui/button';
 import { Trash2 } from 'lucide-react';
 import { MilestoneFormData } from './types';
 import { useT } from '@/lib/i18n';
+import { useAuth } from '@/hooks/dashboard/useAuth';
+import { useUserCurrency } from '@/hooks/useUserCurrency';
 
 interface MilestoneItemEditorProps {
   milestone: MilestoneFormData;
@@ -21,6 +23,9 @@ export const MilestoneItemEditor: React.FC<MilestoneItemEditorProps> = ({
   onDeleteMilestone,
 }) => {
   const t = useT();
+  const { user } = useAuth();
+  const { currency, formatCurrency } = useUserCurrency(user);
+
   return (
     <div className="p-4 border rounded-md space-y-3 bg-slate-50 relative">
       <Button
@@ -55,7 +60,7 @@ export const MilestoneItemEditor: React.FC<MilestoneItemEditorProps> = ({
       </div>
       <div className="grid grid-cols-2 gap-4">
         <div className="space-y-2">
-          <label htmlFor={`milestone-price-${index}`} className="text-sm font-medium text-slate-700">{t('price')}</label>
+          <label htmlFor={`milestone-price-${index}`} className="text-sm font-medium text-slate-700">{t('price')} ({currency})</label>
           <Input
             id={`milestone-price-${index}`}
             type="number"
