@@ -1,10 +1,11 @@
-
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Plus, Trash2 } from 'lucide-react';
 import { InvoiceFormData } from './types';
+import { useAuth } from '@/hooks/dashboard/useAuth';
+import { useProjects } from '@/hooks/useProjects';
 
 interface LineItemsSectionProps {
   invoiceData: InvoiceFormData;
@@ -25,6 +26,29 @@ const LineItemsSection: React.FC<LineItemsSectionProps> = ({
   showTaxInput,
   setShowTaxInput
 }) => {
+  const { user } = useAuth();
+  const { projects } = useProjects(user);
+
+  // Populate line items with project milestones when project is selected
+  useEffect(() => {
+    if (invoiceData.projectId && projects.length > 0) {
+      const selectedProject = projects.find(p => p.id === invoiceData.projectId);
+      if (selectedProject && selectedProject.milestones && selectedProject.milestones.length > 0) {
+        // Clear existing line items and populate with milestones
+        const milestoneLineItems = selectedProject.milestones.map((milestone, index) => ({
+          id: milestone.id,
+          description: milestone.title,
+          quantity: 1,
+          amount: Number(milestone.price) || 0
+        }));
+        
+        // Update parent component with milestone data
+        // This would typically be done through a callback prop
+        console.log('Project milestones loaded:', milestoneLineItems);
+      }
+    }
+  }, [invoiceData.projectId, projects]);
+
   return (
     <Card>
       <CardContent className="pt-6">

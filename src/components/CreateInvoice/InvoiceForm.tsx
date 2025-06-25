@@ -1,5 +1,5 @@
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import { InvoiceFormData } from './types';
 import InvoiceHeader from './InvoiceHeader';
 import BillingInformation from './BillingInformation';
@@ -8,6 +8,8 @@ import LineItemsSection from './LineItemsSection';
 import InvoiceActions from './InvoiceActions';
 import { useInvoiceCalculations } from './hooks/useInvoiceCalculations';
 import { useInvoiceValidation } from './hooks/useInvoiceValidation';
+import { useAuth } from '@/hooks/dashboard/useAuth';
+import { useProjects } from '@/hooks/useProjects';
 
 interface InvoiceFormProps {
   invoiceData: InvoiceFormData;
@@ -16,6 +18,8 @@ interface InvoiceFormProps {
 
 const InvoiceForm: React.FC<InvoiceFormProps> = ({ invoiceData, setInvoiceData }) => {
   const [showTaxInput, setShowTaxInput] = React.useState(false);
+  const { user } = useAuth();
+  const { projects } = useProjects(user);
 
   const updateField = (field: keyof InvoiceFormData, value: any) => {
     setInvoiceData(prev => ({ ...prev, [field]: value }));
@@ -30,6 +34,31 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({ invoiceData, setInvoiceData }
       }
     }));
   };
+
+  // Populate line items with project milestones when project is selected
+  useEffect(() => {
+    if (invoiceData.projectId && projects.length > 0) {
+      const selectedProject = projects.find(p => p.id === invoiceData.projectId);
+      if (selectedProject && selectedProject.milestones && selectedProject.milestones.length > 0) {
+        const milestoneLineItems = selectedProject.milestones.map((milestone) => ({
+          id: milestone.id,
+          description: milestone.title,
+          quantity: 1,
+          amount: Number(milestone.price) || 0
+        }));
+        
+        // Calculate totals
+        const subtotal = milestoneLineItems.reduce((sum, item) => sum + (item.quantity * item.amount), 0);
+        
+        setInvoiceData(prev => ({
+          ...prev,
+          lineItems: milestoneLineItems,
+          subtotal,
+          total: subtotal + prev.tax
+        }));
+      }
+    }
+  }, [invoiceData.projectId, projects, setInvoiceData]);
 
   const {
     updateLineItem,
