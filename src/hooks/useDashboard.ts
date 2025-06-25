@@ -13,11 +13,11 @@ import { useProjectCountSync } from './useProjectCountSync';
 export const useDashboard = () => {
   const { user, loading: authLoading } = useAuth();
   const { profile, loading: profileLoading } = useUserProfile(user);
-  const { projects, loading: projectsLoading } = useProjects(user);
+  const { projects, loading: projectsLoading, deleteProject } = useProjects(user);
   const userCurrency = useUserCurrency(user);
   const stats = useDashboardStats(projects, userCurrency.currency);
   const displayName = useDisplayName(profile, user);
-  const handlers = useDashboardHandlers();
+  const handlers = useDashboardHandlers(profile, user, deleteProject);
   const { syncProjectCount } = useProjectCountSync();
 
   // Sync project count when dashboard loads
