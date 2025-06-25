@@ -1,4 +1,3 @@
-
 import { toast } from 'sonner';
 import { Invoice } from './types';
 import { generateInvoicePDF, InvoicePDFData } from '@/lib/pdfGenerator';
@@ -19,6 +18,7 @@ export const useInvoiceActions = (
 
     try {
       toast.loading('Generating PDF...', { id: 'pdf-generation' });
+      console.log('Starting PDF generation for invoice:', invoice);
 
       // Fetch user profile and branding data
       const { data: { user } } = await supabase.auth.getUser();
@@ -41,69 +41,67 @@ export const useInvoiceActions = (
         .eq('user_id', user.id)
         .maybeSingle();
 
-      // Create invoice PDF data - use stored data if available, otherwise create fallback
-      let invoicePDFData: InvoicePDFData;
-      
-      if (invoice.invoiceData && typeof invoice.invoiceData === 'object') {
-        // Parse the stored invoice data if it's a string
-        const originalData = typeof invoice.invoiceData === 'string' 
-          ? JSON.parse(invoice.invoiceData) 
-          : invoice.invoiceData;
-          
-        invoicePDFData = {
-          invoice,
-          billedTo: {
-            name: originalData.billedTo?.name || invoice.projectName,
-            address: originalData.billedTo?.address || 'Client Address\nCity, State, ZIP'
-          },
-          payTo: {
-            name: originalData.payTo?.name || branding?.freelancer_name || profile?.full_name || 'Your Business Name',
-            address: originalData.payTo?.address || 'Your Address\nCity, State, ZIP'
-          },
-          lineItems: originalData.lineItems && originalData.lineItems.length > 0 
-            ? originalData.lineItems 
-            : [
-                {
-                  description: `Project: ${invoice.projectName}`,
-                  quantity: 1,
-                  amount: invoice.amount
-                }
-              ],
-          currency: originalData.currency || profile?.currency || 'USD',
-          logoUrl: originalData.logoUrl || branding?.logo_url
-        };
-      } else {
-        // Fallback data if original invoice data is not available
-        invoicePDFData = {
-          invoice,
-          billedTo: {
-            name: invoice.projectName,
-            address: 'Client Address\nCity, State, ZIP'
-          },
-          payTo: {
-            name: branding?.freelancer_name || profile?.full_name || 'Your Business Name',
-            address: 'Your Address\nCity, State, ZIP'
-          },
-          lineItems: [
-            {
-              description: `Project: ${invoice.projectName}`,
-              quantity: 1,
-              amount: invoice.amount
-            }
-          ],
-          currency: profile?.currency || 'USD',
-          logoUrl: branding?.logo_url
-        };
+      console.log('User profile:', profile);
+      console.log('User branding:', branding);
+      console.log('Invoice data (raw):', invoice.invoiceData);
+
+      // Parse stored invoice data properly
+      let originalData = null;
+      if (invoice.invoiceData) {
+        try {
+          if (typeof invoice.invoiceData === 'string') {
+            originalData = JSON.parse(invoice.invoiceData);
+          } else if (typeof invoice.invoiceData === 'object') {
+            originalData = invoice.invoiceData;
+          }
+          console.log('Parsed invoice data:', originalData);
+        } catch (error) {
+          console.error('Error parsing invoice data:', error);
+          originalData = null;
+        }
       }
 
-      console.log('Generated invoice PDF data:', invoicePDFData);
+      // Create invoice PDF data with proper fallbacks
+      const invoicePDFData: InvoicePDFData = {
+        invoice,
+        billedTo: {
+          name: originalData?.billedTo?.name || invoice.projectName || 'Client Name',
+          address: originalData?.billedTo?.address || 'Client Address\nCity, State, ZIP'
+        },
+        payTo: {
+          name: originalData?.payTo?.name || branding?.freelancer_name || profile?.full_name || 'Your Business Name',
+          address: originalData?.payTo?.address || 'Your Business Address\nCity, State, ZIP'
+        },
+        lineItems: originalData?.lineItems && Array.isArray(originalData.lineItems) && originalData.lineItems.length > 0 
+          ? originalData.lineItems 
+          : [
+              {
+                description: `Project: ${invoice.projectName}`,
+                quantity: 1,
+                amount: invoice.amount
+              }
+            ],
+        currency: originalData?.currency || profile?.currency || 'USD',
+        logoUrl: originalData?.logoUrl || branding?.logo_url
+      };
+
+      console.log('Final PDF data to be generated:', invoicePDFData);
       
+      // Validate required data
+      if (!invoicePDFData.billedTo.name || !invoicePDFData.payTo.name) {
+        throw new Error('Missing required billing information');
+      }
+
+      if (!invoicePDFData.lineItems || invoicePDFData.lineItems.length === 0) {
+        throw new Error('No line items found for invoice');
+      }
+
       await generateInvoicePDF(invoicePDFData);
       
       toast.success(`PDF downloaded successfully for ${invoice.transactionId}`, { id: 'pdf-generation' });
     } catch (error) {
       console.error('Error generating PDF:', error);
-      toast.error('Failed to generate PDF. Please try again.', { id: 'pdf-generation' });
+      toast.error(`Failed to generate PDF: ${error.message}`, { id: 'pdf-generation' });
     }
   };
 
