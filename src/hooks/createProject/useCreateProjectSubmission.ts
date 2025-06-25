@@ -18,12 +18,57 @@ export const useCreateProjectSubmission = () => {
         return;
       }
 
+      console.log('Creating project for user:', user.id);
+
+      // Get user profile to check current status
+      const { data: profile, error: profileError } = await supabase
+        .from('profiles')
+        .select('user_type, project_count, full_name')
+        .eq('id', user.id)
+        .single();
+
+      if (profileError) {
+        console.error('Error fetching user profile:', profileError);
+        toast.error('Failed to check user profile');
+        return;
+      }
+
+      console.log('User profile:', profile);
+
+      // Get actual project count to verify accuracy
+      const { data: actualProjects, error: projectsError } = await supabase
+        .from('projects')
+        .select('id')
+        .eq('user_id', user.id);
+
+      if (projectsError) {
+        console.error('Error fetching actual projects:', projectsError);
+      } else {
+        console.log('Actual project count:', actualProjects?.length || 0);
+        console.log('Profile project count:', profile.project_count);
+      }
+
+      // Get user limits
+      const { data: limits, error: limitsError } = await supabase
+        .rpc('get_user_limits', {
+          _user_type: profile.user_type || 'free'
+        });
+
+      if (limitsError) {
+        console.error('Error getting user limits:', limitsError);
+      } else {
+        console.log('User limits:', limits);
+      }
+
       // Check project limits before creating
       const { data: limitCheck, error: limitError } = await supabase
         .rpc('check_user_limits', {
           _user_id: user.id,
           _action: 'project'
         });
+
+      console.log('Limit check result:', limitCheck);
+      console.log('Limit check error:', limitError);
 
       if (limitError) {
         console.error('Error checking limits:', limitError);
@@ -32,7 +77,11 @@ export const useCreateProjectSubmission = () => {
       }
 
       if (!limitCheck) {
-        toast.error('Project limit reached. Please upgrade your plan to create more projects.');
+        const userType = profile.user_type || 'free';
+        const currentCount = profile.project_count || 0;
+        const maxProjects = userType === 'plus' ? 3 : userType === 'pro' ? 10 : 1;
+        
+        toast.error(`Project limit reached (${currentCount}/${maxProjects}). Please upgrade your plan to create more projects.`);
         return;
       }
 
@@ -55,6 +104,8 @@ export const useCreateProjectSubmission = () => {
         .single();
 
       if (projectError) throw projectError;
+
+      console.log('Project created:', project);
 
       // Create milestones
       const milestoneInserts = data.milestones.map((milestone) => ({
@@ -82,6 +133,8 @@ export const useCreateProjectSubmission = () => {
 
       if (updateError) {
         console.error('Error updating project count:', updateError);
+      } else {
+        console.log('Project count updated successfully');
       }
 
       toast.success('Project created successfully!');

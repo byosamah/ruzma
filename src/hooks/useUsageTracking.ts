@@ -1,7 +1,8 @@
 
-import { useMemo } from 'react';
+import { useMemo, useEffect } from 'react';
 import { DatabaseProject } from './projectTypes';
 import { useUserLimits } from './useUserLimits';
+import { useProjectCountSync } from './useProjectCountSync';
 
 interface UsageLimits {
   projects: { current: number; max: number; percentage: number };
@@ -17,8 +18,18 @@ export const useUsageTracking = (
 ): UsageLimits => {
   const userType = userProfile?.user_type || 'free';
   const { data: limits, isLoading } = useUserLimits(userType);
+  const { syncProjectCount } = useProjectCountSync();
+
+  // Sync project count when there's a mismatch
+  useEffect(() => {
+    if (userProfile?.id && projects.length !== (userProfile.project_count || 0)) {
+      console.log('Project count mismatch detected, syncing...');
+      syncProjectCount(userProfile.id);
+    }
+  }, [userProfile?.id, userProfile?.project_count, projects.length, syncProjectCount]);
 
   return useMemo(() => {
+    // Use actual project count from the projects array as the source of truth
     const currentProjects = projects.length;
     const currentStorage = userProfile?.storage_used || 0;
 
@@ -39,6 +50,16 @@ export const useUsageTracking = (
       }
     };
 
+    const canCreateProject = currentProjects < planLimits.project_limit;
+
+    console.log('Usage tracking debug:', {
+      currentProjects,
+      maxProjects: planLimits.project_limit,
+      profileProjectCount: userProfile?.project_count,
+      canCreateProject,
+      userType
+    });
+
     return {
       projects: {
         current: currentProjects,
@@ -52,9 +73,9 @@ export const useUsageTracking = (
         currentFormatted: formatStorage(currentStorage),
         maxFormatted: formatStorage(planLimits.storage_limit_bytes),
       },
-      canCreateProject: currentProjects < planLimits.project_limit,
+      canCreateProject,
       shouldShowUpgrade: projectsPercentage >= 80 || storagePercentage >= 80,
       loading: isLoading,
     };
-  }, [userProfile, projects, limits, isLoading, userType]);
+  }, [userProfile, projects, limits, isLoading, userType, syncProjectCount]);
 };
