@@ -38,7 +38,6 @@ const ClientTable: React.FC<ClientTableProps> = ({
           <TableRow>
             <TableHead>Client Name</TableHead>
             <TableHead>Client Email</TableHead>
-            <TableHead>Client ID</TableHead>
             <TableHead>Connected Projects</TableHead>
             <TableHead className="text-right">Actions</TableHead>
           </TableRow>
@@ -48,11 +47,6 @@ const ClientTable: React.FC<ClientTableProps> = ({
             <TableRow key={client.id}>
               <TableCell className="font-medium">{client.name}</TableCell>
               <TableCell>{client.email}</TableCell>
-              <TableCell>
-                <code className="text-xs bg-gray-100 px-2 py-1 rounded">
-                  {client.id.substring(0, 8)}...
-                </code>
-              </TableCell>
               <TableCell>
                 <Badge variant="secondary">
                   {client.project_count} {client.project_count === 1 ? 'project' : 'projects'}

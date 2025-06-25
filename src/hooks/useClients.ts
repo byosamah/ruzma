@@ -19,12 +19,12 @@ export const useClients = (user: User | null) => {
     try {
       setLoading(true);
       
-      // Fetch clients with project count
+      // Fetch clients with proper project count using a subquery
       const { data: clientsData, error } = await supabase
         .from('clients')
         .select(`
           *,
-          projects (count)
+          project_count:projects!client_id(count)
         `)
         .eq('user_id', user.id)
         .order('created_at', { ascending: false });
@@ -35,9 +35,10 @@ export const useClients = (user: User | null) => {
         return;
       }
 
+      // Transform the data to match our expected format
       const clientsWithCount = (clientsData || []).map(client => ({
         ...client,
-        project_count: client.projects?.[0]?.count || 0
+        project_count: client.project_count?.[0]?.count || 0
       })) as ClientWithProjectCount[];
 
       setClients(clientsWithCount);
