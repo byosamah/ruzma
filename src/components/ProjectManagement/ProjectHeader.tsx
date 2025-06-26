@@ -6,7 +6,6 @@ import { CurrencyCode } from '@/lib/currency';
 import ProjectHeaderInfo from './ProjectHeaderInfo';
 import ProjectHeaderActions from './ProjectHeaderActions';
 import ProjectStats from './ProjectStats';
-import ProjectProgressBar from './ProjectProgressBar';
 
 interface ProjectHeaderProps {
   project: DatabaseProject;
@@ -62,9 +61,6 @@ const ProjectHeader: React.FC<ProjectHeaderProps> = ({
 
       {/* Project Stats */}
       <ProjectStats project={project} isMobile={isMobile} userCurrency={userCurrency} />
-
-      {/* Progress Bar */}
-      <ProjectProgressBar project={project} />
     </div>
   );
 };
