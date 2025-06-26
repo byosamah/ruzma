@@ -10,6 +10,7 @@ import { useProjects } from "@/hooks/useProjects";
 import ProjectHeader from "@/components/ProjectManagement/ProjectHeader";
 import MilestoneList from "@/components/ProjectManagement/MilestoneList";
 import { useIsMobile } from "@/hooks/use-mobile";
+
 const ProjectManagement: React.FC = () => {
   const {
     slug
@@ -79,20 +80,19 @@ const ProjectManagement: React.FC = () => {
   const completedMilestones = project.milestones.filter(m => m.status === 'approved').length;
   const totalValue = project.milestones.reduce((sum, m) => sum + m.price, 0);
   const completedValue = project.milestones.filter(m => m.status === 'approved').reduce((sum, m) => sum + m.price, 0);
-  return <Layout user={profile || user}>
+  return (
+    <Layout user={profile || user}>
       <div className="space-y-6">
-        {/* Header Section */}
-        <div className="flex items-center justify-between">
-          <Button variant="ghost" size="sm" onClick={handleBackClick} className="text-gray-600 hover:text-gray-900 hover:bg-gray-100">
-            <ArrowLeft className="w-4 h-4 mr-2" />
-            Back to projects
-          </Button>
-        </div>
-
         {/* Project Overview Card */}
         <Card>
           <CardContent className="p-6 my-0 mx-0 py-[16px]">
-            <ProjectHeader project={project} onBackClick={handleBackClick} onEditClick={handleEditClick} onDeleteClick={handleDeleteClick} userCurrency={userCurrency.currency} />
+            <ProjectHeader 
+              project={project} 
+              onBackClick={handleBackClick} 
+              onEditClick={handleEditClick} 
+              onDeleteClick={handleDeleteClick} 
+              userCurrency={userCurrency.currency} 
+            />
           </CardContent>
         </Card>
 
@@ -162,10 +162,19 @@ const ProjectManagement: React.FC = () => {
             </div>
           </CardHeader>
           <CardContent>
-            <MilestoneList milestones={project.milestones} userCurrency={userCurrency.currency} onUpdateMilestoneStatus={updateMilestoneStatus} onPaymentUpload={uploadPaymentProof} onDeliverableUpload={uploadDeliverable} onDeliverableDownload={downloadDeliverable} />
+            <MilestoneList 
+              milestones={project.milestones} 
+              userCurrency={userCurrency.currency} 
+              onUpdateMilestoneStatus={updateMilestoneStatus} 
+              onPaymentUpload={uploadPaymentProof} 
+              onDeliverableUpload={uploadDeliverable} 
+              onDeliverableDownload={downloadDeliverable} 
+            />
           </CardContent>
         </Card>
       </div>
-    </Layout>;
+    </Layout>
+  );
 };
+
 export default ProjectManagement;
