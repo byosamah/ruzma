@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
@@ -59,7 +60,7 @@ export const MilestoneItemEditor: React.FC<MilestoneItemEditorProps> = ({
       </div>
       <div className="grid grid-cols-2 gap-4">
         <div className="space-y-2">
-          <label htmlFor={`milestone-price-${index}`} className="text-sm font-medium text-slate-700">{t('price')}</label>
+          <label htmlFor={`milestone-price-${index}`} className="text-sm font-medium text-slate-700">Price ({currency})</label>
           <Input
             id={`milestone-price-${index}`}
             type="number"
