@@ -22,6 +22,10 @@ const ClientView: React.FC<ClientViewProps> = ({
   const t = useT();
 
   const renderPaymentSection = () => {
+    if (!paymentProofRequired) {
+      return null;
+    }
+
     if (milestone.status === 'approved') {
       return (
         <div className="bg-green-50 p-3 rounded-lg">
@@ -52,12 +56,10 @@ const ClientView: React.FC<ClientViewProps> = ({
     // Pending status - show payment upload
     return (
       <div className="space-y-3">
-        {paymentProofRequired && (
-          <div className="bg-amber-50 p-3 rounded-lg border border-amber-200">
-            <p className="text-sm font-medium text-amber-800">Payment proof required</p>
-            <p className="text-xs text-amber-600 mt-1">Please upload proof of payment for this milestone</p>
-          </div>
-        )}
+        <div className="bg-amber-50 p-3 rounded-lg border border-amber-200">
+          <p className="text-sm font-medium text-amber-800">Payment proof required</p>
+          <p className="text-xs text-amber-600 mt-1">Please upload proof of payment for this milestone</p>
+        </div>
         
         <PaymentUploadDialog
           milestoneId={milestone.id}
@@ -65,7 +67,7 @@ const ClientView: React.FC<ClientViewProps> = ({
           trigger={
             <Button size="sm" className="w-full">
               <Upload className="w-4 h-4 mr-2" />
-              {paymentProofRequired ? 'Upload Payment Proof' : 'Mark as Paid'}
+              Upload Payment Proof
             </Button>
           }
         />
@@ -77,6 +79,13 @@ const ClientView: React.FC<ClientViewProps> = ({
     if (onDeliverableDownload) {
       onDeliverableDownload(milestone.id);
     }
+  };
+
+  const canAccessDeliverables = () => {
+    if (!paymentProofRequired) {
+      return true;
+    }
+    return milestone.status === 'approved';
   };
 
   const renderDeliverableSection = () => {
@@ -94,6 +103,8 @@ const ClientView: React.FC<ClientViewProps> = ({
         </div>
       );
     }
+
+    const canAccess = canAccessDeliverables();
 
     return (
       <div className="space-y-4">
@@ -118,7 +129,7 @@ const ClientView: React.FC<ClientViewProps> = ({
                   </div>
                 </div>
                 <div className="flex items-center space-x-2">
-                  {((milestone.status === 'approved') || !paymentProofRequired) && onDeliverableDownload && (
+                  {canAccess && onDeliverableDownload ? (
                     <Button
                       size="sm"
                       onClick={handleDownload}
@@ -127,10 +138,9 @@ const ClientView: React.FC<ClientViewProps> = ({
                       <Download className="w-4 h-4 mr-1" />
                       Download
                     </Button>
-                  )}
-                  {paymentProofRequired && milestone.status !== 'approved' && (
+                  ) : (
                     <div className="text-xs text-amber-600 px-2 py-1 bg-amber-50 rounded">
-                      Payment required
+                      {paymentProofRequired ? 'Payment required' : 'Not available'}
                     </div>
                   )}
                 </div>
@@ -152,15 +162,21 @@ const ClientView: React.FC<ClientViewProps> = ({
                   <Link className="w-4 h-4" />
                   <span className="font-medium">External deliverable link</span>
                 </div>
-                <Button
-                  size="sm"
-                  variant="outline"
-                  onClick={() => window.open(milestone.deliverable_link, '_blank')}
-                  className="border-blue-200 text-blue-700 hover:bg-blue-100"
-                >
-                  <Link className="w-4 h-4 mr-1" />
-                  Open Link
-                </Button>
+                {canAccess ? (
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    onClick={() => window.open(milestone.deliverable_link, '_blank')}
+                    className="border-blue-200 text-blue-700 hover:bg-blue-100"
+                  >
+                    <Link className="w-4 h-4 mr-1" />
+                    Open Link
+                  </Button>
+                ) : (
+                  <div className="text-xs text-amber-600 px-2 py-1 bg-amber-50 rounded">
+                    {paymentProofRequired ? 'Payment required' : 'Not available'}
+                  </div>
+                )}
               </div>
             </div>
           </div>
