@@ -4,6 +4,7 @@ interface FormData {
   email: string;
   password: string;
   confirmPassword: string;
+  currency: string;
 }
 
 export const validateSignUpForm = (formData: FormData): Record<string, string> => {
@@ -27,6 +28,14 @@ export const validateSignUpForm = (formData: FormData): Record<string, string> =
   
   if (formData.password !== formData.confirmPassword) {
     newErrors.confirmPassword = 'Passwords do not match';
+  }
+
+  // Validate currency is required and from allowed list
+  const allowedCurrencies = ['SAR', 'JOD', 'USD', 'AED', 'GBP', 'EGP'];
+  if (!formData.currency) {
+    newErrors.currency = 'Currency is required';
+  } else if (!allowedCurrencies.includes(formData.currency)) {
+    newErrors.currency = 'Please select a valid currency';
   }
   
   return newErrors;

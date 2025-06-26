@@ -21,7 +21,7 @@ export const useSignUpForm = () => {
     email: '',
     password: '',
     confirmPassword: '',
-    currency: 'USD'
+    currency: 'USD' // Ensure default is one of the allowed values
   });
 
   const [showPassword, setShowPassword] = useState(false);
@@ -39,9 +39,13 @@ export const useSignUpForm = () => {
   };
 
   const handleCurrencyChange = (currency: string) => {
+    // Ensure currency is one of the allowed values
+    const allowedCurrencies = ['SAR', 'JOD', 'USD', 'AED', 'GBP', 'EGP'];
+    const validCurrency = allowedCurrencies.includes(currency) ? currency : 'USD';
+    
     setFormData(prev => ({
       ...prev,
-      currency
+      currency: validCurrency
     }));
   };
 
@@ -58,6 +62,12 @@ export const useSignUpForm = () => {
     try {
       const redirectUrl = `${window.location.origin}/dashboard`;
 
+      // Ensure currency is valid before sending to server
+      const allowedCurrencies = ['SAR', 'JOD', 'USD', 'AED', 'GBP', 'EGP'];
+      const safeCurrency = allowedCurrencies.includes(formData.currency) ? formData.currency : 'USD';
+
+      console.log('Signup attempt with currency:', safeCurrency);
+
       const { data, error } = await supabase.auth.signUp({
         email: formData.email,
         password: formData.password,
@@ -65,23 +75,29 @@ export const useSignUpForm = () => {
           emailRedirectTo: redirectUrl,
           data: {
             full_name: formData.name,
-            currency: formData.currency,
+            currency: safeCurrency,
           }
         }
       });
 
       if (error) {
+        console.error('Supabase signup error:', error);
         throw error;
       }
 
       if (data.user) {
+        console.log('Signup successful for user:', data.user.email);
         toast.success('Account created successfully! Please check your email for verification.');
         const redirectTo = location.state?.from?.pathname || '/dashboard';
         navigate(redirectTo, { replace: true });
       }
     } catch (error: any) {
       console.error('Sign up error:', error);
-      toast.error(error.message || 'Failed to create account');
+      if (error.message?.includes('currency')) {
+        toast.error('Currency validation failed. Please try selecting a different currency.');
+      } else {
+        toast.error(error.message || 'Failed to create account');
+      }
     } finally {
       setIsLoading(false);
     }

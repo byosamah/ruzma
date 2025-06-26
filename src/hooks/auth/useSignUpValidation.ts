@@ -15,6 +15,13 @@ export const useSignUpValidation = () => {
 
   const validateForm = (formData: FormData) => {
     const validationErrors = validateSignUpForm(formData);
+    
+    // Additional currency validation to ensure it matches database constraint
+    const allowedCurrencies = ['SAR', 'JOD', 'USD', 'AED', 'GBP', 'EGP'];
+    if (!allowedCurrencies.includes(formData.currency)) {
+      validationErrors.currency = 'Please select a valid currency';
+    }
+    
     setErrors(validationErrors);
     return Object.keys(validationErrors).length === 0;
   };
