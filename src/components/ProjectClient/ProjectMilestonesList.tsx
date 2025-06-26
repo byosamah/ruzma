@@ -9,7 +9,7 @@ import { Target } from 'lucide-react';
 import { FreelancerBranding } from '@/types/branding';
 
 interface ProjectMilestonesListProps {
-  milestones: Milestone[];
+  milestones: any[]; // Using any[] to match the database structure
   onPaymentUpload: (milestoneId: string, file: File) => Promise<boolean>;
   onDeliverableDownload: (milestoneId: string) => void;
   currency: CurrencyCode;
@@ -29,6 +29,26 @@ const ProjectMilestonesList: React.FC<ProjectMilestonesListProps> = ({
 }) => {
   const t = useT();
   const primaryColor = branding?.primary_color || '#4B72E5';
+
+  // Transform database milestones to match expected Milestone interface
+  const transformedMilestones: Milestone[] = milestones.map(milestone => ({
+    id: milestone.id,
+    title: milestone.title,
+    description: milestone.description,
+    price: milestone.price,
+    status: milestone.status,
+    deliverable: milestone.deliverable_url ? {
+      url: milestone.deliverable_url,
+      name: milestone.deliverable_name || 'Deliverable',
+      size: milestone.deliverable_size || 0,
+    } : undefined,
+    deliverable_link: milestone.deliverable_link,
+    paymentProofUrl: milestone.payment_proof_url,
+    start_date: milestone.start_date,
+    end_date: milestone.end_date,
+    created_at: milestone.created_at,
+    updated_at: milestone.updated_at,
+  }));
 
   return (
     <Card className="bg-white shadow-sm border border-slate-100">
@@ -50,7 +70,7 @@ const ProjectMilestonesList: React.FC<ProjectMilestonesListProps> = ({
         </p>
       </CardHeader>
       <CardContent className="space-y-6">
-        {milestones.map((milestone, index) => (
+        {transformedMilestones.map((milestone, index) => (
           <div key={milestone.id} className="relative">
             {/* Connection Line */}
             {index > 0 && (
