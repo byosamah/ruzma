@@ -323,6 +323,7 @@ export type Database = {
           end_date: string | null
           id: string
           name: string
+          payment_proof_required: boolean
           slug: string
           start_date: string | null
           updated_at: string
@@ -337,6 +338,7 @@ export type Database = {
           end_date?: string | null
           id?: string
           name: string
+          payment_proof_required?: boolean
           slug: string
           start_date?: string | null
           updated_at?: string
@@ -351,6 +353,7 @@ export type Database = {
           end_date?: string | null
           id?: string
           name?: string
+          payment_proof_required?: boolean
           slug?: string
           start_date?: string | null
           updated_at?: string

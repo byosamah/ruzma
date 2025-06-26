@@ -12,10 +12,12 @@ import ProjectDetailsForm from '@/components/CreateProject/ProjectDetailsForm';
 import MilestonesList from '@/components/CreateProject/MilestonesList';
 import TemplateHeader from '@/components/CreateProject/TemplateHeader';
 import SaveAsTemplateCheckbox from '@/components/CreateProject/SaveAsTemplateCheckbox';
+import PaymentProofSettings from '@/components/CreateProject/PaymentProofSettings';
 import FormActions from '@/components/CreateProject/FormActions';
 import { useCreateProjectForm } from '@/hooks/useCreateProjectForm';
 import { useProjectTemplates } from '@/hooks/useProjectTemplates';
 import { useIsMobile } from '@/hooks/use-mobile';
+
 const CreateProject = () => {
   const t = useT();
   const isMobile = useIsMobile();
@@ -43,6 +45,7 @@ const CreateProject = () => {
       isSubmitting
     }
   } = form;
+
   useEffect(() => {
     const checkAuthAndLoadData = async () => {
       setLoading(true);
@@ -66,10 +69,12 @@ const CreateProject = () => {
     };
     checkAuthAndLoadData();
   }, [navigate]);
+
   const handleSignOut = async () => {
     await supabase.auth.signOut();
     navigate('/');
   };
+
   const onSubmit = async (data: any) => {
     if (!user) return;
 
@@ -89,9 +94,11 @@ const CreateProject = () => {
     }
     await handleSubmit(data);
   };
+
   const handleSaveAsTemplateChange = (checked: boolean | "indeterminate") => {
     setSaveAsTemplate(checked === true);
   };
+
   if (loading) {
     return <Layout>
         <div className="flex items-center justify-center min-h-[400px]">
@@ -102,9 +109,11 @@ const CreateProject = () => {
         </div>
       </Layout>;
   }
+
   if (!user) {
     return <div>{t('loading')}</div>;
   }
+
   return <Layout user={profile || user} onSignOut={handleSignOut}>
       
       
@@ -115,6 +124,11 @@ const CreateProject = () => {
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6 sm:space-y-8">
             <div className={isMobile ? 'px-2' : ''}>
               <ProjectDetailsForm />
+              
+              <div className="mt-6 sm:mt-8">
+                <PaymentProofSettings />
+              </div>
+              
               <div className="mt-6 sm:mt-8">
                 <MilestonesList />
               </div>
@@ -132,4 +146,5 @@ const CreateProject = () => {
       </div>
     </Layout>;
 };
+
 export default CreateProject;

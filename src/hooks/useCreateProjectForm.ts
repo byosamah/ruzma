@@ -13,6 +13,7 @@ export const useCreateProjectForm = (templateData?: ProjectTemplate) => {
       name: templateData?.name || '',
       brief: templateData?.brief || '',
       clientEmail: '',
+      paymentProofRequired: false,
       milestones: templateData?.milestones || [
         {
           title: '',
@@ -55,6 +56,7 @@ export const useCreateProjectForm = (templateData?: ProjectTemplate) => {
     form.setValue('name', template.name);
     form.setValue('brief', template.brief);
     form.setValue('milestones', template.milestones);
+    form.setValue('paymentProofRequired', false); // Default for templates
   };
 
   const handleSubmit = async (data: CreateProjectFormData) => {

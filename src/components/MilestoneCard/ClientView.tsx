@@ -1,7 +1,7 @@
 
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
-import { Upload, Download, Clock, CheckCircle, AlertCircle } from 'lucide-react';
+import { Upload, Download, Clock, CheckCircle, AlertCircle, Lock } from 'lucide-react';
 import { Milestone } from './types';
 import { useT } from '@/lib/i18n';
 
@@ -9,12 +9,14 @@ interface ClientViewProps {
   milestone: Milestone;
   onPaymentUpload?: (milestoneId: string, file: File) => void;
   onDeliverableDownload?: (milestoneId: string) => void;
+  paymentProofRequired?: boolean;
 }
 
 const ClientView: React.FC<ClientViewProps> = ({
   milestone,
   onPaymentUpload,
   onDeliverableDownload,
+  paymentProofRequired = false,
 }) => {
   const [uploading, setUploading] = useState(false);
   const t = useT();
@@ -32,44 +34,58 @@ const ClientView: React.FC<ClientViewProps> = ({
   };
 
   const getStatusMessage = () => {
-    switch (milestone.status) {
-      case 'pending':
-        return {
-          icon: Clock,
-          message: t('awaitingPayment'),
-          color: 'text-amber-600',
-          bgColor: 'bg-amber-50',
-          borderColor: 'border-amber-200'
-        };
-      case 'payment_submitted':
-        return {
-          icon: AlertCircle,
-          message: t('paymentUnderReview'),
-          color: 'text-blue-600',
-          bgColor: 'bg-blue-50',
-          borderColor: 'border-blue-200'
-        };
-      case 'approved':
-        return {
-          icon: CheckCircle,
-          message: t('paymentApprovedReadyToDownload'),
-          color: 'text-green-600',
-          bgColor: 'bg-green-50',
-          borderColor: 'border-green-200'
-        };
-      default:
-        return {
-          icon: Clock,
-          message: t('statusUnknown'),
-          color: 'text-gray-600',
-          bgColor: 'bg-gray-50',
-          borderColor: 'border-gray-200'
-        };
+    if (paymentProofRequired) {
+      switch (milestone.status) {
+        case 'pending':
+          return {
+            icon: Lock,
+            message: t('paymentProofRequiredForDownload'),
+            color: 'text-amber-600',
+            bgColor: 'bg-amber-50',
+            borderColor: 'border-amber-200'
+          };
+        case 'payment_submitted':
+          return {
+            icon: AlertCircle,
+            message: t('paymentUnderReview'),
+            color: 'text-blue-600',
+            bgColor: 'bg-blue-50',
+            borderColor: 'border-blue-200'
+          };
+        case 'approved':
+          return {
+            icon: CheckCircle,
+            message: t('paymentApprovedReadyToDownload'),
+            color: 'text-green-600',
+            bgColor: 'bg-green-50',
+            borderColor: 'border-green-200'
+          };
+        default:
+          return {
+            icon: Clock,
+            message: t('statusUnknown'),
+            color: 'text-gray-600',
+            bgColor: 'bg-gray-50',
+            borderColor: 'border-gray-200'
+          };
+      }
+    } else {
+      // When payment proof is not required, deliverables are available immediately
+      return {
+        icon: CheckCircle,
+        message: t('deliverableReadyForDownload'),
+        color: 'text-green-600',
+        bgColor: 'bg-green-50',
+        borderColor: 'border-green-200'
+      };
     }
   };
 
   const statusInfo = getStatusMessage();
   const StatusIcon = statusInfo.icon;
+
+  // Determine if download should be enabled
+  const canDownload = paymentProofRequired ? milestone.status === 'approved' : true;
 
   return (
     <div className="space-y-4 pt-4 border-t border-slate-200">
@@ -81,8 +97,21 @@ const ClientView: React.FC<ClientViewProps> = ({
         </span>
       </div>
 
+      {/* Payment Proof Required Notice */}
+      {paymentProofRequired && (
+        <div className="bg-blue-50 border border-blue-200 rounded-lg p-3">
+          <div className="flex items-center gap-2 mb-2">
+            <Lock className="w-4 h-4 text-blue-600" />
+            <span className="text-sm font-medium text-blue-800">Payment Proof Required</span>
+          </div>
+          <p className="text-xs text-blue-700">
+            This freelancer requires payment proof before deliverables can be downloaded.
+          </p>
+        </div>
+      )}
+
       {/* Payment Upload Section */}
-      {milestone.status === 'pending' && (
+      {paymentProofRequired && milestone.status === 'pending' && (
         <div className="space-y-3">
           <h4 className="text-sm font-semibold text-slate-700">{t('submitPaymentProof')}</h4>
           <div className="flex items-center gap-3">
@@ -115,7 +144,7 @@ const ClientView: React.FC<ClientViewProps> = ({
       )}
 
       {/* Payment Submitted Info */}
-      {milestone.status === 'payment_submitted' && (
+      {paymentProofRequired && milestone.status === 'payment_submitted' && (
         <div className="bg-blue-50 border border-blue-200 rounded-lg p-3">
           <p className="text-sm text-blue-800">
             {t('paymentProofSubmittedSuccessfully')}
@@ -127,17 +156,22 @@ const ClientView: React.FC<ClientViewProps> = ({
       )}
 
       {/* Deliverable Download Section */}
-      {milestone.status === 'approved' && milestone.deliverable?.url && (
+      {milestone.deliverable?.url && (
         <div className="space-y-3">
           <h4 className="text-sm font-semibold text-slate-700">{t('downloadDeliverable')}</h4>
           <div className="flex items-center gap-3">
             <Button
-              onClick={() => onDeliverableDownload?.(milestone.id)}
+              onClick={() => canDownload && onDeliverableDownload?.(milestone.id)}
               size="sm"
-              className="bg-green-600 hover:bg-green-700 text-white"
+              disabled={!canDownload}
+              className={`${canDownload ? 'bg-green-600 hover:bg-green-700' : 'bg-gray-300 cursor-not-allowed'} text-white`}
             >
-              <Download className="w-4 h-4 mr-2" />
-              {t('downloadFile')}
+              {canDownload ? (
+                <Download className="w-4 h-4 mr-2" />
+              ) : (
+                <Lock className="w-4 h-4 mr-2" />
+              )}
+              {canDownload ? t('downloadFile') : t('paymentRequired')}
             </Button>
             {milestone.deliverable?.name && (
               <span className="text-sm text-slate-600">
@@ -145,9 +179,15 @@ const ClientView: React.FC<ClientViewProps> = ({
               </span>
             )}
           </div>
-          <p className="text-xs text-green-600">
-            {t('deliverableReadyForDownload')}
-          </p>
+          {canDownload ? (
+            <p className="text-xs text-green-600">
+              {t('deliverableReadyForDownload')}
+            </p>
+          ) : (
+            <p className="text-xs text-amber-600">
+              {t('uploadPaymentProofToDownload')}
+            </p>
+          )}
         </div>
       )}
     </div>

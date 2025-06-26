@@ -1,3 +1,4 @@
+
 import { useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
@@ -193,7 +194,7 @@ export const useCreateProjectSubmission = () => {
       // Calculate project dates from milestones
       const { start_date, end_date } = calculateProjectDates(data.milestones);
 
-      // Create the project with proper client linking
+      // Create the project with proper client linking and payment proof requirement
       const { data: project, error: projectError } = await supabase
         .from('projects')
         .insert({
@@ -204,6 +205,7 @@ export const useCreateProjectSubmission = () => {
           user_id: user.id,
           start_date,
           end_date,
+          payment_proof_required: data.paymentProofRequired,
           slug: '', // Temporary value, will be overwritten by trigger
         })
         .select()

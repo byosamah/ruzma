@@ -26,6 +26,7 @@ export interface DatabaseProject {
   start_date?: string;
   end_date?: string;
   client_access_token: string;
+  payment_proof_required?: boolean;
   created_at: string;
   updated_at: string;
   milestones: DatabaseMilestone[];

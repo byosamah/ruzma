@@ -5,6 +5,7 @@ export const createProjectFormSchema = z.object({
   name: z.string().min(1, 'Project name is required'),
   brief: z.string().min(10, 'Project brief must be at least 10 characters'),
   clientEmail: z.string().email('Please enter a valid email address').optional().or(z.literal('')),
+  paymentProofRequired: z.boolean().default(false),
   milestones: z.array(z.object({
     title: z.string().min(1, 'Milestone title is required'),
     description: z.string().min(1, 'Milestone description is required'),

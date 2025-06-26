@@ -15,6 +15,7 @@ interface ProjectMilestonesListProps {
   currency: CurrencyCode;
   freelancerCurrency?: CurrencyCode | null;
   branding?: FreelancerBranding | null;
+  paymentProofRequired?: boolean;
 }
 
 const ProjectMilestonesList: React.FC<ProjectMilestonesListProps> = ({
@@ -24,6 +25,7 @@ const ProjectMilestonesList: React.FC<ProjectMilestonesListProps> = ({
   currency,
   freelancerCurrency,
   branding,
+  paymentProofRequired = false,
 }) => {
   const t = useT();
   const primaryColor = branding?.primary_color || '#4B72E5';
@@ -68,6 +70,7 @@ const ProjectMilestonesList: React.FC<ProjectMilestonesListProps> = ({
                 currency={currency}
                 freelancerCurrency={freelancerCurrency}
                 branding={branding}
+                paymentProofRequired={paymentProofRequired}
               />
             </div>
           </div>
