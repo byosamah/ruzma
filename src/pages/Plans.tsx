@@ -2,12 +2,12 @@
 import React from 'react';
 import Layout from '@/components/Layout';
 import { SubscriptionPlans } from '@/components/Subscription/SubscriptionPlans';
-import { useProfile } from '@/hooks/useProfile';
+import { useAuth } from '@/hooks/dashboard/useAuth';
 import { useT } from '@/lib/i18n';
 
 const Plans = () => {
   const t = useT();
-  const { user, handleSignOut } = useProfile();
+  const { user, handleSignOut } = useAuth();
 
   if (!user) {
     return <div>{t('loading')}</div>;
