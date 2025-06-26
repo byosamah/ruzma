@@ -5,6 +5,7 @@ import { clientProjectService } from '@/services/clientProjectService';
 import { DatabaseProject } from '@/hooks/projectTypes';
 import { trackClientProjectAccess } from '@/lib/analytics';
 import { useUserCurrency } from '@/hooks/useUserCurrency';
+import { downloadDeliverableAction } from '@/hooks/milestone-actions/downloadDeliverable';
 
 export const useClientProject = (token?: string | null, isHybrid?: boolean) => {
   const { projectId } = useParams<{ projectId: string }>();
@@ -63,8 +64,17 @@ export const useClientProject = (token?: string | null, isHybrid?: boolean) => {
     }
   };
 
-  const handleDeliverableDownload = (milestoneId: string) => {
-    console.log('Download deliverable:', milestoneId);
+  const handleDeliverableDownload = async (milestoneId: string) => {
+    if (!project) {
+      console.error('No project data available for download');
+      return;
+    }
+
+    try {
+      await downloadDeliverableAction([project], milestoneId);
+    } catch (error) {
+      console.error('Error downloading deliverable:', error);
+    }
   };
 
   return {

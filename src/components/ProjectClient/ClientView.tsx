@@ -5,7 +5,6 @@ import { Upload, Download, Link, File } from 'lucide-react';
 import { Milestone } from './types';
 import { useT } from '@/lib/i18n';
 import PaymentUploadDialog from './PaymentUploadDialog';
-import MilestoneDeliverablePreview from './MilestoneDeliverablePreview';
 
 interface ClientViewProps {
   milestone: Milestone;
@@ -74,6 +73,12 @@ const ClientView: React.FC<ClientViewProps> = ({
     );
   };
 
+  const handleDownload = () => {
+    if (onDeliverableDownload) {
+      onDeliverableDownload(milestone.id);
+    }
+  };
+
   const renderDeliverableSection = () => {
     const hasFileDeliverable = milestone.deliverable?.url;
     const hasLinkDeliverable = milestone.deliverable_link;
@@ -113,18 +118,10 @@ const ClientView: React.FC<ClientViewProps> = ({
                   </div>
                 </div>
                 <div className="flex items-center space-x-2">
-                  {milestone.status !== 'approved' && (
-                    <MilestoneDeliverablePreview
-                      milestoneId={milestone.id}
-                      deliverableUrl={milestone.deliverable?.url}
-                      deliverableName={milestone.deliverable?.name}
-                      status={milestone.status}
-                    />
-                  )}
                   {((milestone.status === 'approved') || !paymentProofRequired) && onDeliverableDownload && (
                     <Button
                       size="sm"
-                      onClick={() => onDeliverableDownload(milestone.id)}
+                      onClick={handleDownload}
                       className="bg-green-600 hover:bg-green-700 text-white"
                     >
                       <Download className="w-4 h-4 mr-1" />
