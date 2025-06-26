@@ -46,12 +46,15 @@ export function generateInvoicePDF(
   };
 
   try {
-    // Create a clean PDF with structured invoice data
-    const pdfContent = createCleanInvoicePDF(sharedData, subtotal, total);
+    // Generate the same HTML template used by frontend
+    const htmlContent = generateInvoiceHTML(sharedData);
+    
+    // Create a comprehensive PDF with all invoice data
+    const pdfContent = createComprehensivePDF(sharedData, subtotal, total, htmlContent);
     
     // Convert to base64 for email attachment
     const base64PDF = btoa(pdfContent);
-    console.log('Generated clean PDF for email attachment');
+    console.log('Generated comprehensive PDF for email attachment');
     
     return base64PDF;
     
@@ -61,8 +64,8 @@ export function generateInvoicePDF(
   }
 }
 
-// Create a clean, structured PDF with proper invoice formatting
-function createCleanInvoicePDF(data: SharedInvoiceData, subtotal: number, total: number): string {
+// Create a comprehensive PDF with all invoice data structured properly
+function createComprehensivePDF(data: SharedInvoiceData, subtotal: number, total: number, htmlContent: string): string {
   // Format dates properly
   const formatDate = (date: Date): string => {
     return date.toLocaleDateString('en-US', {
@@ -72,87 +75,159 @@ function createCleanInvoicePDF(data: SharedInvoiceData, subtotal: number, total:
     });
   };
 
-  // Create clean invoice content
-  const invoiceContent = `
-INVOICE
+  // Extract content structure from HTML to create proper PDF content
+  const invoiceContent = generateInvoiceText(data, subtotal, total, formatDate);
 
-Invoice ID: ${data.invoice.transactionId}
-Invoice Date: ${formatDate(data.invoiceDate)}
-Due Date: ${formatDate(data.dueDate)}
-${data.purchaseOrder ? `Purchase Order: ${data.purchaseOrder}` : ''}
-${data.paymentTerms ? `Payment Terms: ${data.paymentTerms}` : ''}
-
-BILLED TO:
-${data.billedTo.name}
-${data.billedTo.address.replace(/\n/g, ' ')}
-
-PAY TO:
-${data.payTo.name}
-${data.payTo.address.replace(/\n/g, ' ')}
-
-CURRENCY: ${data.currency}
-
-LINE ITEMS:
-${data.lineItems.map(item => 
-  `${item.description} - Qty: ${item.quantity} - Amount: ${(item.quantity * item.amount).toFixed(2)}`
-).join('\n')}
-
-SUBTOTAL: ${subtotal.toFixed(2)} ${data.currency}
-${data.tax > 0 ? `TAX: ${data.tax.toFixed(2)} ${data.currency}` : ''}
-TOTAL: ${total.toFixed(2)} ${data.currency}
-  `.trim();
-
-  // Create PDF structure with clean content
+  // Create proper PDF structure
   const pdfHeader = '%PDF-1.4\n';
-  const catalog = '1 0 obj\n<< /Type /Catalog /Pages 2 0 R >>\nendobj\n';
-  const pages = '2 0 obj\n<< /Type /Pages /Kids [3 0 R] /Count 1 >>\nendobj\n';
   
-  // Convert content to PDF text commands
-  const lines = invoiceContent.split('\n');
-  let yPosition = 750;
-  const pageContent = lines.map(line => {
-    if (line.trim() === '') {
-      yPosition -= 15;
-      return '';
-    }
-    
-    const fontSize = line.match(/^(INVOICE|BILLED TO:|PAY TO:|LINE ITEMS:|TOTAL:)/) ? 14 : 
-                    line.match(/^(Invoice ID:|Currency:|SUBTOTAL:|TAX:)/) ? 12 : 10;
-    
-    const result = `/${fontSize === 14 ? 'F2' : fontSize === 12 ? 'F1' : 'F1'} ${fontSize} Tf\n50 ${yPosition} Td\n(${line.replace(/[()\\]/g, '')}) Tj\n`;
-    yPosition -= fontSize + 5;
-    return result;
-  }).join('0 -20 Td\n');
+  // PDF objects
+  const catalog = `1 0 obj
+<< /Type /Catalog /Pages 2 0 R >>
+endobj
+`;
 
-  const fullPageContent = `BT\n/F1 12 Tf\n${pageContent}ET`;
-  
+  const pages = `2 0 obj
+<< /Type /Pages /Kids [3 0 R] /Count 1 >>
+endobj
+`;
+
+  // Create comprehensive page content with proper formatting
+  const textCommands = createTextCommands(invoiceContent);
+  const contentLength = textCommands.length;
+
   const page = `3 0 obj
 << /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Contents 4 0 R /Resources << /Font << /F1 << /Type /Font /Subtype /Type1 /BaseFont /Helvetica >> /F2 << /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Bold >> >> >> >>
 endobj
 `;
-  
+
   const content = `4 0 obj
-<< /Length ${fullPageContent.length} >>
+<< /Length ${contentLength} >>
 stream
-${fullPageContent}
+${textCommands}
 endstream
 endobj
 `;
-  
+
+  // Calculate positions for xref table
+  const catalogPos = pdfHeader.length;
+  const pagesPos = catalogPos + catalog.length;
+  const pagePos = pagesPos + pages.length;
+  const contentPos = pagePos + page.length;
+  const xrefPos = contentPos + content.length;
+
   const xref = `xref
 0 5
 0000000000 65535 f 
-0000000010 00000 n 
-0000000053 00000 n 
-0000000125 00000 n 
-0000000400 00000 n 
+${catalogPos.toString().padStart(10, '0')} 00000 n 
+${pagesPos.toString().padStart(10, '0')} 00000 n 
+${pagePos.toString().padStart(10, '0')} 00000 n 
+${contentPos.toString().padStart(10, '0')} 00000 n 
 `;
-  
+
   const trailer = `trailer
 << /Size 5 /Root 1 0 R >>
 startxref
-${(pdfHeader + catalog + pages + page + content).length}
+${xrefPos}
 %%EOF`;
-  
+
   return pdfHeader + catalog + pages + page + content + xref + trailer;
+}
+
+function generateInvoiceText(data: SharedInvoiceData, subtotal: number, total: number, formatDate: (date: Date) => string): string[] {
+  const lines = [];
+  
+  // Header
+  lines.push('INVOICE');
+  lines.push('');
+  
+  // Invoice details
+  lines.push(`Invoice ID: ${data.invoice.transactionId}`);
+  lines.push(`Invoice Date: ${formatDate(data.invoiceDate)}`);
+  lines.push(`Due Date: ${formatDate(data.dueDate)}`);
+  
+  if (data.purchaseOrder) {
+    lines.push(`Purchase Order: ${data.purchaseOrder}`);
+  }
+  if (data.paymentTerms) {
+    lines.push(`Payment Terms: ${data.paymentTerms}`);
+  }
+  
+  lines.push('');
+  
+  // Billing information
+  lines.push('BILLED TO:');
+  lines.push(data.billedTo.name);
+  const billedToAddress = data.billedTo.address.split('\n');
+  billedToAddress.forEach(line => lines.push(line));
+  lines.push('');
+  
+  lines.push('PAY TO:');
+  lines.push(data.payTo.name);
+  const payToAddress = data.payTo.address.split('\n');
+  payToAddress.forEach(line => lines.push(line));
+  lines.push('');
+  
+  // Currency
+  lines.push(`CURRENCY: ${data.currency}`);
+  lines.push('');
+  
+  // Line items
+  lines.push('LINE ITEMS:');
+  lines.push('DESCRIPTION                    QTY    AMOUNT');
+  lines.push('----------------------------------------');
+  
+  data.lineItems.forEach(item => {
+    const description = item.description.length > 25 ? item.description.substring(0, 25) + '...' : item.description;
+    const qty = item.quantity.toString();
+    const amount = (item.quantity * item.amount).toFixed(2);
+    lines.push(`${description.padEnd(30)} ${qty.padStart(3)} ${amount.padStart(8)}`);
+  });
+  
+  lines.push('');
+  
+  // Totals
+  lines.push(`SUBTOTAL: ${subtotal.toFixed(2)} ${data.currency}`);
+  if (data.tax > 0) {
+    lines.push(`TAX: ${data.tax.toFixed(2)} ${data.currency}`);
+  }
+  lines.push(`TOTAL: ${total.toFixed(2)} ${data.currency}`);
+  
+  return lines;
+}
+
+function createTextCommands(lines: string[]): string {
+  let yPosition = 750;
+  const commands = ['BT'];
+  
+  lines.forEach((line, index) => {
+    if (line === '') {
+      yPosition -= 15;
+      return;
+    }
+    
+    // Determine font and size based on content
+    let font = 'F1';
+    let size = 10;
+    
+    if (line === 'INVOICE') {
+      font = 'F2';
+      size = 18;
+    } else if (line.includes('BILLED TO:') || line.includes('PAY TO:') || line.includes('LINE ITEMS:') || line.includes('TOTAL:')) {
+      font = 'F2';
+      size = 12;
+    } else if (line.includes('Invoice ID:') || line.includes('CURRENCY:') || line.includes('SUBTOTAL:')) {
+      size = 11;
+    }
+    
+    commands.push(`/${font} ${size} Tf`);
+    commands.push(`50 ${yPosition} Td`);
+    commands.push(`(${line.replace(/[()\\]/g, '')}) Tj`);
+    commands.push('0 -' + (size + 3) + ' Td');
+    
+    yPosition -= (size + 3);
+  });
+  
+  commands.push('ET');
+  return commands.join('\n');
 }
