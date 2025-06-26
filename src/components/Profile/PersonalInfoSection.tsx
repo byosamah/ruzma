@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -8,6 +7,7 @@ import { CURRENCIES } from '@/lib/currency';
 import { useT } from '@/lib/i18n';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { ProfileFormData } from '@/hooks/profile/types';
+import { useAuth } from '@/hooks/dashboard/useAuth';
 
 interface PersonalInfoSectionProps {
   formData: ProfileFormData;
@@ -22,19 +22,23 @@ export const PersonalInfoSection = ({
 }: PersonalInfoSectionProps) => {
   const t = useT();
   const { language } = useLanguage();
+  const { user } = useAuth();
+
+  // Get the name from signup data if form data name is empty
+  const displayName = formData.name || user?.user_metadata?.full_name || user?.user_metadata?.name || '';
 
   return (
     <div className="space-y-6">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div className="space-y-2">
-          <Label htmlFor="name">{t('fullName')}</Label>
+          <Label htmlFor="name">{t('fullName')} *</Label>
           <div className="relative">
             <User className="absolute left-3 top-3 h-4 w-4 text-slate-400" />
             <Input
               id="name"
               name="name"
               placeholder={t('enterFullName')}
-              value={formData.name}
+              value={displayName}
               onChange={onFormChange}
               className="pl-10"
             />

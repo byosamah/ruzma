@@ -34,7 +34,7 @@ export const useProfileInfo = (user: User | null) => {
 
       if (profile) {
         setFormData({
-          name: profile.full_name || '',
+          name: profile.full_name || user.user_metadata?.full_name || user.user_metadata?.name || '',
           email: profile.email || user.email || '',
           company: profile.company || '',
           website: profile.website || '',
@@ -47,8 +47,10 @@ export const useProfileInfo = (user: User | null) => {
         });
         setProfilePicture(profile.avatar_url || null);
       } else {
-        // Create new profile
+        // Create new profile with signup name
         const userCurrency = user.user_metadata?.currency || 'USD';
+        const signupName = user.user_metadata?.full_name || user.user_metadata?.name || '';
+        
         const { profile: newProfile, error: createError } = await profileService.createProfile(user, userCurrency);
         
         if (createError) {
@@ -56,7 +58,7 @@ export const useProfileInfo = (user: User | null) => {
           toast.error("Error setting up your profile. Please try refreshing the page.");
         } else if (newProfile) {
           setFormData({
-            name: newProfile.full_name || '',
+            name: newProfile.full_name || signupName,
             email: newProfile.email || user.email || '',
             company: newProfile.company || '',
             website: newProfile.website || '',
