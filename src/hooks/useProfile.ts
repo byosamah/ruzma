@@ -1,58 +1,44 @@
 
 import { useNavigate } from 'react-router-dom';
-import { useProfileData } from './profile/useProfileData';
-import { useImageCropping } from './profile/useImageCropping';
-import { handleSignOut as signOut } from './profile/authUtils';
-import { useAuth } from './dashboard/useAuth';
+import { User } from '@supabase/supabase-js';
+import { useProfileInfo } from './profile/useProfileInfo';
+import { useProfileActions } from './profile/useProfileActions';
 
-export const useProfile = () => {
+export const useProfile = (user: User | null) => {
   const navigate = useNavigate();
-  const { user } = useAuth();
-  const useProfileDataLogic = useProfileData();
   
-  const {
-    formData,
-    profilePicture,
-    isLoading,
-    isSaved,
-    handleChange,
-    handleCurrencyChange,
-    handleLogoUpload,
-    handleSubmit,
-    updateProfilePicture,
-  } = useProfileDataLogic(user);
+  const { formData, setFormData, profilePicture, setProfilePicture } = useProfileInfo(user);
+  const { isLoading, isSaved, handleChange, handleCurrencyChange, handleLogoUpload, handleSubmit } = useProfileActions(user);
 
-  const {
-    fileInputRef,
-    imageToCrop,
-    croppedAreaPixels,
-    setCroppedAreaPixels,
-    handleUploadClick,
-    handleFileChange,
-    onCropSave,
-    onCropCancel,
-  } = useImageCropping(user, updateProfilePicture);
+  const wrappedHandleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    handleChange(e, setFormData);
+  };
 
-  const handleSignOut = () => signOut(navigate);
+  const wrappedHandleCurrencyChange = (currency: string) => {
+    handleCurrencyChange(currency, setFormData);
+  };
+
+  const wrappedHandleLogoUpload = (file: File) => {
+    handleLogoUpload(file, setFormData);
+  };
+
+  const wrappedHandleSubmit = (e: React.FormEvent) => {
+    handleSubmit(e, formData);
+  };
+
+  const updateProfilePicture = (newPictureUrl: string) => {
+    setProfilePicture(newPictureUrl);
+  };
 
   return {
-    user,
-    profilePicture,
-    fileInputRef,
     formData,
+    profilePicture,
     isLoading,
     isSaved,
-    imageToCrop,
-    navigate,
-    handleChange,
-    handleCurrencyChange,
-    handleLogoUpload,
-    handleSubmit,
-    handleUploadClick,
-    handleFileChange,
-    onCropSave,
-    onCropCancel,
-    setCroppedAreaPixels,
-    handleSignOut,
+    handleChange: wrappedHandleChange,
+    handleCurrencyChange: wrappedHandleCurrencyChange,
+    handleLogoUpload: wrappedHandleLogoUpload,
+    handleSubmit: wrappedHandleSubmit,
+    updateProfilePicture,
   };
 };

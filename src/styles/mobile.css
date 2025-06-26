@@ -1,0 +1,76 @@
+
+/* Mobile-first responsive styles */
+@layer components {
+  /* Mobile responsive grid and flex utilities */
+  .mobile-responsive-grid {
+    @apply grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4;
+  }
+  
+  .mobile-responsive-flex {
+    @apply flex flex-col sm:flex-row gap-4 sm:gap-6;
+  }
+  
+  .mobile-button-group {
+    @apply flex flex-col sm:flex-row gap-2 sm:gap-3;
+  }
+  
+  .mobile-touch-target {
+    @apply min-h-[44px] min-w-[44px] touch-manipulation;
+  }
+}
+
+/* Mobile-specific media queries */
+@media (max-width: 767px) {
+  body {
+    @apply text-base leading-relaxed;
+  }
+  
+  /* Improve readability on mobile */
+  p, span, div {
+    @apply text-sm leading-relaxed;
+  }
+  
+  /* Better mobile spacing */
+  .mobile-container {
+    @apply px-4 py-2;
+  }
+  
+  /* Mobile-friendly cards */
+  .mobile-card {
+    @apply rounded-lg shadow-sm border border-gray-100 p-4 mb-4;
+  }
+}
+
+@media (max-width: 640px) {
+  .responsive-hide-mobile {
+    @apply hidden;
+  }
+  
+  .responsive-show-mobile {
+    @apply block;
+  }
+  
+  /* Improve mobile card layouts */
+  .project-card-mobile {
+    @apply p-4 space-y-3;
+  }
+  
+  .project-card-mobile .button-group {
+    @apply flex flex-col gap-2;
+  }
+  
+  .project-card-mobile button {
+    @apply w-full justify-start text-left;
+  }
+}
+
+/* Tablet-specific optimizations */
+@media (min-width: 641px) and (max-width: 1024px) {
+  .responsive-hide-tablet {
+    @apply hidden;
+  }
+  
+  .responsive-show-tablet {
+    @apply block;
+  }
+}
