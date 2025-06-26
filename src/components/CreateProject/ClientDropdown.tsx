@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
-import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from '@/components/ui/command';
+import { Command, CommandEmpty, CommandGroup, CommandItem, CommandList } from '@/components/ui/command';
 import { Check, ChevronsUpDown, Plus } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useClients } from '@/hooks/useClients';
@@ -65,16 +65,10 @@ const ClientDropdown: React.FC<ClientDropdownProps> = ({ value, onChange }) => {
         </PopoverTrigger>
         <PopoverContent className="w-full p-0" align="start">
           <Command>
-            <CommandInput 
-              placeholder="Search clients or enter email..." 
-              value={value}
-              onValueChange={onChange}
-              className="h-9"
-            />
             <CommandList>
               <CommandEmpty>
                 <div className="p-2 text-sm text-gray-500">
-                  {value ? `Use "${value}" as client email` : 'No clients found'}
+                  No clients found
                 </div>
               </CommandEmpty>
               <CommandGroup>
