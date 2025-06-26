@@ -39,9 +39,15 @@ export const useSignUpForm = () => {
   };
 
   const handleCurrencyChange = (currency: string) => {
+    console.log('Currency selected:', currency);
+    
     // Ensure currency is one of the allowed values
     const allowedCurrencies = ['SAR', 'JOD', 'USD', 'AED', 'GBP', 'EGP'];
     const validCurrency = allowedCurrencies.includes(currency) ? currency : 'USD';
+    
+    if (currency !== validCurrency) {
+      console.warn('Invalid currency selected, defaulting to USD:', currency);
+    }
     
     setFormData(prev => ({
       ...prev,
@@ -53,6 +59,7 @@ export const useSignUpForm = () => {
     e.preventDefault();
     
     if (!validateForm(formData)) {
+      console.log('Form validation failed:', formData);
       return;
     }
 
@@ -67,6 +74,11 @@ export const useSignUpForm = () => {
       const safeCurrency = allowedCurrencies.includes(formData.currency) ? formData.currency : 'USD';
 
       console.log('Signup attempt with currency:', safeCurrency);
+      console.log('Full signup data:', { 
+        email: formData.email, 
+        name: formData.name, 
+        currency: safeCurrency 
+      });
 
       const { data, error } = await supabase.auth.signUp({
         email: formData.email,
@@ -93,10 +105,12 @@ export const useSignUpForm = () => {
       }
     } catch (error: any) {
       console.error('Sign up error:', error);
-      if (error.message?.includes('currency')) {
-        toast.error('Currency validation failed. Please try selecting a different currency.');
+      if (error.message?.includes('currency') || error.message?.includes('constraint')) {
+        toast.error('There was an issue with the currency selection. Please try again or contact support.');
+      } else if (error.message?.includes('Email rate limit exceeded')) {
+        toast.error('Too many signup attempts. Please wait a moment before trying again.');
       } else {
-        toast.error(error.message || 'Failed to create account');
+        toast.error(error.message || 'Failed to create account. Please try again.');
       }
     } finally {
       setIsLoading(false);
