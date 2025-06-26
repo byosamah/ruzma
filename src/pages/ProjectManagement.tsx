@@ -77,9 +77,7 @@ const ProjectManagement: React.FC = () => {
         </div>
       </Layout>;
   }
-  const completedMilestones = project.milestones.filter(m => m.status === 'approved').length;
-  const totalValue = project.milestones.reduce((sum, m) => sum + m.price, 0);
-  const completedValue = project.milestones.filter(m => m.status === 'approved').reduce((sum, m) => sum + m.price, 0);
+  
   return (
     <Layout user={profile || user}>
       <div className="space-y-6">
@@ -95,57 +93,6 @@ const ProjectManagement: React.FC = () => {
             />
           </CardContent>
         </Card>
-
-        {/* Quick Stats Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <Card>
-            <CardContent className="p-6">
-              <div className="flex items-center space-x-3">
-                <div className="p-2 bg-blue-100 rounded-lg">
-                  <CheckCircle2 className="w-5 h-5 text-blue-600" />
-                </div>
-                <div>
-                  <p className="text-sm text-gray-600">Progress</p>
-                  <p className="text-2xl font-bold text-gray-900">
-                    {completedMilestones}/{project.milestones.length}
-                  </p>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardContent className="p-6">
-              <div className="flex items-center space-x-3">
-                <div className="p-2 bg-green-100 rounded-lg">
-                  <DollarSign className="w-5 h-5 text-green-600" />
-                </div>
-                <div>
-                  <p className="text-sm text-gray-600">Total Value</p>
-                  <p className="text-2xl font-bold text-gray-900">
-                    {userCurrency.formatCurrency(totalValue)}
-                  </p>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardContent className="p-6">
-              <div className="flex items-center space-x-3">
-                <div className="p-2 bg-purple-100 rounded-lg">
-                  <DollarSign className="w-5 h-5 text-purple-600" />
-                </div>
-                <div>
-                  <p className="text-sm text-gray-600">Completed Value</p>
-                  <p className="text-2xl font-bold text-gray-900">
-                    {userCurrency.formatCurrency(completedValue)}
-                  </p>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-        </div>
 
         {/* Milestones Section */}
         <Card>
