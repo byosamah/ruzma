@@ -24,27 +24,34 @@ const SignUpContainer: React.FC = () => {
   } = useSignUpForm();
 
   return (
-    <div className="min-h-screen bg-auth-background flex flex-col items-center justify-center p-4">
-      <div className="absolute top-10 sm:top-16">
-        <Link to="/">
-          <img src="/lovable-uploads/bca9fbc0-5ee9-455b-91b3-b7eff1f56169.png" alt="Ruzma Logo" className="h-10" />
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-white flex flex-col items-center justify-center p-4 apple-container">
+      <div className="absolute top-8 sm:top-12 animate-apple-fade-in">
+        <Link to="/" className="flex items-center gap-3 hover:opacity-80 transition-opacity">
+          <img 
+            src="/lovable-uploads/bca9fbc0-5ee9-455b-91b3-b7eff1f56169.png" 
+            alt="Ruzma Logo" 
+            className="h-8 w-auto" 
+          />
+          <span className="apple-title-2 text-foreground">Ruzma</span>
         </Link>
       </div>
 
-      <Card className="w-full max-w-md shadow-lg bg-white">
-        <CardHeader className="text-center">
-          <CardTitle className="text-2xl font-bold text-slate-800">Welcome to Ruzma</CardTitle>
-          <p className="text-slate-600">Secure payment management for freelancers</p>
+      <Card className="w-full max-w-md apple-shadow animate-apple-slide-up">
+        <CardHeader className="text-center pb-6">
+          <CardTitle className="apple-title-2 text-foreground mb-2">Welcome to Ruzma</CardTitle>
+          <p className="apple-body text-muted-foreground">Start managing your freelance projects with ease</p>
         </CardHeader>
-        <CardContent>
-          <div className="flex bg-slate-100 rounded-md p-1 mb-6">
-            <Button asChild variant="ghost" className="w-1/2 text-slate-500">
+        <CardContent className="space-y-6">
+          <div className="flex bg-muted rounded-full p-1 mb-8">
+            <Button asChild variant="ghost" size="sm" className="flex-1 apple-button-ghost text-muted-foreground">
               <Link to="/login">Sign In</Link>
             </Button>
-            <Button variant="ghost" className="w-1/2 bg-white shadow-sm text-brand-navy font-semibold">Sign Up</Button>
+            <Button variant="default" size="sm" className="flex-1 apple-button-primary">
+              Sign Up
+            </Button>
           </div>
 
-          <form onSubmit={handleSubmit} className="space-y-4">
+          <form onSubmit={handleSubmit} className="space-y-5">
             <FormField
               id="name"
               name="name"
@@ -61,7 +68,7 @@ const SignUpContainer: React.FC = () => {
               id="email"
               name="email"
               type="email"
-              label="Email"
+              label="Email Address"
               placeholder="you@example.com"
               value={formData.email}
               onChange={handleFormDataChange}
@@ -74,13 +81,14 @@ const SignUpContainer: React.FC = () => {
               value={formData.currency}
               onChange={handleCurrencyChange}
               error={errors.currency}
+              required
             />
             
             <PasswordField
               id="password"
               name="password"
-              label="Password"
-              placeholder="Create a password"
+              label="Create Password"
+              placeholder="Create a secure password"
               value={formData.password}
               onChange={handleFormDataChange}
               error={errors.password}
@@ -104,17 +112,29 @@ const SignUpContainer: React.FC = () => {
 
             <Button 
               type="submit" 
-              className="w-full bg-brand-yellow text-brand-black hover:bg-brand-yellow/90" 
+              className="w-full apple-button-primary apple-shadow-sm" 
               disabled={isLoading}
+              size="lg"
             >
               {isLoading ? 'Creating Account...' : 'Create Account'}
             </Button>
           </form>
+
+          <div className="text-center pt-4">
+            <p className="apple-caption">
+              Already have an account?{' '}
+              <Link to="/login" className="text-primary hover:text-primary/80 font-medium transition-colors">
+                Sign in
+              </Link>
+            </p>
+          </div>
         </CardContent>
       </Card>
       
-      <div className="absolute bottom-8 text-sm text-slate-600">
-        © {new Date().getFullYear()} Ruzma. All rights reserved.
+      <div className="absolute bottom-6 text-center animate-apple-fade-in">
+        <p className="apple-caption">
+          © {new Date().getFullYear()} Ruzma. All rights reserved.
+        </p>
       </div>
     </div>
   );
