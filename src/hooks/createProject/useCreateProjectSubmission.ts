@@ -5,6 +5,8 @@ import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import { CreateProjectFormData } from '@/lib/validators/project';
 import { calculateProjectDates } from '@/lib/projectDateUtils';
+import { securityMonitor } from '@/lib/securityMonitoring';
+import { validateProjectName, validateEmail, sanitizeInput } from '@/lib/inputValidation';
 
 export const useCreateProjectSubmission = () => {
   const navigate = useNavigate();
@@ -18,7 +20,36 @@ export const useCreateProjectSubmission = () => {
         return;
       }
 
+      // Enhanced input validation
+      const projectNameValidation = validateProjectName(data.name);
+      if (!projectNameValidation.isValid) {
+        toast.error(projectNameValidation.error || 'Invalid project name');
+        securityMonitor.monitorValidationFailure(data.name, 'project_name_validation');
+        return;
+      }
+
+      if (data.clientEmail) {
+        const emailValidation = validateEmail(data.clientEmail);
+        if (!emailValidation.isValid) {
+          toast.error(emailValidation.error || 'Invalid client email');
+          securityMonitor.monitorValidationFailure(data.clientEmail, 'email_validation');
+          return;
+        }
+      }
+
+      // Sanitize inputs
+      const sanitizedName = sanitizeInput(data.name);
+      const sanitizedBrief = sanitizeInput(data.brief);
+
+      // Rate limiting check
+      const rateLimitKey = `create_project_${user.id}`;
+      if (!securityMonitor.checkRateLimit(rateLimitKey, 5, 300000)) { // 5 attempts per 5 minutes
+        toast.error('Too many project creation attempts. Please try again later.');
+        return;
+      }
+
       console.log('Creating project for user:', user.id);
+      securityMonitor.monitorDataModification('projects', 'create', { userId: user.id });
 
       // Get user profile to check current status
       const { data: profile, error: profileError } = await supabase
@@ -29,6 +60,10 @@ export const useCreateProjectSubmission = () => {
 
       if (profileError) {
         console.error('Error fetching user profile:', profileError);
+        securityMonitor.monitorPermissionViolation('profiles', 'fetch', {
+          error: profileError.message,
+          userId: user.id
+        });
         toast.error('Failed to check user profile');
         return;
       }
@@ -72,6 +107,10 @@ export const useCreateProjectSubmission = () => {
 
       if (limitError) {
         console.error('Error checking limits:', limitError);
+        securityMonitor.monitorPermissionViolation('projects', 'create_limit_check', {
+          error: limitError.message,
+          userId: user.id
+        });
         toast.error('Failed to check project limits');
         return;
       }
@@ -80,6 +119,13 @@ export const useCreateProjectSubmission = () => {
         const userType = profile.user_type || 'free';
         const currentCount = profile.project_count || 0;
         const maxProjects = userType === 'plus' ? 3 : userType === 'pro' ? 10 : 1;
+        
+        securityMonitor.monitorPermissionViolation('projects', 'create_limit_exceeded', {
+          userType,
+          currentCount,
+          maxProjects,
+          userId: user.id
+        });
         
         toast.error(`Project limit reached (${currentCount}/${maxProjects}). Please upgrade your plan to create more projects.`);
         return;
@@ -109,7 +155,12 @@ export const useCreateProjectSubmission = () => {
           console.log('Client not found, creating new client');
           
           // Extract name from email if not provided elsewhere
-          const clientName = data.clientEmail.split('@')[0];
+          const clientName = sanitizeInput(data.clientEmail.split('@')[0]);
+          
+          securityMonitor.monitorDataModification('clients', 'auto_create', { 
+            email: data.clientEmail,
+            userId: user.id 
+          });
           
           const { data: newClient, error: clientCreateError } = await supabase
             .from('clients')
@@ -123,6 +174,11 @@ export const useCreateProjectSubmission = () => {
 
           if (clientCreateError) {
             console.error('Error creating client:', clientCreateError);
+            securityMonitor.monitorPermissionViolation('clients', 'auto_create', {
+              error: clientCreateError.message,
+              email: data.clientEmail,
+              userId: user.id
+            });
             toast.error('Failed to create client record');
             return;
           }
@@ -139,10 +195,10 @@ export const useCreateProjectSubmission = () => {
       const { data: project, error: projectError } = await supabase
         .from('projects')
         .insert({
-          name: data.name,
-          brief: data.brief,
+          name: sanitizedName,
+          brief: sanitizedBrief,
           client_email: data.clientEmail,
-          client_id: clientId, // Now properly setting client_id
+          client_id: clientId,
           user_id: user.id,
           start_date,
           end_date,
@@ -155,11 +211,11 @@ export const useCreateProjectSubmission = () => {
 
       console.log('Project created:', project);
 
-      // Create milestones
+      // Create milestones with input sanitization
       const milestoneInserts = data.milestones.map((milestone) => ({
         project_id: project.id,
-        title: milestone.title,
-        description: milestone.description,
+        title: sanitizeInput(milestone.title),
+        description: sanitizeInput(milestone.description),
         price: milestone.price,
         status: 'pending' as const,
         start_date: milestone.start_date || null,
@@ -185,10 +241,22 @@ export const useCreateProjectSubmission = () => {
         console.log('Project count updated successfully');
       }
 
+      // Log successful project creation
+      securityMonitor.logEvent('data_modification', {
+        resource: 'project',
+        action: 'created_successfully',
+        projectId: project.id,
+        userId: user.id
+      });
+
       toast.success('Project created successfully!');
       navigate('/dashboard');
     } catch (error) {
       console.error('Error creating project:', error);
+      securityMonitor.logEvent('suspicious_activity', {
+        activity: 'project_creation_error',
+        error: error instanceof Error ? error.message : 'Unknown error'
+      });
       toast.error('Failed to create project. Please try again.');
     }
   }, [navigate]);

@@ -4,6 +4,8 @@ import { supabase } from '@/integrations/supabase/client';
 import { User } from '@supabase/supabase-js';
 import { toast } from 'sonner';
 import { DatabaseClient, ClientWithProjectCount, CreateClientData, UpdateClientData } from '@/types/client';
+import { securityMonitor } from '@/lib/securityMonitoring';
+import { validateEmail, sanitizeInput } from '@/lib/inputValidation';
 
 export const useClients = (user: User | null) => {
   const [clients, setClients] = useState<ClientWithProjectCount[]>([]);
@@ -19,6 +21,9 @@ export const useClients = (user: User | null) => {
     try {
       setLoading(true);
       
+      // Monitor data access
+      securityMonitor.monitorDataAccess('clients', 'fetch_all', { userId: user.id });
+      
       // First fetch all clients for the user
       const { data: clientsData, error: clientsError } = await supabase
         .from('clients')
@@ -28,6 +33,10 @@ export const useClients = (user: User | null) => {
 
       if (clientsError) {
         console.error('Error fetching clients:', clientsError);
+        securityMonitor.monitorPermissionViolation('clients', 'fetch', {
+          error: clientsError.message,
+          userId: user.id
+        });
         toast.error('Failed to load clients');
         return;
       }
@@ -59,6 +68,11 @@ export const useClients = (user: User | null) => {
       setClients(clientsWithCount);
     } catch (error) {
       console.error('Error:', error);
+      securityMonitor.logEvent('suspicious_activity', {
+        activity: 'client_fetch_error',
+        error: error instanceof Error ? error.message : 'Unknown error',
+        userId: user.id
+      });
       toast.error('Failed to load clients');
     } finally {
       setLoading(false);
@@ -71,11 +85,34 @@ export const useClients = (user: User | null) => {
       return false;
     }
 
+    // Enhanced input validation
+    const emailValidation = validateEmail(clientData.email);
+    if (!emailValidation.isValid) {
+      toast.error(emailValidation.error || 'Invalid email');
+      securityMonitor.monitorValidationFailure(clientData.email, 'email_validation');
+      return false;
+    }
+
+    const sanitizedName = sanitizeInput(clientData.name);
+    if (sanitizedName !== clientData.name) {
+      securityMonitor.monitorValidationFailure(clientData.name, 'name_sanitization');
+    }
+
+    // Rate limiting check
+    const rateLimitKey = `create_client_${user.id}`;
+    if (!securityMonitor.checkRateLimit(rateLimitKey, 10, 60000)) { // 10 attempts per minute
+      toast.error('Too many attempts. Please try again later.');
+      return false;
+    }
+
     try {
+      securityMonitor.monitorDataModification('clients', 'create', { userId: user.id });
+
       const { error } = await supabase
         .from('clients')
         .insert([{
-          ...clientData,
+          name: sanitizedName,
+          email: clientData.email,
           user_id: user.id
         }]);
 
@@ -84,6 +121,10 @@ export const useClients = (user: User | null) => {
         if (error.code === '23505') {
           toast.error('A client with this email already exists');
         } else {
+          securityMonitor.monitorPermissionViolation('clients', 'create', {
+            error: error.message,
+            userId: user.id
+          });
           toast.error('Failed to create client');
         }
         return false;
@@ -94,6 +135,11 @@ export const useClients = (user: User | null) => {
       return true;
     } catch (error) {
       console.error('Error:', error);
+      securityMonitor.logEvent('suspicious_activity', {
+        activity: 'client_creation_error',
+        error: error instanceof Error ? error.message : 'Unknown error',
+        userId: user.id
+      });
       toast.error('Failed to create client');
       return false;
     }
@@ -105,7 +151,30 @@ export const useClients = (user: User | null) => {
       return false;
     }
 
+    // Enhanced input validation
+    if (clientData.email) {
+      const emailValidation = validateEmail(clientData.email);
+      if (!emailValidation.isValid) {
+        toast.error(emailValidation.error || 'Invalid email');
+        securityMonitor.monitorValidationFailure(clientData.email, 'email_validation');
+        return false;
+      }
+    }
+
+    if (clientData.name) {
+      const sanitizedName = sanitizeInput(clientData.name);
+      if (sanitizedName !== clientData.name) {
+        securityMonitor.monitorValidationFailure(clientData.name, 'name_sanitization');
+        clientData.name = sanitizedName;
+      }
+    }
+
     try {
+      securityMonitor.monitorDataModification('clients', 'update', { 
+        clientId, 
+        userId: user.id 
+      });
+
       const { error } = await supabase
         .from('clients')
         .update({
@@ -120,6 +189,11 @@ export const useClients = (user: User | null) => {
         if (error.code === '23505') {
           toast.error('A client with this email already exists');
         } else {
+          securityMonitor.monitorPermissionViolation('clients', 'update', {
+            error: error.message,
+            clientId,
+            userId: user.id
+          });
           toast.error('Failed to update client');
         }
         return false;
@@ -130,6 +204,12 @@ export const useClients = (user: User | null) => {
       return true;
     } catch (error) {
       console.error('Error:', error);
+      securityMonitor.logEvent('suspicious_activity', {
+        activity: 'client_update_error',
+        error: error instanceof Error ? error.message : 'Unknown error',
+        clientId,
+        userId: user.id
+      });
       toast.error('Failed to update client');
       return false;
     }
@@ -142,6 +222,11 @@ export const useClients = (user: User | null) => {
     }
 
     try {
+      securityMonitor.monitorDataModification('clients', 'delete', { 
+        clientId, 
+        userId: user.id 
+      });
+
       const { error } = await supabase
         .from('clients')
         .delete()
@@ -150,6 +235,11 @@ export const useClients = (user: User | null) => {
 
       if (error) {
         console.error('Error deleting client:', error);
+        securityMonitor.monitorPermissionViolation('clients', 'delete', {
+          error: error.message,
+          clientId,
+          userId: user.id
+        });
         toast.error('Failed to delete client');
         return false;
       }
@@ -159,6 +249,12 @@ export const useClients = (user: User | null) => {
       return true;
     } catch (error) {
       console.error('Error:', error);
+      securityMonitor.logEvent('suspicious_activity', {
+        activity: 'client_deletion_error',
+        error: error instanceof Error ? error.message : 'Unknown error',
+        clientId,
+        userId: user.id
+      });
       toast.error('Failed to delete client');
       return false;
     }
