@@ -36,7 +36,16 @@ export const useDashboardData = (user: User | null) => {
           .eq('user_id', user.id)
           .order('created_at', { ascending: false });
 
-        setProjects(projectsData || []);
+        // Type the projects data properly
+        const typedProjects: DatabaseProject[] = (projectsData || []).map(project => ({
+          ...project,
+          milestones: project.milestones.map((milestone: any) => ({
+            ...milestone,
+            status: milestone.status as 'pending' | 'payment_submitted' | 'approved' | 'rejected'
+          }))
+        }));
+
+        setProjects(typedProjects);
 
         // Set user properties for analytics
         if (profileData && projectsData) {

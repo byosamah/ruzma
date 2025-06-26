@@ -7,6 +7,7 @@ import { trackBrandingUpdated, trackError } from '@/lib/analytics';
 
 export const useProfileActions = (user: User | null) => {
   const [isUpdating, setIsUpdating] = useState(false);
+  const [isSaved, setIsSaved] = useState(false);
 
   const updateBranding = async (brandingData: any) => {
     if (!user) return false;
@@ -27,6 +28,8 @@ export const useProfileActions = (user: User | null) => {
       trackBrandingUpdated(user.id, 'profile_branding');
       
       toast.success('Branding updated successfully!');
+      setIsSaved(true);
+      setTimeout(() => setIsSaved(false), 2000);
       return true;
     } catch (error: any) {
       console.error('Error updating branding:', error);
@@ -54,6 +57,8 @@ export const useProfileActions = (user: User | null) => {
       if (error) throw error;
 
       toast.success('Profile updated successfully!');
+      setIsSaved(true);
+      setTimeout(() => setIsSaved(false), 2000);
       return true;
     } catch (error: any) {
       console.error('Error updating profile:', error);
@@ -65,9 +70,34 @@ export const useProfileActions = (user: User | null) => {
     }
   };
 
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>, setFormData: any) => {
+    const { name, value } = e.target;
+    setFormData((prev: any) => ({ ...prev, [name]: value }));
+  };
+
+  const handleCurrencyChange = (currency: string, setFormData: any) => {
+    setFormData((prev: any) => ({ ...prev, currency }));
+  };
+
+  const handleLogoUpload = (file: File, setFormData: any) => {
+    // Handle logo upload logic here
+    console.log('Logo upload:', file);
+  };
+
+  const handleSubmit = async (e: React.FormEvent, formData: any) => {
+    e.preventDefault();
+    await updateProfile(formData);
+  };
+
   return {
     updateBranding,
     updateProfile,
-    isUpdating
+    isUpdating,
+    isLoading: isUpdating,
+    isSaved,
+    handleChange,
+    handleCurrencyChange,
+    handleLogoUpload,
+    handleSubmit
   };
 };

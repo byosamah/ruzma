@@ -1,14 +1,14 @@
 
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { createProjectSchema, CreateProjectFormData } from '@/lib/validators/project';
+import { createProjectFormSchema, CreateProjectFormData } from '@/lib/validators/project';
 import { useCreateProjectSubmission } from '@/hooks/createProject/useCreateProjectSubmission';
 import { ProjectTemplate } from '@/types/projectTemplate';
 import { trackTemplateUsed } from '@/lib/analytics';
 
 export const useCreateProjectForm = (templateData?: ProjectTemplate) => {
   const form = useForm<CreateProjectFormData>({
-    resolver: zodResolver(createProjectSchema),
+    resolver: zodResolver(createProjectFormSchema),
     defaultValues: {
       name: templateData?.name || '',
       brief: templateData?.brief || '',
