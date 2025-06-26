@@ -15,6 +15,7 @@ interface PasswordFieldProps {
   error?: string;
   showPassword: boolean;
   onTogglePassword: () => void;
+  required?: boolean;
 }
 
 export const PasswordField: React.FC<PasswordFieldProps> = ({
@@ -26,11 +27,12 @@ export const PasswordField: React.FC<PasswordFieldProps> = ({
   onChange,
   error,
   showPassword,
-  onTogglePassword
+  onTogglePassword,
+  required = false
 }) => {
   return (
     <div className="space-y-2">
-      <Label htmlFor={id}>{label}</Label>
+      <Label htmlFor={id}>{label}{required && ' *'}</Label>
       <div className="relative">
         <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-400" />
         <Input

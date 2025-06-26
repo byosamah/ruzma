@@ -14,6 +14,7 @@ interface FormFieldProps {
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   error?: string;
   icon?: LucideIcon;
+  required?: boolean;
 }
 
 export const FormField: React.FC<FormFieldProps> = ({
@@ -25,11 +26,12 @@ export const FormField: React.FC<FormFieldProps> = ({
   value,
   onChange,
   error,
-  icon: Icon
+  icon: Icon,
+  required = false
 }) => {
   return (
     <div className="space-y-2">
-      <Label htmlFor={id}>{label}</Label>
+      <Label htmlFor={id}>{label}{required && ' *'}</Label>
       <div className="relative">
         {Icon && <Icon className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-400" />}
         <Input

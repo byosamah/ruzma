@@ -59,7 +59,7 @@ const AddClientDialog: React.FC<AddClientDialogProps> = ({
         </DialogHeader>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="space-y-2">
-            <Label htmlFor="name">Client Name</Label>
+            <Label htmlFor="name">Client Name *</Label>
             <Input
               id="name"
               value={formData.name}
@@ -69,7 +69,7 @@ const AddClientDialog: React.FC<AddClientDialogProps> = ({
             />
           </div>
           <div className="space-y-2">
-            <Label htmlFor="email">Client Email</Label>
+            <Label htmlFor="email">Client Email *</Label>
             <Input
               id="email"
               type="email"
