@@ -58,6 +58,7 @@ export const useEditProjectActions = (
     name: string,
     brief: string,
     clientEmail: string,
+    paymentProofRequired: boolean,
     milestones: MilestoneFormData[]
   ) => {
     e.preventDefault();
@@ -87,6 +88,7 @@ export const useEditProjectActions = (
         name,
         brief,
         clientEmail,
+        paymentProofRequired,
         milestones,
       });
 

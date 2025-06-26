@@ -9,6 +9,7 @@ export const useEditProjectData = (projects: DatabaseProject[], slugOrId: string
   const [name, setName] = useState('');
   const [brief, setBrief] = useState('');
   const [clientEmail, setClientEmail] = useState('');
+  const [paymentProofRequired, setPaymentProofRequired] = useState(false);
   const [milestones, setMilestones] = useState<MilestoneFormData[]>([]);
 
   useEffect(() => {
@@ -27,6 +28,7 @@ export const useEditProjectData = (projects: DatabaseProject[], slugOrId: string
         setName(found.name);
         setBrief(found.brief);
         setClientEmail(found.client_email || '');
+        setPaymentProofRequired(found.payment_proof_required || false);
         
         const formattedMilestones = found.milestones.map((milestone) => ({
           title: milestone.title,
@@ -47,10 +49,12 @@ export const useEditProjectData = (projects: DatabaseProject[], slugOrId: string
     name,
     brief,
     clientEmail,
+    paymentProofRequired,
     milestones,
     setName,
     setBrief,
     setClientEmail,
+    setPaymentProofRequired,
     setMilestones,
   };
 };

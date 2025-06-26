@@ -1,11 +1,10 @@
-
 import { useState, useCallback } from 'react';
 import { User } from '@supabase/supabase-js';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import { logSecurityEvent } from '@/lib/authSecurity';
 
-export const useProjectCRUD = (user: User | null, onRefresh: () => void) => {
+export const useProjectCRUD = (user: User | null) => {
   const [isCreating, setIsCreating] = useState(false);
   const [isUpdating, setIsUpdating] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
@@ -30,7 +29,6 @@ export const useProjectCRUD = (user: User | null, onRefresh: () => void) => {
 
       logSecurityEvent('project_created', { userId: user.id, projectId: data.id });
       toast.success('Project created successfully!');
-      onRefresh();
       return data;
     } catch (error: any) {
       console.error('Error creating project:', error);
@@ -40,36 +38,78 @@ export const useProjectCRUD = (user: User | null, onRefresh: () => void) => {
     } finally {
       setIsCreating(false);
     }
-  }, [user, onRefresh]);
+  }, []);
 
-  const updateProject = useCallback(async (projectId: string, updates: any) => {
+  const updateProject = async (projectId: string, data: {
+    name: string;
+    brief: string;
+    clientEmail: string;
+    paymentProofRequired?: boolean;
+    milestones: Array<{
+      title: string;
+      description: string;
+      price: number;
+      status: string;
+      start_date?: string;
+      end_date?: string;
+    }>;
+  }): Promise<boolean> => {
     if (!user) return false;
-    
-    setIsUpdating(true);
+
     try {
-      logSecurityEvent('project_update_initiated', { userId: user.id, projectId });
-      
-      const { error } = await supabase
+      const { error: projectError } = await supabase
         .from('projects')
-        .update(updates)
+        .update({
+          name: data.name,
+          brief: data.brief,
+          client_email: data.clientEmail || null,
+          payment_proof_required: data.paymentProofRequired || false,
+          updated_at: new Date().toISOString(),
+        })
         .eq('id', projectId)
         .eq('user_id', user.id);
 
-      if (error) throw error;
+      if (projectError) {
+        console.error('Error updating project:', projectError);
+        return false;
+      }
 
-      logSecurityEvent('project_updated', { userId: user.id, projectId });
-      toast.success('Project updated successfully!');
-      onRefresh();
+      // Update milestones
+      const { error: deleteError } = await supabase
+        .from('milestones')
+        .delete()
+        .eq('project_id', projectId);
+
+      if (deleteError) {
+        console.error('Error deleting old milestones:', deleteError);
+        return false;
+      }
+
+      const milestonesToInsert = data.milestones.map((milestone) => ({
+        project_id: projectId,
+        title: milestone.title,
+        description: milestone.description,
+        price: milestone.price,
+        status: milestone.status,
+        start_date: milestone.start_date || null,
+        end_date: milestone.end_date || null,
+      }));
+
+      const { error: milestonesError } = await supabase
+        .from('milestones')
+        .insert(milestonesToInsert);
+
+      if (milestonesError) {
+        console.error('Error creating new milestones:', milestonesError);
+        return false;
+      }
+
       return true;
-    } catch (error: any) {
-      console.error('Error updating project:', error);
-      logSecurityEvent('project_update_failed', { userId: user.id, projectId, error: error.message });
-      toast.error('Failed to update project');
+    } catch (error) {
+      console.error('Error in updateProject:', error);
       return false;
-    } finally {
-      setIsUpdating(false);
     }
-  }, [user, onRefresh]);
+  };
 
   const deleteProject = useCallback(async (projectId: string) => {
     if (!user) return false;
@@ -88,7 +128,6 @@ export const useProjectCRUD = (user: User | null, onRefresh: () => void) => {
 
       logSecurityEvent('project_deleted', { userId: user.id, projectId });
       toast.success('Project deleted successfully!');
-      onRefresh();
       return true;
     } catch (error: any) {
       console.error('Error deleting project:', error);
@@ -98,7 +137,7 @@ export const useProjectCRUD = (user: User | null, onRefresh: () => void) => {
     } finally {
       setIsDeleting(false);
     }
-  }, [user, onRefresh]);
+  }, []);
 
   return {
     createProject,

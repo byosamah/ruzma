@@ -23,6 +23,7 @@ const EditProject: React.FC = () => {
     name,
     brief,
     clientEmail,
+    paymentProofRequired,
     milestones,
     loading,
     updating,
@@ -34,6 +35,7 @@ const EditProject: React.FC = () => {
     setName,
     setBrief,
     setClientEmail,
+    setPaymentProofRequired,
   } = useEditProject(slug);
 
   if (loading) {
@@ -74,11 +76,13 @@ const EditProject: React.FC = () => {
               name={name}
               brief={brief}
               clientEmail={clientEmail}
+              paymentProofRequired={paymentProofRequired}
               milestones={milestones}
               updating={updating}
               onNameChange={setName}
               onBriefChange={setBrief}
               onClientEmailChange={setClientEmail}
+              onPaymentProofRequiredChange={setPaymentProofRequired}
               onMilestoneChange={handleMilestoneChange}
               onAddMilestone={handleAddMilestone}
               onDeleteMilestone={handleDeleteMilestone}
