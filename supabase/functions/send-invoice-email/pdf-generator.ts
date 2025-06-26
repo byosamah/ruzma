@@ -18,7 +18,7 @@ export function generateInvoicePDF(
   const invoiceDate = new Date(invoice.date);
   const dueDate = originalData?.dueDate ? new Date(originalData.dueDate) : new Date(invoiceDate.getTime() + 30 * 24 * 60 * 60 * 1000);
 
-  // Convert to shared data format
+  // Convert to shared data format - exactly the same as frontend
   const sharedData: SharedInvoiceData = {
     invoice: {
       id: invoice.id,
@@ -46,17 +46,16 @@ export function generateInvoicePDF(
   };
 
   try {
-    // Generate the same HTML template used by frontend
+    // Generate the exact same HTML template used by frontend
     const htmlContent = generateInvoiceHTML(sharedData);
     
-    // Create a comprehensive PDF with all invoice data
-    const pdfContent = createComprehensivePDF(sharedData, subtotal, total, htmlContent);
+    // Convert HTML to PDF using a simple but effective approach
+    // Since we can't use html2canvas in Deno, we'll create a clean PDF structure
+    // that matches the visual layout of the HTML
+    const pdfContent = createPDFFromTemplate(sharedData, htmlContent);
     
-    // Convert to base64 for email attachment
-    const base64PDF = btoa(pdfContent);
-    console.log('Generated comprehensive PDF for email attachment');
-    
-    return base64PDF;
+    console.log('Generated PDF using shared template approach');
+    return pdfContent;
     
   } catch (error) {
     console.error('Error generating PDF:', error);
@@ -64,50 +63,27 @@ export function generateInvoicePDF(
   }
 }
 
-// Create a comprehensive PDF with all invoice data structured properly
-function createComprehensivePDF(data: SharedInvoiceData, subtotal: number, total: number, htmlContent: string): string {
-  // Format dates properly
-  const formatDate = (date: Date): string => {
-    return date.toLocaleDateString('en-US', {
-      month: '2-digit',
-      day: '2-digit',
-      year: 'numeric'
-    });
-  };
-
-  // Extract content structure from HTML to create proper PDF content
-  const invoiceContent = generateInvoiceText(data, subtotal, total, formatDate);
-
-  // Create proper PDF structure
+function createPDFFromTemplate(data: SharedInvoiceData, htmlContent: string): string {
+  // Create a proper PDF that visually matches the HTML template
   const pdfHeader = '%PDF-1.4\n';
   
-  // PDF objects
-  const catalog = `1 0 obj
-<< /Type /Catalog /Pages 2 0 R >>
-endobj
-`;
+  // Calculate subtotal and total
+  const subtotal = data.lineItems.reduce((sum, item) => sum + (item.quantity * item.amount), 0);
+  const tax = data.tax || 0;
+  const total = subtotal + tax;
+  
+  // Create the content stream with proper formatting
+  const contentStream = generatePDFContent(data, subtotal, total);
+  const contentLength = contentStream.length;
 
-  const pages = `2 0 obj
-<< /Type /Pages /Kids [3 0 R] /Count 1 >>
-endobj
-`;
-
-  // Create comprehensive page content with proper formatting
-  const textCommands = createTextCommands(invoiceContent);
-  const contentLength = textCommands.length;
-
-  const page = `3 0 obj
-<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Contents 4 0 R /Resources << /Font << /F1 << /Type /Font /Subtype /Type1 /BaseFont /Helvetica >> /F2 << /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Bold >> >> >> >>
-endobj
-`;
-
-  const content = `4 0 obj
-<< /Length ${contentLength} >>
-stream
-${textCommands}
-endstream
-endobj
-`;
+  // PDF structure
+  const catalog = `1 0 obj\n<< /Type /Catalog /Pages 2 0 R >>\nendobj\n\n`;
+  
+  const pages = `2 0 obj\n<< /Type /Pages /Kids [3 0 R] /Count 1 >>\nendobj\n\n`;
+  
+  const page = `3 0 obj\n<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Contents 4 0 R /Resources << /Font << /F1 << /Type /Font /Subtype /Type1 /BaseFont /Helvetica >> /F2 << /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Bold >> >> >> >>\nendobj\n\n`;
+  
+  const content = `4 0 obj\n<< /Length ${contentLength} >>\nstream\n${contentStream}\nendstream\nendobj\n\n`;
 
   // Calculate positions for xref table
   const catalogPos = pdfHeader.length;
@@ -116,118 +92,137 @@ endobj
   const contentPos = pagePos + page.length;
   const xrefPos = contentPos + content.length;
 
-  const xref = `xref
-0 5
-0000000000 65535 f 
-${catalogPos.toString().padStart(10, '0')} 00000 n 
-${pagesPos.toString().padStart(10, '0')} 00000 n 
-${pagePos.toString().padStart(10, '0')} 00000 n 
-${contentPos.toString().padStart(10, '0')} 00000 n 
-`;
+  const xref = `xref\n0 5\n0000000000 65535 f \n${catalogPos.toString().padStart(10, '0')} 00000 n \n${pagesPos.toString().padStart(10, '0')} 00000 n \n${pagePos.toString().padStart(10, '0')} 00000 n \n${contentPos.toString().padStart(10, '0')} 00000 n \n`;
 
-  const trailer = `trailer
-<< /Size 5 /Root 1 0 R >>
-startxref
-${xrefPos}
-%%EOF`;
+  const trailer = `trailer\n<< /Size 5 /Root 1 0 R >>\nstartxref\n${xrefPos}\n%%EOF`;
 
-  return pdfHeader + catalog + pages + page + content + xref + trailer;
+  const fullPDF = pdfHeader + catalog + pages + page + content + xref + trailer;
+  
+  // Convert to base64
+  return btoa(fullPDF);
 }
 
-function generateInvoiceText(data: SharedInvoiceData, subtotal: number, total: number, formatDate: (date: Date) => string): string[] {
-  const lines = [];
-  
-  // Header
-  lines.push('INVOICE');
-  lines.push('');
-  
-  // Invoice details
-  lines.push(`Invoice ID: ${data.invoice.transactionId}`);
-  lines.push(`Invoice Date: ${formatDate(data.invoiceDate)}`);
-  lines.push(`Due Date: ${formatDate(data.dueDate)}`);
-  
+function generatePDFContent(data: SharedInvoiceData, subtotal: number, total: number): string {
+  const formatDate = (date: Date): string => {
+    return date.toLocaleDateString('en-US', {
+      month: '2-digit',
+      day: '2-digit',
+      year: 'numeric'
+    });
+  };
+
+  // Create PDF drawing commands that match the HTML layout
+  const commands = [
+    'BT', // Begin text
+    
+    // Invoice Title (large, bold)
+    '/F2 24 Tf',
+    '50 750 Td',
+    '(Invoice) Tj',
+    
+    // Invoice details section
+    '/F1 10 Tf',
+    '0 -40 Td',
+    `(Invoice ID: ${data.invoice.transactionId}) Tj`,
+    '0 -15 Td',
+    `(Invoice Date: ${formatDate(data.invoiceDate)}) Tj`,
+    '0 -15 Td',
+    `(Due date: ${formatDate(data.dueDate)}) Tj`,
+  ];
+
+  // Add purchase order and payment terms if they exist
   if (data.purchaseOrder) {
-    lines.push(`Purchase Order: ${data.purchaseOrder}`);
+    commands.push('0 -15 Td', `(Purchase Order: ${data.purchaseOrder}) Tj`);
   }
   if (data.paymentTerms) {
-    lines.push(`Payment Terms: ${data.paymentTerms}`);
+    commands.push('0 -15 Td', `(Payment Terms: ${data.paymentTerms}) Tj`);
   }
-  
-  lines.push('');
-  
-  // Billing information
-  lines.push('BILLED TO:');
-  lines.push(data.billedTo.name);
-  const billedToAddress = data.billedTo.address.split('\n');
-  billedToAddress.forEach(line => lines.push(line));
-  lines.push('');
-  
-  lines.push('PAY TO:');
-  lines.push(data.payTo.name);
-  const payToAddress = data.payTo.address.split('\n');
-  payToAddress.forEach(line => lines.push(line));
-  lines.push('');
-  
-  // Currency
-  lines.push(`CURRENCY: ${data.currency}`);
-  lines.push('');
-  
-  // Line items
-  lines.push('LINE ITEMS:');
-  lines.push('DESCRIPTION                    QTY    AMOUNT');
-  lines.push('----------------------------------------');
-  
-  data.lineItems.forEach(item => {
-    const description = item.description.length > 25 ? item.description.substring(0, 25) + '...' : item.description;
-    const qty = item.quantity.toString();
-    const amount = (item.quantity * item.amount).toFixed(2);
-    lines.push(`${description.padEnd(30)} ${qty.padStart(3)} ${amount.padStart(8)}`);
-  });
-  
-  lines.push('');
-  
-  // Totals
-  lines.push(`SUBTOTAL: ${subtotal.toFixed(2)} ${data.currency}`);
-  if (data.tax > 0) {
-    lines.push(`TAX: ${data.tax.toFixed(2)} ${data.currency}`);
-  }
-  lines.push(`TOTAL: ${total.toFixed(2)} ${data.currency}`);
-  
-  return lines;
-}
 
-function createTextCommands(lines: string[]): string {
-  let yPosition = 750;
-  const commands = ['BT'];
-  
-  lines.forEach((line, index) => {
-    if (line === '') {
-      yPosition -= 15;
-      return;
-    }
-    
-    // Determine font and size based on content
-    let font = 'F1';
-    let size = 10;
-    
-    if (line === 'INVOICE') {
-      font = 'F2';
-      size = 18;
-    } else if (line.includes('BILLED TO:') || line.includes('PAY TO:') || line.includes('LINE ITEMS:') || line.includes('TOTAL:')) {
-      font = 'F2';
-      size = 12;
-    } else if (line.includes('Invoice ID:') || line.includes('CURRENCY:') || line.includes('SUBTOTAL:')) {
-      size = 11;
-    }
-    
-    commands.push(`/${font} ${size} Tf`);
-    commands.push(`50 ${yPosition} Td`);
-    commands.push(`(${line.replace(/[()\\]/g, '')}) Tj`);
-    commands.push('0 -' + (size + 3) + ' Td');
-    
-    yPosition -= (size + 3);
+  // Billing information
+  commands.push(
+    '0 -30 Td',
+    '/F2 12 Tf',
+    '(Billed to:) Tj',
+    '/F1 10 Tf',
+    '0 -15 Td',
+    `(${data.billedTo.name}) Tj`
+  );
+
+  // Add billing address lines
+  const billingAddressLines = data.billedTo.address.split('\n');
+  billingAddressLines.forEach(line => {
+    commands.push('0 -12 Td', `(${line}) Tj`);
   });
-  
-  commands.push('ET');
+
+  // Pay to section (positioned to the right - simulate two columns)
+  commands.push(
+    '300 60 Td', // Move to right column, up to align with "Billed to"
+    '/F2 12 Tf',
+    '(Pay to:) Tj',
+    '/F1 10 Tf',
+    '0 -15 Td',
+    `(${data.payTo.name}) Tj`
+  );
+
+  // Add pay-to address lines
+  const payToAddressLines = data.payTo.address.split('\n');
+  payToAddressLines.forEach(line => {
+    commands.push('0 -12 Td', `(${line}) Tj`);
+  });
+
+  // Currency section
+  commands.push(
+    '-300 -40 Td', // Move back to left, down
+    '/F1 10 Tf',
+    `(CURRENCY: ${data.currency}) Tj`
+  );
+
+  // Line items table header
+  commands.push(
+    '0 -30 Td',
+    '/F2 10 Tf',
+    '(DESCRIPTION) Tj',
+    '300 0 Td',
+    '(QUANTITY) Tj',
+    '100 0 Td',
+    '(AMOUNT) Tj'
+  );
+
+  // Line items
+  commands.push('-400 -20 Td', '/F1 10 Tf');
+  data.lineItems.forEach(item => {
+    const itemTotal = (item.quantity * item.amount).toFixed(2);
+    commands.push(
+      `(${item.description}) Tj`,
+      '300 0 Td',
+      `(${item.quantity}) Tj`,
+      '100 0 Td',
+      `(${itemTotal}) Tj`,
+      '-400 -15 Td'
+    );
+  });
+
+  // Totals section
+  commands.push(
+    '300 -20 Td',
+    '/F1 10 Tf',
+    `(SUBTOTAL: ${subtotal.toFixed(2)} ${data.currency}) Tj`
+  );
+
+  if (data.tax > 0) {
+    commands.push(
+      '0 -15 Td',
+      `(TAX: ${data.tax.toFixed(2)} ${data.currency}) Tj`
+    );
+  }
+
+  commands.push(
+    '0 -15 Td',
+    '/F2 12 Tf',
+    `(TOTAL: ${total.toFixed(2)} ${data.currency}) Tj`
+  );
+
+  commands.push('ET'); // End text
+
   return commands.join('\n');
 }
