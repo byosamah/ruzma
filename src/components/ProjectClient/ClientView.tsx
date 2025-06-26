@@ -173,7 +173,7 @@ const ClientView: React.FC<ClientViewProps> = ({
   };
 
   return (
-    <divClassName="space-y-6 pt-4 border-t border-slate-200">
+    <div className="space-y-6 pt-4 border-t border-slate-200">
       {/* Payment Section */}
       {paymentProofRequired && (
         <div>
