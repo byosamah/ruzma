@@ -2,7 +2,10 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.50.0';
 import { Resend } from "npm:resend@2.0.0";
-import jsPDF from 'npm:jspdf@2.5.1';
+import jsPDFLib from 'npm:jspdf@2.5.1';
+
+// Fix jsPDF import for Deno environment
+const jsPDF = jsPDFLib.default || jsPDFLib.jsPDF || jsPDFLib;
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -90,7 +93,8 @@ const handler = async (req: Request): Promise<Response> => {
     const total = subtotal + tax;
     const currency = originalData?.currency || profile?.currency || 'USD';
 
-    // Create simple PDF
+    // Create PDF with fixed constructor
+    console.log('Creating PDF with fixed jsPDF constructor');
     const pdf = new jsPDF();
     
     // Add content to PDF
@@ -134,6 +138,7 @@ const handler = async (req: Request): Promise<Response> => {
     pdf.text(`Total: ${total.toFixed(2)} ${currency}`, 120, yPos);
 
     // Generate PDF buffer
+    console.log('Generating PDF buffer');
     const pdfBuffer = pdf.output('arraybuffer');
     const pdfBase64 = btoa(String.fromCharCode(...new Uint8Array(pdfBuffer)));
 
@@ -141,6 +146,7 @@ const handler = async (req: Request): Promise<Response> => {
     const businessName = branding?.freelancer_name || profile?.full_name || 'Ruzma';
     const fromEmail = profile?.email || 'noreply@ruzma.com';
     
+    console.log('Sending email with PDF attachment');
     const emailResponse = await resend.emails.send({
       from: `${businessName} <onboarding@resend.dev>`,
       to: [clientEmail],
