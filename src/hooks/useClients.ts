@@ -19,27 +19,42 @@ export const useClients = (user: User | null) => {
     try {
       setLoading(true);
       
-      // Fetch clients with proper project count using a subquery
-      const { data: clientsData, error } = await supabase
+      // First fetch all clients for the user
+      const { data: clientsData, error: clientsError } = await supabase
         .from('clients')
-        .select(`
-          *,
-          project_count:projects!client_id(count)
-        `)
+        .select('*')
         .eq('user_id', user.id)
         .order('created_at', { ascending: false });
 
-      if (error) {
-        console.error('Error fetching clients:', error);
+      if (clientsError) {
+        console.error('Error fetching clients:', clientsError);
         toast.error('Failed to load clients');
         return;
       }
 
-      // Transform the data to match our expected format
-      const clientsWithCount = (clientsData || []).map(client => ({
-        ...client,
-        project_count: client.project_count?.[0]?.count || 0
-      })) as ClientWithProjectCount[];
+      // Then fetch project counts for each client
+      const clientsWithCount: ClientWithProjectCount[] = [];
+      
+      for (const client of clientsData || []) {
+        const { count, error: countError } = await supabase
+          .from('projects')
+          .select('*', { count: 'exact', head: true })
+          .eq('client_id', client.id)
+          .eq('user_id', user.id);
+
+        if (countError) {
+          console.error('Error counting projects for client:', client.id, countError);
+          clientsWithCount.push({
+            ...client,
+            project_count: 0
+          });
+        } else {
+          clientsWithCount.push({
+            ...client,
+            project_count: count || 0
+          });
+        }
+      }
 
       setClients(clientsWithCount);
     } catch (error) {
