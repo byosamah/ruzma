@@ -31,13 +31,9 @@ export const FormField: React.FC<FormFieldProps> = ({
 }) => {
   return (
     <div className="space-y-2">
-      <Label htmlFor={id} className="apple-body text-foreground font-medium">
-        {label}{required && <span className="text-destructive ml-1">*</span>}
-      </Label>
+      <Label htmlFor={id}>{label}{required && ' *'}</Label>
       <div className="relative">
-        {Icon && (
-          <Icon className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
-        )}
+        {Icon && <Icon className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-400" />}
         <Input
           id={id}
           name={name}
@@ -45,14 +41,10 @@ export const FormField: React.FC<FormFieldProps> = ({
           placeholder={placeholder}
           value={value}
           onChange={onChange}
-          className={`${Icon ? 'pl-12' : ''} ${error ? 'border-destructive focus:ring-destructive' : ''}`}
+          className={`${Icon ? 'pl-10' : ''} ${error ? 'border-red-500' : ''}`}
         />
       </div>
-      {error && (
-        <p className="text-sm text-destructive font-medium animate-apple-fade-in">
-          {error}
-        </p>
-      )}
+      {error && <p className="text-sm text-red-600 mt-1">{error}</p>}
     </div>
   );
 };

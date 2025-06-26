@@ -32,11 +32,9 @@ export const PasswordField: React.FC<PasswordFieldProps> = ({
 }) => {
   return (
     <div className="space-y-2">
-      <Label htmlFor={id} className="apple-body text-foreground font-medium">
-        {label}{required && <span className="text-destructive ml-1">*</span>}
-      </Label>
+      <Label htmlFor={id}>{label}{required && ' *'}</Label>
       <div className="relative">
-        <Lock className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+        <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-400" />
         <Input
           id={id}
           name={name}
@@ -44,27 +42,19 @@ export const PasswordField: React.FC<PasswordFieldProps> = ({
           placeholder={placeholder}
           value={value}
           onChange={onChange}
-          className={`pl-12 pr-12 ${error ? 'border-destructive focus:ring-destructive' : ''}`}
+          className={`pl-10 ${error ? 'border-red-500' : ''}`}
         />
         <Button
           type="button"
           variant="ghost"
           size="sm"
-          className="absolute right-2 top-1/2 -translate-y-1/2 h-8 w-8 p-0 hover:bg-transparent"
+          className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
           onClick={onTogglePassword}
         >
-          {showPassword ? (
-            <EyeOff className="h-4 w-4 text-muted-foreground" />
-          ) : (
-            <Eye className="h-4 w-4 text-muted-foreground" />
-          )}
+          {showPassword ? <EyeOff className="h-5 w-5 text-slate-400" /> : <Eye className="h-5 w-5 text-slate-400" />}
         </Button>
       </div>
-      {error && (
-        <p className="text-sm text-destructive font-medium animate-apple-fade-in">
-          {error}
-        </p>
-      )}
+      {error && <p className="text-sm text-red-600 mt-1">{error}</p>}
     </div>
   );
 };
