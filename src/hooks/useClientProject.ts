@@ -71,7 +71,7 @@ export const useClientProject = (token?: string | null, isHybrid?: boolean) => {
     }
 
     try {
-      await downloadDeliverableAction([project], milestoneId);
+      await downloadDeliverableAction([project], milestoneId, project.payment_proof_required || false);
     } catch (error) {
       console.error('Error downloading deliverable:', error);
     }

@@ -5,7 +5,8 @@ import { DatabaseProject } from '@/hooks/projectTypes';
 
 export const downloadDeliverableAction = async (
   projects: DatabaseProject[],
-  milestoneId: string
+  milestoneId: string,
+  paymentProofRequired: boolean = true
 ) => {
   try {
     const milestone = projects
@@ -17,7 +18,8 @@ export const downloadDeliverableAction = async (
       return false;
     }
 
-    if (milestone.status !== 'approved') {
+    // Only check payment approval if payment proof is required
+    if (paymentProofRequired && milestone.status !== 'approved') {
       toast.error('Payment must be approved before downloading');
       return false;
     }

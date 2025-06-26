@@ -44,7 +44,8 @@ export function useMilestoneActions(
   };
 
   const downloadDeliverable = async (milestoneId: string) => {
-    await downloadDeliverableAction(projects, milestoneId);
+    // For freelancer downloads, always require payment approval (default behavior)
+    await downloadDeliverableAction(projects, milestoneId, true);
   };
 
   return {
