@@ -120,6 +120,7 @@ export type Database = {
       milestones: {
         Row: {
           created_at: string
+          deliverable_link: string | null
           deliverable_name: string | null
           deliverable_size: number | null
           deliverable_url: string | null
@@ -137,6 +138,7 @@ export type Database = {
         }
         Insert: {
           created_at?: string
+          deliverable_link?: string | null
           deliverable_name?: string | null
           deliverable_size?: number | null
           deliverable_url?: string | null
@@ -154,6 +156,7 @@ export type Database = {
         }
         Update: {
           created_at?: string
+          deliverable_link?: string | null
           deliverable_name?: string | null
           deliverable_size?: number | null
           deliverable_url?: string | null
