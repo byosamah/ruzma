@@ -7,6 +7,7 @@ import { Plus } from 'lucide-react';
 import { MilestoneFormData } from './types';
 import { MilestoneItemEditor } from './MilestoneItemEditor';
 import { useT } from '@/lib/i18n';
+import ClientDropdown from '@/components/CreateProject/ClientDropdown';
 
 interface ProjectFormProps {
   name: string;
@@ -62,13 +63,10 @@ export const ProjectForm: React.FC<ProjectFormProps> = ({
         />
       </div>
       <div className="space-y-2">
-        <label htmlFor="clientEmail" className="text-sm font-medium text-slate-700">{t('clientEmail')}</label>
-        <Input
-          id="clientEmail"
-          type="email"
+        <label htmlFor="clientEmail" className="text-sm font-medium text-slate-700">Client</label>
+        <ClientDropdown
           value={clientEmail}
-          onChange={(e) => onClientEmailChange(e.target.value)}
-          placeholder={t('clientEmailPlaceholder')}
+          onChange={onClientEmailChange}
         />
       </div>
 
