@@ -5,6 +5,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { LanguageProvider } from "@/contexts/LanguageContext";
 import { InvoiceProvider } from "@/contexts/InvoiceContext";
+import ProtectedRoute from "@/components/ProtectedRoute";
 import Login from "./pages/Login";
 import SignUp from "./pages/SignUp";
 import ForgotPassword from "./pages/ForgotPassword";
@@ -36,26 +37,31 @@ function App() {
           <BrowserRouter>
             <InvoiceProvider>
               <Routes>
-                <Route path="/" element={<Navigate to="/dashboard" replace />} />
+                {/* Public routes */}
+                <Route path="/" element={<Navigate to="/login" replace />} />
                 <Route path="/login" element={<Login />} />
                 <Route path="/signup" element={<SignUp />} />
                 <Route path="/forgot-password" element={<ForgotPassword />} />
                 <Route path="/reset-password" element={<ResetPassword />} />
-                <Route path="/dashboard" element={<Dashboard />} />
-                <Route path="/projects" element={<Projects />} />
-                <Route path="/clients" element={<Clients />} />
-                <Route path="/invoices" element={<Invoices />} />
-                <Route path="/create-invoice" element={<CreateInvoice />} />
-                <Route path="/analytics" element={<Analytics />} />
-                <Route path="/profile" element={<Profile />} />
-                <Route path="/plans" element={<Plans />} />
-                <Route path="/create-project" element={<CreateProject />} />
-                <Route path="/edit-project/:slug" element={<EditProject />} />
-                <Route path="/project/:slug" element={<ProjectManagement />} />
-                <Route path="/templates" element={<ProjectTemplates />} />
                 <Route path="/contact" element={<ContactUs />} />
                 <Route path="/client/:token" element={<ClientProject />} />
                 <Route path="/client/project/:token" element={<ClientProject />} />
+                
+                {/* Protected routes */}
+                <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
+                <Route path="/projects" element={<ProtectedRoute><Projects /></ProtectedRoute>} />
+                <Route path="/clients" element={<ProtectedRoute><Clients /></ProtectedRoute>} />
+                <Route path="/invoices" element={<ProtectedRoute><Invoices /></ProtectedRoute>} />
+                <Route path="/create-invoice" element={<ProtectedRoute><CreateInvoice /></ProtectedRoute>} />
+                <Route path="/analytics" element={<ProtectedRoute><Analytics /></ProtectedRoute>} />
+                <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
+                <Route path="/plans" element={<ProtectedRoute><Plans /></ProtectedRoute>} />
+                <Route path="/create-project" element={<ProtectedRoute><CreateProject /></ProtectedRoute>} />
+                <Route path="/edit-project/:slug" element={<ProtectedRoute><EditProject /></ProtectedRoute>} />
+                <Route path="/project/:slug" element={<ProtectedRoute><ProjectManagement /></ProtectedRoute>} />
+                <Route path="/templates" element={<ProtectedRoute><ProjectTemplates /></ProtectedRoute>} />
+                
+                {/* 404 route */}
                 <Route path="*" element={<NotFound />} />
               </Routes>
             </InvoiceProvider>

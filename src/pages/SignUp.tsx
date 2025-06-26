@@ -1,85 +1,37 @@
 
-import React, { useState } from 'react';
+import React, { useEffect } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
+import { useAuth } from '@/hooks/dashboard/useAuth';
 import SignUpContainer from '@/components/auth/SignUpContainer';
-import EmailConfirmationScreen from '@/components/auth/EmailConfirmationScreen';
-import { useSignUpValidation } from '@/hooks/auth/useSignUpValidation';
-import { useSignUpAuth } from '@/hooks/auth/useSignUpAuth';
 
 const SignUp = () => {
-  const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    password: '',
-    confirmPassword: '',
-    currency: 'USD'
-  });
-  const [showPassword, setShowPassword] = useState(false);
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-  const [isEmailSent, setIsEmailSent] = useState(false);
+  const navigate = useNavigate();
+  const location = useLocation();
+  const { user, loading: authLoading, authChecked } = useAuth();
 
-  const { errors, validateForm, clearError } = useSignUpValidation();
-  const { isLoading, resendCooldown, signUp, resendConfirmation } = useSignUpAuth();
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    
-    if (!validateForm(formData)) {
-      return;
+  // Redirect authenticated users to dashboard
+  useEffect(() => {
+    if (authChecked && user) {
+      const from = location.state?.from?.pathname || '/dashboard';
+      navigate(from, { replace: true });
     }
+  }, [user, authChecked, navigate, location.state]);
 
-    const result = await signUp(formData);
-    if (result.success && result.needsConfirmation) {
-      setIsEmailSent(true);
-    }
-  };
-
-  const handleFormDataChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setFormData(prev => ({
-      ...prev,
-      [e.target.name]: e.target.value
-    }));
-    
-    clearError(e.target.name);
-  };
-
-  const handleCurrencyChange = (currency: string) => {
-    setFormData(prev => ({
-      ...prev,
-      currency
-    }));
-    
-    clearError('currency');
-  };
-
-  const handleResendConfirmation = async () => {
-    await resendConfirmation(formData.email);
-  };
-
-  if (isEmailSent) {
+  // Show loading while checking auth state
+  if (authLoading || !authChecked) {
     return (
-      <EmailConfirmationScreen
-        email={formData.email}
-        isLoading={isLoading}
-        resendCooldown={resendCooldown}
-        onResendConfirmation={handleResendConfirmation}
-      />
+      <div className="min-h-screen bg-auth-background flex items-center justify-center">
+        <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-brand-yellow"></div>
+      </div>
     );
   }
 
-  return (
-    <SignUpContainer
-      formData={formData}
-      errors={errors}
-      showPassword={showPassword}
-      showConfirmPassword={showConfirmPassword}
-      isLoading={isLoading}
-      onFormDataChange={handleFormDataChange}
-      onCurrencyChange={handleCurrencyChange}
-      onSubmit={handleSubmit}
-      onTogglePassword={() => setShowPassword(!showPassword)}
-      onToggleConfirmPassword={() => setShowConfirmPassword(!showConfirmPassword)}
-    />
-  );
+  // Don't render signup form if user is authenticated
+  if (user) {
+    return null;
+  }
+
+  return <SignUpContainer />;
 };
 
 export default SignUp;
