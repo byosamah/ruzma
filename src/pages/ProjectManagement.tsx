@@ -1,4 +1,3 @@
-
 import React from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import Layout from "@/components/Layout";
@@ -11,13 +10,15 @@ import { useProjects } from "@/hooks/useProjects";
 import ProjectHeader from "@/components/ProjectManagement/ProjectHeader";
 import MilestoneList from "@/components/ProjectManagement/MilestoneList";
 import { useIsMobile } from "@/hooks/use-mobile";
-
 const ProjectManagement: React.FC = () => {
-  const { slug } = useParams<{ slug: string }>();
+  const {
+    slug
+  } = useParams<{
+    slug: string;
+  }>();
   const navigate = useNavigate();
   const t = useT();
   const isMobile = useIsMobile();
-
   const {
     user,
     profile,
@@ -27,24 +28,21 @@ const ProjectManagement: React.FC = () => {
     updateMilestoneStatus,
     uploadPaymentProof,
     uploadDeliverable,
-    downloadDeliverable,
+    downloadDeliverable
   } = useProjectManagement(slug);
-
-  const { deleteProject } = useProjects(user);
-
+  const {
+    deleteProject
+  } = useProjects(user);
   const handleBackClick = () => {
     navigate("/projects");
   };
-
   const handleEditClick = () => {
     if (project?.slug) {
       navigate(`/edit-project/${project.slug}`);
     }
   };
-
   const handleDeleteClick = async () => {
     if (!project?.id) return;
-    
     if (confirm(t('areYouSureDeleteProject'))) {
       const success = await deleteProject(project.id);
       if (success) {
@@ -52,22 +50,16 @@ const ProjectManagement: React.FC = () => {
       }
     }
   };
-
   if (loading) {
-    return (
-      <Layout>
+    return <Layout>
         <div className="flex items-center justify-center min-h-[50vh]">
           <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-gray-900"></div>
         </div>
-      </Layout>
-    );
+      </Layout>;
   }
-
   if (!user) return <div>{t('loading')}</div>;
-  
   if (!project) {
-    return (
-      <Layout user={profile || user}>
+    return <Layout user={profile || user}>
         <div className="flex items-center justify-center min-h-[50vh]">
           <Card className="max-w-md mx-auto">
             <CardContent className="text-center pt-12 pb-8">
@@ -76,36 +68,22 @@ const ProjectManagement: React.FC = () => {
               </div>
               <CardTitle className="text-2xl mb-3">{t('projectNotFound')}</CardTitle>
               <p className="text-gray-600 mb-6">{t('projectNotFoundDesc')}</p>
-              <Button 
-                onClick={() => navigate("/dashboard")}
-                className="bg-gray-900 hover:bg-gray-800 text-white"
-              >
+              <Button onClick={() => navigate("/dashboard")} className="bg-gray-900 hover:bg-gray-800 text-white">
                 {t('goToDashboard')}
               </Button>
             </CardContent>
           </Card>
         </div>
-      </Layout>
-    );
+      </Layout>;
   }
-
   const completedMilestones = project.milestones.filter(m => m.status === 'approved').length;
   const totalValue = project.milestones.reduce((sum, m) => sum + m.price, 0);
-  const completedValue = project.milestones
-    .filter(m => m.status === 'approved')
-    .reduce((sum, m) => sum + m.price, 0);
-
-  return (
-    <Layout user={profile || user}>
+  const completedValue = project.milestones.filter(m => m.status === 'approved').reduce((sum, m) => sum + m.price, 0);
+  return <Layout user={profile || user}>
       <div className="space-y-6">
         {/* Header Section */}
         <div className="flex items-center justify-between">
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={handleBackClick}
-            className="text-gray-600 hover:text-gray-900 hover:bg-gray-100"
-          >
+          <Button variant="ghost" size="sm" onClick={handleBackClick} className="text-gray-600 hover:text-gray-900 hover:bg-gray-100">
             <ArrowLeft className="w-4 h-4 mr-2" />
             Back to projects
           </Button>
@@ -113,14 +91,8 @@ const ProjectManagement: React.FC = () => {
 
         {/* Project Overview Card */}
         <Card>
-          <CardContent className="p-6">
-            <ProjectHeader 
-              project={project} 
-              onBackClick={handleBackClick}
-              onEditClick={handleEditClick}
-              onDeleteClick={handleDeleteClick}
-              userCurrency={userCurrency.currency}
-            />
+          <CardContent className="p-6 my-0 mx-0 py-[16px]">
+            <ProjectHeader project={project} onBackClick={handleBackClick} onEditClick={handleEditClick} onDeleteClick={handleDeleteClick} userCurrency={userCurrency.currency} />
           </CardContent>
         </Card>
 
@@ -190,19 +162,10 @@ const ProjectManagement: React.FC = () => {
             </div>
           </CardHeader>
           <CardContent>
-            <MilestoneList
-              milestones={project.milestones}
-              userCurrency={userCurrency.currency}
-              onUpdateMilestoneStatus={updateMilestoneStatus}
-              onPaymentUpload={uploadPaymentProof}
-              onDeliverableUpload={uploadDeliverable}
-              onDeliverableDownload={downloadDeliverable}
-            />
+            <MilestoneList milestones={project.milestones} userCurrency={userCurrency.currency} onUpdateMilestoneStatus={updateMilestoneStatus} onPaymentUpload={uploadPaymentProof} onDeliverableUpload={uploadDeliverable} onDeliverableDownload={downloadDeliverable} />
           </CardContent>
         </Card>
       </div>
-    </Layout>
-  );
+    </Layout>;
 };
-
 export default ProjectManagement;
