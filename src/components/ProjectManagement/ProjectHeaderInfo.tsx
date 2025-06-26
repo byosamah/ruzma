@@ -1,13 +1,21 @@
 
 import React from 'react';
 import { DatabaseProject } from '@/hooks/projectTypes';
+import ProjectHeaderActions from './ProjectHeaderActions';
 
 interface ProjectHeaderInfoProps {
   project: DatabaseProject;
   isMobile: boolean;
+  onEditClick: () => void;
+  onDeleteClick?: () => void;
 }
 
-const ProjectHeaderInfo: React.FC<ProjectHeaderInfoProps> = ({ project, isMobile }) => {
+const ProjectHeaderInfo: React.FC<ProjectHeaderInfoProps> = ({ 
+  project, 
+  isMobile, 
+  onEditClick, 
+  onDeleteClick 
+}) => {
   if (isMobile) {
     return (
       <div className="flex-1 min-w-0">
@@ -15,6 +23,16 @@ const ProjectHeaderInfo: React.FC<ProjectHeaderInfoProps> = ({ project, isMobile
           {project.name}
         </h1>
         <p className="text-slate-600 mt-2 text-sm leading-relaxed">{project.brief}</p>
+        
+        {/* Action Buttons */}
+        <div className="mt-4">
+          <ProjectHeaderActions
+            project={project}
+            onEditClick={onEditClick}
+            onDeleteClick={onDeleteClick}
+            isMobile={isMobile}
+          />
+        </div>
       </div>
     );
   }
@@ -25,6 +43,16 @@ const ProjectHeaderInfo: React.FC<ProjectHeaderInfoProps> = ({ project, isMobile
         <div>
           <h1 className="text-3xl font-bold text-slate-800">{project.name}</h1>
           <p className="text-slate-600 mt-1">{project.brief}</p>
+          
+          {/* Action Buttons */}
+          <div className="mt-4">
+            <ProjectHeaderActions
+              project={project}
+              onEditClick={onEditClick}
+              onDeleteClick={onDeleteClick}
+              isMobile={isMobile}
+            />
+          </div>
         </div>
       </div>
     </div>

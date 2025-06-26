@@ -4,7 +4,6 @@ import { DatabaseProject } from '@/hooks/projectTypes';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { CurrencyCode } from '@/lib/currency';
 import ProjectHeaderInfo from './ProjectHeaderInfo';
-import ProjectHeaderActions from './ProjectHeaderActions';
 import ProjectStats from './ProjectStats';
 
 interface ProjectHeaderProps {
@@ -29,12 +28,11 @@ const ProjectHeader: React.FC<ProjectHeaderProps> = ({
       <div className="space-y-6">
         {/* Project Title and Actions */}
         <div className="flex items-start justify-between">
-          <ProjectHeaderInfo project={project} isMobile={isMobile} />
-          <ProjectHeaderActions
-            project={project}
+          <ProjectHeaderInfo 
+            project={project} 
+            isMobile={isMobile}
             onEditClick={onEditClick}
             onDeleteClick={onDeleteClick}
-            isMobile={isMobile}
           />
         </div>
 
@@ -48,14 +46,11 @@ const ProjectHeader: React.FC<ProjectHeaderProps> = ({
     <div className="space-y-6">
       {/* Project Header */}
       <div className="flex items-start justify-between">
-        <ProjectHeaderInfo project={project} isMobile={isMobile} />
-        
-        {/* Action Buttons */}
-        <ProjectHeaderActions
-          project={project}
+        <ProjectHeaderInfo 
+          project={project} 
+          isMobile={isMobile}
           onEditClick={onEditClick}
           onDeleteClick={onDeleteClick}
-          isMobile={isMobile}
         />
       </div>
 
