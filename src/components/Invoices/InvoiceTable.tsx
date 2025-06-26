@@ -1,5 +1,6 @@
 
 import React from 'react';
+import { format } from 'date-fns';
 import {
   Table,
   TableBody,
@@ -7,97 +8,82 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from '@/components/ui/table';
-import { Card, CardContent } from '@/components/ui/card';
-import { useT } from '@/lib/i18n';
-import { Invoice } from '@/hooks/useInvoices';
-import { useAuth } from '@/hooks/dashboard/useAuth';
+} from "@/components/ui/table";
+import { Invoice } from '@/hooks/invoices/types';
 import { useUserCurrency } from '@/hooks/useUserCurrency';
+import { useAuth } from '@/hooks/dashboard/useAuth';
+import { useT } from '@/lib/i18n';
 import InvoiceStatusBadge from './InvoiceStatusBadge';
 import InvoiceActionsMenu from './InvoiceActionsMenu';
 
 interface InvoiceTableProps {
   invoices: Invoice[];
   onDownloadPDF: (id: string) => Promise<void>;
-  onResendInvoice: (id: string) => void;
+  onSendToClient: (id: string) => void;
   onDeleteInvoice: (id: string) => void;
 }
 
 const InvoiceTable: React.FC<InvoiceTableProps> = ({
   invoices,
   onDownloadPDF,
-  onResendInvoice,
+  onSendToClient,
   onDeleteInvoice
 }) => {
   const t = useT();
   const { user } = useAuth();
   const { formatCurrency } = useUserCurrency(user);
 
-  const formatDate = (date: Date) => {
-    return new Intl.DateTimeFormat('en-US', {
-      year: 'numeric',
-      month: 'short',
-      day: 'numeric',
-    }).format(date);
-  };
-
   if (invoices.length === 0) {
     return (
-      <Card>
-        <CardContent className="flex flex-col items-center justify-center py-16 text-center">
-          <div className="text-gray-500 mb-2">{t('noInvoicesFound')}</div>
-          <div className="text-sm text-gray-400">{t('noInvoicesDescription')}</div>
-        </CardContent>
-      </Card>
+      <div className="text-center py-12">
+        <p className="text-gray-500 text-lg">{t('noInvoicesFound')}</p>
+        <p className="text-gray-400 mt-2">{t('noInvoicesDescription')}</p>
+      </div>
     );
   }
 
   return (
-    <Card>
-      <CardContent className="p-0">
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead>{t('transactionId')}</TableHead>
-              <TableHead>{t('invoiceAmount')}</TableHead>
-              <TableHead>{t('projectName')}</TableHead>
-              <TableHead>{t('dateOfInvoice')}</TableHead>
-              <TableHead>{t('status')}</TableHead>
-              <TableHead className="w-12">{t('actions')}</TableHead>
+    <div className="overflow-x-auto">
+      <Table>
+        <TableHeader>
+          <TableRow>
+            <TableHead>{t('transactionId')}</TableHead>
+            <TableHead>{t('invoiceAmount')}</TableHead>
+            <TableHead>{t('projectName')}</TableHead>
+            <TableHead>{t('dateOfInvoice')}</TableHead>
+            <TableHead>{t('status')}</TableHead>
+            <TableHead className="text-right">{t('actions')}</TableHead>
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          {invoices.map((invoice) => (
+            <TableRow key={invoice.id}>
+              <TableCell className="font-medium">
+                {invoice.transactionId}
+              </TableCell>
+              <TableCell>
+                {formatCurrency(invoice.amount)}
+              </TableCell>
+              <TableCell>{invoice.projectName}</TableCell>
+              <TableCell>
+                {format(invoice.date, 'MMM dd, yyyy')}
+              </TableCell>
+              <TableCell>
+                <InvoiceStatusBadge status={invoice.status} />
+              </TableCell>
+              <TableCell className="text-right">
+                <InvoiceActionsMenu
+                  invoiceId={invoice.id}
+                  onDownloadPDF={onDownloadPDF}
+                  onSendToClient={onSendToClient}
+                  onDeleteInvoice={onDeleteInvoice}
+                />
+              </TableCell>
             </TableRow>
-          </TableHeader>
-          <TableBody>
-            {invoices.map((invoice) => (
-              <TableRow key={invoice.id}>
-                <TableCell className="font-medium">
-                  {invoice.transactionId}
-                </TableCell>
-                <TableCell>
-                  {formatCurrency(invoice.amount)}
-                </TableCell>
-                <TableCell>
-                  {invoice.projectName}
-                </TableCell>
-                <TableCell>
-                  {formatDate(invoice.date)}
-                </TableCell>
-                <TableCell>
-                  <InvoiceStatusBadge status={invoice.status} />
-                </TableCell>
-                <TableCell>
-                  <InvoiceActionsMenu
-                    invoiceId={invoice.id}
-                    onDownloadPDF={onDownloadPDF}
-                    onResendInvoice={onResendInvoice}
-                    onDeleteInvoice={onDeleteInvoice}
-                  />
-                </TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </CardContent>
-    </Card>
+          ))}
+        </TableBody>
+      </Table>
+    </div>
   );
 };
 

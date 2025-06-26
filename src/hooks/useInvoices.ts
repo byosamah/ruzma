@@ -18,7 +18,7 @@ export const useInvoices = () => {
   
   const {
     handleDownloadPDF,
-    handleResendInvoice,
+    handleSendToClient,
     handleDeleteInvoice
   } = useInvoiceActions(invoices, updateInvoice, deleteInvoice);
 
@@ -30,7 +30,7 @@ export const useInvoices = () => {
     statusFilter,
     setStatusFilter,
     handleDownloadPDF,
-    handleResendInvoice,
+    handleSendToClient,
     handleDeleteInvoice
   };
 };

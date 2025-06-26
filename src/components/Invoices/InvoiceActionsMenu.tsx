@@ -13,18 +13,19 @@ import { useT } from '@/lib/i18n';
 interface InvoiceActionsMenuProps {
   invoiceId: string;
   onDownloadPDF: (id: string) => Promise<void>;
-  onResendInvoice: (id: string) => void;
+  onSendToClient: (id: string) => void;
   onDeleteInvoice: (id: string) => void;
 }
 
 const InvoiceActionsMenu: React.FC<InvoiceActionsMenuProps> = ({
   invoiceId,
   onDownloadPDF,
-  onResendInvoice,
+  onSendToClient,
   onDeleteInvoice
 }) => {
   const t = useT();
   const [isDownloading, setIsDownloading] = useState(false);
+  const [isSending, setIsSending] = useState(false);
 
   const handleDownload = async (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -38,9 +39,16 @@ const InvoiceActionsMenu: React.FC<InvoiceActionsMenuProps> = ({
     }
   };
 
-  const handleResend = (e: React.MouseEvent) => {
+  const handleSendToClient = (e: React.MouseEvent) => {
     e.stopPropagation();
-    onResendInvoice(invoiceId);
+    if (isSending) return;
+    
+    setIsSending(true);
+    try {
+      onSendToClient(invoiceId);
+    } finally {
+      setIsSending(false);
+    }
   };
 
   const handleDelete = (e: React.MouseEvent) => {
@@ -67,9 +75,13 @@ const InvoiceActionsMenu: React.FC<InvoiceActionsMenuProps> = ({
           )}
           {isDownloading ? 'Generating PDF...' : t('downloadPDF')}
         </DropdownMenuItem>
-        <DropdownMenuItem onClick={handleResend} className="cursor-pointer">
-          <Send className="mr-2 h-4 w-4" />
-          {t('resendInvoice')}
+        <DropdownMenuItem onClick={handleSendToClient} className="cursor-pointer" disabled={isSending}>
+          {isSending ? (
+            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+          ) : (
+            <Send className="mr-2 h-4 w-4" />
+          )}
+          {isSending ? 'Sending to client...' : t('sendToClient')}
         </DropdownMenuItem>
         <DropdownMenuItem 
           onClick={handleDelete}

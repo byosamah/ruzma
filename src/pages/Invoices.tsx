@@ -34,7 +34,7 @@ const Invoices: React.FC = () => {
     statusFilter,
     setStatusFilter,
     handleDownloadPDF,
-    handleResendInvoice,
+    handleSendToClient,
     handleDeleteInvoice
   } = useInvoices();
 
@@ -147,7 +147,7 @@ const Invoices: React.FC = () => {
             
             <InvoiceFilters searchTerm={searchTerm} onSearchChange={setSearchTerm} statusFilter={statusFilter} onStatusChange={setStatusFilter} />
             
-            <InvoiceTable invoices={invoices} onDownloadPDF={handleDownloadPDF} onResendInvoice={handleResendInvoice} onDeleteInvoice={handleDeleteInvoice} />
+            <InvoiceTable invoices={invoices} onDownloadPDF={handleDownloadPDF} onSendToClient={handleSendToClient} onDeleteInvoice={handleDeleteInvoice} />
           </CardContent>
         </Card>
       </div>

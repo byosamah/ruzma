@@ -111,16 +111,82 @@ export const useInvoiceActions = (
     }
   };
 
-  const handleResendInvoice = async (invoiceId: string) => {
+  const handleSendToClient = async (invoiceId: string) => {
     const invoice = invoices.find(inv => inv.id === invoiceId);
-    if (invoice) {
-      if (invoice.status === 'draft') {
-        toast.error('Cannot resend a draft invoice. Please send it first.');
+    if (!invoice) {
+      toast.error('Invoice not found');
+      return;
+    }
+
+    if (invoice.status === 'draft') {
+      toast.error('Cannot send a draft invoice. Please finalize it first.');
+      return;
+    }
+
+    try {
+      toast.loading('Sending invoice to client...', { id: 'sending-invoice' });
+      console.log('Sending invoice to client:', invoiceId);
+
+      // Get client email from project if available
+      let clientEmail = '';
+      let clientName = '';
+
+      if (invoice.projectId) {
+        const { data: project } = await supabase
+          .from('projects')
+          .select('client_email, name')
+          .eq('id', invoice.projectId)
+          .single();
+
+        if (project?.client_email) {
+          clientEmail = project.client_email;
+        }
+      }
+
+      // If no project email, try to get from invoice data
+      if (!clientEmail && invoice.invoiceData) {
+        try {
+          const invoiceData = typeof invoice.invoiceData === 'string' 
+            ? JSON.parse(invoice.invoiceData) 
+            : invoice.invoiceData;
+          
+          if (invoiceData?.billedTo?.name) {
+            clientName = invoiceData.billedTo.name;
+          }
+          // You might want to add email field to invoice data in the future
+        } catch (error) {
+          console.error('Error parsing invoice data for client info:', error);
+        }
+      }
+
+      if (!clientEmail) {
+        toast.error('Client email not found. Please add client email to the project.', { id: 'sending-invoice' });
         return;
       }
-      
-      toast.success(`Invoice ${invoice.transactionId} has been resent`);
-      console.log('Resending invoice:', invoiceId);
+
+      // Call the edge function to send the email
+      const { data, error } = await supabase.functions.invoke('send-invoice-email', {
+        body: {
+          invoiceId: invoice.id,
+          clientEmail: clientEmail,
+          clientName: clientName || invoice.projectName
+        }
+      });
+
+      if (error) {
+        throw error;
+      }
+
+      if (!data?.success) {
+        throw new Error(data?.error || 'Failed to send invoice email');
+      }
+
+      toast.success(`Invoice sent successfully to ${clientEmail}`, { id: 'sending-invoice' });
+      console.log('Invoice email sent successfully:', data);
+
+    } catch (error) {
+      console.error('Error sending invoice to client:', error);
+      toast.error(`Failed to send invoice: ${error.message}`, { id: 'sending-invoice' });
     }
   };
 
@@ -134,7 +200,7 @@ export const useInvoiceActions = (
 
   return {
     handleDownloadPDF,
-    handleResendInvoice,
+    handleSendToClient,
     handleDeleteInvoice
   };
 };
