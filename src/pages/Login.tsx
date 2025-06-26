@@ -28,16 +28,21 @@ const Login = () => {
   const location = useLocation();
   const { user, loading: authLoading, authChecked } = useAuth();
 
+  console.log('Login component render:', { user, authLoading, authChecked });
+
   // Redirect authenticated users to dashboard
   useEffect(() => {
+    console.log('Login useEffect:', { authChecked, user });
     if (authChecked && user) {
       const from = location.state?.from?.pathname || '/dashboard';
+      console.log('Redirecting authenticated user to:', from);
       navigate(from, { replace: true });
     }
   }, [user, authChecked, navigate, location.state]);
 
-  // Show loading while checking auth state
-  if (authLoading || !authChecked) {
+  // Show loading while checking auth state - but with timeout
+  if (!authChecked || authLoading) {
+    console.log('Showing loading spinner');
     return (
       <div className="min-h-screen bg-auth-background flex items-center justify-center">
         <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-brand-yellow"></div>
@@ -45,13 +50,21 @@ const Login = () => {
     );
   }
 
-  // Don't render login form if user is authenticated
+  // If user is authenticated, show loading while redirecting
   if (user) {
-    return null;
+    console.log('User authenticated, showing redirect loading');
+    return (
+      <div className="min-h-screen bg-auth-background flex items-center justify-center">
+        <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-brand-yellow"></div>
+      </div>
+    );
   }
+
+  console.log('Rendering login form');
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    console.log('Login form submitted');
     setIsLoading(true);
 
     // Persist "Remember Me" choice
@@ -66,7 +79,6 @@ const Login = () => {
       const supabase = getSupabaseClient(rememberMe);
 
       // Clean up auth state and force sign out before new sign in
-      // (See Supabase best practices)
       try {
         Object.keys(localStorage).forEach(key => {
           if (key.startsWith('supabase.auth.') || key.includes('sb-')) {
@@ -79,7 +91,9 @@ const Login = () => {
           }
         });
         await supabase.auth.signOut({ scope: 'global' });
-      } catch {}
+      } catch (cleanupError) {
+        console.log('Cleanup error (non-fatal):', cleanupError);
+      }
 
       const { data, error } = await supabase.auth.signInWithPassword({
         email: formData.email,
@@ -96,6 +110,7 @@ const Login = () => {
         
         toast.success(t('signInSuccess'));
         const redirectTo = location.state?.from?.pathname || '/dashboard';
+        console.log('Login successful, redirecting to:', redirectTo);
         window.location.href = redirectTo;
       }
     } catch (error: any) {

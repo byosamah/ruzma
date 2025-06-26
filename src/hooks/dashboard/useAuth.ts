@@ -108,10 +108,20 @@ export const useAuth = () => {
       }
     };
 
+    // Add a timeout to prevent infinite loading
+    const timeout = setTimeout(() => {
+      if (!authChecked && isMounted) {
+        console.warn('Auth check timeout - forcing completion');
+        setLoading(false);
+        setAuthChecked(true);
+      }
+    }, 10000); // 10 second timeout
+
     fetchUser();
     
     return () => {
       isMounted = false;
+      clearTimeout(timeout);
     };
   }, [authChecked, navigate]);
 
