@@ -2,13 +2,15 @@
 import { useNavigate } from 'react-router-dom';
 import { User } from '@supabase/supabase-js';
 import { useAuth } from '@/hooks/dashboard/useAuth';
+import { useDashboardActions } from '@/hooks/dashboard/useDashboardActions';
 import { useProfileInfo } from './profile/useProfileInfo';
 import { useProfileActions } from './profile/useProfileActions';
 import { useImageCropping } from './profile/useImageCropping';
 
 export const useProfile = (user?: User | null) => {
   const navigate = useNavigate();
-  const { user: authUser, handleSignOut: authHandleSignOut } = useAuth();
+  const { user: authUser } = useAuth();
+  const { handleSignOut } = useDashboardActions(() => Promise.resolve(true)); // Provide dummy deleteProject function
   
   // Use provided user or fallback to auth user
   const currentUser = user || authUser;
@@ -67,6 +69,6 @@ export const useProfile = (user?: User | null) => {
     onCropSave,
     onCropCancel,
     setCroppedAreaPixels,
-    handleSignOut: authHandleSignOut,
+    handleSignOut,
   };
 };

@@ -3,11 +3,13 @@ import React from 'react';
 import Layout from '@/components/Layout';
 import { SubscriptionPlans } from '@/components/Subscription/SubscriptionPlans';
 import { useAuth } from '@/hooks/dashboard/useAuth';
+import { useDashboardActions } from '@/hooks/dashboard/useDashboardActions';
 import { useT } from '@/lib/i18n';
 
 const Plans = () => {
   const t = useT();
-  const { user, handleSignOut } = useAuth();
+  const { user } = useAuth();
+  const { handleSignOut } = useDashboardActions(() => Promise.resolve(true)); // Provide dummy deleteProject function
 
   if (!user) {
     return <div>{t('loading')}</div>;
