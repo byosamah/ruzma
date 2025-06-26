@@ -72,6 +72,8 @@ const MilestoneList: React.FC<MilestoneListProps> = ({
                 paymentProofUrl: milestone.payment_proof_url,
                 start_date: milestone.start_date || undefined,
                 end_date: milestone.end_date || undefined,
+                created_at: milestone.created_at,
+                updated_at: milestone.updated_at,
               }}
               userType={userType}
               onUpdateMilestoneStatus={
