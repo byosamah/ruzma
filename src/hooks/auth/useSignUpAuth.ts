@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
+import { trackSignUp } from '@/lib/analytics';
 
 interface SignUpData {
   name: string;
@@ -53,6 +54,9 @@ export const useSignUpAuth = () => {
       }
 
       if (data.user) {
+        // Track successful signup
+        trackSignUp('email');
+        
         if (!data.session) {
           console.log('User created, email confirmation required');
           toast.success('Account created! Please check your email and click the confirmation link to complete your registration.');

@@ -1,31 +1,65 @@
 
-import { useCreateProjectFormData } from './createProject/useCreateProjectFormData';
-import { useCreateProjectSubmission } from './createProject/useCreateProjectSubmission';
-import { useProjectCountSync } from './useProjectCountSync';
-import { useCallback } from 'react';
-import { supabase } from '@/integrations/supabase/client';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { createProjectSchema, CreateProjectFormData } from '@/lib/validators/project';
+import { useCreateProjectSubmission } from '@/hooks/createProject/useCreateProjectSubmission';
+import { ProjectTemplate } from '@/types/projectTemplate';
+import { trackTemplateUsed } from '@/lib/analytics';
 
-export const useCreateProjectForm = (templateData?: any) => {
-  const { form, addMilestone, removeMilestone, loadFromTemplate } = useCreateProjectFormData(templateData);
-  const { handleSubmit: originalHandleSubmit } = useCreateProjectSubmission();
-  const { checkAndSyncBeforeCreate } = useProjectCountSync();
+export const useCreateProjectForm = (templateData?: ProjectTemplate) => {
+  const form = useForm<CreateProjectFormData>({
+    resolver: zodResolver(createProjectSchema),
+    defaultValues: {
+      name: templateData?.name || '',
+      brief: templateData?.brief || '',
+      clientEmail: '',
+      milestones: templateData?.milestones || [
+        {
+          title: '',
+          description: '',
+          price: 0,
+          start_date: '',
+          end_date: '',
+        },
+      ],
+    },
+  });
 
-  const handleSubmit = useCallback(async (data: any) => {
-    const { data: { user } } = await supabase.auth.getUser();
+  const { handleSubmit: handleSubmitProject } = useCreateProjectSubmission();
+
+  const addMilestone = () => {
+    const currentMilestones = form.getValues('milestones');
+    form.setValue('milestones', [
+      ...currentMilestones,
+      {
+        title: '',
+        description: '',
+        price: 0,
+        start_date: '',
+        end_date: '',
+      },
+    ]);
+  };
+
+  const removeMilestone = (index: number) => {
+    const currentMilestones = form.getValues('milestones');
+    if (currentMilestones.length > 1) {
+      form.setValue('milestones', currentMilestones.filter((_, i) => i !== index));
+    }
+  };
+
+  const loadFromTemplate = (template: ProjectTemplate) => {
+    // Track template usage
+    trackTemplateUsed(template.id, template.name);
     
-    if (!user) {
-      return;
-    }
+    form.setValue('name', template.name);
+    form.setValue('brief', template.brief);
+    form.setValue('milestones', template.milestones);
+  };
 
-    // Sync project count before attempting to create
-    const canProceed = await checkAndSyncBeforeCreate(user.id);
-    if (!canProceed) {
-      return;
-    }
-
-    // Proceed with original submission
-    await originalHandleSubmit(data);
-  }, [originalHandleSubmit, checkAndSyncBeforeCreate]);
+  const handleSubmit = async (data: CreateProjectFormData) => {
+    await handleSubmitProject(data);
+  };
 
   return {
     form,

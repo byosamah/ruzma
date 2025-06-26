@@ -1,4 +1,3 @@
-
 import { useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
@@ -7,6 +6,7 @@ import { CreateProjectFormData } from '@/lib/validators/project';
 import { calculateProjectDates } from '@/lib/projectDateUtils';
 import { securityMonitor } from '@/lib/securityMonitoring';
 import { validateProjectName, validateEmail, sanitizeInput } from '@/lib/inputValidation';
+import { trackProjectCreated, trackMilestoneCreated, trackError } from '@/lib/analytics';
 
 export const useCreateProjectSubmission = () => {
   const navigate = useNavigate();
@@ -75,6 +75,8 @@ export const useCreateProjectSubmission = () => {
         .from('projects')
         .select('id')
         .eq('user_id', user.id);
+
+      const isFirstProject = !actualProjects || actualProjects.length === 0;
 
       if (projectsError) {
         console.error('Error fetching actual projects:', projectsError);
@@ -211,6 +213,9 @@ export const useCreateProjectSubmission = () => {
 
       console.log('Project created:', project);
 
+      // Track project creation
+      trackProjectCreated(project.id, isFirstProject);
+
       // Create milestones with input sanitization
       const milestoneInserts = data.milestones.map((milestone) => ({
         project_id: project.id,
@@ -227,6 +232,9 @@ export const useCreateProjectSubmission = () => {
         .insert(milestoneInserts);
 
       if (milestonesError) throw milestonesError;
+
+      // Track milestone creation
+      trackMilestoneCreated(project.id, data.milestones.length);
 
       // Update project count
       const { error: updateError } = await supabase
@@ -253,6 +261,10 @@ export const useCreateProjectSubmission = () => {
       navigate('/dashboard');
     } catch (error) {
       console.error('Error creating project:', error);
+      
+      // Track error
+      trackError('project_creation', error instanceof Error ? error.message : 'Unknown error', 'useCreateProjectSubmission');
+      
       securityMonitor.logEvent('suspicious_activity', {
         activity: 'project_creation_error',
         error: error instanceof Error ? error.message : 'Unknown error'

@@ -1,7 +1,7 @@
-
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import { User } from '@supabase/supabase-js';
+import { trackDeliverableUploaded } from '@/lib/analytics';
 
 export const uploadDeliverableAction = async (
   user: User | null,
@@ -14,7 +14,7 @@ export const uploadDeliverableAction = async (
   }
 
   try {
-    console.log('Uploading deliverable for milestone:', milestoneId, 'File:', file.name, 'Size:', file.size);
+    console.log('Starting deliverable upload for milestone:', milestoneId);
 
     // Check storage limits before uploading
     const { data: limitCheck, error: limitError } = await supabase
@@ -58,20 +58,29 @@ export const uploadDeliverableAction = async (
     const { error: updateError } = await supabase
       .from('milestones')
       .update({
+        deliverable_url: publicUrl,
         deliverable_name: file.name,
         deliverable_size: file.size,
-        deliverable_url: publicUrl,
         updated_at: new Date().toISOString()
       })
-      .eq('id', milestoneId)
-      .select()
-      .single();
+      .eq('id', milestoneId);
 
     if (updateError) {
-      console.error('Error updating milestone with deliverable info:', updateError);
-      toast.error('Failed to update milestone in database');
+      console.error('Error updating milestone with deliverable:', updateError);
       await supabase.storage.from('deliverables').remove([filePath]);
+      toast.error('Failed to save deliverable information');
       return false;
+    }
+
+    // Get project ID for tracking
+    const { data: milestone } = await supabase
+      .from('milestones')
+      .select('project_id')
+      .eq('id', milestoneId)
+      .single();
+
+    if (milestone) {
+      trackDeliverableUploaded(milestoneId, milestone.project_id, file.size);
     }
 
     // Update storage usage
@@ -85,7 +94,7 @@ export const uploadDeliverableAction = async (
       console.error('Error updating storage usage:', storageUpdateError);
     }
     
-    toast.success('Deliverable uploaded successfully');
+    toast.success('Deliverable uploaded successfully!');
     return true;
   } catch (error) {
     console.error('Error uploading deliverable:', error);

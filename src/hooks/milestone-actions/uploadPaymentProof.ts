@@ -1,6 +1,6 @@
-
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
+import { trackPaymentProofUploaded } from '@/lib/analytics';
 
 export const uploadPaymentProofAction = async (milestoneId: string, file: File) => {
   try {
@@ -79,6 +79,17 @@ export const uploadPaymentProofAction = async (milestoneId: string, file: File) 
       await supabase.storage.from('payment-proofs').remove([filePath]);
       toast.error(edgeData?.error || edgeError?.message || 'Payment proof submission failed.');
       return false;
+    }
+
+    // Get project ID for tracking
+    const { data: milestone } = await supabase
+      .from('milestones')
+      .select('project_id')
+      .eq('id', milestoneId)
+      .single();
+
+    if (milestone) {
+      trackPaymentProofUploaded(milestoneId, milestone.project_id);
     }
 
     // Update storage usage

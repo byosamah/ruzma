@@ -1,9 +1,9 @@
-
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import { User } from '@supabase/supabase-js';
 import { DatabaseProject } from '../projectTypes';
 import { sendPaymentNotification } from '@/services/emailNotifications';
+import { trackMilestoneApproved } from '@/lib/analytics';
 
 export const updateMilestoneStatus = async (
   user: User | null,
@@ -58,6 +58,11 @@ export const updateMilestoneStatus = async (
       console.error('Error updating milestone status:', updateError);
       toast.error('Failed to update milestone status');
       return false;
+    }
+
+    // Track milestone approval
+    if (status === 'approved') {
+      trackMilestoneApproved(milestoneId, milestone.projects.id, milestone.price);
     }
 
     // Send email notification if client email exists

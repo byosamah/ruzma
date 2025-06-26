@@ -4,6 +4,7 @@ import { Invoice } from './types';
 import { generateInvoicePDF, InvoicePDFData } from '@/lib/pdfGenerator';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/hooks/dashboard/useAuth';
+import { trackInvoiceCreated } from '@/lib/analytics';
 
 export const useInvoiceActions = (
   invoices: Invoice[],
@@ -198,9 +199,20 @@ export const useInvoiceActions = (
     }
   };
 
+  // New function to track invoice creation
+  const handleCreateInvoice = async (invoiceData: any) => {
+    try {
+      // Track invoice creation
+      trackInvoiceCreated(invoiceData.invoiceId, invoiceData.total, invoiceData.currency);
+    } catch (error) {
+      console.error('Error tracking invoice creation:', error);
+    }
+  };
+
   return {
     handleDownloadPDF,
     handleSendToClient,
-    handleDeleteInvoice
+    handleDeleteInvoice,
+    handleCreateInvoice
   };
 };

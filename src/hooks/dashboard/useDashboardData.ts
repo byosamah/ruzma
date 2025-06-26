@@ -1,26 +1,71 @@
 
-import { useProjects } from '@/hooks/useProjects';
-import { useUserCurrency } from '@/hooks/useUserCurrency';
-import { useAuth } from '@/hooks/dashboard/useAuth';
-import { useUserProfile } from '@/hooks/dashboard/useUserProfile';
-import { useDashboardStats } from '@/hooks/dashboard/useDashboardStats';
+import { useEffect, useState } from 'react';
+import { User } from '@supabase/supabase-js';
+import { supabase } from '@/integrations/supabase/client';
+import { DatabaseProject } from '@/hooks/projectTypes';
+import { setUserProperties } from '@/lib/analytics';
 
-export const useDashboardData = () => {
-  const { user, loading: authLoading, authChecked } = useAuth();
-  const { profile, loading: profileLoading } = useUserProfile(user);
-  const { projects, loading: projectsLoading, deleteProject } = useProjects(user);
-  const userCurrency = useUserCurrency(user);
-  const stats = useDashboardStats(projects);
+export const useDashboardData = (user: User | null) => {
+  const [projects, setProjects] = useState<DatabaseProject[]>([]);
+  const [profile, setProfile] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
 
-  const loading = authLoading || profileLoading || projectsLoading;
+  useEffect(() => {
+    if (!user) return;
+
+    const fetchData = async () => {
+      setLoading(true);
+      
+      try {
+        // Fetch user profile
+        const { data: profileData } = await supabase
+          .from('profiles')
+          .select('*')
+          .eq('id', user.id)
+          .single();
+
+        setProfile(profileData);
+
+        // Fetch projects
+        const { data: projectsData } = await supabase
+          .from('projects')
+          .select(`
+            *,
+            milestones (*)
+          `)
+          .eq('user_id', user.id)
+          .order('created_at', { ascending: false });
+
+        setProjects(projectsData || []);
+
+        // Set user properties for analytics
+        if (profileData && projectsData) {
+          setUserProperties(
+            user.id,
+            profileData.user_type || 'free',
+            profileData.currency || 'USD',
+            projectsData.length
+          );
+        }
+
+      } catch (error) {
+        console.error('Error fetching dashboard data:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, [user]);
 
   return {
-    user,
+    projects,
     profile,
     loading,
-    projects,
-    userCurrency,
-    stats,
-    deleteProject,
+    refetch: () => {
+      if (user) {
+        // Refetch logic here
+      }
+    }
   };
 };

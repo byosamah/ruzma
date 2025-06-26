@@ -11,6 +11,7 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { getSupabaseClient } from '@/integrations/supabase/authClient';
 import { useT } from '@/lib/i18n';
 import { useAuth } from '@/hooks/dashboard/useAuth';
+import { trackLogin } from '@/lib/analytics';
 
 const Login = () => {
   const t = useT();
@@ -90,6 +91,9 @@ const Login = () => {
       }
 
       if (data.user) {
+        // Track successful login
+        trackLogin('email');
+        
         toast.success(t('signInSuccess'));
         const redirectTo = location.state?.from?.pathname || '/dashboard';
         window.location.href = redirectTo;

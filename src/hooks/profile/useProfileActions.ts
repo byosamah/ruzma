@@ -1,87 +1,73 @@
 
 import { useState } from 'react';
 import { User } from '@supabase/supabase-js';
-import { profileService } from '@/services/profileService';
-import { brandingService } from '@/services/brandingService';
-import { ProfileFormData } from './types';
+import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
+import { trackBrandingUpdated, trackError } from '@/lib/analytics';
 
 export const useProfileActions = (user: User | null) => {
-  const [isLoading, setIsLoading] = useState(false);
-  const [isSaved, setIsSaved] = useState(false);
+  const [isUpdating, setIsUpdating] = useState(false);
 
-  const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
-    setFormData: React.Dispatch<React.SetStateAction<ProfileFormData>>
-  ) => {
-    setFormData(prev => ({
-      ...prev,
-      [e.target.name]: e.target.value
-    }));
-    setIsSaved(false);
-  };
-
-  const handleCurrencyChange = (
-    currency: string,
-    setFormData: React.Dispatch<React.SetStateAction<ProfileFormData>>
-  ) => {
-    setFormData(prev => ({
-      ...prev,
-      currency
-    }));
-    setIsSaved(false);
-  };
-
-  const handleLogoUpload = async (
-    file: File,
-    setFormData: React.Dispatch<React.SetStateAction<ProfileFormData>>
-  ) => {
-    if (!user) return;
-
+  const updateBranding = async (brandingData: any) => {
+    if (!user) return false;
+    
+    setIsUpdating(true);
     try {
-      const result = await brandingService.uploadLogo(file, user.id);
+      const { error } = await supabase
+        .from('freelancer_branding')
+        .upsert({
+          user_id: user.id,
+          ...brandingData,
+          updated_at: new Date().toISOString()
+        });
 
-      if (result.success && result.url) {
-        setFormData(prev => ({
-          ...prev,
-          logoUrl: result.url
-        }));
-        setIsSaved(false);
-        toast.success('Logo uploaded successfully!');
-      } else {
-        toast.error(result.error || 'Failed to upload logo');
-      }
-    } catch (error) {
-      console.error('Error uploading logo:', error);
-      toast.error('Failed to upload logo');
+      if (error) throw error;
+
+      // Track branding update
+      trackBrandingUpdated(user.id, 'profile_branding');
+      
+      toast.success('Branding updated successfully!');
+      return true;
+    } catch (error: any) {
+      console.error('Error updating branding:', error);
+      trackError('branding_update', error.message, 'useProfileActions');
+      toast.error('Failed to update branding');
+      return false;
+    } finally {
+      setIsUpdating(false);
     }
   };
 
-  const handleSubmit = async (e: React.FormEvent, formData: ProfileFormData) => {
-    e.preventDefault();
-    if (!user) return;
-    setIsLoading(true);
-
-    const profileResult = await profileService.updateProfile(user.id, formData);
-    const brandingResult = await brandingService.updateBranding(user.id, formData);
+  const updateProfile = async (profileData: any) => {
+    if (!user) return false;
     
-    setIsLoading(false);
+    setIsUpdating(true);
+    try {
+      const { error } = await supabase
+        .from('profiles')
+        .update({
+          ...profileData,
+          updated_at: new Date().toISOString()
+        })
+        .eq('id', user.id);
 
-    if (profileResult.error || brandingResult.error) {
-      toast.error(profileResult.error?.message || brandingResult.error?.message || 'Error updating profile');
-    } else {
-      setIsSaved(true);
-      toast.success("Profile updated successfully!");
-      setTimeout(() => setIsSaved(false), 3000);
+      if (error) throw error;
+
+      toast.success('Profile updated successfully!');
+      return true;
+    } catch (error: any) {
+      console.error('Error updating profile:', error);
+      trackError('profile_update', error.message, 'useProfileActions');
+      toast.error('Failed to update profile');
+      return false;
+    } finally {
+      setIsUpdating(false);
     }
   };
 
   return {
-    isLoading,
-    isSaved,
-    handleChange,
-    handleCurrencyChange,
-    handleLogoUpload,
-    handleSubmit
+    updateBranding,
+    updateProfile,
+    isUpdating
   };
 };
