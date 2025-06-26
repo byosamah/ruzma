@@ -12,7 +12,6 @@ export interface DatabaseMilestone {
   deliverable_name?: string;
   deliverable_size?: number;
   payment_proof_url?: string;
-  watermark_text?: string | null;
   created_at: string;
   updated_at: string;
 }

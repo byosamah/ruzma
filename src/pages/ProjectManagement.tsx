@@ -28,7 +28,6 @@ const ProjectManagement: React.FC = () => {
     uploadPaymentProof,
     uploadDeliverable,
     downloadDeliverable,
-    updateMilestoneWatermark,
   } = useProjectManagement(slug);
 
   const { deleteProject } = useProjects(user);
@@ -198,7 +197,6 @@ const ProjectManagement: React.FC = () => {
               onPaymentUpload={uploadPaymentProof}
               onDeliverableUpload={uploadDeliverable}
               onDeliverableDownload={downloadDeliverable}
-              onUpdateWatermark={updateMilestoneWatermark}
             />
           </CardContent>
         </Card>

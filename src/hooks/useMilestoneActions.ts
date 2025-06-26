@@ -2,7 +2,6 @@
 import { User } from '@supabase/supabase-js';
 import { DatabaseProject } from './projectTypes';
 import { updateMilestoneStatus as updateMilestoneStatusAction } from './milestone-actions/updateStatus';
-import { updateMilestoneWatermarkAction } from './milestone-actions/updateWatermark';
 import { uploadPaymentProofAction } from './milestone-actions/uploadPaymentProof';
 import { uploadDeliverableAction } from './milestone-actions/uploadDeliverable';
 import { downloadDeliverableAction } from './milestone-actions/downloadDeliverable';
@@ -22,13 +21,6 @@ export function useMilestoneActions(
     }
   };
 
-  const updateMilestoneWatermark = async (milestoneId: string, watermarkText: string) => {
-    const success = await updateMilestoneWatermarkAction(user, milestoneId, watermarkText);
-    if (success) {
-      await fetchProjects();
-    }
-  };
-
   const uploadPaymentProof = async (milestoneId: string, file: File) => {
     const success = await uploadPaymentProofAction(milestoneId, file);
     if (success) {
@@ -36,8 +28,8 @@ export function useMilestoneActions(
     }
   };
 
-  const uploadDeliverable = async (milestoneId: string, file: File, watermarkText?: string) => {
-    const success = await uploadDeliverableAction(user, milestoneId, file, watermarkText);
+  const uploadDeliverable = async (milestoneId: string, file: File) => {
+    const success = await uploadDeliverableAction(user, milestoneId, file);
     if (success) {
       await fetchProjects();
     }
@@ -52,6 +44,5 @@ export function useMilestoneActions(
     uploadPaymentProof,
     uploadDeliverable,
     downloadDeliverable,
-    updateMilestoneWatermark,
   };
 }

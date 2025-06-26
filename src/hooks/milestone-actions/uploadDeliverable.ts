@@ -6,8 +6,7 @@ import { User } from '@supabase/supabase-js';
 export const uploadDeliverableAction = async (
   user: User | null,
   milestoneId: string,
-  file: File,
-  watermarkText?: string
+  file: File
 ) => {
   if (!user) {
     toast.error('You must be logged in to upload deliverables');
@@ -62,8 +61,7 @@ export const uploadDeliverableAction = async (
         deliverable_name: file.name,
         deliverable_size: file.size,
         deliverable_url: publicUrl,
-        updated_at: new Date().toISOString(),
-        watermark_text: watermarkText || null
+        updated_at: new Date().toISOString()
       })
       .eq('id', milestoneId)
       .select()

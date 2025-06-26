@@ -11,7 +11,6 @@ export interface Milestone {
     url?: string;
   };
   paymentProofUrl?: string;
-  watermarkText?: string;
   start_date?: string;
   end_date?: string;
 }
@@ -22,9 +21,8 @@ export interface MilestoneCardProps {
   onReject?: (milestoneId: string) => void;
   isClient?: boolean;
   onPaymentUpload?: (milestoneId: string, file: File) => void;
-  onDeliverableUpload?: (milestoneId: string, file: File, watermarkText?: string) => void;
+  onDeliverableUpload?: (milestoneId: string, file: File) => void;
   onDeliverableDownload?: (milestoneId: string) => void;
   currency?: import('@/lib/currency').CurrencyCode;
   freelancerCurrency?: import('@/lib/currency').CurrencyCode;
-  onUpdateWatermark?: (milestoneId: string, watermarkText: string) => void;
 }
