@@ -12,6 +12,7 @@ import ProjectMilestonesList from "@/components/ProjectClient/ProjectMilestonesL
 import ProjectFooter from "@/components/ProjectClient/ProjectFooter";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { parseClientToken } from "@/lib/clientUrlUtils";
+import { CurrencyCode } from "@/lib/currency";
 
 const ClientProject = () => {
   const { token } = useParams<{ token: string }>();
@@ -52,8 +53,12 @@ const ClientProject = () => {
   const completedMilestones = project.milestones.filter(m => m.status === 'approved').length;
   const totalValue = project.milestones.reduce((sum, m) => sum + m.price, 0);
 
+  // Safely extract currency values with proper type casting
+  const userCurrencyCode = userCurrency?.currency || 'USD';
+  const freelancerCurrencyCode = (freelancerCurrency as CurrencyCode) || userCurrencyCode;
+  
   // Always use freelancer's preferred currency if available, otherwise fall back to user currency
-  const displayCurrency = freelancerCurrency || userCurrency;
+  const displayCurrency = freelancerCurrencyCode || userCurrencyCode;
 
   return (
     <div className="min-h-screen bg-slate-50">
@@ -67,7 +72,7 @@ const ClientProject = () => {
           totalMilestones={totalMilestones}
           completedMilestones={completedMilestones}
           currency={displayCurrency}
-          freelancerCurrency={freelancerCurrency}
+          freelancerCurrency={freelancerCurrencyCode}
           startDate={project.start_date ?? undefined}
           endDate={project.end_date ?? undefined}
           branding={branding}
@@ -80,7 +85,7 @@ const ClientProject = () => {
           onPaymentUpload={handlePaymentUpload}
           onDeliverableDownload={handleDeliverableDownload}
           currency={displayCurrency}
-          freelancerCurrency={freelancerCurrency}
+          freelancerCurrency={freelancerCurrencyCode}
           branding={branding}
         />
       </main>
