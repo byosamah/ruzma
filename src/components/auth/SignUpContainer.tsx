@@ -7,40 +7,22 @@ import { FormField } from './FormField';
 import { PasswordField } from './PasswordField';
 import { CurrencySelect } from './CurrencySelect';
 import { User, Mail } from 'lucide-react';
+import { useSignUpForm } from '@/hooks/auth/useSignUpForm';
 
-interface FormData {
-  name: string;
-  email: string;
-  password: string;
-  confirmPassword: string;
-  currency: string;
-}
+const SignUpContainer: React.FC = () => {
+  const {
+    formData,
+    errors,
+    showPassword,
+    showConfirmPassword,
+    isLoading,
+    handleFormDataChange,
+    handleCurrencyChange,
+    handleSubmit,
+    handleTogglePassword,
+    handleToggleConfirmPassword,
+  } = useSignUpForm();
 
-interface SignUpContainerProps {
-  formData: FormData;
-  errors: Record<string, string>;
-  showPassword: boolean;
-  showConfirmPassword: boolean;
-  isLoading: boolean;
-  onFormDataChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-  onCurrencyChange: (currency: string) => void;
-  onSubmit: (e: React.FormEvent) => void;
-  onTogglePassword: () => void;
-  onToggleConfirmPassword: () => void;
-}
-
-const SignUpContainer: React.FC<SignUpContainerProps> = ({
-  formData,
-  errors,
-  showPassword,
-  showConfirmPassword,
-  isLoading,
-  onFormDataChange,
-  onCurrencyChange,
-  onSubmit,
-  onTogglePassword,
-  onToggleConfirmPassword
-}) => {
   return (
     <div className="min-h-screen bg-auth-background flex flex-col items-center justify-center p-4">
       <div className="absolute top-10 sm:top-16">
@@ -62,14 +44,14 @@ const SignUpContainer: React.FC<SignUpContainerProps> = ({
             <Button variant="ghost" className="w-1/2 bg-white shadow-sm text-brand-navy font-semibold">Sign Up</Button>
           </div>
 
-          <form onSubmit={onSubmit} className="space-y-4">
+          <form onSubmit={handleSubmit} className="space-y-4">
             <FormField
               id="name"
               name="name"
               label="Full Name"
               placeholder="Enter your full name"
               value={formData.name}
-              onChange={onFormDataChange}
+              onChange={handleFormDataChange}
               error={errors.name}
               icon={User}
             />
@@ -81,14 +63,14 @@ const SignUpContainer: React.FC<SignUpContainerProps> = ({
               label="Email"
               placeholder="you@example.com"
               value={formData.email}
-              onChange={onFormDataChange}
+              onChange={handleFormDataChange}
               error={errors.email}
               icon={Mail}
             />
 
             <CurrencySelect
               value={formData.currency}
-              onChange={onCurrencyChange}
+              onChange={handleCurrencyChange}
               error={errors.currency}
             />
             
@@ -98,10 +80,10 @@ const SignUpContainer: React.FC<SignUpContainerProps> = ({
               label="Password"
               placeholder="Create a password"
               value={formData.password}
-              onChange={onFormDataChange}
+              onChange={handleFormDataChange}
               error={errors.password}
               showPassword={showPassword}
-              onTogglePassword={onTogglePassword}
+              onTogglePassword={handleTogglePassword}
             />
 
             <PasswordField
@@ -110,10 +92,10 @@ const SignUpContainer: React.FC<SignUpContainerProps> = ({
               label="Confirm Password"
               placeholder="Confirm your password"
               value={formData.confirmPassword}
-              onChange={onFormDataChange}
+              onChange={handleFormDataChange}
               error={errors.confirmPassword}
               showPassword={showConfirmPassword}
-              onTogglePassword={onToggleConfirmPassword}
+              onTogglePassword={handleToggleConfirmPassword}
             />
 
             <Button 
