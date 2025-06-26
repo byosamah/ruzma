@@ -35,7 +35,7 @@ const FreelancerView: React.FC<FreelancerViewProps> = ({
     return (
       <div className="space-y-3">
         <div className="flex items-center justify-between bg-blue-50 p-3 rounded-lg">
-          <p className="text-sm font-medium text-blue-800">{t('paymentProofSubmittedByClient')}</p>
+          <p className="text-sm font-medium text-blue-800">Payment proof submitted by client</p>
           <div className="flex items-center space-x-2">
             <Button
               variant="outline"
@@ -44,7 +44,7 @@ const FreelancerView: React.FC<FreelancerViewProps> = ({
               className="flex items-center space-x-1"
             >
               <Eye className="w-4 h-4" />
-              <span>{t('preview')}</span>
+              <span>Preview</span>
             </Button>
             <Button
               variant="outline"
@@ -53,7 +53,7 @@ const FreelancerView: React.FC<FreelancerViewProps> = ({
               className="flex items-center space-x-1"
             >
               <ExternalLink className="w-4 h-4" />
-              <span>{t('open')}</span>
+              <span>Open</span>
             </Button>
           </div>
         </div>
@@ -66,7 +66,7 @@ const FreelancerView: React.FC<FreelancerViewProps> = ({
               className="flex-1 bg-green-600 hover:bg-green-700"
             >
               <CheckCircle className="w-4 h-4 mr-2" />
-              {t('approvePayment')}
+              Approve Payment
             </Button>
             <Button 
               onClick={() => onReject(milestone.id)} 
@@ -75,7 +75,7 @@ const FreelancerView: React.FC<FreelancerViewProps> = ({
               className="flex-1 text-red-600 border-red-300 hover:bg-red-50"
             >
               <XCircle className="w-4 h-4 mr-2" />
-              {t('reject')}
+              Reject
             </Button>
           </div>
         )}
@@ -85,7 +85,7 @@ const FreelancerView: React.FC<FreelancerViewProps> = ({
 
   const renderDeliverableSection = () => (
     <div className="pt-2 border-t">
-      <p className="text-sm font-medium text-slate-700 mb-2">{t('deliverable')}:</p>
+      <p className="text-sm font-medium text-slate-700 mb-2">Deliverable:</p>
 
       {milestone.deliverable ? (
         <div className="flex items-center justify-between bg-slate-50 p-2 rounded">
@@ -107,7 +107,7 @@ const FreelancerView: React.FC<FreelancerViewProps> = ({
               <Button asChild size="sm" variant="outline">
                 <span className="cursor-pointer flex items-center">
                   <FileUp className="w-4 h-4 mr-1" />
-                  {t('replace')}
+                  Replace
                 </span>
               </Button>
             </label>
@@ -125,7 +125,7 @@ const FreelancerView: React.FC<FreelancerViewProps> = ({
             <Button asChild size="sm">
               <span className="cursor-pointer flex items-center">
                 <Upload className="w-4 h-4 mr-2" />
-                {t('uploadDeliverable')}
+                Upload Deliverable
               </span>
             </Button>
           </label>
@@ -138,10 +138,10 @@ const FreelancerView: React.FC<FreelancerViewProps> = ({
     <div className="space-y-3">
       {renderPaymentProofSection()}
       {milestone.status === 'pending' && (
-        <p className="text-sm text-slate-600">{t('waitingForClientPayment')}</p>
+        <p className="text-sm text-slate-600">Waiting for client payment</p>
       )}
       {milestone.status === 'approved' && (
-        <p className="text-sm text-green-600">{t('paymentApprovedClientDownload')}</p>
+        <p className="text-sm text-green-600">Payment approved - Client can download</p>
       )}
       {renderDeliverableSection()}
     </div>

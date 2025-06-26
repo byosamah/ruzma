@@ -39,7 +39,7 @@ const ClientView: React.FC<ClientViewProps> = ({
         case 'pending':
           return {
             icon: Lock,
-            message: t('paymentProofRequiredForDownload'),
+            message: 'Payment proof required for download',
             color: 'text-amber-600',
             bgColor: 'bg-amber-50',
             borderColor: 'border-amber-200'
@@ -47,7 +47,7 @@ const ClientView: React.FC<ClientViewProps> = ({
         case 'payment_submitted':
           return {
             icon: AlertCircle,
-            message: t('paymentUnderReview'),
+            message: 'Payment under review',
             color: 'text-blue-600',
             bgColor: 'bg-blue-50',
             borderColor: 'border-blue-200'
@@ -55,7 +55,7 @@ const ClientView: React.FC<ClientViewProps> = ({
         case 'approved':
           return {
             icon: CheckCircle,
-            message: t('paymentApprovedReadyToDownload'),
+            message: 'Payment approved - Ready to download',
             color: 'text-green-600',
             bgColor: 'bg-green-50',
             borderColor: 'border-green-200'
@@ -63,7 +63,7 @@ const ClientView: React.FC<ClientViewProps> = ({
         default:
           return {
             icon: Clock,
-            message: t('statusUnknown'),
+            message: 'Status unknown',
             color: 'text-gray-600',
             bgColor: 'bg-gray-50',
             borderColor: 'border-gray-200'
@@ -73,7 +73,7 @@ const ClientView: React.FC<ClientViewProps> = ({
       // When payment proof is not required, deliverables are available immediately
       return {
         icon: CheckCircle,
-        message: t('deliverableReadyForDownload'),
+        message: 'Deliverable ready for download',
         color: 'text-green-600',
         bgColor: 'bg-green-50',
         borderColor: 'border-green-200'
@@ -113,7 +113,7 @@ const ClientView: React.FC<ClientViewProps> = ({
       {/* Payment Upload Section */}
       {paymentProofRequired && milestone.status === 'pending' && (
         <div className="space-y-3">
-          <h4 className="text-sm font-semibold text-slate-700">{t('submitPaymentProof')}</h4>
+          <h4 className="text-sm font-semibold text-slate-700">Submit Payment Proof</h4>
           <div className="flex items-center gap-3">
             <input
               type="file"
@@ -132,13 +132,13 @@ const ClientView: React.FC<ClientViewProps> = ({
               >
                 <span className="cursor-pointer flex items-center gap-2">
                   <Upload className="w-4 h-4" />
-                  {uploading ? t('uploading') : t('uploadPaymentProof')}
+                  {uploading ? 'Uploading...' : 'Upload Payment Proof'}
                 </span>
               </Button>
             </label>
           </div>
           <p className="text-xs text-slate-500">
-            {t('acceptedFormats')}: JPG, PNG, PDF (Max 10MB)
+            Accepted formats: JPG, PNG, PDF (Max 10MB)
           </p>
         </div>
       )}
@@ -147,10 +147,10 @@ const ClientView: React.FC<ClientViewProps> = ({
       {paymentProofRequired && milestone.status === 'payment_submitted' && (
         <div className="bg-blue-50 border border-blue-200 rounded-lg p-3">
           <p className="text-sm text-blue-800">
-            {t('paymentProofSubmittedSuccessfully')}
+            Payment proof submitted successfully
           </p>
           <p className="text-xs text-blue-600 mt-1">
-            {t('freelancerWillReviewShortly')}
+            Freelancer will review shortly
           </p>
         </div>
       )}
@@ -158,7 +158,7 @@ const ClientView: React.FC<ClientViewProps> = ({
       {/* Deliverable Download Section */}
       {milestone.deliverable?.url && (
         <div className="space-y-3">
-          <h4 className="text-sm font-semibold text-slate-700">{t('downloadDeliverable')}</h4>
+          <h4 className="text-sm font-semibold text-slate-700">Download Deliverable</h4>
           <div className="flex items-center gap-3">
             <Button
               onClick={() => canDownload && onDeliverableDownload?.(milestone.id)}
@@ -171,7 +171,7 @@ const ClientView: React.FC<ClientViewProps> = ({
               ) : (
                 <Lock className="w-4 h-4 mr-2" />
               )}
-              {canDownload ? t('downloadFile') : t('paymentRequired')}
+              {canDownload ? 'Download File' : 'Payment Required'}
             </Button>
             {milestone.deliverable?.name && (
               <span className="text-sm text-slate-600">
@@ -181,11 +181,11 @@ const ClientView: React.FC<ClientViewProps> = ({
           </div>
           {canDownload ? (
             <p className="text-xs text-green-600">
-              {t('deliverableReadyForDownload')}
+              Deliverable ready for download
             </p>
           ) : (
             <p className="text-xs text-amber-600">
-              {t('uploadPaymentProofToDownload')}
+              Upload payment proof to download
             </p>
           )}
         </div>

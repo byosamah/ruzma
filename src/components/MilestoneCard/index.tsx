@@ -41,7 +41,6 @@ const MilestoneCard: React.FC<MilestoneCardProps> = ({
         <MilestoneHeader 
           milestone={milestone} 
           currency={currency}
-          freelancerCurrency={freelancerCurrency}
           branding={branding}
         />
         
@@ -55,9 +54,18 @@ const MilestoneCard: React.FC<MilestoneCardProps> = ({
         ) : (
           <FreelancerView
             milestone={milestone}
-            onUpdateMilestoneStatus={onUpdateMilestoneStatus}
+            onApprove={
+              milestone.status === "payment_submitted" && onUpdateMilestoneStatus
+                ? (mId) => onUpdateMilestoneStatus(mId, "approved")
+                : undefined
+            }
+            onReject={
+              milestone.status === "payment_submitted" && onUpdateMilestoneStatus
+                ? (mId) => onUpdateMilestoneStatus(mId, "rejected")
+                : undefined
+            }
             onDeliverableUpload={onDeliverableUpload}
-            primaryColor={primaryColor}
+            onShowPaymentProofPreview={() => {}}
           />
         )}
       </CardContent>

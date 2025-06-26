@@ -24,6 +24,17 @@ const MilestoneList: React.FC<MilestoneListProps> = ({
 }) => {
   const t = useT();
 
+  // Wrapper function to convert Promise<void> to Promise<boolean>
+  const handlePaymentUpload = async (milestoneId: string, file: File): Promise<boolean> => {
+    try {
+      await onPaymentUpload(milestoneId, file);
+      return true;
+    } catch (error) {
+      console.error('Payment upload failed:', error);
+      return false;
+    }
+  };
+
   return (
     <div className="space-y-6">
       <h2 className="text-2xl font-semibold">{t('milestones')}</h2>
@@ -49,19 +60,14 @@ const MilestoneList: React.FC<MilestoneListProps> = ({
                 start_date: milestone.start_date || undefined,
                 end_date: milestone.end_date || undefined,
               }}
-              onApprove={
+              onUpdateMilestoneStatus={
                 milestone.status === "payment_submitted"
-                  ? (mId) => onUpdateMilestoneStatus(mId, "approved")
-                  : undefined
-              }
-              onReject={
-                milestone.status === "payment_submitted"
-                  ? (mId) => onUpdateMilestoneStatus(mId, "rejected")
+                  ? (mId, status) => onUpdateMilestoneStatus(mId, status)
                   : undefined
               }
               onDeliverableUpload={onDeliverableUpload}
               onDeliverableDownload={onDeliverableDownload}
-              onPaymentUpload={onPaymentUpload}
+              onPaymentUpload={handlePaymentUpload}
               currency={userCurrency}
             />
           ))}
