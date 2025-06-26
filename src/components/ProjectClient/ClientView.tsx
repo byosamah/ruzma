@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { Button } from '@/components/ui/button';
-import { Upload, Download, ExternalLink, Link } from 'lucide-react';
+import { Upload, Download, Link, File } from 'lucide-react';
 import { Milestone } from './types';
 import { useT } from '@/lib/i18n';
 import PaymentUploadDialog from './PaymentUploadDialog';
@@ -80,46 +80,63 @@ const ClientView: React.FC<ClientViewProps> = ({
     
     if (!hasFileDeliverable && !hasLinkDeliverable) {
       return (
-        <div className="text-center py-4">
+        <div className="text-center py-6">
+          <div className="w-12 h-12 bg-slate-100 rounded-xl flex items-center justify-center mx-auto mb-3">
+            <File className="w-6 h-6 text-slate-400" />
+          </div>
           <p className="text-sm text-slate-500">No deliverable available yet</p>
+          <p className="text-xs text-slate-400 mt-1">Your freelancer will upload the deliverable once completed</p>
         </div>
       );
     }
 
     return (
-      <div className="space-y-3">
+      <div className="space-y-4">
         {/* File Deliverable */}
         {hasFileDeliverable && (
           <div className="space-y-2">
-            <h5 className="text-sm font-medium text-slate-700">File Deliverable</h5>
-            <div className="flex items-center justify-between bg-slate-50 p-3 rounded-lg">
-              <div className="flex items-center space-x-2 text-sm text-slate-600">
-                <Download className="w-4 h-4" />
-                <span>{milestone.deliverable?.name}</span>
-                {milestone.deliverable?.size && (
-                  <span className="text-xs text-slate-400">
-                    ({(milestone.deliverable.size / 1024 / 1024).toFixed(1)} MB)
-                  </span>
-                )}
-              </div>
-              <div className="flex items-center space-x-2">
-                {milestone.status !== 'approved' && (
-                  <MilestoneDeliverablePreview
-                    milestoneId={milestone.id}
-                    deliverableUrl={milestone.deliverable?.url}
-                    deliverableName={milestone.deliverable?.name}
-                    status={milestone.status}
-                  />
-                )}
-                {milestone.status === 'approved' && onDeliverableDownload && (
-                  <Button
-                    size="sm"
-                    onClick={() => onDeliverableDownload(milestone.id)}
-                  >
-                    <Download className="w-4 h-4 mr-1" />
-                    Download
-                  </Button>
-                )}
+            <h5 className="text-sm font-medium text-slate-700 flex items-center gap-2">
+              <File className="w-4 h-4" />
+              File Deliverable
+            </h5>
+            <div className="bg-slate-50 border border-slate-200 rounded-lg p-4">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center space-x-3 text-sm text-slate-700">
+                  <Download className="w-4 h-4 text-slate-500" />
+                  <div>
+                    <span className="font-medium">{milestone.deliverable?.name || 'Deliverable file'}</span>
+                    {milestone.deliverable?.size && (
+                      <span className="text-xs text-slate-500 block">
+                        {(milestone.deliverable.size / 1024 / 1024).toFixed(1)} MB
+                      </span>
+                    )}
+                  </div>
+                </div>
+                <div className="flex items-center space-x-2">
+                  {milestone.status !== 'approved' && (
+                    <MilestoneDeliverablePreview
+                      milestoneId={milestone.id}
+                      deliverableUrl={milestone.deliverable?.url}
+                      deliverableName={milestone.deliverable?.name}
+                      status={milestone.status}
+                    />
+                  )}
+                  {((milestone.status === 'approved') || !paymentProofRequired) && onDeliverableDownload && (
+                    <Button
+                      size="sm"
+                      onClick={() => onDeliverableDownload(milestone.id)}
+                      className="bg-green-600 hover:bg-green-700 text-white"
+                    >
+                      <Download className="w-4 h-4 mr-1" />
+                      Download
+                    </Button>
+                  )}
+                  {paymentProofRequired && milestone.status !== 'approved' && (
+                    <div className="text-xs text-amber-600 px-2 py-1 bg-amber-50 rounded">
+                      Payment required
+                    </div>
+                  )}
+                </div>
               </div>
             </div>
           </div>
@@ -128,20 +145,26 @@ const ClientView: React.FC<ClientViewProps> = ({
         {/* Link Deliverable */}
         {hasLinkDeliverable && (
           <div className="space-y-2">
-            <h5 className="text-sm font-medium text-slate-700">Shared Link</h5>
-            <div className="flex items-center justify-between bg-blue-50 p-3 rounded-lg">
-              <div className="flex items-center space-x-2 text-sm text-blue-800">
-                <Link className="w-4 h-4" />
-                <span>Deliverable link provided</span>
+            <h5 className="text-sm font-medium text-slate-700 flex items-center gap-2">
+              <Link className="w-4 h-4" />
+              Shared Link
+            </h5>
+            <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center space-x-2 text-sm text-blue-800">
+                  <Link className="w-4 h-4" />
+                  <span className="font-medium">External deliverable link</span>
+                </div>
+                <Button
+                  size="sm"
+                  variant="outline"
+                  onClick={() => window.open(milestone.deliverable_link, '_blank')}
+                  className="border-blue-200 text-blue-700 hover:bg-blue-100"
+                >
+                  <Link className="w-4 h-4 mr-1" />
+                  Open Link
+                </Button>
               </div>
-              <Button
-                size="sm"
-                variant="outline"
-                onClick={() => window.open(milestone.deliverable_link, '_blank')}
-              >
-                <ExternalLink className="w-4 h-4 mr-1" />
-                Open Link
-              </Button>
             </div>
           </div>
         )}
@@ -150,16 +173,18 @@ const ClientView: React.FC<ClientViewProps> = ({
   };
 
   return (
-    <div className="space-y-4">
+    <divClassName="space-y-6 pt-4 border-t border-slate-200">
       {/* Payment Section */}
-      <div>
-        <h4 className="text-sm font-medium text-slate-700 mb-2">Payment</h4>
-        {renderPaymentSection()}
-      </div>
+      {paymentProofRequired && (
+        <div>
+          <h4 className="text-sm font-medium text-slate-700 mb-3">Payment Status</h4>
+          {renderPaymentSection()}
+        </div>
+      )}
 
       {/* Deliverable Section */}
       <div>
-        <h4 className="text-sm font-medium text-slate-700 mb-2">Deliverable</h4>
+        <h4 className="text-sm font-medium text-slate-700 mb-3">Deliverables</h4>
         {renderDeliverableSection()}
       </div>
     </div>

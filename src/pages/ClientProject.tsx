@@ -7,6 +7,7 @@ import BrandedClientHeader from "@/components/ProjectClient/BrandedClientHeader"
 import ClientProjectLoading from "@/components/ProjectClient/ClientProjectLoading";
 import ClientProjectError from "@/components/ProjectClient/ClientProjectError";
 import ProjectOverviewCard from "@/components/ProjectClient/ProjectOverviewCard";
+import ProjectPaymentDeliveryCard from "@/components/ProjectClient/ProjectPaymentDeliveryCard";
 import ProjectInstructionsCard from "@/components/ProjectClient/ProjectInstructionsCard";
 import ProjectMilestonesList from "@/components/ProjectClient/ProjectMilestonesList";
 import ProjectFooter from "@/components/ProjectClient/ProjectFooter";
@@ -78,7 +79,15 @@ const ClientProject = () => {
           branding={branding}
         />
         
-        <ProjectInstructionsCard branding={branding} />
+        <ProjectPaymentDeliveryCard
+          paymentProofRequired={project.payment_proof_required || false}
+          branding={branding}
+        />
+        
+        <ProjectInstructionsCard 
+          branding={branding} 
+          paymentProofRequired={project.payment_proof_required || false}
+        />
         
         <ProjectMilestonesList
           milestones={project.milestones}

@@ -1,19 +1,23 @@
 
 import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Info, CreditCard, Download, CheckCircle } from 'lucide-react';
+import { Info, CreditCard, Download, CheckCircle, Link as LinkIcon, FileDown } from 'lucide-react';
 import { useT } from '@/lib/i18n';
 import { FreelancerBranding } from '@/types/branding';
 
 interface ProjectInstructionsCardProps {
   branding?: FreelancerBranding | null;
+  paymentProofRequired?: boolean;
 }
 
-const ProjectInstructionsCard: React.FC<ProjectInstructionsCardProps> = ({ branding }) => {
+const ProjectInstructionsCard: React.FC<ProjectInstructionsCardProps> = ({ 
+  branding, 
+  paymentProofRequired = false 
+}) => {
   const t = useT();
   const primaryColor = branding?.primary_color || '#4B72E5';
 
-  const instructions = [
+  const instructions = paymentProofRequired ? [
     {
       icon: CreditCard,
       title: t('submitPaymentProof'),
@@ -25,9 +29,25 @@ const ProjectInstructionsCard: React.FC<ProjectInstructionsCardProps> = ({ brand
       description: t('freelancerWillReviewAndApprovePayment'),
     },
     {
-      icon: Download,
+      icon: FileDown,
       title: t('downloadDeliverables'),
-      description: t('onceApprovedDownloadYourFiles'),
+      description: 'Download files or access shared links once payment is approved',
+    }
+  ] : [
+    {
+      icon: CheckCircle,
+      title: 'Track Progress',
+      description: 'Monitor milestone completion and deliverable status',
+    },
+    {
+      icon: FileDown,
+      title: 'Download Files',
+      description: 'Download completed deliverables directly from each milestone',
+    },
+    {
+      icon: LinkIcon,
+      title: 'Access Links',
+      description: 'Open shared links to cloud storage or online deliverables',
     }
   ];
 

@@ -4,7 +4,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Milestone } from './types';
 import MilestoneHeader from './MilestoneHeader';
 import FreelancerView from './FreelancerView';
-import ClientView from './ClientView';
+import ClientView from '../ProjectClient/ClientView';
 import { CurrencyCode } from '@/lib/currency';
 import { FreelancerBranding } from '@/types/branding';
 
