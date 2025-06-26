@@ -16,7 +16,7 @@ import { User } from '@supabase/supabase-js';
 
 const MilestonesList = () => {
   const t = useT();
-  const { control } = useFormContext<CreateProjectFormData>();
+  const { control, watch } = useFormContext<CreateProjectFormData>();
   const { fields, append, remove } = useFieldArray({
     control,
     name: 'milestones',
@@ -40,111 +40,122 @@ const MilestonesList = () => {
   return (
     <Card className="bg-white/80 backdrop-blur-sm">
       <CardHeader>
-        <div className="flex justify-between items-center">
-          <CardTitle>{t('projectMilestones')}</CardTitle>
-          <Button type="button" onClick={addMilestone} variant="outline" size="sm">
+        <CardTitle>{t('projectMilestones')}</CardTitle>
+      </CardHeader>
+      <CardContent className="space-y-6">
+        {fields.map((field, index) => {
+          const descriptionValue = watch(`milestones.${index}.description`) || '';
+          
+          return (
+            <div key={field.id} className="p-4 border border-slate-200 rounded-lg space-y-4 relative">
+              <div className="flex justify-between items-center">
+                <h3 className="font-medium text-slate-800">{t('milestoneLabel', { index: (index + 1).toString() })}</h3>
+                {fields.length > 1 && (
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => remove(index)}
+                    className="text-red-600 hover:text-red-700"
+                  >
+                    <Trash2 className="w-4 h-4" />
+                  </Button>
+                )}
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <FormField
+                  control={control}
+                  name={`milestones.${index}.title`}
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>{t('milestoneTitleLabel')} *</FormLabel>
+                      <FormControl>
+                        <Input placeholder={t('milestoneTitlePlaceholder')} {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={control}
+                  name={`milestones.${index}.price`}
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Price ({currency}) *</FormLabel>
+                      <FormControl>
+                        <Input
+                          type="number"
+                          min="0"
+                          step="0.01"
+                          placeholder="0.00"
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+              
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <FormField
+                  control={control}
+                  name={`milestones.${index}.start_date`}
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Start Date *</FormLabel>
+                      <FormControl>
+                        <Input type="date" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={control}
+                  name={`milestones.${index}.end_date`}
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>End Date *</FormLabel>
+                      <FormControl>
+                        <Input type="date" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+              
+              <FormField
+                control={control}
+                name={`milestones.${index}.description`}
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>{t('descriptionLabel')}</FormLabel>
+                    <FormControl>
+                      <Textarea placeholder={t('milestoneDescriptionPlaceholder')} rows={3} {...field} />
+                    </FormControl>
+                    {descriptionValue.length > 0 && (
+                      <div className="text-xs text-gray-500 mt-1">
+                        {descriptionValue.length} characters
+                      </div>
+                    )}
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+          );
+        })}
+        
+        <div className="flex justify-center pt-4">
+          <Button type="button" onClick={addMilestone} variant="outline">
             <Plus className="w-4 h-4 mr-2" />
             {t('addMilestone')}
           </Button>
         </div>
-      </CardHeader>
-      <CardContent className="space-y-6">
-        {fields.map((field, index) => (
-          <div key={field.id} className="p-4 border border-slate-200 rounded-lg space-y-4 relative">
-            <div className="flex justify-between items-center">
-              <h3 className="font-medium text-slate-800">{t('milestoneLabel', { index: (index + 1).toString() })}</h3>
-              {fields.length > 1 && (
-                <Button
-                  type="button"
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => remove(index)}
-                  className="text-red-600 hover:text-red-700"
-                >
-                  <Trash2 className="w-4 h-4" />
-                </Button>
-              )}
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <FormField
-                control={control}
-                name={`milestones.${index}.title`}
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>{t('milestoneTitleLabel')}</FormLabel>
-                    <FormControl>
-                      <Input placeholder={t('milestoneTitlePlaceholder')} {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={control}
-                name={`milestones.${index}.price`}
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Price ({currency})</FormLabel>
-                    <FormControl>
-                      <Input
-                        type="number"
-                        min="0"
-                        step="0.01"
-                        placeholder="0.00"
-                        {...field}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </div>
-            
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <FormField
-                control={control}
-                name={`milestones.${index}.start_date`}
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Start Date</FormLabel>
-                    <FormControl>
-                      <Input type="date" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={control}
-                name={`milestones.${index}.end_date`}
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>End Date</FormLabel>
-                    <FormControl>
-                      <Input type="date" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </div>
-            
-            <FormField
-              control={control}
-              name={`milestones.${index}.description`}
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>{t('descriptionLabel')}</FormLabel>
-                  <FormControl>
-                    <Textarea placeholder={t('milestoneDescriptionPlaceholder')} rows={3} {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          </div>
-        ))}
+        
         <FormField
           control={control}
           name="milestones"

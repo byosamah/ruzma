@@ -15,6 +15,7 @@ const SaveAsTemplateCheckbox = ({ checked, onCheckedChange }: SaveAsTemplateChec
           id="saveAsTemplate"
           checked={checked}
           onCheckedChange={onCheckedChange}
+          className="rounded-none data-[state=checked]:bg-primary data-[state=checked]:border-primary"
         />
         <label
           htmlFor="saveAsTemplate"
