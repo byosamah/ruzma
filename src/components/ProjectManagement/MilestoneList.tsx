@@ -10,9 +10,8 @@ interface MilestoneListProps {
   userCurrency: import('@/lib/currency').CurrencyCode;
   onUpdateMilestoneStatus: (milestoneId: string, newStatus: Milestone["status"]) => Promise<void>;
   onPaymentUpload: (milestoneId: string, file: File) => Promise<void>;
-  onDeliverableUpload: (milestoneId: string, file: File, watermarkText?: string) => Promise<void>;
+  onDeliverableUpload: (milestoneId: string, file: File) => Promise<void>;
   onDeliverableDownload: (milestoneId: string) => Promise<void>;
-  onUpdateWatermark: (milestoneId: string, watermarkText: string) => Promise<void>;
 }
 
 const MilestoneList: React.FC<MilestoneListProps> = ({
@@ -22,7 +21,6 @@ const MilestoneList: React.FC<MilestoneListProps> = ({
   onPaymentUpload,
   onDeliverableUpload,
   onDeliverableDownload,
-  onUpdateWatermark,
 }) => {
   const t = useT();
 
@@ -48,7 +46,6 @@ const MilestoneList: React.FC<MilestoneListProps> = ({
                   url: milestone.deliverable_url
                 } : undefined,
                 paymentProofUrl: milestone.payment_proof_url,
-                watermarkText: milestone.watermark_text || undefined,
                 start_date: milestone.start_date || undefined,
                 end_date: milestone.end_date || undefined,
               }}
@@ -66,7 +63,6 @@ const MilestoneList: React.FC<MilestoneListProps> = ({
               onDeliverableDownload={onDeliverableDownload}
               onPaymentUpload={onPaymentUpload}
               currency={userCurrency}
-              onWatermarkUpdate={onUpdateWatermark}
             />
           ))}
         </div>

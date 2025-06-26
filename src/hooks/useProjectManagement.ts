@@ -14,7 +14,7 @@ export function useProjectManagement(slugOrId: string | undefined) {
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
-  const { projects, updateMilestoneStatus, uploadPaymentProof, uploadDeliverable, downloadDeliverable, updateMilestoneWatermark } = useProjects(user);
+  const { projects, updateMilestoneStatus, uploadPaymentProof, uploadDeliverable, downloadDeliverable } = useProjects(user);
   const userCurrency = useUserCurrency(user);
 
   useEffect(() => {
@@ -74,7 +74,6 @@ export function useProjectManagement(slugOrId: string | undefined) {
     updateMilestoneStatus,
     uploadPaymentProof,
     uploadDeliverable,
-    downloadDeliverable,
-    updateMilestoneWatermark
+    downloadDeliverable
   };
 }
