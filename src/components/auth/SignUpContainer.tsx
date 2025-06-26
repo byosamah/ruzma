@@ -54,6 +54,7 @@ const SignUpContainer: React.FC = () => {
               onChange={handleFormDataChange}
               error={errors.name}
               icon={User}
+              required
             />
 
             <FormField
@@ -66,6 +67,7 @@ const SignUpContainer: React.FC = () => {
               onChange={handleFormDataChange}
               error={errors.email}
               icon={Mail}
+              required
             />
 
             <CurrencySelect
@@ -84,6 +86,7 @@ const SignUpContainer: React.FC = () => {
               error={errors.password}
               showPassword={showPassword}
               onTogglePassword={handleTogglePassword}
+              required
             />
 
             <PasswordField
@@ -96,6 +99,7 @@ const SignUpContainer: React.FC = () => {
               error={errors.confirmPassword}
               showPassword={showConfirmPassword}
               onTogglePassword={handleToggleConfirmPassword}
+              required
             />
 
             <Button 

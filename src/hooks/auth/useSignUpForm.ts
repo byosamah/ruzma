@@ -64,7 +64,7 @@ export const useSignUpForm = () => {
         options: {
           emailRedirectTo: redirectUrl,
           data: {
-            name: formData.name,
+            full_name: formData.name,
             currency: formData.currency,
           }
         }

@@ -9,16 +9,18 @@ interface CurrencySelectProps {
   value: string;
   onChange: (currency: string) => void;
   error?: string;
+  required?: boolean;
 }
 
 export const CurrencySelect: React.FC<CurrencySelectProps> = ({
   value,
   onChange,
-  error
+  error,
+  required = false
 }) => {
   return (
     <div className="space-y-2">
-      <Label htmlFor="currency">Preferred Currency</Label>
+      <Label htmlFor="currency">Preferred Currency{required && ' *'}</Label>
       <div className="relative">
         <DollarSign className="absolute left-3 top-3 h-4 w-4 text-slate-400 z-10" />
         <Select value={value} onValueChange={onChange}>
