@@ -11,7 +11,7 @@ export const useProjects = (user: User | null) => {
   const { userProfile, fetchUserProfile } = useUserProfile(user, projects.length);
 
   // Import project and milestone actions
-  const { createProject, updateProject, deleteProject } = useProjectActions(user, fetchProjects);
+  const { createProject, updateProject, deleteProject } = useProjectActions(user);
   const milestoneActions = useMilestoneActions(user, projects, fetchProjects);
 
   return {
