@@ -29,6 +29,7 @@ const ProjectManagement: React.FC = () => {
     updateMilestoneStatus,
     uploadPaymentProof,
     uploadDeliverable,
+    updateDeliverableLink,
     downloadDeliverable
   } = useProjectManagement(slug);
   const {
@@ -164,10 +165,12 @@ const ProjectManagement: React.FC = () => {
           <CardContent>
             <MilestoneList 
               milestones={project.milestones} 
-              userCurrency={userCurrency.currency} 
+              userCurrency={userCurrency.currency}
+              userType={profile?.user_type as 'free' | 'plus' | 'pro' || 'free'}
               onUpdateMilestoneStatus={updateMilestoneStatus} 
               onPaymentUpload={uploadPaymentProof} 
-              onDeliverableUpload={uploadDeliverable} 
+              onDeliverableUpload={uploadDeliverable}
+              onDeliverableLinkUpdate={updateDeliverableLink}
               onDeliverableDownload={downloadDeliverable} 
             />
           </CardContent>

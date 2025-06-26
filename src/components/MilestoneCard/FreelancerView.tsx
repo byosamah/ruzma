@@ -1,33 +1,31 @@
 
 import React from 'react';
 import { Button } from '@/components/ui/button';
-import { CheckCircle, XCircle, Eye, ExternalLink, Download, FileUp, Upload } from 'lucide-react';
+import { CheckCircle, XCircle, Eye, ExternalLink } from 'lucide-react';
 import { Milestone } from './types';
 import { useT } from '@/lib/i18n';
+import DeliverableManager from './DeliverableManager';
 
 interface FreelancerViewProps {
   milestone: Milestone;
+  userType?: 'free' | 'plus' | 'pro';
   onApprove?: (milestoneId: string) => void;
   onReject?: (milestoneId: string) => void;
   onDeliverableUpload?: (milestoneId: string, file: File) => void;
+  onDeliverableLinkUpdate?: (milestoneId: string, link: string) => void;
   onShowPaymentProofPreview: () => void;
 }
 
 const FreelancerView: React.FC<FreelancerViewProps> = ({
   milestone,
+  userType = 'free',
   onApprove,
   onReject,
   onDeliverableUpload,
+  onDeliverableLinkUpdate,
   onShowPaymentProofPreview
 }) => {
   const t = useT();
-
-  const handleDeliverableFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    if (file && onDeliverableUpload) {
-      onDeliverableUpload(milestone.id, file);
-    }
-  };
 
   const renderPaymentProofSection = () => {
     if (milestone.status !== 'payment_submitted' || !milestone.paymentProofUrl) return null;
@@ -83,67 +81,26 @@ const FreelancerView: React.FC<FreelancerViewProps> = ({
     );
   };
 
-  const renderDeliverableSection = () => (
-    <div className="pt-2 border-t">
-      <p className="text-sm font-medium text-slate-700 mb-2">Deliverable:</p>
-
-      {milestone.deliverable ? (
-        <div className="flex items-center justify-between bg-slate-50 p-2 rounded">
-          <div className="flex items-center space-x-2 text-sm text-slate-600">
-            <Download className="w-4 h-4" />
-            <span>{milestone.deliverable.name}</span>
-            <span className="text-xs text-slate-400">
-              ({(milestone.deliverable.size / 1024 / 1024).toFixed(1)} MB)
-            </span>
-          </div>
-          <div className="flex items-center space-x-2">
-            <input
-              type="file"
-              onChange={handleDeliverableFileUpload}
-              className="hidden"
-              id={`deliverable-${milestone.id}`}
-            />
-            <label htmlFor={`deliverable-${milestone.id}`}>
-              <Button asChild size="sm" variant="outline">
-                <span className="cursor-pointer flex items-center">
-                  <FileUp className="w-4 h-4 mr-1" />
-                  Replace
-                </span>
-              </Button>
-            </label>
-          </div>
-        </div>
-      ) : (
-        <div className="flex items-center space-x-2">
-          <input
-            type="file"
-            onChange={handleDeliverableFileUpload}
-            className="hidden"
-            id={`deliverable-${milestone.id}`}
-          />
-          <label htmlFor={`deliverable-${milestone.id}`}>
-            <Button asChild size="sm">
-              <span className="cursor-pointer flex items-center">
-                <Upload className="w-4 h-4 mr-2" />
-                Upload Deliverable
-              </span>
-            </Button>
-          </label>
-        </div>
-      )}
-    </div>
-  );
-
   return (
-    <div className="space-y-3">
+    <div className="space-y-4">
       {renderPaymentProofSection()}
+      
       {milestone.status === 'pending' && (
         <p className="text-sm text-slate-600">Waiting for client payment</p>
       )}
+      
       {milestone.status === 'approved' && (
         <p className="text-sm text-green-600">Payment approved - Client can download</p>
       )}
-      {renderDeliverableSection()}
+
+      <div className="pt-2 border-t">
+        <DeliverableManager
+          milestone={milestone}
+          userType={userType}
+          onDeliverableUpload={onDeliverableUpload}
+          onDeliverableLinkUpdate={onDeliverableLinkUpdate}
+        />
+      </div>
     </div>
   );
 };

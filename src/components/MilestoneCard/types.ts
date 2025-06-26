@@ -10,6 +10,7 @@ export interface Milestone {
     size: number;
     url?: string;
   };
+  deliverable_link?: string; // New field for link sharing
   paymentProofUrl?: string;
   start_date?: string;
   end_date?: string;

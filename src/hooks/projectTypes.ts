@@ -6,12 +6,14 @@ export interface DatabaseMilestone {
   description: string;
   price: number;
   status: 'pending' | 'payment_submitted' | 'approved' | 'rejected';
+  deliverable_name?: string;
+  deliverable_url?: string;
+  deliverable_size?: number;
+  deliverable_link?: string; // New field for link sharing
+  payment_proof_url?: string;
+  watermark_text?: string;
   start_date?: string;
   end_date?: string;
-  deliverable_url?: string;
-  deliverable_name?: string;
-  deliverable_size?: number;
-  payment_proof_url?: string;
   created_at: string;
   updated_at: string;
 }

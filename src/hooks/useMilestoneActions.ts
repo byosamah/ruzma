@@ -5,6 +5,7 @@ import { updateMilestoneStatus as updateMilestoneStatusAction } from './mileston
 import { uploadPaymentProofAction } from './milestone-actions/uploadPaymentProof';
 import { uploadDeliverableAction } from './milestone-actions/uploadDeliverable';
 import { downloadDeliverableAction } from './milestone-actions/downloadDeliverable';
+import { updateDeliverableLinkAction } from './milestone-actions/updateDeliverableLink';
 
 export function useMilestoneActions(
   user: User | null,
@@ -35,6 +36,13 @@ export function useMilestoneActions(
     }
   };
 
+  const updateDeliverableLink = async (milestoneId: string, link: string) => {
+    const success = await updateDeliverableLinkAction(user, milestoneId, link);
+    if (success) {
+      await fetchProjects();
+    }
+  };
+
   const downloadDeliverable = async (milestoneId: string) => {
     await downloadDeliverableAction(projects, milestoneId);
   };
@@ -43,6 +51,7 @@ export function useMilestoneActions(
     updateMilestoneStatus,
     uploadPaymentProof,
     uploadDeliverable,
+    updateDeliverableLink,
     downloadDeliverable,
   };
 }

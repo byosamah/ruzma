@@ -1,79 +1,41 @@
-
 import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { supabase } from '@/integrations/supabase/client';
 import { User } from '@supabase/supabase-js';
-import { useProjects, DatabaseProject } from '@/hooks/useProjects';
-import { useUserCurrency } from '@/hooks/useUserCurrency';
-import { isUUID } from '@/lib/slugUtils';
+import { useProjects } from './useProjects';
+import { useMilestoneActions } from './useMilestoneActions';
+import { DatabaseProject } from './projectTypes';
 
-export function useProjectManagement(slugOrId: string | undefined) {
-  const [user, setUser] = useState<User | null>(null);
-  const [profile, setProfile] = useState<any>(null);
+export const useProjectManagement = (slug: string | undefined) => {
+  const { user, projects, loading, fetchProjects, profile } = useProjects(null);
   const [project, setProject] = useState<DatabaseProject | null>(null);
-  const [loading, setLoading] = useState(true);
-  const navigate = useNavigate();
 
-  const { projects, updateMilestoneStatus, uploadPaymentProof, uploadDeliverable, downloadDeliverable } = useProjects(user);
-  const userCurrency = useUserCurrency(user);
-
-  useEffect(() => {
-    const checkAuthAndLoadData = async () => {
-      setLoading(true);
-      
-      const { data: { user }, error: userError } = await supabase.auth.getUser();
-      
-      if (userError || !user) {
-        console.log('No user found, redirecting to login');
-        navigate('/login');
-        return;
-      }
-
-      setUser(user);
-      
-      const { data: profileData } = await supabase
-        .from('profiles')
-        .select('*')
-        .eq('id', user.id)
-        .maybeSingle();
-      
-      setProfile(profileData);
-      setLoading(false);
-    };
-
-    checkAuthAndLoadData();
-  }, [navigate]);
+  const {
+    updateMilestoneStatus,
+    uploadPaymentProof,
+    uploadDeliverable,
+    updateDeliverableLink,
+    downloadDeliverable,
+  } = useMilestoneActions(user, projects, fetchProjects);
 
   useEffect(() => {
-    if (projects.length > 0 && slugOrId) {
-      let found: DatabaseProject | undefined;
-      
-      // Check if it's a UUID (backward compatibility)
-      if (isUUID(slugOrId)) {
-        found = projects.find((p) => p.id === slugOrId);
-        // If found by UUID, redirect to slug URL
-        if (found) {
-          navigate(`/project/${found.slug}`, { replace: true });
-          return;
-        }
-      } else {
-        // Find by slug
-        found = projects.find((p) => p.slug === slugOrId);
+    if (projects.length > 0 && slug) {
+      const found = projects.find((p) => p.slug === slug);
+      if (found) {
+        setProject(found);
       }
-      
-      setProject(found || null);
     }
-  }, [projects, slugOrId, navigate]);
+  }, [projects, slug]);
 
   return {
     user,
     profile,
     project,
+    projects,
     loading,
-    userCurrency,
+    fetchProjects,
     updateMilestoneStatus,
     uploadPaymentProof,
     uploadDeliverable,
-    downloadDeliverable
+    updateDeliverableLink,
+    downloadDeliverable,
   };
-}
+};
