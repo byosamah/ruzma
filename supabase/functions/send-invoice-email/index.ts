@@ -142,13 +142,12 @@ const handler = async (req: Request): Promise<Response> => {
     const pdfBuffer = pdf.output('arraybuffer');
     const pdfBase64 = btoa(String.fromCharCode(...new Uint8Array(pdfBuffer)));
 
-    // Send email with PDF attachment
+    // Send email with PDF attachment using correct from address
     const businessName = branding?.freelancer_name || profile?.full_name || 'Ruzma';
-    const fromEmail = profile?.email || 'noreply@ruzma.com';
     
     console.log('Sending email with PDF attachment');
     const emailResponse = await resend.emails.send({
-      from: `${businessName} <onboarding@resend.dev>`,
+      from: `${businessName} <notifications@ruzma.co>`,
       to: [clientEmail],
       subject: `Invoice ${invoice.transaction_id} from ${businessName}`,
       html: `
