@@ -45,55 +45,96 @@ export function generateInvoicePDF(
     dueDate: dueDate
   };
 
-  // Generate HTML using shared template
-  const html = generateInvoiceHTML(sharedData);
-  console.log('Generated shared HTML template for PDF conversion');
-
   try {
-    // Create a simple PDF structure using a basic PDF format
-    // This creates a minimal but valid PDF file
-    const pdfContent = createSimplePDF(html, invoice.transaction_id);
+    // Create a clean PDF with structured invoice data
+    const pdfContent = createCleanInvoicePDF(sharedData, subtotal, total);
     
     // Convert to base64 for email attachment
     const base64PDF = btoa(pdfContent);
-    console.log('Generated valid PDF for email attachment');
+    console.log('Generated clean PDF for email attachment');
     
     return base64PDF;
     
   } catch (error) {
-    console.error('Error generating PDF from HTML:', error);
+    console.error('Error generating PDF:', error);
     throw new Error(`Failed to generate PDF: ${error.message}`);
   }
 }
 
-// Create a minimal but valid PDF structure
-function createSimplePDF(htmlContent: string, invoiceId: string): string {
-  // Extract text content from HTML for PDF
-  const textContent = extractTextFromHTML(htmlContent);
-  
-  // Create a minimal PDF structure
+// Create a clean, structured PDF with proper invoice formatting
+function createCleanInvoicePDF(data: SharedInvoiceData, subtotal: number, total: number): string {
+  // Format dates properly
+  const formatDate = (date: Date): string => {
+    return date.toLocaleDateString('en-US', {
+      month: '2-digit',
+      day: '2-digit',
+      year: 'numeric'
+    });
+  };
+
+  // Create clean invoice content
+  const invoiceContent = `
+INVOICE
+
+Invoice ID: ${data.invoice.transactionId}
+Invoice Date: ${formatDate(data.invoiceDate)}
+Due Date: ${formatDate(data.dueDate)}
+${data.purchaseOrder ? `Purchase Order: ${data.purchaseOrder}` : ''}
+${data.paymentTerms ? `Payment Terms: ${data.paymentTerms}` : ''}
+
+BILLED TO:
+${data.billedTo.name}
+${data.billedTo.address.replace(/\n/g, ' ')}
+
+PAY TO:
+${data.payTo.name}
+${data.payTo.address.replace(/\n/g, ' ')}
+
+CURRENCY: ${data.currency}
+
+LINE ITEMS:
+${data.lineItems.map(item => 
+  `${item.description} - Qty: ${item.quantity} - Amount: ${(item.quantity * item.amount).toFixed(2)}`
+).join('\n')}
+
+SUBTOTAL: ${subtotal.toFixed(2)} ${data.currency}
+${data.tax > 0 ? `TAX: ${data.tax.toFixed(2)} ${data.currency}` : ''}
+TOTAL: ${total.toFixed(2)} ${data.currency}
+  `.trim();
+
+  // Create PDF structure with clean content
   const pdfHeader = '%PDF-1.4\n';
   const catalog = '1 0 obj\n<< /Type /Catalog /Pages 2 0 R >>\nendobj\n';
   const pages = '2 0 obj\n<< /Type /Pages /Kids [3 0 R] /Count 1 >>\nendobj\n';
   
-  // Create page content with the invoice data
-  const pageContent = `BT
-/F1 12 Tf
-50 750 Td
-(Invoice: ${invoiceId}) Tj
-0 -20 Td
-${textContent}
-ET`;
+  // Convert content to PDF text commands
+  const lines = invoiceContent.split('\n');
+  let yPosition = 750;
+  const pageContent = lines.map(line => {
+    if (line.trim() === '') {
+      yPosition -= 15;
+      return '';
+    }
+    
+    const fontSize = line.match(/^(INVOICE|BILLED TO:|PAY TO:|LINE ITEMS:|TOTAL:)/) ? 14 : 
+                    line.match(/^(Invoice ID:|Currency:|SUBTOTAL:|TAX:)/) ? 12 : 10;
+    
+    const result = `/${fontSize === 14 ? 'F2' : fontSize === 12 ? 'F1' : 'F1'} ${fontSize} Tf\n50 ${yPosition} Td\n(${line.replace(/[()\\]/g, '')}) Tj\n`;
+    yPosition -= fontSize + 5;
+    return result;
+  }).join('0 -20 Td\n');
+
+  const fullPageContent = `BT\n/F1 12 Tf\n${pageContent}ET`;
   
   const page = `3 0 obj
-<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Contents 4 0 R /Resources << /Font << /F1 << /Type /Font /Subtype /Type1 /BaseFont /Helvetica >> >> >> >>
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Contents 4 0 R /Resources << /Font << /F1 << /Type /Font /Subtype /Type1 /BaseFont /Helvetica >> /F2 << /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Bold >> >> >> >>
 endobj
 `;
   
   const content = `4 0 obj
-<< /Length ${pageContent.length} >>
+<< /Length ${fullPageContent.length} >>
 stream
-${pageContent}
+${fullPageContent}
 endstream
 endobj
 `;
@@ -104,7 +145,7 @@ endobj
 0000000010 00000 n 
 0000000053 00000 n 
 0000000125 00000 n 
-0000000348 00000 n 
+0000000400 00000 n 
 `;
   
   const trailer = `trailer
@@ -114,23 +155,4 @@ ${(pdfHeader + catalog + pages + page + content).length}
 %%EOF`;
   
   return pdfHeader + catalog + pages + page + content + xref + trailer;
-}
-
-// Extract readable text from HTML
-function extractTextFromHTML(html: string): string {
-  // Simple HTML tag removal and text extraction
-  let text = html.replace(/<[^>]*>/g, ' ');
-  text = text.replace(/\s+/g, ' ');
-  text = text.trim();
-  
-  // Format for PDF content stream
-  const lines = text.split(' ').reduce((acc, word, index) => {
-    if (index % 8 === 0) {
-      acc.push([]);
-    }
-    acc[acc.length - 1].push(word);
-    return acc;
-  }, [] as string[][]);
-  
-  return lines.map(line => `(${line.join(' ')}) Tj\n0 -15 Td`).join('\n');
 }
