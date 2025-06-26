@@ -11,9 +11,7 @@ import ClientDropdown from './ClientDropdown';
 
 const ProjectDetailsForm = () => {
   const t = useT();
-  const { control, watch } = useFormContext<CreateProjectFormData>();
-  
-  const briefValue = watch('brief') || '';
+  const { control } = useFormContext<CreateProjectFormData>();
 
   return (
     <Card className="bg-white/80 backdrop-blur-sm">
@@ -26,7 +24,7 @@ const ProjectDetailsForm = () => {
           name="name"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>{t('projectName')} *</FormLabel>
+              <FormLabel>{t('projectName')}</FormLabel>
               <FormControl>
                 <Input placeholder={t('projectNamePlaceholder')} {...field} />
               </FormControl>
@@ -48,9 +46,6 @@ const ProjectDetailsForm = () => {
                   {...field} 
                 />
               </FormControl>
-              <div className="text-xs text-gray-500 mt-1">
-                {briefValue.length} characters
-              </div>
               <FormMessage />
             </FormItem>
           )}
@@ -61,7 +56,7 @@ const ProjectDetailsForm = () => {
           name="clientEmail"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Client *</FormLabel>
+              <FormLabel>Client</FormLabel>
               <FormControl>
                 <ClientDropdown
                   value={field.value}
