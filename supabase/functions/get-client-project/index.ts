@@ -81,11 +81,7 @@ const handler = async (req: Request): Promise<Response> => {
         .from('projects')
         .select(`
           *,
-          milestones (*),
-          profiles!projects_user_id_fkey (
-            currency,
-            full_name
-          )
+          milestones (*)
         `)
         .like('client_access_token', `${parsedToken.shortToken}%`);
     } else {
@@ -96,11 +92,7 @@ const handler = async (req: Request): Promise<Response> => {
         .from('projects')
         .select(`
           *,
-          milestones (*),
-          profiles!projects_user_id_fkey (
-            currency,
-            full_name
-          )
+          milestones (*)
         `)
         .eq('client_access_token', parsedToken.shortToken);
     }
@@ -151,10 +143,17 @@ const handler = async (req: Request): Promise<Response> => {
       }
     }
 
+    // Get freelancer currency from profiles table separately
+    const { data: profileData } = await supabase
+      .from('profiles')
+      .select('currency, full_name')
+      .eq('id', project.user_id)
+      .single();
+
     // Add freelancer currency from profile
     const projectWithCurrency = {
       ...project,
-      freelancer_currency: project.profiles?.currency || null
+      freelancer_currency: profileData?.currency || null
     };
 
     console.log('Found project:', projectWithCurrency.name);
