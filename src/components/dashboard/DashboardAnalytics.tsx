@@ -74,7 +74,7 @@ const DashboardAnalytics: React.FC<DashboardAnalyticsProps> = ({
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <CardTitle className="text-sm font-medium">Revenue Growth</CardTitle>
+            <CardTitle className="text-sm font-medium">{t('growthRate')}</CardTitle>
             {data.revenueGrowth >= 0 ? (
               <TrendingUp className="w-4 h-4 text-green-600" />
             ) : (
@@ -86,31 +86,31 @@ const DashboardAnalytics: React.FC<DashboardAnalyticsProps> = ({
               {data.revenueGrowth >= 0 ? "+" : ""}
               {data.revenueGrowth.toFixed(1)}%
             </div>
-            <p className="text-xs text-muted-foreground">vs last month</p>
+            <p className="text-xs text-muted-foreground">{t('compareToLastPeriod')}</p>
           </CardContent>
         </Card>
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <CardTitle className="text-sm font-medium">Avg Project Value</CardTitle>
+            <CardTitle className="text-sm font-medium">{t('averageProjectValue')}</CardTitle>
             <Target className="w-4 h-4 text-blue-600" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">
               {formatCurrency(data.avgProjectValue, userCurrency)}
             </div>
-            <p className="text-xs text-muted-foreground">per project</p>
+            <p className="text-xs text-muted-foreground">{t('projects')}</p>
           </CardContent>
         </Card>
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <CardTitle className="text-sm font-medium">Completion Rate</CardTitle>
+            <CardTitle className="text-sm font-medium">{t('completionRate')}</CardTitle>
             <Calendar className="w-4 h-4 text-purple-600" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{data.completionRate.toFixed(1)}%</div>
-            <p className="text-xs text-muted-foreground">milestone completion</p>
+            <p className="text-xs text-muted-foreground">{t('completedMilestones')}</p>
           </CardContent>
         </Card>
       </div>
@@ -118,7 +118,7 @@ const DashboardAnalytics: React.FC<DashboardAnalyticsProps> = ({
       {/* Revenue Trend Chart */}
       <Card>
         <CardHeader>
-          <CardTitle>Revenue Trend</CardTitle>
+          <CardTitle>{t('revenueOverTime')}</CardTitle>
         </CardHeader>
         <CardContent>
           <ChartContainer config={chartConfig} className="min-h-[300px]">
@@ -133,7 +133,7 @@ const DashboardAnalytics: React.FC<DashboardAnalyticsProps> = ({
                       name === "revenue"
                         ? formatCurrency(Number(value), userCurrency)
                         : value,
-                      name === "revenue" ? "Revenue" : "Projects",
+                      name === "revenue" ? t('totalRevenue') : t('projects'),
                     ]}
                   />
                 }
@@ -154,7 +154,7 @@ const DashboardAnalytics: React.FC<DashboardAnalyticsProps> = ({
         {/* Milestone Status Distribution */}
         <Card>
           <CardHeader>
-            <CardTitle>Milestone Status Distribution</CardTitle>
+            <CardTitle>{t('milestonesStatus')}</CardTitle>
           </CardHeader>
           <CardContent>
             <ChartContainer config={chartConfig} className="min-h-[250px]">
@@ -184,7 +184,7 @@ const DashboardAnalytics: React.FC<DashboardAnalyticsProps> = ({
         {/* Monthly Progress */}
         <Card>
           <CardHeader>
-            <CardTitle>Monthly Progress</CardTitle>
+            <CardTitle>{t('projectsOverTime')}</CardTitle>
           </CardHeader>
           <CardContent>
             <ChartContainer config={chartConfig} className="min-h-[250px]">
