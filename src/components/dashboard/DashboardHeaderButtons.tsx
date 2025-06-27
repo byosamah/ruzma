@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Button } from '@/components/ui/button';
 import { Plus, BarChart3 } from 'lucide-react';
@@ -26,7 +25,7 @@ const DashboardHeaderButtons: React.FC<DashboardHeaderButtonsProps> = ({
         onClick={onNewProject} 
         disabled={!canCreateProject} 
         size={isMobile ? "default" : "default"} 
-        className={`${!canCreateProject ? 'opacity-50 cursor-not-allowed' : ''} ${isMobile ? 'w-full' : ''} bg-black hover:bg-gray-800 text-white font-medium`}
+        className={`${!canCreateProject ? 'opacity-50 cursor-not-allowed' : ''} ${isMobile ? 'w-full' : ''} bg-saas-yellow hover:bg-yellow-600 text-black font-medium`}
       >
         <Plus className="w-4 h-4 mr-2" />
         {t('newProject')}
