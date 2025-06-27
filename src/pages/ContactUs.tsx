@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -50,11 +51,11 @@ const ContactUs = () => {
 
       if (error) {
         console.error('Error sending contact email:', error);
-        toast.error('Failed to send message. Please try again.');
+        toast.error(t('contactFailedMessage'));
         return;
       }
 
-      toast.success('Thank you for your message! We\'ll get back to you soon.');
+      toast.success(t('contactSuccessMessage'));
       
       // Reset the form
       form.reset();
@@ -65,7 +66,7 @@ const ContactUs = () => {
       }, 2000);
     } catch (error) {
       console.error('Error submitting contact form:', error);
-      toast.error('Failed to send message. Please try again.');
+      toast.error(t('contactFailedMessage'));
     }
   };
 
@@ -73,9 +74,9 @@ const ContactUs = () => {
     <Layout user={user} onSignOut={handleSignOut}>
       <div className="max-w-4xl mx-auto space-y-8">
         <div className="text-center">
-          <h1 className="text-3xl font-bold text-slate-800 mb-4">Contact Us</h1>
+          <h1 className="text-3xl font-bold text-slate-800 mb-4">{t('contactUsTitle')}</h1>
           <p className="text-slate-600">
-            Get in touch with our team. We're here to help with any questions or concerns.
+            {t('contactUsSubtitle')}
           </p>
         </div>
 
@@ -83,7 +84,7 @@ const ContactUs = () => {
           {/* Contact Form */}
           <Card>
             <CardHeader>
-              <CardTitle>Send us a message</CardTitle>
+              <CardTitle>{t('contactSendMessage')}</CardTitle>
             </CardHeader>
             <CardContent>
               <Form {...form}>
@@ -93,9 +94,9 @@ const ContactUs = () => {
                     name="name"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Name</FormLabel>
+                        <FormLabel>{t('contactName')}</FormLabel>
                         <FormControl>
-                          <Input placeholder="Your full name" {...field} />
+                          <Input placeholder={t('contactNamePlaceholder')} {...field} />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -107,9 +108,9 @@ const ContactUs = () => {
                     name="email"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Email</FormLabel>
+                        <FormLabel>{t('contactEmail')}</FormLabel>
                         <FormControl>
-                          <Input placeholder="your.email@example.com" type="email" {...field} />
+                          <Input placeholder={t('contactEmailPlaceholder')} type="email" {...field} />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -121,9 +122,9 @@ const ContactUs = () => {
                     name="subject"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Subject</FormLabel>
+                        <FormLabel>{t('contactSubject')}</FormLabel>
                         <FormControl>
-                          <Input placeholder="What's this about?" {...field} />
+                          <Input placeholder={t('contactSubjectPlaceholder')} {...field} />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -135,10 +136,10 @@ const ContactUs = () => {
                     name="message"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Message</FormLabel>
+                        <FormLabel>{t('contactMessage')}</FormLabel>
                         <FormControl>
                           <Textarea 
-                            placeholder="Tell us more about how we can help you..."
+                            placeholder={t('contactMessagePlaceholder')}
                             className="min-h-[120px]"
                             {...field}
                           />
@@ -149,7 +150,7 @@ const ContactUs = () => {
                   />
 
                   <Button type="submit" className="w-full" disabled={form.formState.isSubmitting}>
-                    {form.formState.isSubmitting ? 'Sending...' : 'Send Message'}
+                    {form.formState.isSubmitting ? t('contactSending') : t('contactSendButton')}
                   </Button>
                 </form>
               </Form>
@@ -159,14 +160,14 @@ const ContactUs = () => {
           {/* Contact Information */}
           <Card>
             <CardHeader>
-              <CardTitle>Get in touch</CardTitle>
+              <CardTitle>{t('contactGetInTouch')}</CardTitle>
             </CardHeader>
             <CardContent className="space-y-6">
               <div className="space-y-4">
                 <div className="flex items-start space-x-3">
                   <Mail className="w-5 h-5 text-brand-yellow mt-1" />
                   <div>
-                    <h3 className="font-medium text-slate-800">Email</h3>
+                    <h3 className="font-medium text-slate-800">{t('contactEmailLabel')}</h3>
                     <p className="text-slate-600">hey@ruzma.co</p>
                   </div>
                 </div>
