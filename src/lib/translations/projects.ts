@@ -1,4 +1,3 @@
-
 export const projectTranslations = {
   en: {
     loadingProject: "Loading project...",
@@ -103,6 +102,15 @@ export const projectTranslations = {
     addNewClient: "Add new client",
     startDate: "Start Date",
     endDate: "End Date",
+    // Payment & Delivery Settings
+    paymentDeliverySettings: "Payment & Delivery Settings",
+    requirePaymentProof: "Require payment proof",
+    requirePaymentProofDescription: "Clients must upload payment proof before receiving deliverables",
+    enableDeliverableWatermark: "Enable deliverable watermark",
+    enableDeliverableWatermarkDescription: "Add watermark to deliverables until payment is confirmed",
+    
+    // Save as template
+    saveAsTemplate: "Save this project structure as a template for future use",
   },
   ar: {
     loadingProject: "جاري تحميل المشروع...",
@@ -207,5 +215,14 @@ export const projectTranslations = {
     addNewClient: "إضافة عميل جديد",
     startDate: "تاريخ البدء",
     endDate: "تاريخ الانتهاء",
+    // Payment & Delivery Settings
+    paymentDeliverySettings: "إعدادات الدفع والتسليم",
+    requirePaymentProof: "مطالبة بإثبات الدفع",
+    requirePaymentProofDescription: "يجب على العملاء رفع إثبات الدفع قبل استلام المخرجات",
+    enableDeliverableWatermark: "تفعيل العلامة المائية للمخرجات",
+    enableDeliverableWatermarkDescription: "إضافة علامة مائية للمخرجات حتى تأكيد الدفع",
+    
+    // Save as template
+    saveAsTemplate: "حفظ هيكل هذا المشروع كقالب للاستخدام المستقبلي",
   },
 };

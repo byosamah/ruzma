@@ -1,37 +1,58 @@
 
 import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { FormField, FormItem, FormLabel, FormControl, FormDescription } from '@/components/ui/form';
+import { FormField, FormItem, FormLabel, FormControl, FormMessage } from '@/components/ui/form';
 import { Switch } from '@/components/ui/switch';
-import { Shield } from 'lucide-react';
 import { useFormContext } from 'react-hook-form';
 import { useT } from '@/lib/i18n';
 
 const PaymentProofSettings = () => {
-  const form = useFormContext();
   const t = useT();
+  const form = useFormContext();
 
   return (
     <Card>
       <CardHeader>
-        <CardTitle className="flex items-center gap-2">
-          <Shield className="w-5 h-5 text-blue-600" />
-          Payment & Delivery Settings
+        <CardTitle className="text-lg font-semibold text-slate-800">
+          {t('paymentDeliverySettings')}
         </CardTitle>
       </CardHeader>
-      <CardContent>
+      <CardContent className="space-y-4">
         <FormField
           control={form.control}
-          name="paymentProofRequired"
+          name="requirePaymentProof"
           render={({ field }) => (
             <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
               <div className="space-y-0.5">
-                <FormLabel className="text-base font-medium">
-                  Require Payment Proof
+                <FormLabel className="text-base">
+                  {t('requirePaymentProof')}
                 </FormLabel>
-                <FormDescription className="text-sm text-slate-600">
-                  When enabled, clients must upload payment proof before they can download deliverables. This helps ensure you receive payment before delivery.
-                </FormDescription>
+                <div className="text-sm text-muted-foreground">
+                  {t('requirePaymentProofDescription')}
+                </div>
+              </div>
+              <FormControl>
+                <Switch
+                  checked={field.value}
+                  onCheckedChange={field.onChange}
+                />
+              </FormControl>
+            </FormItem>
+          )}
+        />
+
+        <FormField
+          control={form.control}
+          name="enableDeliverableWatermark"
+          render={({ field }) => (
+            <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
+              <div className="space-y-0.5">
+                <FormLabel className="text-base">
+                  {t('enableDeliverableWatermark')}
+                </FormLabel>
+                <div className="text-sm text-muted-foreground">
+                  {t('enableDeliverableWatermarkDescription')}
+                </div>
               </div>
               <FormControl>
                 <Switch
