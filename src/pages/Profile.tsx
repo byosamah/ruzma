@@ -38,10 +38,10 @@ const Profile = () => {
 
   return (
     <Layout user={user} onSignOut={handleSignOut}>
-      <div className="max-w-6xl mx-auto space-y-8">
-        <div>
-          <h1 className="text-3xl font-bold text-slate-800">{t('profileSettings')}</h1>
-          <p className="text-slate-600 mt-2">{t('manageAccountInfo')}</p>
+      <div className="max-w-4xl mx-auto space-y-6">
+        <div className="space-y-1">
+          <h1 className="text-2xl font-medium text-gray-900">{t('profileSettings')}</h1>
+          <p className="text-sm text-gray-500">{t('manageAccountInfo')}</p>
         </div>
 
         <ImageCropperDialog
@@ -51,7 +51,7 @@ const Profile = () => {
           onClose={onCropCancel}
         />
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           <ProfilePictureCard
             profilePicture={profilePicture}
             userName={formData.name}

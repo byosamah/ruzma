@@ -24,14 +24,14 @@ export const ProfilePictureCard = ({
   const t = useT();
 
   return (
-    <Card className="lg:col-span-1 bg-white/80 backdrop-blur-sm">
-      <CardHeader>
-        <CardTitle>{t('profilePicture')}</CardTitle>
+    <Card className="border-gray-200 shadow-none bg-white">
+      <CardHeader className="pb-3">
+        <CardTitle className="text-base font-medium text-gray-900">{t('profilePicture')}</CardTitle>
       </CardHeader>
-      <CardContent className="text-center space-y-4">
-        <Avatar className="w-32 h-32 mx-auto text-4xl font-bold">
+      <CardContent className="text-center space-y-4 pt-0">
+        <Avatar className="w-24 h-24 mx-auto border border-gray-100">
           <AvatarImage src={profilePicture || undefined} alt={userName} />
-          <AvatarFallback className="bg-primary text-primary-foreground">
+          <AvatarFallback className="bg-gray-100 text-gray-600 text-xl font-medium">
             {userName?.charAt(0).toUpperCase() || 'U'}
           </AvatarFallback>
         </Avatar>
@@ -43,12 +43,17 @@ export const ProfilePictureCard = ({
           accept="image/png, image/jpeg, image/gif"
         />
         <div>
-          <Button variant="outline" size="sm" onClick={onUploadClick}>
+          <Button 
+            variant="outline" 
+            size="sm" 
+            onClick={onUploadClick}
+            className="border-gray-200 text-gray-600 hover:bg-gray-50"
+          >
             <Upload className="w-4 h-4 mr-2" />
             {t('uploadPhoto')}
           </Button>
         </div>
-        <p className="text-xs text-slate-500">
+        <p className="text-xs text-gray-500">
           {t('photoFormat')}
         </p>
       </CardContent>

@@ -16,49 +16,54 @@ export const AccountSettingsCard = () => {
 
   return (
     <>
-      <Card className="bg-white/80 backdrop-blur-sm">
-        <CardHeader>
-          <CardTitle>{t('accountSettings')}</CardTitle>
+      <Card className="border-gray-200 shadow-none bg-white">
+        <CardHeader className="pb-3">
+          <CardTitle className="text-base font-medium text-gray-900">{t('accountSettings')}</CardTitle>
         </CardHeader>
-        <CardContent className="space-y-4">
+        <CardContent className="space-y-4 pt-0">
           <div className="flex justify-between items-center py-3">
             <div>
-              <h3 className="font-medium text-slate-800">{t('changePassword')}</h3>
-              <p className="text-sm text-slate-600">{t('updatePasswordDesc')}</p>
+              <h3 className="text-sm font-medium text-gray-900">{t('changePassword')}</h3>
+              <p className="text-xs text-gray-500">{t('updatePasswordDesc')}</p>
             </div>
             <Button 
               variant="outline"
+              size="sm"
               onClick={() => setChangePasswordOpen(true)}
+              className="border-gray-200 text-gray-600 hover:bg-gray-50"
             >
               {t('updatePassword')}
             </Button>
           </div>
 
-          <Separator />
+          <Separator className="bg-gray-100" />
 
           <div className="flex justify-between items-center py-3">
             <div>
-              <h3 className="font-medium text-slate-800">{t('emailNotifications')}</h3>
-              <p className="text-sm text-slate-600">{t('notificationDesc')}</p>
+              <h3 className="text-sm font-medium text-gray-900">{t('emailNotifications')}</h3>
+              <p className="text-xs text-gray-500">{t('notificationDesc')}</p>
             </div>
             <Button 
               variant="outline"
+              size="sm"
               onClick={() => setEmailNotificationsOpen(true)}
+              className="border-gray-200 text-gray-600 hover:bg-gray-50"
             >
               {t('manageNotifications')}
             </Button>
           </div>
 
-          <Separator />
+          <Separator className="bg-gray-100" />
 
           <div className="flex justify-between items-center py-3">
             <div>
-              <h3 className="font-medium text-red-600">{t('deleteAccount')}</h3>
-              <p className="text-sm text-slate-600">{t('deleteAccountDesc')}</p>
+              <h3 className="text-sm font-medium text-red-600">{t('deleteAccount')}</h3>
+              <p className="text-xs text-gray-500">{t('deleteAccountDesc')}</p>
             </div>
             <Button 
               variant="outline" 
-              className="text-red-600 border-red-300 hover:bg-red-50"
+              size="sm"
+              className="text-red-600 border-red-200 hover:bg-red-50"
               onClick={() => setDeleteAccountOpen(true)}
             >
               {t('deleteAccount')}

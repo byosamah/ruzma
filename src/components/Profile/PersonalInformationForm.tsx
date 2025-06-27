@@ -44,11 +44,11 @@ export const PersonalInformationForm = ({
   };
 
   return (
-    <Card className="lg:col-span-2 bg-white/80 backdrop-blur-sm">
-      <CardHeader>
-        <CardTitle>{t('personalInformation')}</CardTitle>
+    <Card className="lg:col-span-2 border-gray-200 shadow-none bg-white">
+      <CardHeader className="pb-3">
+        <CardTitle className="text-base font-medium text-gray-900">{t('personalInformation')}</CardTitle>
       </CardHeader>
-      <CardContent>
+      <CardContent className="pt-0">
         <form onSubmit={onFormSubmit} className="space-y-6">
           <PersonalInfoSection
             formData={formData}
@@ -62,11 +62,20 @@ export const PersonalInformationForm = ({
             onLogoUpload={handleLogoUpload}
           />
 
-          <div className="flex justify-end space-x-4">
-            <Button type="button" variant="outline" onClick={onCancel}>
+          <div className="flex justify-end space-x-3 pt-4">
+            <Button 
+              type="button" 
+              variant="outline" 
+              onClick={onCancel}
+              className="border-gray-200 text-gray-600 hover:bg-gray-50"
+            >
               {t('cancel')}
             </Button>
-            <Button type="submit" disabled={isLoading}>
+            <Button 
+              type="submit" 
+              disabled={isLoading}
+              className="bg-gray-900 hover:bg-gray-800 text-white border-0 shadow-none"
+            >
               {isLoading ? (
                 t('saving')
               ) : isSaved ? (
