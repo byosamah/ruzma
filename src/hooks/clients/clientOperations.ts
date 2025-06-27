@@ -1,4 +1,3 @@
-
 import { supabase } from '@/integrations/supabase/client';
 import { User } from '@supabase/supabase-js';
 import { toast } from 'sonner';
@@ -30,14 +29,14 @@ export const fetchClientsData = async (user: User | null): Promise<ClientWithPro
       return [];
     }
 
-    // Then fetch project counts for each client
+    // Then fetch project counts for each client using the correct client_id field
     const clientsWithCount: ClientWithProjectCount[] = [];
     
     for (const client of clientsData || []) {
       const { count, error: countError } = await supabase
         .from('projects')
         .select('*', { count: 'exact', head: true })
-        .eq('client_id', client.id)
+        .eq('client_id', client.id) // Use client_id instead of incorrectly trying to match email
         .eq('user_id', user.id);
 
       if (countError) {

@@ -74,8 +74,8 @@ const handler = async (req: Request): Promise<Response> => {
     let query;
     
     if (parsedToken.isHybrid && parsedToken.shortToken) {
-      // For hybrid tokens, search by the short token prefix
-      console.log('Searching for project with short token:', parsedToken.shortToken);
+      // For hybrid tokens, search by the short token prefix using LIKE
+      console.log('Searching for project with short token prefix:', parsedToken.shortToken);
       
       query = supabase
         .from('projects')
@@ -85,7 +85,7 @@ const handler = async (req: Request): Promise<Response> => {
         `)
         .like('client_access_token', `${parsedToken.shortToken}%`);
     } else {
-      // For legacy full tokens
+      // For legacy full tokens, use exact match
       console.log('Searching for project with full token:', parsedToken.shortToken);
       
       query = supabase

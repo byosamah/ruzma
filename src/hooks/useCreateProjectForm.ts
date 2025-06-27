@@ -1,3 +1,4 @@
+
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -18,6 +19,7 @@ export const useCreateProjectForm = (templateData?: any) => {
       name: templateData?.name || '',
       brief: templateData?.brief || '',
       clientEmail: '',
+      clientId: '', // Add clientId to default values
       paymentProofRequired: false,
       milestones: templateData?.milestones || [
         {
@@ -70,14 +72,15 @@ export const useCreateProjectForm = (templateData?: any) => {
 
       const slug = generateSlug(data.name);
 
-      // Create the project with paymentProofRequired field
+      // Create the project with proper client linking
       const { data: project, error: projectError } = await supabase
         .from('projects')
         .insert({
           name: data.name,
           brief: data.brief,
           client_email: data.clientEmail || null,
-          payment_proof_required: data.paymentProofRequired, // Ensure this is properly saved
+          client_id: data.clientId || null, // Properly set client_id
+          payment_proof_required: data.paymentProofRequired,
           user_id: user.id,
           slug: slug,
         })
