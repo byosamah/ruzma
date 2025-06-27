@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -50,9 +49,10 @@ export const SubscriptionCard: React.FC<SubscriptionCardProps> = ({
       );
     }
     if (isPopular) {
+      const badgeText = plan.id === 'plus' ? 'Recommended' : 'Coming Soon';
       return (
         <Badge className="absolute -top-2 left-1/2 transform -translate-x-1/2 bg-primary">
-          Coming Soon
+          {badgeText}
         </Badge>
       );
     }
