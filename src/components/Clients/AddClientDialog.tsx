@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { CreateClientData } from '@/types/client';
+import { useT } from '@/lib/i18n';
 
 interface AddClientDialogProps {
   open: boolean;
@@ -17,6 +18,7 @@ const AddClientDialog: React.FC<AddClientDialogProps> = ({
   onOpenChange,
   onSubmit
 }) => {
+  const t = useT();
   const [formData, setFormData] = useState<CreateClientData>({
     name: '',
     email: ''
@@ -55,27 +57,27 @@ const AddClientDialog: React.FC<AddClientDialogProps> = ({
     <Dialog open={open} onOpenChange={handleOpenChange}>
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
-          <DialogTitle>Add New Client</DialogTitle>
+          <DialogTitle>{t('addNewClient')}</DialogTitle>
         </DialogHeader>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="space-y-2">
-            <Label htmlFor="name">Client Name *</Label>
+            <Label htmlFor="name">{t('clientName')} *</Label>
             <Input
               id="name"
               value={formData.name}
               onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))}
-              placeholder="Enter client name"
+              placeholder={t('enterClientName')}
               required
             />
           </div>
           <div className="space-y-2">
-            <Label htmlFor="email">Client Email *</Label>
+            <Label htmlFor="email">{t('clientEmail')} *</Label>
             <Input
               id="email"
               type="email"
               value={formData.email}
               onChange={(e) => setFormData(prev => ({ ...prev, email: e.target.value }))}
-              placeholder="Enter client email"
+              placeholder={t('enterClientEmail')}
               required
             />
           </div>
@@ -86,10 +88,10 @@ const AddClientDialog: React.FC<AddClientDialogProps> = ({
               onClick={() => handleOpenChange(false)}
               disabled={isSubmitting}
             >
-              Cancel
+              {t('cancel')}
             </Button>
             <Button type="submit" disabled={isSubmitting}>
-              {isSubmitting ? 'Adding...' : 'Add Client'}
+              {isSubmitting ? t('adding') : t('addClient')}
             </Button>
           </DialogFooter>
         </form>

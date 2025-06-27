@@ -5,6 +5,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { Badge } from '@/components/ui/badge';
 import { Edit, Trash2, Eye } from 'lucide-react';
 import { ClientWithProjectCount } from '@/types/client';
+import { useT } from '@/lib/i18n';
 
 interface ClientTableProps {
   clients: ClientWithProjectCount[];
@@ -19,14 +20,16 @@ const ClientTable: React.FC<ClientTableProps> = ({
   onDelete,
   onViewDetails
 }) => {
+  const t = useT();
+
   if (clients.length === 0) {
     return (
       <div className="text-center py-12">
         <div className="w-20 h-20 bg-gray-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
           <div className="w-8 h-8 bg-gray-400 rounded-lg"></div>
         </div>
-        <h3 className="text-lg font-semibold text-gray-900 mb-2">No clients found</h3>
-        <p className="text-gray-600">Get started by adding your first client.</p>
+        <h3 className="text-lg font-semibold text-gray-900 mb-2">{t('noClientsFound')}</h3>
+        <p className="text-gray-600">{t('getStartedByAdding')}</p>
       </div>
     );
   }
@@ -36,10 +39,10 @@ const ClientTable: React.FC<ClientTableProps> = ({
       <Table>
         <TableHeader>
           <TableRow>
-            <TableHead>Client Name</TableHead>
-            <TableHead>Client Email</TableHead>
-            <TableHead>Connected Projects</TableHead>
-            <TableHead className="text-right">Actions</TableHead>
+            <TableHead>{t('clientName')}</TableHead>
+            <TableHead>{t('clientEmail')}</TableHead>
+            <TableHead>{t('connectedProjects')}</TableHead>
+            <TableHead className="text-right">{t('actions')}</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -49,7 +52,7 @@ const ClientTable: React.FC<ClientTableProps> = ({
               <TableCell>{client.email}</TableCell>
               <TableCell>
                 <Badge variant="secondary">
-                  {client.project_count} {client.project_count === 1 ? 'project' : 'projects'}
+                  {client.project_count} {client.project_count === 1 ? t('project') : t('projects')}
                 </Badge>
               </TableCell>
               <TableCell className="text-right">

@@ -7,6 +7,7 @@ import { Calendar, Mail, Hash, FolderOpen } from 'lucide-react';
 import { ClientWithProjectCount } from '@/types/client';
 import { supabase } from '@/integrations/supabase/client';
 import { DatabaseProject } from '@/hooks/projectTypes';
+import { useT } from '@/lib/i18n';
 
 interface ClientDetailsDialogProps {
   open: boolean;
@@ -19,6 +20,7 @@ const ClientDetailsDialog: React.FC<ClientDetailsDialogProps> = ({
   onOpenChange,
   client
 }) => {
+  const t = useT();
   const [projects, setProjects] = useState<DatabaseProject[]>([]);
   const [loading, setLoading] = useState(false);
 
@@ -75,7 +77,7 @@ const ClientDetailsDialog: React.FC<ClientDetailsDialogProps> = ({
             <div className="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center">
               <Hash className="w-4 h-4 text-blue-600" />
             </div>
-            Client Details
+            {t('clientDetails')}
           </DialogTitle>
         </DialogHeader>
         
@@ -83,7 +85,7 @@ const ClientDetailsDialog: React.FC<ClientDetailsDialogProps> = ({
           {/* Client Information */}
           <Card>
             <CardHeader>
-              <CardTitle className="text-lg">Client Information</CardTitle>
+              <CardTitle className="text-lg">{t('clientInformation')}</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="flex items-center gap-3">
@@ -103,13 +105,13 @@ const ClientDetailsDialog: React.FC<ClientDetailsDialogProps> = ({
               
               <div className="grid grid-cols-2 gap-4 pt-4 border-t">
                 <div>
-                  <p className="text-sm text-gray-600">Client ID</p>
+                  <p className="text-sm text-gray-600">{t('clientId')}</p>
                   <code className="text-xs bg-gray-100 px-2 py-1 rounded">
                     {client.id}
                   </code>
                 </div>
                 <div>
-                  <p className="text-sm text-gray-600">Joined</p>
+                  <p className="text-sm text-gray-600">{t('joined')}</p>
                   <div className="flex items-center gap-1 text-sm">
                     <Calendar className="w-4 h-4" />
                     {new Date(client.created_at).toLocaleDateString()}
@@ -123,9 +125,9 @@ const ClientDetailsDialog: React.FC<ClientDetailsDialogProps> = ({
           <Card>
             <CardHeader>
               <CardTitle className="text-lg flex items-center justify-between">
-                <span>Connected Projects</span>
+                <span>{t('connectedProjects')}</span>
                 <Badge variant="secondary">
-                  {client.project_count} {client.project_count === 1 ? 'project' : 'projects'}
+                  {client.project_count} {client.project_count === 1 ? t('project') : t('projects')}
                 </Badge>
               </CardTitle>
             </CardHeader>
@@ -149,7 +151,7 @@ const ClientDetailsDialog: React.FC<ClientDetailsDialogProps> = ({
                       </div>
                       <div className="text-right">
                         <Badge variant="outline">
-                          {project.milestones?.length || 0} milestones
+                          {project.milestones?.length || 0} {t('milestones')}
                         </Badge>
                       </div>
                     </div>
@@ -158,7 +160,7 @@ const ClientDetailsDialog: React.FC<ClientDetailsDialogProps> = ({
               ) : (
                 <div className="text-center py-8 text-gray-500">
                   <FolderOpen className="w-12 h-12 mx-auto mb-3 text-gray-300" />
-                  <p>No projects found for this client</p>
+                  <p>{t('noProjectsFoundForClient')}</p>
                 </div>
               )}
             </CardContent>

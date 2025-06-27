@@ -7,6 +7,7 @@ import { Users, Mail, FolderOpen } from 'lucide-react';
 import { useClients } from '@/hooks/useClients';
 import { useAuth } from '@/hooks/dashboard/useAuth';
 import { useUserProfile } from '@/hooks/dashboard/useUserProfile';
+import { useT } from '@/lib/i18n';
 import ClientFilters from '@/components/Clients/ClientFilters';
 import ClientTable from '@/components/Clients/ClientTable';
 import AddClientDialog from '@/components/Clients/AddClientDialog';
@@ -17,6 +18,7 @@ import { ClientWithProjectCount } from '@/types/client';
 
 const Clients: React.FC = () => {
   const navigate = useNavigate();
+  const t = useT();
   const { user, loading: authLoading, authChecked } = useAuth();
   const { profile, loading: profileLoading } = useUserProfile(user);
   const { clients, loading: clientsLoading, createClient, updateClient, deleteClient } = useClients(user);
@@ -96,8 +98,8 @@ const Clients: React.FC = () => {
       <div className="space-y-6">
         {/* Header */}
         <div>
-          <h1 className="text-3xl font-bold text-gray-900">Clients</h1>
-          <p className="text-gray-600 mt-1">Manage your client relationships and projects</p>
+          <h1 className="text-3xl font-bold text-gray-900">{t('clients')}</h1>
+          <p className="text-gray-600 mt-1">{t('manageClientRelationships')}</p>
         </div>
 
         {/* Stats Cards */}
@@ -109,7 +111,7 @@ const Clients: React.FC = () => {
                   <Users className="w-5 h-5 text-blue-600" />
                 </div>
                 <div>
-                  <p className="text-sm text-gray-600">Total Clients</p>
+                  <p className="text-sm text-gray-600">{t('totalClients')}</p>
                   <p className="text-2xl font-bold text-gray-900">{totalClients}</p>
                 </div>
               </div>
@@ -123,7 +125,7 @@ const Clients: React.FC = () => {
                   <FolderOpen className="w-5 h-5 text-green-600" />
                 </div>
                 <div>
-                  <p className="text-sm text-gray-600">Total Projects</p>
+                  <p className="text-sm text-gray-600">{t('totalProjects')}</p>
                   <p className="text-2xl font-bold text-gray-900">{totalProjects}</p>
                 </div>
               </div>
@@ -137,7 +139,7 @@ const Clients: React.FC = () => {
                   <Mail className="w-5 h-5 text-purple-600" />
                 </div>
                 <div>
-                  <p className="text-sm text-gray-600">Avg Projects/Client</p>
+                  <p className="text-sm text-gray-600">{t('avgProjectsPerClient')}</p>
                   <p className="text-2xl font-bold text-gray-900">{averageProjectsPerClient}</p>
                 </div>
               </div>
@@ -148,7 +150,7 @@ const Clients: React.FC = () => {
         {/* Clients Table */}
         <Card>
           <CardHeader>
-            <CardTitle>All Clients</CardTitle>
+            <CardTitle>{t('allClients')}</CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
             <ClientFilters

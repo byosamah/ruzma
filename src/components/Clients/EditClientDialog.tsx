@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { ClientWithProjectCount, UpdateClientData } from '@/types/client';
+import { useT } from '@/lib/i18n';
 
 interface EditClientDialogProps {
   open: boolean;
@@ -19,6 +20,7 @@ const EditClientDialog: React.FC<EditClientDialogProps> = ({
   client,
   onSubmit
 }) => {
+  const t = useT();
   const [formData, setFormData] = useState<UpdateClientData>({
     name: '',
     email: ''
@@ -62,27 +64,27 @@ const EditClientDialog: React.FC<EditClientDialogProps> = ({
     <Dialog open={open} onOpenChange={handleOpenChange}>
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
-          <DialogTitle>Edit Client</DialogTitle>
+          <DialogTitle>{t('editClient')}</DialogTitle>
         </DialogHeader>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="space-y-2">
-            <Label htmlFor="edit-name">Client Name</Label>
+            <Label htmlFor="edit-name">{t('clientName')}</Label>
             <Input
               id="edit-name"
               value={formData.name || ''}
               onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))}
-              placeholder="Enter client name"
+              placeholder={t('enterClientName')}
               required
             />
           </div>
           <div className="space-y-2">
-            <Label htmlFor="edit-email">Client Email</Label>
+            <Label htmlFor="edit-email">{t('clientEmail')}</Label>
             <Input
               id="edit-email"
               type="email"
               value={formData.email || ''}
               onChange={(e) => setFormData(prev => ({ ...prev, email: e.target.value }))}
-              placeholder="Enter client email"
+              placeholder={t('enterClientEmail')}
               required
             />
           </div>
@@ -93,10 +95,10 @@ const EditClientDialog: React.FC<EditClientDialogProps> = ({
               onClick={() => handleOpenChange(false)}
               disabled={isSubmitting}
             >
-              Cancel
+              {t('cancel')}
             </Button>
             <Button type="submit" disabled={isSubmitting}>
-              {isSubmitting ? 'Saving...' : 'Save Changes'}
+              {isSubmitting ? t('saving') : t('saveChanges')}
             </Button>
           </DialogFooter>
         </form>

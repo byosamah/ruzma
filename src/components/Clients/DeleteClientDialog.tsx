@@ -2,6 +2,7 @@
 import React, { useState } from 'react';
 import { AlertDialog, AlertDialogContent, AlertDialogHeader, AlertDialogTitle, AlertDialogDescription, AlertDialogFooter, AlertDialogCancel, AlertDialogAction } from '@/components/ui/alert-dialog';
 import { ClientWithProjectCount } from '@/types/client';
+import { useT } from '@/lib/i18n';
 
 interface DeleteClientDialogProps {
   open: boolean;
@@ -16,6 +17,7 @@ const DeleteClientDialog: React.FC<DeleteClientDialogProps> = ({
   client,
   onConfirm
 }) => {
+  const t = useT();
   const [isDeleting, setIsDeleting] = useState(false);
 
   const handleConfirm = async () => {
@@ -35,26 +37,26 @@ const DeleteClientDialog: React.FC<DeleteClientDialogProps> = ({
     <AlertDialog open={open} onOpenChange={onOpenChange}>
       <AlertDialogContent>
         <AlertDialogHeader>
-          <AlertDialogTitle>Delete Client</AlertDialogTitle>
+          <AlertDialogTitle>{t('deleteClient')}</AlertDialogTitle>
           <AlertDialogDescription>
-            Are you sure you want to delete <strong>{client?.name}</strong>? 
+            {t('confirmDelete')} <strong>{client?.name}</strong>? 
             {client?.project_count > 0 && (
               <span className="block mt-2 text-amber-600">
-                This client has {client.project_count} connected project(s). 
-                The projects will not be deleted, but the client reference will be removed.
+                {t('thisClientHas')} {client.project_count} {client.project_count === 1 ? t('project') : t('projects')}. 
+                {t('theProjectsWillNotBeDeleted')}
               </span>
             )}
-            This action cannot be undone.
+            {t('thisActionCannotBeUndone')}
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
-          <AlertDialogCancel disabled={isDeleting}>Cancel</AlertDialogCancel>
+          <AlertDialogCancel disabled={isDeleting}>{t('cancel')}</AlertDialogCancel>
           <AlertDialogAction 
             onClick={handleConfirm}
             disabled={isDeleting}
             className="bg-red-600 hover:bg-red-700"
           >
-            {isDeleting ? 'Deleting...' : 'Delete'}
+            {isDeleting ? t('deleting') : t('delete')}
           </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>
