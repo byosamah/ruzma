@@ -1,3 +1,4 @@
+
 import React from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import Layout from "@/components/Layout";
@@ -54,8 +55,8 @@ const ProjectManagement: React.FC = () => {
   };
   if (loading) {
     return <Layout>
-        <div className="flex items-center justify-center min-h-[50vh]">
-          <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-gray-900"></div>
+        <div className="flex items-center justify-center min-h-[50vh] sm:min-h-[60vh]">
+          <div className="animate-spin rounded-full h-16 w-16 sm:h-32 sm:w-32 border-b-2 border-slate-900"></div>
         </div>
       </Layout>;
   }
@@ -83,10 +84,10 @@ const ProjectManagement: React.FC = () => {
   const completedValue = project.milestones.filter(m => m.status === 'approved').reduce((sum, m) => sum + m.price, 0);
   return (
     <Layout user={profile || user}>
-      <div className="space-y-6">
+      <div className={`space-y-6 ${isMobile ? 'px-2' : 'sm:space-y-8'}`}>
         {/* Project Overview Card */}
-        <Card>
-          <CardContent className="p-6 my-0 mx-0 py-[16px]">
+        <Card className="bg-white border-slate-200 shadow-sm">
+          <CardContent className="p-6">
             <ProjectHeader 
               project={project} 
               onBackClick={handleBackClick} 
@@ -98,83 +99,87 @@ const ProjectManagement: React.FC = () => {
         </Card>
 
         {/* Quick Stats Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <Card>
-            <CardContent className="p-6">
-              <div className="flex items-center space-x-3">
-                <div className="p-2 bg-blue-100 rounded-lg">
-                  <CheckCircle2 className="w-5 h-5 text-blue-600" />
+        <section aria-label="Project statistics">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6">
+            <Card className="bg-white border-slate-200 shadow-sm">
+              <CardContent className="p-6">
+                <div className="flex items-center space-x-3">
+                  <div className="p-2 bg-blue-50 rounded-lg">
+                    <CheckCircle2 className="w-5 h-5 text-blue-600" />
+                  </div>
+                  <div>
+                    <p className="text-sm text-slate-600 font-medium">Progress</p>
+                    <p className="text-2xl font-bold text-slate-800">
+                      {completedMilestones}/{project.milestones.length}
+                    </p>
+                  </div>
                 </div>
-                <div>
-                  <p className="text-sm text-gray-600">Progress</p>
-                  <p className="text-2xl font-bold text-gray-900">
-                    {completedMilestones}/{project.milestones.length}
-                  </p>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
+              </CardContent>
+            </Card>
 
-          <Card>
-            <CardContent className="p-6">
-              <div className="flex items-center space-x-3">
-                <div className="p-2 bg-green-100 rounded-lg">
-                  <DollarSign className="w-5 h-5 text-green-600" />
+            <Card className="bg-white border-slate-200 shadow-sm">
+              <CardContent className="p-6">
+                <div className="flex items-center space-x-3">
+                  <div className="p-2 bg-green-50 rounded-lg">
+                    <DollarSign className="w-5 h-5 text-green-600" />
+                  </div>
+                  <div>
+                    <p className="text-sm text-slate-600 font-medium">Total Value</p>
+                    <p className="text-2xl font-bold text-slate-800">
+                      {userCurrency.formatCurrency(totalValue)}
+                    </p>
+                  </div>
                 </div>
-                <div>
-                  <p className="text-sm text-gray-600">Total Value</p>
-                  <p className="text-2xl font-bold text-gray-900">
-                    {userCurrency.formatCurrency(totalValue)}
-                  </p>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
+              </CardContent>
+            </Card>
 
-          <Card>
-            <CardContent className="p-6">
-              <div className="flex items-center space-x-3">
-                <div className="p-2 bg-purple-100 rounded-lg">
-                  <DollarSign className="w-5 h-5 text-purple-600" />
+            <Card className="bg-white border-slate-200 shadow-sm">
+              <CardContent className="p-6">
+                <div className="flex items-center space-x-3">
+                  <div className="p-2 bg-purple-50 rounded-lg">
+                    <DollarSign className="w-5 h-5 text-purple-600" />
+                  </div>
+                  <div>
+                    <p className="text-sm text-slate-600 font-medium">Completed Value</p>
+                    <p className="text-2xl font-bold text-slate-800">
+                      {userCurrency.formatCurrency(completedValue)}
+                    </p>
+                  </div>
                 </div>
-                <div>
-                  <p className="text-sm text-gray-600">Completed Value</p>
-                  <p className="text-2xl font-bold text-gray-900">
-                    {userCurrency.formatCurrency(completedValue)}
-                  </p>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-        </div>
+              </CardContent>
+            </Card>
+          </div>
+        </section>
 
         {/* Milestones Section */}
-        <Card>
-          <CardHeader>
-            <div className="flex items-center justify-between">
-              <div>
-                <CardTitle className="text-2xl">{t('projectMilestones')}</CardTitle>
-                <p className="text-gray-600 mt-1">{t('trackProgressAndDeliverables')}</p>
+        <main>
+          <Card className="bg-white border-slate-200 shadow-sm">
+            <CardHeader>
+              <div className="flex items-center justify-between">
+                <div>
+                  <CardTitle className="text-xl sm:text-2xl font-bold text-slate-800">{t('projectMilestones')}</CardTitle>
+                  <p className="text-slate-600 mt-1 text-sm sm:text-base">{t('trackProgressAndDeliverables')}</p>
+                </div>
+                <div className="text-right">
+                  <div className="text-sm text-slate-500">{t('totalMilestones')}</div>
+                  <div className="text-2xl font-bold text-slate-800">{project.milestones.length}</div>
+                </div>
               </div>
-              <div className="text-right">
-                <div className="text-sm text-gray-500">{t('totalMilestones')}</div>
-                <div className="text-2xl font-bold text-gray-900">{project.milestones.length}</div>
-              </div>
-            </div>
-          </CardHeader>
-          <CardContent>
-            <MilestoneList 
-              milestones={project.milestones} 
-              userCurrency={userCurrency.currency}
-              userType={profile?.user_type as 'free' | 'plus' | 'pro' || 'free'}
-              onUpdateMilestoneStatus={updateMilestoneStatus} 
-              onPaymentUpload={uploadPaymentProof} 
-              onDeliverableUpload={uploadDeliverable}
-              onDeliverableLinkUpdate={updateDeliverableLink}
-              onDeliverableDownload={downloadDeliverable} 
-            />
-          </CardContent>
-        </Card>
+            </CardHeader>
+            <CardContent>
+              <MilestoneList 
+                milestones={project.milestones} 
+                userCurrency={userCurrency.currency}
+                userType={profile?.user_type as 'free' | 'plus' | 'pro' || 'free'}
+                onUpdateMilestoneStatus={updateMilestoneStatus} 
+                onPaymentUpload={uploadPaymentProof} 
+                onDeliverableUpload={uploadDeliverable}
+                onDeliverableLinkUpdate={updateDeliverableLink}
+                onDeliverableDownload={downloadDeliverable} 
+              />
+            </CardContent>
+          </Card>
+        </main>
       </div>
     </Layout>
   );
