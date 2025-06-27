@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import {
   AlertDialog,
@@ -92,13 +91,13 @@ export const DeleteAccountDialog = ({ open, onOpenChange }: DeleteAccountDialogP
             </ul>
             <div className="mt-4">
               <Label htmlFor="confirm-delete">
-                {t('typeDeleteToConfirm')} <strong>{t('delete')}</strong>
+                {t('typeDeleteToConfirm')} <strong>DELETE</strong>
               </Label>
               <Input
                 id="confirm-delete"
                 value={confirmText}
                 onChange={(e) => setConfirmText(e.target.value)}
-                placeholder={t('delete')}
+                placeholder="DELETE"
                 className="mt-2"
               />
             </div>
