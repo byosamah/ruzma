@@ -1,33 +1,8 @@
 
 import React from "react";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import {
-  ChartContainer,
-  ChartTooltip,
-  ChartTooltipContent,
-} from "@/components/ui/chart";
-import {
-  LineChart,
-  Line,
-  BarChart,
-  Bar,
-  PieChart,
-  Pie,
-  Cell,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  ResponsiveContainer,
-  Legend,
-} from "recharts";
-import { TrendingUp, TrendingDown, Calendar, Target } from "lucide-react";
-import { formatCurrency, CurrencyCode } from "@/lib/currency";
-import { useT } from "@/lib/i18n";
+import { CurrencyCode } from "@/lib/currency";
+import DashboardAnalyticsMetrics from "./DashboardAnalyticsMetrics";
+import DashboardAnalyticsCharts from "./DashboardAnalyticsCharts";
 
 interface AnalyticsData {
   revenueData: Array<{ month: string; revenue: number; projects: number }>;
@@ -43,164 +18,23 @@ interface DashboardAnalyticsProps {
   userCurrency: CurrencyCode;
 }
 
-const chartConfig = {
-  revenue: {
-    label: "Revenue",
-    color: "hsl(var(--chart-1))",
-  },
-  projects: {
-    label: "Projects",
-    color: "hsl(var(--chart-2))",
-  },
-  completed: {
-    label: "Completed",
-    color: "hsl(var(--chart-3))",
-  },
-  pending: {
-    label: "Pending",
-    color: "hsl(var(--chart-4))",
-  },
-};
-
 const DashboardAnalytics: React.FC<DashboardAnalyticsProps> = ({
   data,
   userCurrency,
 }) => {
-  const t = useT();
-
   return (
     <div className="space-y-6">
-      {/* Key Metrics Overview */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <CardTitle className="text-sm font-medium">{t('growthRate')}</CardTitle>
-            {data.revenueGrowth >= 0 ? (
-              <TrendingUp className="w-4 h-4 text-green-600" />
-            ) : (
-              <TrendingDown className="w-4 h-4 text-red-600" />
-            )}
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">
-              {data.revenueGrowth >= 0 ? "+" : ""}
-              {data.revenueGrowth.toFixed(1)}%
-            </div>
-            <p className="text-xs text-muted-foreground">{t('compareToLastPeriod')}</p>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <CardTitle className="text-sm font-medium">{t('averageProjectValue')}</CardTitle>
-            <Target className="w-4 h-4 text-blue-600" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">
-              {formatCurrency(data.avgProjectValue, userCurrency)}
-            </div>
-            <p className="text-xs text-muted-foreground">{t('projects')}</p>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <CardTitle className="text-sm font-medium">{t('completionRate')}</CardTitle>
-            <Calendar className="w-4 h-4 text-purple-600" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{data.completionRate.toFixed(1)}%</div>
-            <p className="text-xs text-muted-foreground">{t('completedMilestones')}</p>
-          </CardContent>
-        </Card>
-      </div>
-
-      {/* Revenue Trend Chart */}
-      <Card>
-        <CardHeader>
-          <CardTitle>{t('revenueOverTime')}</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <ChartContainer config={chartConfig} className="min-h-[300px]">
-            <LineChart data={data.revenueData}>
-              <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="month" />
-              <YAxis />
-              <ChartTooltip
-                content={
-                  <ChartTooltipContent
-                    formatter={(value, name) => [
-                      name === "revenue"
-                        ? formatCurrency(Number(value), userCurrency)
-                        : value,
-                      name === "revenue" ? t('totalRevenue') : t('projects'),
-                    ]}
-                  />
-                }
-              />
-              <Line
-                type="monotone"
-                dataKey="revenue"
-                stroke="var(--color-revenue)"
-                strokeWidth={2}
-                dot={{ fill: "var(--color-revenue)" }}
-              />
-            </LineChart>
-          </ChartContainer>
-        </CardContent>
-      </Card>
-
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* Milestone Status Distribution */}
-        <Card>
-          <CardHeader>
-            <CardTitle>{t('milestonesStatus')}</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <ChartContainer config={chartConfig} className="min-h-[250px]">
-              <PieChart>
-                <Pie
-                  data={data.milestoneStatusData}
-                  cx="50%"
-                  cy="50%"
-                  innerRadius={60}
-                  outerRadius={100}
-                  dataKey="count"
-                  label={({ status, count }) => `${status}: ${count}`}
-                >
-                  {data.milestoneStatusData.map((entry, index) => (
-                    <Cell key={`cell-${index}`} fill={entry.color} />
-                  ))}
-                </Pie>
-                <ChartTooltip
-                  content={<ChartTooltipContent />}
-                />
-                <Legend />
-              </PieChart>
-            </ChartContainer>
-          </CardContent>
-        </Card>
-
-        {/* Monthly Progress */}
-        <Card>
-          <CardHeader>
-            <CardTitle>{t('projectsOverTime')}</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <ChartContainer config={chartConfig} className="min-h-[250px]">
-              <BarChart data={data.monthlyProgress}>
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="month" />
-                <YAxis />
-                <ChartTooltip content={<ChartTooltipContent />} />
-                <Bar dataKey="completed" fill="var(--color-completed)" />
-                <Bar dataKey="pending" fill="var(--color-pending)" />
-                <Legend />
-              </BarChart>
-            </ChartContainer>
-          </CardContent>
-        </Card>
-      </div>
+      <DashboardAnalyticsMetrics
+        revenueGrowth={data.revenueGrowth}
+        avgProjectValue={data.avgProjectValue}
+        completionRate={data.completionRate}
+        userCurrency={userCurrency}
+      />
+      
+      <DashboardAnalyticsCharts
+        data={data}
+        userCurrency={userCurrency}
+      />
     </div>
   );
 };
