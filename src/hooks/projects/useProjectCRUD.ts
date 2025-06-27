@@ -1,77 +1,85 @@
 
-import { useState, useCallback } from 'react';
+import { useState } from 'react';
 import { User } from '@supabase/supabase-js';
 import { supabase } from '@/integrations/supabase/client';
-import { toast } from 'sonner';
+import { DatabaseProject } from '../projectTypes';
+import { generateSlug, ensureUniqueSlug } from '@/lib/slugUtils';
 import { logSecurityEvent } from '@/lib/authSecurity';
 
 export const useProjectCRUD = (user: User | null) => {
-  const [isCreating, setIsCreating] = useState(false);
-  const [isUpdating, setIsUpdating] = useState(false);
-  const [isDeleting, setIsDeleting] = useState(false);
+  const [updating, setUpdating] = useState(false);
 
-  const createProject = useCallback(async (projectData: any) => {
-    if (!user) return false;
-    
-    setIsCreating(true);
+  const createProject = async (projectData: any): Promise<DatabaseProject | null> => {
+    if (!user) return null;
+
+    setUpdating(true);
     try {
-      logSecurityEvent('project_creation_initiated', { userId: user.id });
+      logSecurityEvent('project_creation_initiated');
       
+      // Generate slug from project name
+      const baseSlug = generateSlug(projectData.name);
+      const uniqueSlug = await ensureUniqueSlug(baseSlug, user.id);
+
       const { data, error } = await supabase
         .from('projects')
         .insert({
           ...projectData,
           user_id: user.id,
+          slug: uniqueSlug,
         })
-        .select()
+        .select(`
+          *,
+          milestones (*)
+        `)
         .single();
 
-      if (error) throw error;
+      if (error) {
+        console.error('Error creating project:', error);
+        return null;
+      }
 
-      logSecurityEvent('project_created', { userId: user.id, projectId: data.id });
-      toast.success('Project created successfully!');
-      return data;
-    } catch (error: any) {
+      // Create milestones if provided
+      if (projectData.milestones && projectData.milestones.length > 0) {
+        const milestonesWithProjectId = projectData.milestones.map((milestone: any) => ({
+          ...milestone,
+          project_id: data.id,
+        }));
+
+        const { error: milestonesError } = await supabase
+          .from('milestones')
+          .insert(milestonesWithProjectId);
+
+        if (milestonesError) {
+          console.error('Error creating milestones:', milestonesError);
+        }
+      }
+
+      logSecurityEvent('project_created', { projectId: data.id });
+      return data as DatabaseProject;
+    } catch (error) {
       console.error('Error creating project:', error);
-      logSecurityEvent('project_creation_failed', { userId: user.id, error: error.message });
-      toast.error('Failed to create project');
-      return false;
+      return null;
     } finally {
-      setIsCreating(false);
+      setUpdating(false);
     }
-  }, []);
+  };
 
-  const updateProject = async (projectId: string, data: {
-    name: string;
-    brief: string;
-    clientEmail: string;
-    paymentProofRequired?: boolean;
-    milestones: Array<{
-      title: string;
-      description: string;
-      price: number;
-      status: string;
-      start_date?: string;
-      end_date?: string;
-    }>;
-  }): Promise<boolean> => {
+  const updateProject = async (projectId: string, updates: any): Promise<boolean> => {
     if (!user) return false;
 
+    setUpdating(true);
     try {
-      // Ensure paymentProofRequired is properly handled
-      const projectUpdateData = {
-        name: data.name,
-        brief: data.brief,
-        client_email: data.clientEmail || null,
-        payment_proof_required: data.paymentProofRequired ?? false, // Use nullish coalescing to handle undefined
-        updated_at: new Date().toISOString(),
-      };
+      logSecurityEvent('project_update_initiated', { projectId });
 
-      console.log('Updating project with data:', projectUpdateData); // Debug log
-
+      // Update project
       const { error: projectError } = await supabase
         .from('projects')
-        .update(projectUpdateData)
+        .update({
+          name: updates.name,
+          brief: updates.brief,
+          client_email: updates.clientEmail,
+          payment_proof_required: updates.paymentProofRequired,
+        })
         .eq('id', projectId)
         .eq('user_id', user.id);
 
@@ -80,77 +88,92 @@ export const useProjectCRUD = (user: User | null) => {
         return false;
       }
 
-      // Update milestones
-      const { error: deleteError } = await supabase
+      // Handle milestones update
+      if (updates.milestones) {
+        // Delete existing milestones
+        await supabase
+          .from('milestones')
+          .delete()
+          .eq('project_id', projectId);
+
+        // Insert new milestones
+        const milestonesWithProjectId = updates.milestones.map((milestone: any) => ({
+          ...milestone,
+          project_id: projectId,
+        }));
+
+        const { error: milestonesError } = await supabase
+          .from('milestones')
+          .insert(milestonesWithProjectId);
+
+        if (milestonesError) {
+          console.error('Error updating milestones:', milestonesError);
+          return false;
+        }
+      }
+
+      logSecurityEvent('project_updated', { projectId });
+      return true;
+    } catch (error) {
+      console.error('Error updating project:', error);
+      return false;
+    } finally {
+      setUpdating(false);
+    }
+  };
+
+  const deleteProject = async (projectId: string): Promise<boolean> => {
+    if (!user) {
+      console.error('No user found for delete operation');
+      return false;
+    }
+
+    if (!projectId) {
+      console.error('No project ID provided for delete operation');
+      return false;
+    }
+
+    console.log('Starting delete operation for project:', projectId); // Debug log
+
+    try {
+      logSecurityEvent('project_deletion_started', { projectId });
+
+      // First delete milestones
+      const { error: milestonesError } = await supabase
         .from('milestones')
         .delete()
         .eq('project_id', projectId);
 
-      if (deleteError) {
-        console.error('Error deleting old milestones:', deleteError);
-        return false;
-      }
-
-      const milestonesToInsert = data.milestones.map((milestone) => ({
-        project_id: projectId,
-        title: milestone.title,
-        description: milestone.description,
-        price: milestone.price,
-        status: milestone.status,
-        start_date: milestone.start_date || null,
-        end_date: milestone.end_date || null,
-      }));
-
-      const { error: milestonesError } = await supabase
-        .from('milestones')
-        .insert(milestonesToInsert);
-
       if (milestonesError) {
-        console.error('Error creating new milestones:', milestonesError);
+        console.error('Error deleting milestones:', milestonesError);
         return false;
       }
 
-      return true;
-    } catch (error) {
-      console.error('Error in updateProject:', error);
-      return false;
-    }
-  };
-
-  const deleteProject = useCallback(async (projectId: string) => {
-    if (!user) return false;
-    
-    setIsDeleting(true);
-    try {
-      logSecurityEvent('project_deletion_initiated', { userId: user.id, projectId });
-      
-      const { error } = await supabase
+      // Then delete the project
+      const { error: projectError } = await supabase
         .from('projects')
         .delete()
         .eq('id', projectId)
         .eq('user_id', user.id);
 
-      if (error) throw error;
+      if (projectError) {
+        console.error('Error deleting project:', projectError);
+        return false;
+      }
 
-      logSecurityEvent('project_deleted', { userId: user.id, projectId });
-      toast.success('Project deleted successfully!');
+      logSecurityEvent('project_deleted', { projectId });
+      console.log('Project deleted successfully:', projectId); // Debug log
       return true;
-    } catch (error: any) {
-      console.error('Error deleting project:', error);
-      logSecurityEvent('project_deletion_failed', { userId: user.id, projectId, error: error.message });
-      toast.error('Failed to delete project');
+    } catch (error) {
+      console.error('Error in deleteProject:', error);
       return false;
-    } finally {
-      setIsDeleting(false);
     }
-  }, []);
+  };
 
   return {
     createProject,
     updateProject,
     deleteProject,
-    isCreating,
-    isUpdating,
-    isDeleting,
+    updating,
   };
 };

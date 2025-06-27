@@ -15,6 +15,15 @@ const ProjectCardActionsHeader: React.FC<ProjectCardActionsHeaderProps> = ({
 }) => {
   const isMobile = useIsMobile();
 
+  const handleDeleteClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    console.log('Delete button clicked'); // Debug log
+    if (onDeleteClick) {
+      onDeleteClick(e);
+    }
+  };
+
   return (
     <div className="flex gap-2 shrink-0">
       <Button 
@@ -31,7 +40,7 @@ const ProjectCardActionsHeader: React.FC<ProjectCardActionsHeaderProps> = ({
         <Button 
           variant="outline" 
           size={isMobile ? "sm" : "sm"} 
-          onClick={onDeleteClick} 
+          onClick={handleDeleteClick}
           className="flex items-center gap-1 text-red-500 hover:text-red-700 hover:bg-red-50 min-w-[44px] min-h-[44px] touch-manipulation"
         >
           <Trash2 className="w-4 h-4" />

@@ -66,9 +66,11 @@ export const useProjectCardActions = (
   };
 
   const handleDeleteClick = (e: React.MouseEvent) => {
+    e.preventDefault();
     e.stopPropagation();
+    console.log('Delete project clicked for ID:', project.id); // Debug log
     if (onDeleteClick) {
-      onDeleteClick(project.id); // Still use ID for delete operations
+      onDeleteClick(project.id);
     }
   };
 
