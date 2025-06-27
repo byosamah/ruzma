@@ -20,27 +20,29 @@ const VerticalProjectCard: React.FC<ProjectCardProps> = ({
 
   return (
     <Card 
-      className="hover:shadow-md transition-shadow duration-200 cursor-pointer border-slate-200" 
+      className="group hover:shadow-sm transition-all duration-200 cursor-pointer border-0 bg-white rounded-lg" 
       onClick={actions.handleCardClick}
     >
-      <CardHeader className="pb-2 px-4 pt-4">
-        <div className="flex justify-between items-start gap-2">
-          <CardTitle className="text-sm font-semibold text-slate-800 line-clamp-2 flex-1 leading-tight">
+      <CardHeader className="pb-3 px-5 pt-5">
+        <div className="flex justify-between items-start gap-3">
+          <CardTitle className="text-base font-medium text-gray-900 line-clamp-2 flex-1 leading-snug group-hover:text-gray-700 transition-colors">
             {project.name}
           </CardTitle>
-          <ProjectCardActions
-            onEditClick={actions.handleEditClick}
-            onViewClick={actions.handleViewClick}
-            onDeleteClick={onDeleteClick ? actions.handleDeleteClick : undefined}
-            onCopyClientLink={actions.handleCopyClientLink}
-            onViewClientPage={actions.handleViewClientPage}
-            onSendClientLink={actions.handleSendClientLink}
-            variant="header"
-          />
+          <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+            <ProjectCardActions
+              onEditClick={actions.handleEditClick}
+              onViewClick={actions.handleViewClick}
+              onDeleteClick={onDeleteClick ? actions.handleDeleteClick : undefined}
+              onCopyClientLink={actions.handleCopyClientLink}
+              onViewClientPage={actions.handleViewClientPage}
+              onSendClientLink={actions.handleSendClientLink}
+              variant="header"
+            />
+          </div>
         </div>
       </CardHeader>
       
-      <CardContent className="pt-0 pb-3 px-4">
+      <CardContent className="pt-0 pb-4 px-5">
         <ProjectCardContent
           project={project}
           stats={stats}
@@ -48,7 +50,7 @@ const VerticalProjectCard: React.FC<ProjectCardProps> = ({
           isVerticalLayout={true}
         />
         
-        <div className="mt-3 pt-2 border-t border-slate-100">
+        <div className="mt-4 pt-3 border-t border-gray-50">
           <ProjectCardActions
             onEditClick={actions.handleEditClick}
             onViewClick={actions.handleViewClick}

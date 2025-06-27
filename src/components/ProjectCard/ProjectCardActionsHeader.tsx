@@ -1,8 +1,13 @@
 
 import React from 'react';
 import { Button } from '@/components/ui/button';
-import { Edit, Trash2 } from 'lucide-react';
-import { useIsMobile } from '@/hooks/use-mobile';
+import { MoreHorizontal, Edit, Trash2 } from 'lucide-react';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
 
 interface ProjectCardActionsHeaderProps {
   onEditClick: (e: React.MouseEvent) => void;
@@ -13,41 +18,30 @@ const ProjectCardActionsHeader: React.FC<ProjectCardActionsHeaderProps> = ({
   onEditClick,
   onDeleteClick
 }) => {
-  const isMobile = useIsMobile();
-
-  const handleDeleteClick = (e: React.MouseEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-    console.log('Delete button clicked'); // Debug log
-    if (onDeleteClick) {
-      onDeleteClick(e);
-    }
-  };
-
   return (
-    <div className="flex gap-2 shrink-0">
-      <Button 
-        variant="outline" 
-        size={isMobile ? "sm" : "sm"} 
-        onClick={onEditClick} 
-        className="flex items-center gap-1 min-w-[44px] min-h-[44px] touch-manipulation"
-      >
-        <Edit className="w-4 h-4" />
-        {!isMobile && <span className="hidden sm:inline">Edit</span>}
-      </Button>
-      
-      {onDeleteClick && (
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
         <Button 
-          variant="outline" 
-          size={isMobile ? "sm" : "sm"} 
-          onClick={handleDeleteClick}
-          className="flex items-center gap-1 text-red-500 hover:text-red-700 hover:bg-red-50 min-w-[44px] min-h-[44px] touch-manipulation"
+          variant="ghost" 
+          size="sm" 
+          className="h-7 w-7 p-0 hover:bg-gray-100 text-gray-400 hover:text-gray-600"
         >
-          <Trash2 className="w-4 h-4" />
-          {!isMobile && <span className="hidden sm:inline">Delete</span>}
+          <MoreHorizontal className="h-4 w-4" />
         </Button>
-      )}
-    </div>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent align="end" className="w-32 bg-white border border-gray-100 shadow-lg">
+        <DropdownMenuItem onClick={onEditClick} className="text-sm text-gray-700 hover:bg-gray-50">
+          <Edit className="mr-2 h-3.5 w-3.5" />
+          Edit
+        </DropdownMenuItem>
+        {onDeleteClick && (
+          <DropdownMenuItem onClick={onDeleteClick} className="text-sm text-red-600 hover:bg-red-50">
+            <Trash2 className="mr-2 h-3.5 w-3.5" />
+            Delete
+          </DropdownMenuItem>
+        )}
+      </DropdownMenuContent>
+    </DropdownMenu>
   );
 };
 
