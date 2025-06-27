@@ -1,4 +1,3 @@
-
 import React from 'react';
 import Layout from '@/components/Layout';
 import DashboardHeader from '@/components/dashboard/DashboardHeader';
@@ -124,7 +123,6 @@ const Dashboard = () => {
             displayName={displayName} 
             onNewProject={handleNewProject} 
             canCreateProject={usage.canCreateProject} 
-            onViewAnalytics={() => navigate('/analytics')} 
           />
         </header>
         

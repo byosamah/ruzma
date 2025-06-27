@@ -8,14 +8,12 @@ interface DashboardHeaderProps {
   displayName: string;
   onNewProject: () => void;
   canCreateProject: boolean;
-  onViewAnalytics: () => void;
 }
 
 const DashboardHeader: React.FC<DashboardHeaderProps> = ({
   displayName,
   onNewProject,
-  canCreateProject,
-  onViewAnalytics
+  canCreateProject
 }) => {
   const t = useT();
   const isMobile = useIsMobile();
@@ -32,7 +30,6 @@ const DashboardHeader: React.FC<DashboardHeaderProps> = ({
         <DashboardHeaderButtons
           onNewProject={onNewProject}
           canCreateProject={canCreateProject}
-          onViewAnalytics={onViewAnalytics}
         />
       </div>
     );
@@ -49,7 +46,6 @@ const DashboardHeader: React.FC<DashboardHeaderProps> = ({
       <DashboardHeaderButtons
         onNewProject={onNewProject}
         canCreateProject={canCreateProject}
-        onViewAnalytics={onViewAnalytics}
       />
     </div>
   );
