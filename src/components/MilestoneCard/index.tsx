@@ -37,10 +37,8 @@ const MilestoneCard: React.FC<MilestoneCardProps> = ({
   branding,
   paymentProofRequired = false,
 }) => {
-  const primaryColor = branding?.primary_color || '#4B72E5';
-
   return (
-    <Card className="bg-white shadow-sm border border-slate-100 hover:shadow-md transition-shadow">
+    <Card className="bg-white border border-gray-100 hover:border-gray-200 transition-colors">
       <CardContent className="p-6">
         <MilestoneHeader 
           milestone={milestone} 

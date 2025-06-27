@@ -28,7 +28,6 @@ const MilestoneList: React.FC<MilestoneListProps> = ({
 }) => {
   const t = useT();
 
-  // Wrapper function to convert Promise<void> to Promise<boolean>
   const handlePaymentUpload = async (milestoneId: string, file: File): Promise<boolean> => {
     try {
       await onPaymentUpload(milestoneId, file);
@@ -48,12 +47,14 @@ const MilestoneList: React.FC<MilestoneListProps> = ({
   };
 
   return (
-    <div className="space-y-6">
-      <h2 className="text-2xl font-semibold">{t('milestones')}</h2>
+    <div className="space-y-4">
       {milestones.length === 0 ? (
-        <div className="text-slate-500 text-center">{t('noMilestonesYet')}</div>
+        <div className="text-center py-12">
+          <div className="text-4xl mb-4">📋</div>
+          <p className="text-gray-500">{t('noMilestonesYet')}</p>
+        </div>
       ) : (
-        <div className="space-y-5">
+        <div className="space-y-4">
           {milestones.map((milestone) => (
             <MilestoneCard
               key={milestone.id}

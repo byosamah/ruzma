@@ -13,11 +13,7 @@ import MilestoneList from "@/components/ProjectManagement/MilestoneList";
 import { useIsMobile } from "@/hooks/use-mobile";
 
 const ProjectManagement: React.FC = () => {
-  const {
-    slug
-  } = useParams<{
-    slug: string;
-  }>();
+  const { slug } = useParams<{ slug: string; }>();
   const navigate = useNavigate();
   const t = useT();
   const isMobile = useIsMobile();
@@ -33,17 +29,18 @@ const ProjectManagement: React.FC = () => {
     updateDeliverableLink,
     downloadDeliverable
   } = useProjectManagement(slug);
-  const {
-    deleteProject
-  } = useProjects(user);
+  const { deleteProject } = useProjects(user);
+
   const handleBackClick = () => {
     navigate("/projects");
   };
+
   const handleEditClick = () => {
     if (project?.slug) {
       navigate(`/edit-project/${project.slug}`);
     }
   };
+
   const handleDeleteClick = async () => {
     if (!project?.id) return;
     if (confirm(t('areYouSureDeleteProject'))) {
@@ -53,133 +50,128 @@ const ProjectManagement: React.FC = () => {
       }
     }
   };
+
   if (loading) {
-    return <Layout>
+    return (
+      <Layout>
         <div className="flex items-center justify-center min-h-[50vh] sm:min-h-[60vh]">
-          <div className="animate-spin rounded-full h-16 w-16 sm:h-32 sm:w-32 border-b-2 border-slate-900"></div>
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-300"></div>
         </div>
-      </Layout>;
+      </Layout>
+    );
   }
+
   if (!user) return <div>{t('loading')}</div>;
+
   if (!project) {
-    return <Layout user={profile || user}>
+    return (
+      <Layout user={profile || user}>
         <div className="flex items-center justify-center min-h-[50vh]">
-          <Card className="max-w-md mx-auto">
-            <CardContent className="text-center pt-12 pb-8">
-              <div className="w-20 h-20 bg-gray-100 rounded-2xl flex items-center justify-center mx-auto mb-6">
-                <div className="w-8 h-8 bg-gray-400 rounded-lg"></div>
-              </div>
-              <CardTitle className="text-2xl mb-3">{t('projectNotFound')}</CardTitle>
-              <p className="text-gray-600 mb-6">{t('projectNotFoundDesc')}</p>
-              <Button onClick={() => navigate("/dashboard")} className="bg-gray-900 hover:bg-gray-800 text-white">
-                {t('goToDashboard')}
-              </Button>
-            </CardContent>
-          </Card>
+          <div className="text-center">
+            <div className="text-6xl mb-4">📁</div>
+            <h2 className="text-xl font-medium text-gray-900 mb-2">{t('projectNotFound')}</h2>
+            <p className="text-gray-500 mb-6">{t('projectNotFoundDesc')}</p>
+            <Button 
+              onClick={() => navigate("/dashboard")} 
+              variant="outline"
+              className="text-sm"
+            >
+              {t('goToDashboard')}
+            </Button>
+          </div>
         </div>
-      </Layout>;
+      </Layout>
+    );
   }
+
   const completedMilestones = project.milestones.filter(m => m.status === 'approved').length;
   const totalValue = project.milestones.reduce((sum, m) => sum + m.price, 0);
   const completedValue = project.milestones.filter(m => m.status === 'approved').reduce((sum, m) => sum + m.price, 0);
+
   return (
     <Layout user={profile || user}>
-      <div className={`space-y-6 ${isMobile ? 'px-2' : 'sm:space-y-8'}`}>
-        {/* Project Overview Card */}
-        <Card className="bg-white border-slate-200 shadow-sm">
-          <CardContent className="p-6">
-            <ProjectHeader 
-              project={project} 
-              onBackClick={handleBackClick} 
-              onEditClick={handleEditClick} 
-              onDeleteClick={handleDeleteClick} 
-              userCurrency={userCurrency.currency} 
-            />
-          </CardContent>
-        </Card>
+      <div className="max-w-4xl mx-auto space-y-8">
+        {/* Back Navigation */}
+        <div className="flex items-center">
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={handleBackClick}
+            className="text-gray-500 hover:text-gray-700 -ml-2"
+          >
+            <ArrowLeft className="w-4 h-4 mr-1" />
+            {t('backToProjects')}
+          </Button>
+        </div>
 
-        {/* Quick Stats Cards */}
-        <section aria-label="Project statistics">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6">
-            <Card className="bg-white border-slate-200 shadow-sm">
-              <CardContent className="p-6">
-                <div className="flex items-center space-x-3">
-                  <div className="p-2 bg-blue-50 rounded-lg">
-                    <CheckCircle2 className="w-5 h-5 text-blue-600" />
-                  </div>
-                  <div>
-                    <p className="text-sm text-slate-600 font-medium">Progress</p>
-                    <p className="text-2xl font-bold text-slate-800">
-                      {completedMilestones}/{project.milestones.length}
-                    </p>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
+        {/* Project Header */}
+        <div className="space-y-6">
+          <ProjectHeader 
+            project={project} 
+            onBackClick={handleBackClick} 
+            onEditClick={handleEditClick} 
+            onDeleteClick={handleDeleteClick} 
+            userCurrency={userCurrency.currency} 
+          />
+        </div>
 
-            <Card className="bg-white border-slate-200 shadow-sm">
-              <CardContent className="p-6">
-                <div className="flex items-center space-x-3">
-                  <div className="p-2 bg-green-50 rounded-lg">
-                    <DollarSign className="w-5 h-5 text-green-600" />
-                  </div>
-                  <div>
-                    <p className="text-sm text-slate-600 font-medium">Total Value</p>
-                    <p className="text-2xl font-bold text-slate-800">
-                      {userCurrency.formatCurrency(totalValue)}
-                    </p>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-
-            <Card className="bg-white border-slate-200 shadow-sm">
-              <CardContent className="p-6">
-                <div className="flex items-center space-x-3">
-                  <div className="p-2 bg-purple-50 rounded-lg">
-                    <DollarSign className="w-5 h-5 text-purple-600" />
-                  </div>
-                  <div>
-                    <p className="text-sm text-slate-600 font-medium">Completed Value</p>
-                    <p className="text-2xl font-bold text-slate-800">
-                      {userCurrency.formatCurrency(completedValue)}
-                    </p>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
+        {/* Project Stats - Minimal Cards */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div className="bg-gray-50 rounded-lg p-4">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm text-gray-500">Progress</p>
+                <p className="text-lg font-medium text-gray-900">
+                  {completedMilestones}/{project.milestones.length}
+                </p>
+              </div>
+              <CheckCircle2 className="w-5 h-5 text-gray-400" />
+            </div>
           </div>
-        </section>
+
+          <div className="bg-gray-50 rounded-lg p-4">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm text-gray-500">Total Value</p>
+                <p className="text-lg font-medium text-gray-900">
+                  {userCurrency.formatCurrency(totalValue)}
+                </p>
+              </div>
+              <DollarSign className="w-5 h-5 text-gray-400" />
+            </div>
+          </div>
+
+          <div className="bg-gray-50 rounded-lg p-4">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm text-gray-500">Completed</p>
+                <p className="text-lg font-medium text-gray-900">
+                  {userCurrency.formatCurrency(completedValue)}
+                </p>
+              </div>
+              <DollarSign className="w-5 h-5 text-gray-400" />
+            </div>
+          </div>
+        </div>
 
         {/* Milestones Section */}
-        <main>
-          <Card className="bg-white border-slate-200 shadow-sm">
-            <CardHeader>
-              <div className="flex items-center justify-between">
-                <div>
-                  <CardTitle className="text-xl sm:text-2xl font-bold text-slate-800">{t('projectMilestones')}</CardTitle>
-                  <p className="text-slate-600 mt-1 text-sm sm:text-base">{t('trackProgressAndDeliverables')}</p>
-                </div>
-                <div className="text-right">
-                  <div className="text-sm text-slate-500">{t('totalMilestones')}</div>
-                  <div className="text-2xl font-bold text-slate-800">{project.milestones.length}</div>
-                </div>
-              </div>
-            </CardHeader>
-            <CardContent>
-              <MilestoneList 
-                milestones={project.milestones} 
-                userCurrency={userCurrency.currency}
-                userType={profile?.user_type as 'free' | 'plus' | 'pro' || 'free'}
-                onUpdateMilestoneStatus={updateMilestoneStatus} 
-                onPaymentUpload={uploadPaymentProof} 
-                onDeliverableUpload={uploadDeliverable}
-                onDeliverableLinkUpdate={updateDeliverableLink}
-                onDeliverableDownload={downloadDeliverable} 
-              />
-            </CardContent>
-          </Card>
-        </main>
+        <div className="space-y-6">
+          <div className="flex items-center justify-between">
+            <h2 className="text-xl font-medium text-gray-900">{t('projectMilestones')}</h2>
+            <span className="text-sm text-gray-500">{project.milestones.length} {project.milestones.length === 1 ? 'milestone' : 'milestones'}</span>
+          </div>
+          
+          <MilestoneList 
+            milestones={project.milestones} 
+            userCurrency={userCurrency.currency}
+            userType={profile?.user_type as 'free' | 'plus' | 'pro' || 'free'}
+            onUpdateMilestoneStatus={updateMilestoneStatus} 
+            onPaymentUpload={uploadPaymentProof} 
+            onDeliverableUpload={uploadDeliverable}
+            onDeliverableLinkUpdate={updateDeliverableLink}
+            onDeliverableDownload={downloadDeliverable} 
+          />
+        </div>
       </div>
     </Layout>
   );

@@ -1,10 +1,8 @@
 
-import React, { useState } from 'react';
+import React from 'react';
 import { DatabaseProject } from '@/hooks/projectTypes';
-import { useIsMobile } from '@/hooks/use-mobile';
 import { CurrencyCode } from '@/lib/currency';
-import ProjectHeaderInfo from './ProjectHeaderInfo';
-import ProjectStats from './ProjectStats';
+import ProjectHeaderActions from './ProjectHeaderActions';
 
 interface ProjectHeaderProps {
   project: DatabaseProject;
@@ -21,41 +19,27 @@ const ProjectHeader: React.FC<ProjectHeaderProps> = ({
   onDeleteClick,
   userCurrency
 }) => {
-  const isMobile = useIsMobile();
-
-  if (isMobile) {
-    return (
-      <div className="space-y-6">
-        {/* Project Title and Actions */}
-        <div className="flex items-start justify-between">
-          <ProjectHeaderInfo 
-            project={project} 
-            isMobile={isMobile}
-            onEditClick={onEditClick}
-            onDeleteClick={onDeleteClick}
-          />
-        </div>
-
-        {/* Project Stats */}
-        <ProjectStats project={project} isMobile={isMobile} userCurrency={userCurrency} />
-      </div>
-    );
-  }
-
   return (
-    <div className="space-y-6">
-      {/* Project Header */}
-      <div className="flex items-start justify-between">
-        <ProjectHeaderInfo 
-          project={project} 
-          isMobile={isMobile}
-          onEditClick={onEditClick}
-          onDeleteClick={onDeleteClick}
-        />
+    <div className="space-y-4">
+      {/* Project Title and Description */}
+      <div>
+        <h1 className="text-3xl font-medium text-gray-900 mb-2">
+          {project.name}
+        </h1>
+        {project.brief && (
+          <p className="text-gray-600 text-lg leading-relaxed">
+            {project.brief}
+          </p>
+        )}
       </div>
 
-      {/* Project Stats */}
-      <ProjectStats project={project} isMobile={isMobile} userCurrency={userCurrency} />
+      {/* Action Buttons */}
+      <ProjectHeaderActions
+        project={project}
+        onEditClick={onEditClick}
+        onDeleteClick={onDeleteClick}
+        isMobile={false}
+      />
     </div>
   );
 };
