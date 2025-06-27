@@ -1,19 +1,13 @@
 
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
 import Layout from '@/components/Layout';
-import DashboardAnalytics from '@/components/dashboard/DashboardAnalytics';
-import { Button } from '@/components/ui/button';
-import { ArrowLeft } from 'lucide-react';
 import { useDashboard } from '@/hooks/useDashboard';
 import { useDashboardAnalytics } from '@/hooks/useDashboardAnalytics';
-import { useT } from '@/lib/i18n';
-import { useIsMobile } from '@/hooks/use-mobile';
+import AnalyticsHeader from '@/components/Analytics/AnalyticsHeader';
+import AnalyticsMetrics from '@/components/Analytics/AnalyticsMetrics';
+import AnalyticsCharts from '@/components/Analytics/AnalyticsCharts';
 
 const Analytics = () => {
-  const navigate = useNavigate();
-  const t = useT();
-  const isMobile = useIsMobile();
   const {
     user,
     loading,
@@ -36,16 +30,20 @@ const Analytics = () => {
 
   return (
     <Layout user={user} onSignOut={handleSignOut}>
-      <div className="space-y-6 sm:space-y-8">
-        <div className="flex flex-col sm:flex-row sm:items-center space-y-4 sm:space-y-0 sm:space-x-4">
-          <h1 className="text-2xl sm:text-3xl font-bold text-slate-800 text-center sm:text-left">
-            {t('analytics')}
-          </h1>
-        </div>
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
+        <AnalyticsHeader />
         
-        <div className="w-full">
-          <DashboardAnalytics data={analyticsData} userCurrency={userCurrency.currency} />
-        </div>
+        <AnalyticsMetrics
+          revenueGrowth={analyticsData.revenueGrowth}
+          avgProjectValue={analyticsData.avgProjectValue}
+          completionRate={analyticsData.completionRate}
+          userCurrency={userCurrency.currency}
+        />
+        
+        <AnalyticsCharts
+          data={analyticsData}
+          userCurrency={userCurrency.currency}
+        />
       </div>
     </Layout>
   );
