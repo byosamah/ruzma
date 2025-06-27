@@ -36,7 +36,7 @@ const DashboardHeader: React.FC<DashboardHeaderProps> = ({
   }
 
   return (
-    <div className="flex flex-col lg:flex-row lg:justify-between lg:items-start mb-8 space-y-4 lg:space-y-0">
+    <div className="flex flex-row justify-between items-start mb-8">
       <div className="space-y-1">
         <h1 className="text-2xl font-medium text-gray-900">
           {t('welcomeComma')} {displayName}
