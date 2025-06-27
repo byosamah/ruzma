@@ -3,7 +3,10 @@ import { useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { secureSignOut, logSecurityEvent } from '@/lib/authSecurity';
 
-export const useDashboardActions = (deleteProject: (projectId: string) => Promise<boolean>) => {
+export const useDashboardActions = (
+  deleteProject: (projectId: string) => Promise<boolean>,
+  refetchProjects?: () => void
+) => {
   const navigate = useNavigate();
 
   const handleSignOut = useCallback(async () => {
@@ -18,9 +21,14 @@ export const useDashboardActions = (deleteProject: (projectId: string) => Promis
   const handleDeleteProject = useCallback(async (projectId: string) => {
     if (confirm('Are you sure you want to delete this project?')) {
       logSecurityEvent('project_deletion_initiated', { projectId });
-      await deleteProject(projectId);
+      const success = await deleteProject(projectId);
+      
+      // Refresh the projects list after successful deletion
+      if (success && refetchProjects) {
+        refetchProjects();
+      }
     }
-  }, [deleteProject]);
+  }, [deleteProject, refetchProjects]);
 
   return {
     handleSignOut,

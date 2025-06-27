@@ -10,60 +10,60 @@ export const useDashboardData = (user: User | null) => {
   const [profile, setProfile] = useState<any>(null);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
+  const fetchData = async () => {
     if (!user) return;
 
-    const fetchData = async () => {
-      setLoading(true);
-      
-      try {
-        // Fetch user profile
-        const { data: profileData } = await supabase
-          .from('profiles')
-          .select('*')
-          .eq('id', user.id)
-          .single();
+    setLoading(true);
+    
+    try {
+      // Fetch user profile
+      const { data: profileData } = await supabase
+        .from('profiles')
+        .select('*')
+        .eq('id', user.id)
+        .single();
 
-        setProfile(profileData);
+      setProfile(profileData);
 
-        // Fetch projects
-        const { data: projectsData } = await supabase
-          .from('projects')
-          .select(`
-            *,
-            milestones (*)
-          `)
-          .eq('user_id', user.id)
-          .order('created_at', { ascending: false });
+      // Fetch projects
+      const { data: projectsData } = await supabase
+        .from('projects')
+        .select(`
+          *,
+          milestones (*)
+        `)
+        .eq('user_id', user.id)
+        .order('created_at', { ascending: false });
 
-        // Type the projects data properly
-        const typedProjects: DatabaseProject[] = (projectsData || []).map(project => ({
-          ...project,
-          milestones: project.milestones.map((milestone: any) => ({
-            ...milestone,
-            status: milestone.status as 'pending' | 'payment_submitted' | 'approved' | 'rejected'
-          }))
-        }));
+      // Type the projects data properly
+      const typedProjects: DatabaseProject[] = (projectsData || []).map(project => ({
+        ...project,
+        milestones: project.milestones.map((milestone: any) => ({
+          ...milestone,
+          status: milestone.status as 'pending' | 'payment_submitted' | 'approved' | 'rejected'
+        }))
+      }));
 
-        setProjects(typedProjects);
+      setProjects(typedProjects);
 
-        // Set user properties for analytics
-        if (profileData && projectsData) {
-          setUserProperties(
-            user.id,
-            profileData.user_type || 'free',
-            profileData.currency || 'USD',
-            projectsData.length
-          );
-        }
-
-      } catch (error) {
-        console.error('Error fetching dashboard data:', error);
-      } finally {
-        setLoading(false);
+      // Set user properties for analytics
+      if (profileData && projectsData) {
+        setUserProperties(
+          user.id,
+          profileData.user_type || 'free',
+          profileData.currency || 'USD',
+          projectsData.length
+        );
       }
-    };
 
+    } catch (error) {
+      console.error('Error fetching dashboard data:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
     fetchData();
   }, [user]);
 
@@ -71,10 +71,6 @@ export const useDashboardData = (user: User | null) => {
     projects,
     profile,
     loading,
-    refetch: () => {
-      if (user) {
-        // Refetch logic here
-      }
-    }
+    refetch: fetchData
   };
 };

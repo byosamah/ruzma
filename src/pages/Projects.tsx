@@ -1,3 +1,4 @@
+
 import React from 'react';
 import Layout from '@/components/Layout';
 import ProjectCard from '@/components/ProjectCard';
@@ -35,6 +36,11 @@ const Projects = () => {
 
   const handleEditProjectCard = (projectSlug: string) => {
     navigate(`/edit-project/${projectSlug}`);
+  };
+
+  // Use project ID for deletion (not slug)
+  const handleDeleteProjectCard = (projectId: string) => {
+    handleDeleteProject(projectId);
   };
 
   if (loading) {
@@ -111,7 +117,7 @@ const Projects = () => {
                 project={project}
                 onViewClick={() => handleViewProject(project.slug)}
                 onEditClick={() => handleEditProjectCard(project.slug)}
-                onDeleteClick={handleDeleteProject}
+                onDeleteClick={() => handleDeleteProjectCard(project.id)}
                 currency={userCurrency.currency}
                 isVerticalLayout={true}
               />
