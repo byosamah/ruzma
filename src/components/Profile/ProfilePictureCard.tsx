@@ -23,8 +23,12 @@ export const ProfilePictureCard = ({
 }: ProfilePictureCardProps) => {
   const t = useT();
 
-  // Debug log to see what profilePicture value we're getting
-  console.log('ProfilePictureCard - profilePicture value:', profilePicture);
+  // Debug logs
+  console.log('ProfilePictureCard render - profilePicture:', profilePicture);
+  console.log('ProfilePictureCard render - userName:', userName);
+
+  // Create a unique key to force Avatar re-render when image changes
+  const avatarKey = profilePicture ? `avatar-${profilePicture.substring(0, 50)}` : 'avatar-empty';
 
   return (
     <Card className="border-gray-200 shadow-none bg-white">
@@ -32,13 +36,18 @@ export const ProfilePictureCard = ({
         <CardTitle className="text-base font-medium text-gray-900">{t('profilePicture')}</CardTitle>
       </CardHeader>
       <CardContent className="text-center space-y-4 pt-0">
-        <Avatar className="w-24 h-24 mx-auto border border-gray-100">
-          <AvatarImage 
-            src={profilePicture || undefined} 
-            alt={userName}
-            onLoad={() => console.log('Avatar image loaded successfully')}
-            onError={(e) => console.log('Avatar image failed to load:', e)}
-          />
+        <Avatar key={avatarKey} className="w-24 h-24 mx-auto border border-gray-100">
+          {profilePicture && (
+            <AvatarImage 
+              src={profilePicture} 
+              alt={userName}
+              onLoad={() => console.log('Avatar image loaded successfully')}
+              onError={(e) => {
+                console.log('Avatar image failed to load:', e);
+                console.log('Failed image src:', profilePicture);
+              }}
+            />
+          )}
           <AvatarFallback className="bg-gray-100 text-gray-600 text-xl font-medium">
             {userName?.charAt(0).toUpperCase() || 'U'}
           </AvatarFallback>
