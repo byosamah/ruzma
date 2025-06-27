@@ -4,8 +4,8 @@ import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Eye, EyeOff, Mail, Lock } from 'lucide-react';
+import { Card, CardContent, CardHeader } from '@/components/ui/card';
+import { Eye, EyeOff } from 'lucide-react';
 import { toast } from 'sonner';
 import { Checkbox } from '@/components/ui/checkbox';
 import { getSupabaseClient } from '@/integrations/supabase/authClient';
@@ -44,8 +44,8 @@ const Login = () => {
   if (!authChecked || authLoading) {
     console.log('Showing loading spinner');
     return (
-      <div className="min-h-screen bg-auth-background flex items-center justify-center">
-        <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-brand-yellow"></div>
+      <div className="min-h-screen bg-white flex items-center justify-center">
+        <div className="animate-spin rounded-full h-8 w-8 border-2 border-gray-300 border-t-gray-900"></div>
       </div>
     );
   }
@@ -54,8 +54,8 @@ const Login = () => {
   if (user) {
     console.log('User authenticated, showing redirect loading');
     return (
-      <div className="min-h-screen bg-auth-background flex items-center justify-center">
-        <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-brand-yellow"></div>
+      <div className="min-h-screen bg-white flex items-center justify-center">
+        <div className="animate-spin rounded-full h-8 w-8 border-2 border-gray-300 border-t-gray-900"></div>
       </div>
     );
   }
@@ -129,31 +129,50 @@ const Login = () => {
   };
 
   return (
-    <div className="min-h-screen bg-auth-background flex flex-col items-center justify-center p-3 sm:p-4">
-      <div className="absolute top-6 sm:top-10 lg:top-16">
-        <Link to="/">
-          <img src="/lovable-uploads/bca9fbc0-5ee9-455b-91b3-b7eff1f56169.png" alt="Ruzma Logo" className="h-8 sm:h-10" />
-        </Link>
-      </div>
+    <div className="min-h-screen bg-white flex items-center justify-center px-4">
+      <div className="w-full max-w-md space-y-8">
+        {/* Logo */}
+        <div className="flex justify-center">
+          <Link to="/">
+            <img 
+              src="/lovable-uploads/d7c62fd0-8ad6-4696-b936-c40ca12c9886.png" 
+              alt="Ruzma" 
+              className="h-10 object-contain" 
+            />
+          </Link>
+        </div>
 
-      <Card className="w-full max-w-sm sm:max-w-md shadow-lg bg-white">
-        <CardHeader className="text-center px-4 sm:px-6 py-4 sm:py-6">
-          <CardTitle className="text-xl sm:text-2xl font-bold text-slate-800">{t('loginWelcome')}</CardTitle>
-          <p className="text-sm sm:text-base text-slate-600 mt-1">{t('loginSubtitle')}</p>
-        </CardHeader>
-        <CardContent className="px-4 sm:px-6 pb-4 sm:pb-6">
-          <div className="flex bg-slate-100 rounded-md p-1 mb-4 sm:mb-6">
-            <Button variant="ghost" className="w-1/2 bg-white shadow-sm text-brand-navy font-semibold text-sm">{t('signIn')}</Button>
-            <Button asChild variant="ghost" className="w-1/2 text-slate-500 text-sm">
-              <Link to="/signup">{t('signUp')}</Link>
-            </Button>
-          </div>
+        {/* Welcome Text */}
+        <div className="text-center space-y-2">
+          <h1 className="text-2xl font-medium text-gray-900">{t('loginWelcome')}</h1>
+          <p className="text-gray-600">{t('loginSubtitle')}</p>
+        </div>
 
-          <form onSubmit={handleSubmit} className="space-y-4">
-            <div className="space-y-2">
-              <Label htmlFor="email" className="text-sm">{t('emailLabel')}</Label>
-              <div className="relative">
-                <Mail className="absolute left-3 rtl:right-3 rtl:left-auto top-1/2 -translate-y-1/2 h-4 w-4 sm:h-5 sm:w-5 text-slate-400" />
+        {/* Auth Toggle */}
+        <div className="flex bg-gray-50 rounded-lg p-1">
+          <Button 
+            variant="ghost" 
+            className="flex-1 bg-white shadow-sm text-gray-900 font-medium hover:bg-white"
+          >
+            {t('signIn')}
+          </Button>
+          <Button 
+            asChild 
+            variant="ghost" 
+            className="flex-1 text-gray-500 hover:text-gray-700 hover:bg-gray-100 font-medium"
+          >
+            <Link to="/signup">{t('signUp')}</Link>
+          </Button>
+        </div>
+
+        {/* Login Form */}
+        <Card className="border-0 shadow-none">
+          <CardContent className="p-0">
+            <form onSubmit={handleSubmit} className="space-y-5">
+              <div className="space-y-2">
+                <Label htmlFor="email" className="text-sm font-medium text-gray-700">
+                  {t('emailLabel')}
+                </Label>
                 <Input
                   id="email"
                   name="email"
@@ -162,70 +181,79 @@ const Login = () => {
                   value={formData.email}
                   onChange={handleChange}
                   required
-                  className="pl-9 sm:pl-10 rtl:pr-9 rtl:sm:pr-10 rtl:pl-3 h-10 sm:h-11 text-sm sm:text-base"
+                  className="h-11 border-gray-200 focus:border-gray-400 focus:ring-0"
                 />
               </div>
-            </div>
-            
-            <div className="space-y-2">
-              <div className="flex justify-between items-center">
-                <Label htmlFor="password" className="text-sm">{t('passwordLabel')}</Label>
-                <Link to="/forgot-password" className="text-xs sm:text-sm text-brand-yellow hover:underline">
-                  {t('forgotPassword')}
-                </Link>
+              
+              <div className="space-y-2">
+                <div className="flex justify-between items-center">
+                  <Label htmlFor="password" className="text-sm font-medium text-gray-700">
+                    {t('passwordLabel')}
+                  </Label>
+                  <Link 
+                    to="/forgot-password" 
+                    className="text-sm text-gray-500 hover:text-gray-700 hover:underline"
+                  >
+                    {t('forgotPassword')}
+                  </Link>
+                </div>
+                <div className="relative">
+                  <Input
+                    id="password"
+                    name="password"
+                    type={showPassword ? 'text' : 'password'}
+                    placeholder={t('passwordPlaceholder')}
+                    value={formData.password}
+                    onChange={handleChange}
+                    required
+                    className="h-11 border-gray-200 focus:border-gray-400 focus:ring-0 pr-10 rtl:pl-10 rtl:pr-3"
+                  />
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="sm"
+                    className="absolute right-0 rtl:left-0 rtl:right-auto top-0 h-full px-3 hover:bg-transparent"
+                    onClick={() => setShowPassword(!showPassword)}
+                  >
+                    {showPassword ? (
+                      <EyeOff className="h-4 w-4 text-gray-400" />
+                    ) : (
+                      <Eye className="h-4 w-4 text-gray-400" />
+                    )}
+                  </Button>
+                </div>
               </div>
-              <div className="relative">
-                <Lock className="absolute left-3 rtl:right-3 rtl:left-auto top-1/2 -translate-y-1/2 h-4 w-4 sm:h-5 sm:w-5 text-slate-400" />
-                <Input
-                  id="password"
-                  name="password"
-                  type={showPassword ? 'text' : 'password'}
-                  placeholder={t('passwordPlaceholder')}
-                  value={formData.password}
-                  onChange={handleChange}
-                  required
-                  className="pl-9 sm:pl-10 rtl:pr-9 rtl:sm:pr-10 rtl:pl-3 h-10 sm:h-11 text-sm sm:text-base"
+
+              <div className="flex items-center space-x-2 rtl:space-x-reverse">
+                <Checkbox 
+                  id="rememberMe"
+                  checked={rememberMe}
+                  onCheckedChange={checked => setRememberMe(!!checked)}
+                  className="h-4 w-4"
                 />
-                <Button
-                  type="button"
-                  variant="ghost"
-                  size="sm"
-                  className="absolute right-0 rtl:left-0 rtl:right-auto top-0 h-full px-2 sm:px-3 py-2 hover:bg-transparent"
-                  onClick={() => setShowPassword(!showPassword)}
+                <Label 
+                  htmlFor="rememberMe" 
+                  className="text-sm text-gray-600 cursor-pointer select-none"
                 >
-                  {showPassword ? (
-                    <EyeOff className="h-4 w-4 sm:h-5 sm:w-5 text-slate-400" />
-                  ) : (
-                    <Eye className="h-4 w-4 sm:h-5 sm:w-5 text-slate-400" />
-                  )}
-                </Button>
+                  {t('rememberMe')}
+                </Label>
               </div>
-            </div>
 
-            <div className="flex items-center gap-2">
-              <Checkbox id="rememberMe"
-                checked={rememberMe}
-                onCheckedChange={checked => setRememberMe(!!checked)}
-                className="h-4 w-4"
-              />
-              <Label htmlFor="rememberMe" className="cursor-pointer select-none text-sm">
-                {t('rememberMe')}
-              </Label>
-            </div>
+              <Button 
+                type="submit" 
+                className="w-full h-11 bg-gray-900 text-white hover:bg-gray-800 font-medium rounded-lg" 
+                disabled={isLoading}
+              >
+                {isLoading ? t('signingIn') : t('signIn')}
+              </Button>
+            </form>
+          </CardContent>
+        </Card>
 
-            <Button 
-              type="submit" 
-              className="w-full bg-brand-yellow text-brand-black hover:bg-brand-yellow/90 h-10 sm:h-11 text-sm sm:text-base font-medium" 
-              disabled={isLoading}
-            >
-              {isLoading ? t('signingIn') : t('signIn')}
-            </Button>
-          </form>
-
-        </CardContent>
-      </Card>
-      <div className="absolute bottom-4 sm:bottom-8 text-xs sm:text-sm text-slate-600 text-center px-4">
-        {t('footerRights', { year: new Date().getFullYear().toString() })}
+        {/* Footer */}
+        <div className="text-center text-xs text-gray-500">
+          {t('footerRights', { year: new Date().getFullYear().toString() })}
+        </div>
       </div>
     </div>
   );
