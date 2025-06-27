@@ -9,6 +9,7 @@ import { cn } from '@/lib/utils';
 import { useClients } from '@/hooks/useClients';
 import { useAuth } from '@/hooks/dashboard/useAuth';
 import AddClientDialog from '@/components/Clients/AddClientDialog';
+import { useT } from '@/lib/i18n';
 
 interface ClientDropdownProps {
   value: string;
@@ -16,6 +17,7 @@ interface ClientDropdownProps {
 }
 
 const ClientDropdown: React.FC<ClientDropdownProps> = ({ value, onChange }) => {
+  const t = useT();
   const { user } = useAuth();
   const { clients, createClient } = useClients(user);
   const [open, setOpen] = useState(false);
@@ -58,7 +60,7 @@ const ClientDropdown: React.FC<ClientDropdownProps> = ({ value, onChange }) => {
             ) : value ? (
               <span className="text-sm">{value}</span>
             ) : (
-              <span className="text-gray-500 text-sm">Select client or enter email</span>
+              <span className="text-gray-500 text-sm">{t('selectClientOrEnterEmail')}</span>
             )}
             <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
           </Button>
@@ -68,7 +70,7 @@ const ClientDropdown: React.FC<ClientDropdownProps> = ({ value, onChange }) => {
             <CommandList>
               <CommandEmpty>
                 <div className="p-2 text-sm text-gray-500">
-                  No clients found
+                  {t('noClientsFound')}
                 </div>
               </CommandEmpty>
               <CommandGroup>
@@ -97,7 +99,7 @@ const ClientDropdown: React.FC<ClientDropdownProps> = ({ value, onChange }) => {
                   className="flex items-center gap-2 px-3 py-2 text-blue-600 hover:text-blue-700"
                 >
                   <Plus className="h-4 w-4" />
-                  <span className="text-sm font-medium">Add new client</span>
+                  <span className="text-sm font-medium">{t('addNewClient')}</span>
                 </CommandItem>
               </CommandGroup>
             </CommandList>

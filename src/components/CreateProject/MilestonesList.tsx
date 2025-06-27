@@ -85,7 +85,7 @@ const MilestonesList = () => {
                 name={`milestones.${index}.price`}
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Price ({currency})</FormLabel>
+                    <FormLabel>{t('priceLabel', { currency })}</FormLabel>
                     <FormControl>
                       <Input
                         type="number"
@@ -107,7 +107,7 @@ const MilestonesList = () => {
                 name={`milestones.${index}.start_date`}
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Start Date</FormLabel>
+                    <FormLabel>{t('startDate')}</FormLabel>
                     <FormControl>
                       <Input type="date" {...field} />
                     </FormControl>
@@ -120,7 +120,7 @@ const MilestonesList = () => {
                 name={`milestones.${index}.end_date`}
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>End Date</FormLabel>
+                    <FormLabel>{t('endDate')}</FormLabel>
                     <FormControl>
                       <Input type="date" {...field} />
                     </FormControl>

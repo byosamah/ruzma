@@ -56,7 +56,7 @@ const ProjectDetailsForm = () => {
           name="clientEmail"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Client</FormLabel>
+              <FormLabel>{t('client')}</FormLabel>
               <FormControl>
                 <ClientDropdown
                   value={field.value}
