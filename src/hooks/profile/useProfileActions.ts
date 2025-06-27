@@ -79,75 +79,14 @@ export const useProfileActions = (user: User | null) => {
     setFormData((prev: any) => ({ ...prev, currency }));
   };
 
-  const handleLogoUpload = async (file: File, setFormData: any) => {
-    if (!user) {
-      toast.error('User not found');
-      return;
-    }
-
-    try {
-      // Create a unique filename
-      const fileName = `${user.id}/brand-logo-${Date.now()}.${file.name.split('.').pop()}`;
-      
-      // Upload to Supabase Storage
-      const { data: uploadData, error: uploadError } = await supabase.storage
-        .from('brand-logos')
-        .upload(fileName, file, {
-          cacheControl: '3600',
-          upsert: true
-        });
-
-      if (uploadError) {
-        console.error('Upload error:', uploadError);
-        toast.error('Failed to upload brand logo');
-        return;
-      }
-
-      // Get the public URL
-      const { data: { publicUrl } } = supabase.storage
-        .from('brand-logos')
-        .getPublicUrl(fileName);
-
-      // Update form data with the new logo URL
-      setFormData((prev: any) => ({ ...prev, logoUrl: publicUrl }));
-      
-      toast.success('Brand logo uploaded successfully!');
-    } catch (error) {
-      console.error('Error uploading brand logo:', error);
-      toast.error('Failed to upload brand logo');
-    }
+  const handleLogoUpload = (file: File, setFormData: any) => {
+    // Handle logo upload logic here
+    console.log('Logo upload:', file);
   };
 
   const handleSubmit = async (e: React.FormEvent, formData: any) => {
     e.preventDefault();
-    
-    // Split the form data into profile and branding data
-    const profileData = {
-      full_name: formData.name,
-      email: formData.email,
-      company: formData.company,
-      website: formData.website,
-      bio: formData.bio,
-      currency: formData.currency,
-    };
-
-    const brandingData = {
-      freelancer_name: formData.name,
-      freelancer_title: formData.professionalTitle || '',
-      freelancer_bio: formData.shortBio || '',
-      primary_color: formData.primaryColor || '#050c1e',
-      logo_url: formData.logoUrl || '',
-    };
-
-    // Update both profile and branding data
-    const profileSuccess = await updateProfile(profileData);
-    const brandingSuccess = await updateBranding(brandingData);
-
-    if (profileSuccess && brandingSuccess) {
-      toast.success('All changes saved successfully!');
-    } else if (profileSuccess || brandingSuccess) {
-      toast.success('Some changes saved successfully');
-    }
+    await updateProfile(formData);
   };
 
   return {

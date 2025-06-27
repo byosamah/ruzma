@@ -1,14 +1,18 @@
 
-import { useRef, useState } from 'react';
-import { User } from '@supabase/supabase-js';
+import { useState, useRef } from 'react';
+import { toast } from "sonner";
+import { type Area } from 'react-easy-crop';
+import { getCroppedImg } from '@/lib/imageUtils';
 import { supabase } from '@/integrations/supabase/client';
-import { toast } from 'sonner';
-import getCroppedImg from '@/lib/cropImage';
+import { User } from '@supabase/supabase-js';
 
-export const useImageCropping = (user: User | null, updateProfilePicture: (url: string) => void) => {
+export const useImageCropping = (
+  user: User | null,
+  onProfilePictureUpdate: (url: string) => void
+) => {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [imageToCrop, setImageToCrop] = useState<string | null>(null);
-  const [croppedAreaPixels, setCroppedAreaPixels] = useState(null);
+  const [croppedAreaPixels, setCroppedAreaPixels] = useState<Area | null>(null);
 
   const handleUploadClick = () => {
     fileInputRef.current?.click();
@@ -16,72 +20,50 @@ export const useImageCropping = (user: User | null, updateProfilePicture: (url: 
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
-    if (file && file.type.startsWith('image/')) {
+    if (file) {
+      if (file.size > 2 * 1024 * 1024) { // 2MB limit
+        toast.error("File is too large. Max size is 2MB.");
+        return;
+      }
       const reader = new FileReader();
-      reader.onload = () => {
+      reader.onloadend = () => {
         setImageToCrop(reader.result as string);
       };
       reader.readAsDataURL(file);
-    } else {
-      toast.error('Please select a valid image file');
     }
   };
 
   const onCropSave = async () => {
-    if (!imageToCrop || !croppedAreaPixels || !user) return;
+    if (croppedAreaPixels && imageToCrop && user) {
+        try {
+            const croppedImage = await getCroppedImg(imageToCrop, croppedAreaPixels);
+            
+            const { error } = await supabase
+              .from('profiles')
+              .update({ avatar_url: croppedImage })
+              .eq('id', user.id);
 
-    try {
-      const croppedImageBlob = await getCroppedImg(imageToCrop, croppedAreaPixels);
-      
-      // Convert blob to file
-      const file = new File([croppedImageBlob], 'profile-picture.jpg', { type: 'image/jpeg' });
-      
-      // Upload to Supabase Storage
-      const fileName = `${user.id}/profile-picture-${Date.now()}.jpg`;
-      
-      const { data: uploadData, error: uploadError } = await supabase.storage
-        .from('profile-pictures')
-        .upload(fileName, file, {
-          cacheControl: '3600',
-          upsert: true
-        });
-
-      if (uploadError) {
-        console.error('Upload error:', uploadError);
-        toast.error('Failed to upload profile picture');
-        return;
-      }
-
-      // Get the public URL
-      const { data: { publicUrl } } = supabase.storage
-        .from('profile-pictures')
-        .getPublicUrl(fileName);
-
-      // Update the profile with the new avatar URL
-      const { error: updateError } = await supabase
-        .from('profiles')
-        .update({ avatar_url: publicUrl })
-        .eq('id', user.id);
-
-      if (updateError) {
-        console.error('Update error:', updateError);
-        toast.error('Failed to update profile picture');
-        return;
-      }
-
-      // Update local state
-      updateProfilePicture(publicUrl);
-      setImageToCrop(null);
-      toast.success('Profile picture updated successfully!');
-    } catch (error) {
-      console.error('Error updating profile picture:', error);
-      toast.error('Failed to update profile picture');
+            if (error) throw error;
+            
+            onProfilePictureUpdate(croppedImage);
+            toast.success("Profile picture updated!");
+        } catch (error) {
+            console.error(error);
+            toast.error("There was an error updating your profile picture.");
+        } finally {
+            setImageToCrop(null);
+            if(fileInputRef.current) {
+              fileInputRef.current.value = '';
+            }
+        }
     }
   };
 
   const onCropCancel = () => {
     setImageToCrop(null);
-    setCroppedAreaPixels(null);
+    if(fileInputRef.current) {
+      fileInputRef.current.value = '';
+    }
   };
 
   return {
