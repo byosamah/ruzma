@@ -34,7 +34,6 @@ const InvoicesSection: React.FC<InvoicesSectionProps> = ({
       <CardContent className="p-6 space-y-6">
         <div className="flex items-center justify-between">
           <h2 className="text-lg font-medium text-gray-900">{t('allInvoices')}</h2>
-          <span className="text-sm text-gray-500">{invoices.length} invoices</span>
         </div>
         
         <InvoiceFilters 
