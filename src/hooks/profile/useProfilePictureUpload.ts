@@ -65,8 +65,8 @@ export const useProfilePictureUpload = (
           throw new Error('Not authenticated');
         }
 
-        // Upload via edge function
-        const uploadResponse = await fetch(`${supabase.supabaseUrl}/functions/v1/upload-profile-picture`, {
+        // Upload via edge function using the correct Supabase URL
+        const uploadResponse = await fetch(`https://***REMOVED***.supabase.co/functions/v1/upload-profile-picture`, {
           method: 'POST',
           headers: {
             'Authorization': `Bearer ${session.access_token}`,
