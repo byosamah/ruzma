@@ -19,9 +19,9 @@ const Plans = () => {
     <Layout user={user} onSignOut={handleSignOut}>
       <div className="max-w-6xl mx-auto space-y-8">
         <div className="text-center">
-          <h1 className="text-4xl font-bold text-slate-800 mb-4">Choose Your Plan</h1>
+          <h1 className="text-4xl font-bold text-slate-800 mb-4">{t('choosePlan')}</h1>
           <p className="text-lg text-slate-600">
-            Upgrade your account to unlock more features and storage
+            {t('upgradeAccount')}
           </p>
         </div>
 

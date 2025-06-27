@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { Home, User, FolderOpen, BarChart3, Settings, CreditCard, LogOut, FileText, Users } from 'lucide-react';
 import { useNavigate, useLocation } from 'react-router-dom';
@@ -34,7 +35,7 @@ export function AppSidebar({
     url: '/projects',
     icon: FolderOpen
   }, {
-    title: 'Clients',
+    title: t('clients'),
     url: '/clients',
     icon: Users
   }, {
@@ -95,7 +96,7 @@ export function AppSidebar({
       <SidebarContent className={isCollapsed ? 'px-3' : 'px-3'}>
         <SidebarGroup>
           <SidebarGroupLabel className="text-xs font-medium text-gray-500 uppercase tracking-wider mb-2">
-            Main
+            {t('main')}
           </SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
@@ -123,7 +124,7 @@ export function AppSidebar({
 
         <SidebarGroup className="mt-8">
           <SidebarGroupLabel className="text-xs font-medium text-gray-500 uppercase tracking-wider mb-2">
-            Account
+            {t('account')}
           </SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>

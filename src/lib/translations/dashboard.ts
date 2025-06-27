@@ -35,6 +35,8 @@ export const dashboardTranslations = {
     used: "used",
     created: "Created",
     milestones: "milestones",
+    loading: "Loading...",
+    welcome: "Welcome",
   },
   ar: {
     dashboard: "لوحة التحكم",
@@ -71,5 +73,7 @@ export const dashboardTranslations = {
     used: "مستخدم",
     created: "تم الإنشاء",
     milestones: "مراحل",
+    loading: "جاري التحميل...",
+    welcome: "مرحباً",
   },
 };

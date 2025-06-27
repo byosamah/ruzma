@@ -45,7 +45,7 @@ export const UsageIndicators: React.FC<UsageIndicatorsProps> = ({
           <CardContent className="p-6">
             <div className="flex items-center justify-center">
               <div className="h-4 w-4 animate-spin rounded-full border-2 border-gray-300 border-t-gray-600" />
-              <span className="ml-2 text-sm text-gray-500">Loading usage...</span>
+              <span className="ml-2 text-sm text-gray-500">{t('loadingUsage')}</span>
             </div>
           </CardContent>
         </Card>
@@ -53,7 +53,7 @@ export const UsageIndicators: React.FC<UsageIndicatorsProps> = ({
           <CardContent className="p-6">
             <div className="flex items-center justify-center">
               <div className="h-4 w-4 animate-spin rounded-full border-2 border-gray-300 border-t-gray-600" />
-              <span className="ml-2 text-sm text-gray-500">Loading usage...</span>
+              <span className="ml-2 text-sm text-gray-500">{t('loadingUsage')}</span>
             </div>
           </CardContent>
         </Card>
@@ -92,7 +92,7 @@ export const UsageIndicators: React.FC<UsageIndicatorsProps> = ({
       <Card className="saas-card">
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-3">
           <CardTitle className="text-sm font-medium text-gray-600">
-            {userType === 'free' ? 'Links Only' : t('storageUsed')}
+            {userType === 'free' ? t('linksOnly') : t('storageUsed')}
           </CardTitle>
           {userType === 'free' ? <Link className="h-4 w-4 text-gray-400" /> : <Database className="h-4 w-4 text-gray-400" />}
         </CardHeader>
@@ -101,7 +101,7 @@ export const UsageIndicators: React.FC<UsageIndicatorsProps> = ({
             <div className="space-y-3">
               <div className="flex items-center justify-between">
                 <span className="text-lg font-medium text-gray-600">
-                  Share project links with clients
+                  {t('shareProjectLinks')}
                 </span>
                 <Button size="sm" onClick={handleUpgradeClick} className="text-xs px-3 py-1 font-medium bg-gray-900 hover:bg-gray-800 text-slate-50">
                   <TrendingUp className="h-3 w-3 mr-1" />
@@ -109,7 +109,7 @@ export const UsageIndicators: React.FC<UsageIndicatorsProps> = ({
                 </Button>
               </div>
               <p className="text-xs text-gray-500">
-                Upgrade to upload files and manage storage
+                {t('upgradeToUploadFiles')}
               </p>
             </div>
           ) : (
