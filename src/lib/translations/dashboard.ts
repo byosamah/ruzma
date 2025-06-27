@@ -37,6 +37,10 @@ export const dashboardTranslations = {
     milestones: "milestones",
     loading: "Loading...",
     welcome: "Welcome",
+    welcomeComma: "Welcome,",
+    of: "of",
+    gb: "GB",
+    mb: "MB",
   },
   ar: {
     dashboard: "لوحة التحكم",
@@ -75,5 +79,9 @@ export const dashboardTranslations = {
     milestones: "مراحل",
     loading: "جاري التحميل...",
     welcome: "مرحباً",
+    welcomeComma: "مرحبا يا",
+    of: "من",
+    gb: "جيجا",
+    mb: "ميجا",
   },
 };

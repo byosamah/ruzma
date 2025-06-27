@@ -74,7 +74,7 @@ const Invoices: React.FC = () => {
         <div className="flex justify-between items-center">
           <div>
             <h1 className="text-3xl font-bold text-gray-900">{t('invoices')}</h1>
-            <p className="text-gray-600 mt-1">Manage and track all your invoices in one place</p>
+            <p className="text-gray-600 mt-1">{t('manageTrackInvoices')}</p>
           </div>
           
         </div>
@@ -88,7 +88,7 @@ const Invoices: React.FC = () => {
                   <FileText className="w-5 h-5 text-blue-600" />
                 </div>
                 <div>
-                  <p className="text-sm text-gray-600">Total Invoices</p>
+                  <p className="text-sm text-gray-600">{t('totalInvoices')}</p>
                   <p className="text-2xl font-bold text-gray-900">{totalInvoices}</p>
                 </div>
               </div>
@@ -102,7 +102,7 @@ const Invoices: React.FC = () => {
                   <DollarSign className="w-5 h-5 text-green-600" />
                 </div>
                 <div>
-                  <p className="text-sm text-gray-600">Total Amount</p>
+                  <p className="text-sm text-gray-600">{t('totalAmount')}</p>
                   <p className="text-2xl font-bold text-gray-900">{formatCurrency(totalAmount)}</p>
                 </div>
               </div>
@@ -116,7 +116,7 @@ const Invoices: React.FC = () => {
                   <CheckCircle className="w-5 h-5 text-purple-600" />
                 </div>
                 <div>
-                  <p className="text-sm text-gray-600">Paid Invoices</p>
+                  <p className="text-sm text-gray-600">{t('paidInvoices')}</p>
                   <p className="text-2xl font-bold text-gray-900">{paidInvoices}</p>
                 </div>
               </div>
@@ -130,7 +130,7 @@ const Invoices: React.FC = () => {
                   <Clock className="w-5 h-5 text-orange-600" />
                 </div>
                 <div>
-                  <p className="text-sm text-gray-600">Pending Invoices</p>
+                  <p className="text-sm text-gray-600">{t('pendingInvoices')}</p>
                   <p className="text-2xl font-bold text-gray-900">{pendingInvoices}</p>
                 </div>
               </div>
@@ -142,7 +142,7 @@ const Invoices: React.FC = () => {
         <Card>
           <CardContent className="p-6 space-y-4">
             <div className="flex justify-between items-center">
-              <h2 className="text-xl font-semibold">All Invoices</h2>
+              <h2 className="text-xl font-semibold">{t('allInvoices')}</h2>
             </div>
             
             <InvoiceFilters searchTerm={searchTerm} onSearchChange={setSearchTerm} statusFilter={statusFilter} onStatusChange={setStatusFilter} />

@@ -71,7 +71,7 @@ export const UsageIndicators: React.FC<UsageIndicatorsProps> = ({
           <div className="space-y-3">
             <div className="flex items-center justify-between">
               <span className="text-2xl font-semibold text-gray-900">
-                {usage.projects.current} of {usage.projects.max}
+                {usage.projects.current} {t('of')} {usage.projects.max}
               </span>
               {usage.projects.percentage >= 100 && <Button size="sm" onClick={handleUpgradeClick} className="text-xs px-3 py-1 font-medium bg-gray-900 hover:bg-gray-800 text-slate-50">
                   {React.createElement(getUpgradeButtonIcon(), {
@@ -116,7 +116,7 @@ export const UsageIndicators: React.FC<UsageIndicatorsProps> = ({
             <div className="space-y-3">
               <div className="flex items-center justify-between">
                 <span className="text-2xl font-semibold text-gray-900">
-                  {usage.storage.currentFormatted} of {usage.storage.maxFormatted}
+                  {usage.storage.currentFormatted} {t('of')} {usage.storage.maxFormatted}
                 </span>
                 {usage.storage.percentage >= 100 && <Button size="sm" className="bg-yellow-500 hover:bg-yellow-600 text-black text-xs px-3 py-1 font-medium" onClick={handleUpgradeClick}>
                     {React.createElement(getUpgradeButtonIcon(), {

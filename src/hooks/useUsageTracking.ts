@@ -3,6 +3,7 @@ import { useMemo, useEffect } from 'react';
 import { DatabaseProject } from './projectTypes';
 import { useUserLimits } from './useUserLimits';
 import { useProjectCountSync } from './useProjectCountSync';
+import { useT } from '@/lib/i18n';
 
 interface UsageLimits {
   projects: { current: number; max: number; percentage: number };
@@ -16,6 +17,7 @@ export const useUsageTracking = (
   userProfile: any,
   projects: DatabaseProject[]
 ): UsageLimits => {
+  const t = useT();
   const userType = userProfile?.user_type || 'free';
   const { data: limits, isLoading } = useUserLimits(userType);
   const { syncProjectCount } = useProjectCountSync();
@@ -44,9 +46,9 @@ export const useUsageTracking = (
 
     const formatStorage = (bytes: number) => {
       if (bytes >= 1073741824) { // 1GB
-        return `${(bytes / 1073741824).toFixed(1)} GB`;
+        return `${(bytes / 1073741824).toFixed(1)} ${t('gb')}`;
       } else {
-        return `${(bytes / 1048576).toFixed(0)} MB`;
+        return `${(bytes / 1048576).toFixed(0)} ${t('mb')}`;
       }
     };
 
@@ -77,5 +79,5 @@ export const useUsageTracking = (
       shouldShowUpgrade: projectsPercentage >= 80 || storagePercentage >= 80,
       loading: isLoading,
     };
-  }, [userProfile, projects, limits, isLoading, userType, syncProjectCount]);
+  }, [userProfile, projects, limits, isLoading, userType, syncProjectCount, t]);
 };
