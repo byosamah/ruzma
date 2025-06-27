@@ -1,9 +1,12 @@
 
 import React from 'react';
 import { Button } from '@/components/ui/button';
-import { Edit, Trash2 } from 'lucide-react';
+import { Edit, Trash2, ExternalLink, Send, Copy } from 'lucide-react';
 import { useT } from '@/lib/i18n';
 import { DatabaseProject } from '@/hooks/projectTypes';
+import { toast } from 'sonner';
+import { sendClientLink } from '@/services/clientLinkService';
+import { supabase } from '@/integrations/supabase/client';
 
 interface ProjectHeaderActionsProps {
   project: DatabaseProject;
@@ -20,13 +23,92 @@ const ProjectHeaderActions: React.FC<ProjectHeaderActionsProps> = ({
 }) => {
   const t = useT();
 
+  const handleViewProjectPage = () => {
+    const clientUrl = `https://hub.ruzma.co/client/project/${project.client_access_token}`;
+    window.open(clientUrl, '_blank');
+  };
+
+  const handleCopyClientLink = async () => {
+    const clientUrl = `https://hub.ruzma.co/client/project/${project.client_access_token}`;
+    try {
+      await navigator.clipboard.writeText(clientUrl);
+      toast.success('Client link copied to clipboard');
+    } catch (error) {
+      toast.error('Failed to copy link');
+    }
+  };
+
+  const handleSendClientLink = async () => {
+    if (!project.client_email) {
+      toast.error('No client email address found for this project');
+      return;
+    }
+
+    try {
+      toast.loading('Sending client link...');
+      
+      const { data: { user } } = await supabase.auth.getUser();
+      
+      await sendClientLink({
+        clientEmail: project.client_email,
+        projectName: project.name,
+        freelancerName: 'Your freelancer',
+        clientToken: project.client_access_token,
+        userId: user?.id,
+      });
+
+      toast.dismiss();
+      toast.success('Client link sent successfully!');
+    } catch (error: any) {
+      toast.dismiss();
+      
+      if (error.message && error.message.includes('Domain verification required')) {
+        toast.error('Email domain needs verification. Please contact support.');
+      } else {
+        toast.error('Failed to send client link. Please try again.');
+      }
+      
+      console.error('Error sending client link:', error);
+    }
+  };
+
   return (
-    <div className="flex items-center gap-2">
+    <div className="flex items-center gap-2 flex-wrap">
+      <Button
+        variant="ghost"
+        size="sm"
+        onClick={handleViewProjectPage}
+        className="text-gray-600 hover:text-gray-900 hover:bg-gray-50"
+      >
+        <ExternalLink className="w-4 h-4 mr-2" />
+        View Client Page
+      </Button>
+      
+      <Button
+        variant="ghost"
+        size="sm"
+        onClick={handleSendClientLink}
+        className="text-gray-600 hover:text-gray-900 hover:bg-gray-50"
+      >
+        <Send className="w-4 h-4 mr-2" />
+        Send to Client
+      </Button>
+      
+      <Button
+        variant="ghost"
+        size="sm"
+        onClick={handleCopyClientLink}
+        className="text-gray-600 hover:text-gray-900 hover:bg-gray-50"
+      >
+        <Copy className="w-4 h-4 mr-2" />
+        Copy Link
+      </Button>
+      
       <Button
         variant="ghost"
         size="sm"
         onClick={onEditClick}
-        className="text-gray-600 hover:text-gray-900"
+        className="text-gray-600 hover:text-gray-900 hover:bg-gray-50"
       >
         <Edit className="w-4 h-4 mr-2" />
         {t('edit')}

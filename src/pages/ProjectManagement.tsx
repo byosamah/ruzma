@@ -4,7 +4,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import Layout from "@/components/Layout";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { ArrowLeft, Calendar, DollarSign, CheckCircle2 } from "lucide-react";
+import { Calendar, DollarSign, CheckCircle2 } from "lucide-react";
 import { useT, TranslationKey } from "@/lib/i18n";
 import { useProjectManagement } from "@/hooks/useProjectManagement";
 import { useProjects } from "@/hooks/useProjects";
@@ -54,8 +54,8 @@ const ProjectManagement: React.FC = () => {
   if (loading) {
     return (
       <Layout>
-        <div className="flex items-center justify-center min-h-[50vh] sm:min-h-[60vh]">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-300"></div>
+        <div className="flex items-center justify-center min-h-[50vh]">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-200"></div>
         </div>
       </Layout>
     );
@@ -67,14 +67,14 @@ const ProjectManagement: React.FC = () => {
     return (
       <Layout user={profile || user}>
         <div className="flex items-center justify-center min-h-[50vh]">
-          <div className="text-center">
-            <div className="text-6xl mb-4">📁</div>
-            <h2 className="text-xl font-medium text-gray-900 mb-2">{t('projectNotFound')}</h2>
-            <p className="text-gray-500 mb-6">{t('projectNotFoundDesc')}</p>
+          <div className="text-center space-y-4">
+            <div className="text-4xl">📁</div>
+            <h2 className="text-lg font-medium text-gray-900">{t('projectNotFound')}</h2>
+            <p className="text-gray-500 text-sm">{t('projectNotFoundDesc')}</p>
             <Button 
               onClick={() => navigate("/dashboard")} 
               variant="outline"
-              className="text-sm"
+              size="sm"
             >
               {t('goToDashboard')}
             </Button>
@@ -90,20 +90,7 @@ const ProjectManagement: React.FC = () => {
 
   return (
     <Layout user={profile || user}>
-      <div className="max-w-4xl mx-auto space-y-8">
-        {/* Back Navigation */}
-        <div className="flex items-center">
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={handleBackClick}
-            className="text-gray-500 hover:text-gray-700 -ml-2"
-          >
-            <ArrowLeft className="w-4 h-4 mr-1" />
-            {t('backToProjects')}
-          </Button>
-        </div>
-
+      <div className="max-w-5xl mx-auto space-y-8">
         {/* Project Header */}
         <div className="space-y-6">
           <ProjectHeader 
@@ -115,13 +102,13 @@ const ProjectManagement: React.FC = () => {
           />
         </div>
 
-        {/* Project Stats - Minimal Cards */}
+        {/* Project Stats */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <div className="bg-gray-50 rounded-lg p-4">
+          <div className="bg-gray-50/50 rounded-lg p-5 border border-gray-100">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-gray-500">Progress</p>
-                <p className="text-lg font-medium text-gray-900">
+                <p className="text-sm text-gray-500 mb-1">Progress</p>
+                <p className="text-xl font-medium text-gray-900">
                   {completedMilestones}/{project.milestones.length}
                 </p>
               </div>
@@ -129,11 +116,11 @@ const ProjectManagement: React.FC = () => {
             </div>
           </div>
 
-          <div className="bg-gray-50 rounded-lg p-4">
+          <div className="bg-gray-50/50 rounded-lg p-5 border border-gray-100">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-gray-500">Total Value</p>
-                <p className="text-lg font-medium text-gray-900">
+                <p className="text-sm text-gray-500 mb-1">Total Value</p>
+                <p className="text-xl font-medium text-gray-900">
                   {userCurrency.formatCurrency(totalValue)}
                 </p>
               </div>
@@ -141,11 +128,11 @@ const ProjectManagement: React.FC = () => {
             </div>
           </div>
 
-          <div className="bg-gray-50 rounded-lg p-4">
+          <div className="bg-gray-50/50 rounded-lg p-5 border border-gray-100">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-gray-500">Completed</p>
-                <p className="text-lg font-medium text-gray-900">
+                <p className="text-sm text-gray-500 mb-1">Completed</p>
+                <p className="text-xl font-medium text-gray-900">
                   {userCurrency.formatCurrency(completedValue)}
                 </p>
               </div>
@@ -157,8 +144,10 @@ const ProjectManagement: React.FC = () => {
         {/* Milestones Section */}
         <div className="space-y-6">
           <div className="flex items-center justify-between">
-            <h2 className="text-xl font-medium text-gray-900">{t('projectMilestones')}</h2>
-            <span className="text-sm text-gray-500">{project.milestones.length} {project.milestones.length === 1 ? 'milestone' : 'milestones'}</span>
+            <h2 className="text-xl font-medium text-gray-900">Milestones</h2>
+            <span className="text-sm text-gray-500">
+              {project.milestones.length} {project.milestones.length === 1 ? 'milestone' : 'milestones'}
+            </span>
           </div>
           
           <MilestoneList 
