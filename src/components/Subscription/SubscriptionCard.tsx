@@ -47,6 +47,8 @@ export const SubscriptionCard: React.FC<SubscriptionCardProps> = ({
       <SubscriptionCardBadge 
         isCurrentPlan={isCurrentPlan}
         isPopular={isPopular}
+        currentUserType={currentUserType}
+        planId={plan.id}
       />
       
       <SubscriptionCardHeader
