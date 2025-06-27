@@ -86,6 +86,12 @@ export const projectTranslations = {
     copyClientLink: "Copy Client Link",
     clientEmail: "Client Email",
     clientEmailPlaceholder: "Enter client email (optional)",
+    // Missing keys that were causing errors
+    mustBeLoggedIn: "You must be logged in to create a project",
+    failedToCreateProject: "Failed to create project",
+    failedToCreateMilestones: "Failed to create milestones",
+    projectCreatedSuccessfully: "Project created successfully",
+    unexpectedError: "An unexpected error occurred",
   },
   ar: {
     loadingProject: "جاري تحميل المشروع...",
@@ -173,5 +179,11 @@ export const projectTranslations = {
     copyClientLink: "نسخ رابط العميل",
     clientEmail: "بريد العميل الإلكتروني",
     clientEmailPlaceholder: "أدخل بريد العميل الإلكتروني (اختياري)",
+    // Missing keys that were causing errors
+    mustBeLoggedIn: "يجب أن تكون مسجل الدخول لإنشاء مشروع",
+    failedToCreateProject: "فشل في إنشاء المشروع",
+    failedToCreateMilestones: "فشل في إنشاء المراحل",
+    projectCreatedSuccessfully: "تم إنشاء المشروع بنجاح",
+    unexpectedError: "حدث خطأ غير متوقع",
   },
 };
