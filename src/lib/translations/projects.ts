@@ -1,4 +1,3 @@
-
 export const projectTranslations = {
   en: {
     loadingProject: "Loading project...",
@@ -103,6 +102,11 @@ export const projectTranslations = {
     addNewClient: "Add new client",
     startDate: "Start Date",
     endDate: "End Date",
+    // New translations for Payment & Delivery Settings
+    paymentDeliverySettings: "Payment & Delivery Settings",
+    requirePaymentProof: "Require Payment Proof",
+    paymentProofDescription: "When enabled, clients must upload payment proof before they can download deliverables. This helps ensure you receive payment before delivery.",
+    saveAsTemplateLabel: "Save this project structure as a template for future use",
   },
   ar: {
     loadingProject: "جاري تحميل المشروع...",
@@ -207,5 +211,10 @@ export const projectTranslations = {
     addNewClient: "إضافة عميل جديد",
     startDate: "تاريخ البدء",
     endDate: "تاريخ الانتهاء",
+    // New Arabic translations for Payment & Delivery Settings
+    paymentDeliverySettings: "إعدادات الدفع والتسليم",
+    requirePaymentProof: "طلب إثبات الدفع",
+    paymentProofDescription: "عند التفعيل، يجب على العملاء رفع إثبات الدفع قبل تنزيل التسليمات. هذا يساعد في ضمان استلام الدفع قبل التسليم.",
+    saveAsTemplateLabel: "احفظ هيكل هذا المشروع كقالب للاستخدام المستقبلي",
   },
 };

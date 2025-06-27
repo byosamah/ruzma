@@ -16,7 +16,7 @@ const PaymentProofSettings = () => {
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           <Shield className="w-5 h-5 text-blue-600" />
-          Payment & Delivery Settings
+          {t('paymentDeliverySettings')}
         </CardTitle>
       </CardHeader>
       <CardContent>
@@ -27,10 +27,10 @@ const PaymentProofSettings = () => {
             <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
               <div className="space-y-0.5">
                 <FormLabel className="text-base font-medium">
-                  Require Payment Proof
+                  {t('requirePaymentProof')}
                 </FormLabel>
                 <FormDescription className="text-sm text-slate-600">
-                  When enabled, clients must upload payment proof before they can download deliverables. This helps ensure you receive payment before delivery.
+                  {t('paymentProofDescription')}
                 </FormDescription>
               </div>
               <FormControl>
