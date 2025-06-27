@@ -7,8 +7,10 @@ import { supabase } from '@/integrations/supabase/client';
 import { useState, useEffect } from 'react';
 import { User } from '@supabase/supabase-js';
 import { useUserCurrency } from '@/hooks/useUserCurrency';
+import { useT } from '@/lib/i18n';
 
 export const SubscriptionPlans: React.FC = () => {
+  const t = useT();
   const { createCheckout, isLoading, getPlansForCurrency } = useSubscription();
   const [user, setUser] = useState<User | null>(null);
   const [userProfile, setUserProfile] = useState<any>(null);
@@ -69,9 +71,9 @@ export const SubscriptionPlans: React.FC = () => {
 
   const getPopularText = (currentUserType: string, planId: string) => {
     if (currentUserType === 'plus' && planId === 'pro') {
-      return 'Upgrade your work';
+      return t('upgradeNow');
     }
-    return 'Most Popular';
+    return t('mostPopular');
   };
 
   const currentPlanId = userProfile?.user_type ? getCurrentPlanId(userProfile.user_type) : 'free';
@@ -81,9 +83,9 @@ export const SubscriptionPlans: React.FC = () => {
     return (
       <div className="space-y-6">
         <div className="text-center">
-          <h2 className="text-3xl font-bold">Choose Your Plan</h2>
+          <h2 className="text-3xl font-bold">{t('choosePlan')}</h2>
           <p className="text-muted-foreground mt-2">
-            Loading your current subscription...
+            {t('loading')}...
           </p>
         </div>
       </div>

@@ -53,6 +53,7 @@ export const plansTranslations = {
     onboarding: "Onboarding",
     training: "Training",
     sla: "SLA guarantee",
+    loading: "Loading",
   },
   ar: {
     choosePlan: "اختر خطتك",
@@ -107,5 +108,6 @@ export const plansTranslations = {
     onboarding: "التدريب التمهيدي",
     training: "التدريب",
     sla: "ضمان مستوى الخدمة",
+    loading: "جاري التحميل",
   },
 };

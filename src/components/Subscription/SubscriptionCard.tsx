@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -6,6 +7,7 @@ import { Check, Crown } from 'lucide-react';
 import { SubscriptionPlan } from '@/hooks/useSubscription';
 import { CurrencyCode, formatCurrency } from '@/lib/currency';
 import { useLanguage } from '@/contexts/LanguageContext';
+import { useT } from '@/lib/i18n';
 
 interface SubscriptionCardProps {
   plan: SubscriptionPlan;
@@ -29,6 +31,7 @@ export const SubscriptionCard: React.FC<SubscriptionCardProps> = ({
   isLoading = false
 }) => {
   const { language } = useLanguage();
+  const t = useT();
   
   const getCardClassName = () => {
     if (isCurrentPlan) {
@@ -44,12 +47,12 @@ export const SubscriptionCard: React.FC<SubscriptionCardProps> = ({
     if (isCurrentPlan) {
       return (
         <Badge className="absolute -top-2 left-1/2 transform -translate-x-1/2 bg-green-500 hover:bg-green-600">
-          Current Plan
+          {t('currentPlan')}
         </Badge>
       );
     }
     if (isPopular) {
-      const badgeText = plan.id === 'plus' ? 'Recommended' : 'Coming Soon';
+      const badgeText = plan.id === 'plus' ? t('recommended') : t('comingSoon');
       return (
         <Badge className="absolute -top-2 left-1/2 transform -translate-x-1/2 bg-primary">
           {badgeText}
@@ -86,18 +89,18 @@ export const SubscriptionCard: React.FC<SubscriptionCardProps> = ({
 
   const getButtonText = () => {
     if (isCurrentPlan) {
-      return 'Current Plan';
+      return t('currentPlan');
     }
     if (isLoading) {
-      return 'Processing...';
+      return t('processing');
     }
     if (isDowngrade()) {
-      return 'Downgrade';
+      return t('downgrade');
     }
     if (isUpgrade()) {
-      return 'Upgrade';
+      return t('upgrade');
     }
-    return 'Choose Plan';
+    return t('choosePlanButton');
   };
 
   const getButtonVariant = () => {
@@ -117,20 +120,90 @@ export const SubscriptionCard: React.FC<SubscriptionCardProps> = ({
     return isLoading || isCurrentPlan || plan.id === 'pro';
   };
 
+  // Translate plan names
+  const getPlanName = (planId: string) => {
+    switch (planId) {
+      case 'free':
+        return t('free');
+      case 'plus':
+        return t('plus');
+      case 'pro':
+        return t('pro');
+      default:
+        return plan.name;
+    }
+  };
+
+  // Translate plan features
+  const translateFeatures = (features: string[]) => {
+    return features.map(feature => {
+      // Handle project count features
+      if (feature.includes('project') && !feature.includes('projects')) {
+        return `1 ${t('project')}`;
+      }
+      if (feature.includes('projects')) {
+        const match = feature.match(/(\d+)\s+projects/);
+        if (match) {
+          return `${match[1]} ${t('projects')}`;
+        }
+        if (feature.includes('Unlimited')) {
+          return t('unlimitedProjects');
+        }
+      }
+      
+      // Handle storage features
+      if (feature.includes('storage') || feature.includes('GB')) {
+        const match = feature.match(/(\d+)GB/);
+        if (match) {
+          return `${match[1]}GB ${t('storage')}`;
+        }
+      }
+      
+      // Handle support features
+      if (feature.includes('Basic support')) {
+        return t('basicSupport');
+      }
+      if (feature.includes('Priority support')) {
+        return t('prioritySupport');
+      }
+      
+      // Handle analytics features
+      if (feature.includes('Standard analytics')) {
+        return t('standardAnalytics');
+      }
+      if (feature.includes('Advanced analytics')) {
+        return t('advancedAnalytics');
+      }
+      
+      // Handle sharing features
+      if (feature.includes('Links-sharing only')) {
+        return t('linksSharing');
+      }
+      if (feature.includes('File uploads')) {
+        return t('fileUploads');
+      }
+      if (feature.includes('Custom branding')) {
+        return t('customBranding');
+      }
+      
+      return feature;
+    });
+  };
+
   return (
     <Card className={getCardClassName()}>
       {getBadge()}
       
       <CardHeader className="text-center">
-        <CardTitle className="text-xl font-bold">{plan.name}</CardTitle>
+        <CardTitle className="text-xl font-bold">{getPlanName(plan.id)}</CardTitle>
         <div className="mt-2">
           <span className="text-3xl font-bold">{formatCurrency(plan.price, currency, language)}</span>
-          <span className="text-muted-foreground">/{plan.interval}</span>
+          <span className="text-muted-foreground">/{plan.interval === 'month' ? t('month') : t('year')}</span>
         </div>
       </CardHeader>
 
       <CardContent className="space-y-3">
-        {plan.features.map((feature, index) => (
+        {translateFeatures(plan.features).map((feature, index) => (
           <div key={index} className="flex items-center">
             <Check className="h-4 w-4 text-green-500 mr-2 flex-shrink-0" />
             <span className="text-sm">{feature}</span>
