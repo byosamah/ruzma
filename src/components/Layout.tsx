@@ -38,7 +38,7 @@ const Layout: React.FC<LayoutProps> = ({
     return (
       <div className="min-h-screen bg-white">
         <MainContent>
-          <div className={`${isMobile ? 'px-4 py-4' : 'px-6 py-6'}`}>
+          <div className={`${isMobile ? 'px-3 py-3' : 'px-6 py-6'} max-w-full overflow-x-hidden`}>
             {children}
           </div>
         </MainContent>
@@ -51,15 +51,15 @@ const Layout: React.FC<LayoutProps> = ({
   return (
     <div className="min-h-screen bg-white">
       <SidebarProvider>
-        <div className="min-h-screen flex w-full">
+        <div className="min-h-screen flex w-full max-w-full overflow-x-hidden">
           <AppSidebar user={user} onSignOut={onSignOutHandler} />
-          <SidebarInset className="flex-1 min-w-0">
-            <div className={`${isMobile ? 'p-3' : 'p-4'}`}>
-              <div className="mb-4">
-                <SidebarTrigger className={`${isMobile ? 'min-h-[44px] min-w-[44px]' : ''} touch-manipulation`} />
+          <SidebarInset className="flex-1 min-w-0 max-w-full">
+            <div className={`${isMobile ? 'p-2' : 'p-4'} max-w-full`}>
+              <div className="mb-3 md:mb-4">
+                <SidebarTrigger className={`${isMobile ? 'min-h-[44px] min-w-[44px] touch-manipulation' : ''}`} />
               </div>
               <MainContent>
-                <div className={`${isMobile ? 'space-y-4' : 'space-y-6'}`}>
+                <div className={`${isMobile ? 'space-y-3 max-w-full overflow-x-hidden' : 'space-y-6'}`}>
                   {children}
                 </div>
               </MainContent>

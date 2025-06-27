@@ -48,8 +48,8 @@ const DashboardProjectList: React.FC<DashboardProjectListProps> = ({
     const button = (
       <Button 
         onClick={onNewProject} 
-        size="lg" 
-        className="mt-4 w-full sm:w-auto"
+        size={isMobile ? "default" : "lg"}
+        className={`mt-4 ${isMobile ? 'w-full min-h-[44px] touch-manipulation' : 'w-full sm:w-auto'}`}
         disabled={!canCreateProject}
       >
         <Plus className="w-5 h-5 mr-2" />
@@ -74,10 +74,10 @@ const DashboardProjectList: React.FC<DashboardProjectListProps> = ({
   };
 
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle className="flex flex-col space-y-4 sm:flex-row sm:items-center sm:justify-between sm:space-y-0">
-          <span>{t('recentProjects')}</span>
+    <Card className="max-w-full overflow-hidden">
+      <CardHeader className={`${isMobile ? 'p-4' : 'p-6'}`}>
+        <CardTitle className="flex flex-col space-y-3 sm:flex-row sm:items-center sm:justify-between sm:space-y-0">
+          <span className="text-base sm:text-lg">{t('recentProjects')}</span>
           {projects.length > 0 && (
             <Tooltip>
               <TooltipTrigger asChild>
@@ -86,7 +86,7 @@ const DashboardProjectList: React.FC<DashboardProjectListProps> = ({
                   size="sm" 
                   onClick={onNewProject}
                   disabled={!canCreateProject}
-                  className={`${!canCreateProject ? 'opacity-50 cursor-not-allowed' : ''} w-full sm:w-auto`}
+                  className={`${!canCreateProject ? 'opacity-50 cursor-not-allowed' : ''} ${isMobile ? 'w-full min-h-[44px] touch-manipulation' : 'w-full sm:w-auto'}`}
                 >
                   <Plus className="w-4 h-4 mr-2" />
                   {t('newProject')}
@@ -101,14 +101,14 @@ const DashboardProjectList: React.FC<DashboardProjectListProps> = ({
           )}
         </CardTitle>
       </CardHeader>
-      <CardContent>
+      <CardContent className={`${isMobile ? 'p-4 pt-0' : 'p-6 pt-0'}`}>
         {projects.length === 0 ? (
           <div className="text-center py-8">
             <FileText className="w-16 h-16 text-slate-300 mx-auto mb-4" />
             <h3 className="text-lg font-medium text-slate-600 mb-2">
               {t('noProjectsYet')}
             </h3>
-            <p className="text-slate-400 mb-4 text-sm sm:text-base">{t('createFirstProjectDesc')}</p>
+            <p className="text-slate-400 mb-4 text-sm sm:text-base px-4">{t('createFirstProjectDesc')}</p>
             <EmptyProjectsButton />
           </div>
         ) : (
@@ -126,42 +126,42 @@ const DashboardProjectList: React.FC<DashboardProjectListProps> = ({
               return (
                 <div
                   key={project.id}
-                  className="border border-slate-200 rounded-lg p-4 hover:bg-slate-50 transition-colors"
+                  className="border border-slate-200 rounded-lg p-3 sm:p-4 hover:bg-slate-50 transition-colors max-w-full overflow-hidden"
                 >
                   <div className={`${isMobile ? 'space-y-3' : 'flex items-start justify-between'}`}>
-                    <div className="flex-1">
-                      <h4 className="font-medium text-slate-800 mb-1 text-sm sm:text-base">
+                    <div className="flex-1 min-w-0">
+                      <h4 className="font-medium text-slate-800 mb-1 text-sm sm:text-base break-words">
                         {project.name}
                       </h4>
-                      <p className="text-sm text-slate-600 mb-3 line-clamp-2">
+                      <p className="text-sm text-slate-600 mb-3 line-clamp-2 break-words">
                         {project.brief}
                       </p>
-                      <div className={`${isMobile ? 'grid grid-cols-1 gap-2' : 'flex items-center space-x-4'} text-sm text-slate-500`}>
-                        <div className="flex items-center">
-                          <Calendar className="w-4 h-4 mr-1" />
-                          <span className="text-xs sm:text-sm">
+                      <div className={`${isMobile ? 'grid grid-cols-1 gap-2' : 'flex items-center flex-wrap gap-4'} text-sm text-slate-500`}>
+                        <div className="flex items-center min-w-0">
+                          <Calendar className="w-4 h-4 mr-1 flex-shrink-0" />
+                          <span className="text-xs sm:text-sm truncate">
                             {new Date(project.created_at).toLocaleDateString()}
                           </span>
                         </div>
-                        <div className="flex items-center">
-                          <FileText className="w-4 h-4 mr-1" />
+                        <div className="flex items-center min-w-0">
+                          <FileText className="w-4 h-4 mr-1 flex-shrink-0" />
                           <span className="text-xs sm:text-sm">
                             {completedMilestones}/{totalMilestones} {t('completed')}
                           </span>
                         </div>
-                        <div className="flex items-center">
-                          <DollarSign className="w-4 h-4 mr-1" />
-                          <span className="text-xs sm:text-sm">
+                        <div className="flex items-center min-w-0">
+                          <DollarSign className="w-4 h-4 mr-1 flex-shrink-0" />
+                          <span className="text-xs sm:text-sm truncate">
                             {totalValue.toFixed(2)} {currency}
                           </span>
                         </div>
                       </div>
                     </div>
-                    <div className={`${isMobile ? 'flex justify-between items-center pt-2 border-t' : 'flex items-center space-x-2 ml-4'}`}>
+                    <div className={`${isMobile ? 'flex justify-between items-center pt-3 border-t border-slate-100' : 'flex items-center space-x-2 ml-4 flex-shrink-0'}`}>
                       <Badge
                         className={`${getStatusColor(
                           project.milestones[0]?.status || 'pending'
-                        )} text-xs`}
+                        )} text-xs flex-shrink-0`}
                       >
                         {project.milestones[0]?.status || 'pending'}
                       </Badge>
@@ -170,7 +170,7 @@ const DashboardProjectList: React.FC<DashboardProjectListProps> = ({
                           variant="ghost"
                           size="sm"
                           onClick={() => onEdit(project.id)}
-                          className="h-8 w-8 p-0"
+                          className={`${isMobile ? 'min-h-[44px] min-w-[44px] touch-manipulation' : 'h-8 w-8'} p-0`}
                         >
                           <Edit className="w-4 h-4" />
                         </Button>
@@ -178,7 +178,7 @@ const DashboardProjectList: React.FC<DashboardProjectListProps> = ({
                           variant="ghost"
                           size="sm"
                           onClick={() => onDelete(project.id)}
-                          className="text-red-500 hover:text-red-700 h-8 w-8 p-0"
+                          className={`text-red-500 hover:text-red-700 ${isMobile ? 'min-h-[44px] min-w-[44px] touch-manipulation' : 'h-8 w-8'} p-0`}
                         >
                           <Trash2 className="w-4 h-4" />
                         </Button>

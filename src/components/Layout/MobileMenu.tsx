@@ -36,20 +36,20 @@ const MobileMenu: React.FC<MobileMenuProps> = ({
   if (!user) return null;
 
   return (
-    <div className="flex items-center space-x-2">
+    <div className="flex items-center space-x-1 sm:space-x-2">
       <NotificationBell user={user} notificationsData={notificationsData} />
       
       <Sheet open={mobileMenuOpen} onOpenChange={onToggle}>
         <SheetTrigger asChild>
-          <Button variant="ghost" size="icon" className="h-10 w-10">
+          <Button variant="ghost" size="icon" className="h-10 w-10 touch-manipulation min-h-[44px] min-w-[44px]">
             {mobileMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
           </Button>
         </SheetTrigger>
-        <SheetContent side="right" className="w-80 sm:w-96">
+        <SheetContent side="right" className="w-80 sm:w-96 max-w-[90vw]">
           <SheetHeader className="pb-4">
-            <SheetTitle className="text-lg">Menu</SheetTitle>
+            <SheetTitle className="text-lg text-left">Menu</SheetTitle>
           </SheetHeader>
-          <div className="mt-6">
+          <div className="mt-6 space-y-4">
             <NavigationMenu
               user={user}
               userProfile={userProfile}
