@@ -4,12 +4,14 @@ import { Card, CardContent } from '@/components/ui/card';
 import { format } from 'date-fns';
 import { InvoiceFormData } from './types';
 import { getCurrencySymbol, CurrencyCode } from '@/lib/currency';
+import { useT } from '@/lib/i18n';
 
 interface InvoicePreviewProps {
   invoiceData: InvoiceFormData;
 }
 
 const InvoicePreview: React.FC<InvoicePreviewProps> = ({ invoiceData }) => {
+  const t = useT();
   const currencySymbol = getCurrencySymbol(invoiceData.currency as CurrencyCode);
 
   return (
@@ -19,27 +21,27 @@ const InvoicePreview: React.FC<InvoicePreviewProps> = ({ invoiceData }) => {
           {/* Header */}
           <div className="flex justify-between items-start mb-8">
             <div>
-              <h1 className="text-3xl font-bold mb-6">Invoice</h1>
+              <h1 className="text-3xl font-bold mb-6">{t('invoice')}</h1>
               <div className="space-y-2 text-sm">
                 <div className="flex">
-                  <span className="text-gray-400 w-32">Invoice ID:</span>
-                  <span className="text-orange-400">{invoiceData.invoiceId || 'Add invoice ID'}</span>
+                  <span className="text-gray-400 w-32">{t('invoiceId')}:</span>
+                  <span className="text-orange-400">{invoiceData.invoiceId || t('addInvoiceId')}</span>
                 </div>
                 <div className="flex">
-                  <span className="text-gray-400 w-32">Invoice Date:</span>
+                  <span className="text-gray-400 w-32">{t('invoiceDate')}:</span>
                   <span>{format(invoiceData.invoiceDate, 'MM/dd/yyyy')}</span>
                 </div>
                 <div className="flex">
-                  <span className="text-gray-400 w-32">Due date:</span>
+                  <span className="text-gray-400 w-32">{t('dueDate')}:</span>
                   <span>{format(invoiceData.dueDate, 'MM/dd/yyyy')}</span>
                 </div>
                 <div className="flex">
-                  <span className="text-gray-400 w-32">Purchase order:</span>
-                  <span className="text-gray-400">{invoiceData.purchaseOrder || 'Add purchase order number'}</span>
+                  <span className="text-gray-400 w-32">{t('purchaseOrder')}:</span>
+                  <span className="text-gray-400">{invoiceData.purchaseOrder || t('addPurchaseOrderNumber')}</span>
                 </div>
                 <div className="flex">
-                  <span className="text-gray-400 w-32">Payment terms:</span>
-                  <span className="text-gray-400">{invoiceData.paymentTerms || 'Add payment terms'}</span>
+                  <span className="text-gray-400 w-32">{t('paymentTerms')}:</span>
+                  <span className="text-gray-400">{invoiceData.paymentTerms || t('addPaymentTerms')}</span>
                 </div>
               </div>
             </div>
@@ -50,7 +52,7 @@ const InvoicePreview: React.FC<InvoicePreviewProps> = ({ invoiceData }) => {
               ) : (
                 <div className="text-center">
                   <div className="w-8 h-8 bg-gray-600 rounded mx-auto mb-1"></div>
-                  <span className="text-xs text-gray-500">Add logo</span>
+                  <span className="text-xs text-gray-500">{t('addLogo')}</span>
                 </div>
               )}
             </div>
@@ -59,17 +61,17 @@ const InvoicePreview: React.FC<InvoicePreviewProps> = ({ invoiceData }) => {
           {/* Billing Information */}
           <div className="grid md:grid-cols-2 gap-8 mb-8">
             <div>
-              <h3 className="font-medium mb-2">Billed to:</h3>
+              <h3 className="font-medium mb-2">{t('billedTo')}:</h3>
               <div className="text-sm text-gray-300">
-                <div className="mb-1">{invoiceData.billedTo.name || 'Client name'}</div>
-                <div className="whitespace-pre-line">{invoiceData.billedTo.address || 'Address'}</div>
+                <div className="mb-1">{invoiceData.billedTo.name || t('clientName')}</div>
+                <div className="whitespace-pre-line">{invoiceData.billedTo.address || t('address')}</div>
               </div>
             </div>
             <div>
-              <h3 className="font-medium mb-2">Pay to:</h3>
+              <h3 className="font-medium mb-2">{t('payTo')}:</h3>
               <div className="text-sm text-gray-300">
-                <div className="mb-1">{invoiceData.payTo.name || 'Your name'}</div>
-                <div className="whitespace-pre-line">{invoiceData.payTo.address || 'Address'}</div>
+                <div className="mb-1">{invoiceData.payTo.name || t('yourName')}</div>
+                <div className="whitespace-pre-line">{invoiceData.payTo.address || t('address')}</div>
               </div>
             </div>
           </div>
@@ -77,7 +79,7 @@ const InvoicePreview: React.FC<InvoicePreviewProps> = ({ invoiceData }) => {
           {/* Currency */}
           <div className="flex justify-end mb-6">
             <div className="text-sm">
-              <span className="text-gray-400 mr-4">SET CURRENCY</span>
+              <span className="text-gray-400 mr-4">{t('setCurrency').toUpperCase()}</span>
               <span className="bg-gray-800 px-3 py-1 rounded">{invoiceData.currency}</span>
             </div>
           </div>
@@ -85,15 +87,15 @@ const InvoicePreview: React.FC<InvoicePreviewProps> = ({ invoiceData }) => {
           {/* Line Items */}
           <div className="mb-8">
             <div className="grid grid-cols-12 gap-4 text-sm text-gray-400 border-b border-gray-700 pb-2 mb-4">
-              <div className="col-span-6">DESCRIPTION</div>
-              <div className="col-span-3 text-center">QUANTITY</div>
-              <div className="col-span-3 text-right">AMOUNT</div>
+              <div className="col-span-6">{t('description').toUpperCase()}</div>
+              <div className="col-span-3 text-center">{t('quantity').toUpperCase()}</div>
+              <div className="col-span-3 text-right">{t('amount').toUpperCase()}</div>
             </div>
 
             {invoiceData.lineItems.map((item) => (
               <div key={item.id} className="grid grid-cols-12 gap-4 text-sm mb-3">
                 <div className="col-span-6">
-                  {item.description || 'Description'}
+                  {item.description || t('description')}
                 </div>
                 <div className="col-span-3 text-center">
                   {item.quantity}
@@ -108,20 +110,20 @@ const InvoicePreview: React.FC<InvoicePreviewProps> = ({ invoiceData }) => {
           {/* Totals */}
           <div className="space-y-3">
             <div className="flex justify-between text-sm">
-              <span className="text-gray-400">SUBTOTAL</span>
+              <span className="text-gray-400">{t('subtotal').toUpperCase()}</span>
               <span>{invoiceData.subtotal.toFixed(2)} {invoiceData.currency}</span>
             </div>
             
             {invoiceData.tax > 0 && (
               <div className="flex justify-between text-sm">
-                <span className="text-gray-400">TAX</span>
+                <span className="text-gray-400">{t('tax').toUpperCase()}</span>
                 <span>{invoiceData.tax.toFixed(2)} {invoiceData.currency}</span>
               </div>
             )}
 
             <div className="border-t border-gray-700 pt-3">
               <div className="flex justify-between items-center">
-                <span className="font-medium">TOTAL</span>
+                <span className="font-medium">{t('total').toUpperCase()}</span>
                 <span className="text-xl font-bold">{invoiceData.total.toFixed(2)} {invoiceData.currency}</span>
               </div>
             </div>

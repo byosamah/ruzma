@@ -8,8 +8,10 @@ import { useInvoiceContext } from '@/contexts/InvoiceContext';
 import InvoiceForm from '@/components/CreateInvoice/InvoiceForm';
 import InvoicePreview from '@/components/CreateInvoice/InvoicePreview';
 import { InvoiceFormData } from '@/components/CreateInvoice/types';
+import { useT } from '@/lib/i18n';
 
 const CreateInvoice: React.FC = () => {
+  const t = useT();
   const navigate = useNavigate();
   const { user, loading: authLoading, authChecked } = useAuth();
   const { profile, loading: profileLoading } = useUserProfile(user);
@@ -92,8 +94,8 @@ const CreateInvoice: React.FC = () => {
       <div className="space-y-6">
         {/* Header */}
         <div>
-          <h1 className="text-3xl font-bold text-gray-900">Create Invoice</h1>
-          <p className="text-gray-600 mt-1">Create and send professional invoices to your clients</p>
+          <h1 className="text-3xl font-bold text-gray-900">{t('createInvoice')}</h1>
+          <p className="text-gray-600 mt-1">{t('createInvoiceDescription')}</p>
         </div>
 
         {/* Main Content */}

@@ -5,6 +5,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { InvoiceFormData } from './types';
 import { useAuth } from '@/hooks/dashboard/useAuth';
 import { useProjects } from '@/hooks/useProjects';
+import { useT } from '@/lib/i18n';
 
 interface ProjectSelectionProps {
   invoiceData: InvoiceFormData;
@@ -15,6 +16,7 @@ const ProjectSelection: React.FC<ProjectSelectionProps> = ({
   invoiceData,
   updateField
 }) => {
+  const t = useT();
   const { user } = useAuth();
   const { projects, loading } = useProjects(user);
 
@@ -27,17 +29,17 @@ const ProjectSelection: React.FC<ProjectSelectionProps> = ({
     <Card>
       <CardContent className="pt-6">
         <div className="space-y-2">
-          <label className="text-sm font-medium">Project</label>
+          <label className="text-sm font-medium">{t('project')}</label>
           <Select
             value={invoiceData.projectId || ''}
             onValueChange={(value) => updateField('projectId', value)}
           >
             <SelectTrigger>
-              <SelectValue placeholder="Select a project" />
+              <SelectValue placeholder={t('selectProject')} />
             </SelectTrigger>
             <SelectContent>
               {loading ? (
-                <SelectItem value="loading" disabled>Loading projects...</SelectItem>
+                <SelectItem value="loading" disabled>{t('loadingProjects')}</SelectItem>
               ) : activeProjects.length > 0 ? (
                 activeProjects.map((project) => (
                   <SelectItem key={project.id} value={project.id}>
@@ -45,7 +47,7 @@ const ProjectSelection: React.FC<ProjectSelectionProps> = ({
                   </SelectItem>
                 ))
               ) : (
-                <SelectItem value="no-projects" disabled>No active projects found</SelectItem>
+                <SelectItem value="no-projects" disabled>{t('noActiveProjectsFound')}</SelectItem>
               )}
             </SelectContent>
           </Select>

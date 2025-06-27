@@ -2,6 +2,7 @@
 import React from 'react';
 import { Button } from '@/components/ui/button';
 import { FileText } from 'lucide-react';
+import { useT } from '@/lib/i18n';
 
 interface InvoiceActionsProps {
   onSend: () => void;
@@ -12,6 +13,8 @@ const InvoiceActions: React.FC<InvoiceActionsProps> = ({
   onSend,
   isLoading = false
 }) => {
+  const t = useT();
+
   return (
     <div className="flex justify-end">
       <Button 
@@ -20,7 +23,7 @@ const InvoiceActions: React.FC<InvoiceActionsProps> = ({
         disabled={isLoading}
       >
         <FileText className="w-4 h-4 mr-2" />
-        Create Invoice
+        {t('createInvoice')}
       </Button>
     </div>
   );

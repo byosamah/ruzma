@@ -1,3 +1,4 @@
+
 import React, { useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -10,6 +11,7 @@ import { cn } from '@/lib/utils';
 import { InvoiceFormData } from './types';
 import { useBranding } from '@/hooks/useBranding';
 import { useAuth } from '@/hooks/dashboard/useAuth';
+import { useT } from '@/lib/i18n';
 
 interface InvoiceHeaderProps {
   invoiceData: InvoiceFormData;
@@ -17,6 +19,7 @@ interface InvoiceHeaderProps {
 }
 
 const InvoiceHeader: React.FC<InvoiceHeaderProps> = ({ invoiceData, updateField }) => {
+  const t = useT();
   const { user } = useAuth();
   const { branding } = useBranding(user);
 
@@ -41,21 +44,21 @@ const InvoiceHeader: React.FC<InvoiceHeaderProps> = ({ invoiceData, updateField 
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Invoice Details</CardTitle>
+        <CardTitle>{t('invoiceDetails')}</CardTitle>
       </CardHeader>
       <CardContent className="space-y-4">
         <div className="grid md:grid-cols-2 gap-4">
           <div>
-            <label className="text-sm font-medium text-gray-700">Invoice ID</label>
+            <label className="text-sm font-medium text-gray-700">{t('invoiceId')}</label>
             <Input
-              placeholder="Add invoice ID"
+              placeholder={t('addInvoiceId')}
               value={invoiceData.invoiceId}
               onChange={(e) => updateField('invoiceId', e.target.value)}
             />
           </div>
           <div className="flex flex-col items-end">
             <label className="text-sm text-gray-600 mb-2">
-              {branding?.logo_url && !invoiceData.logoUrl ? 'Using Profile Logo' : 'Add Logo'}
+              {branding?.logo_url && !invoiceData.logoUrl ? t('usingProfileLogo') : t('addLogo')}
             </label>
             <div className="relative w-24 h-24 border-2 border-dashed border-gray-300 rounded-lg flex items-center justify-center bg-gray-50 cursor-pointer hover:bg-gray-100 transition-colors">
               {invoiceData.logoUrl ? (
@@ -64,7 +67,7 @@ const InvoiceHeader: React.FC<InvoiceHeaderProps> = ({ invoiceData, updateField 
                 <div className="text-center">
                   <Upload className="w-6 h-6 text-gray-400 mx-auto mb-1" />
                   <span className="text-xs text-gray-500">
-                    {branding?.logo_url ? 'Use different logo' : 'Add logo'}
+                    {branding?.logo_url ? t('useDifferentLogo') : t('addLogo')}
                   </span>
                 </div>
               )}
@@ -77,7 +80,7 @@ const InvoiceHeader: React.FC<InvoiceHeaderProps> = ({ invoiceData, updateField 
             </div>
             {branding?.logo_url && !invoiceData.logoUrl && (
               <p className="text-xs text-gray-500 mt-1 text-center">
-                Using logo from profile
+                {t('usingLogoFromProfile')}
               </p>
             )}
           </div>
@@ -85,7 +88,7 @@ const InvoiceHeader: React.FC<InvoiceHeaderProps> = ({ invoiceData, updateField 
 
         <div className="grid md:grid-cols-2 gap-4">
           <div>
-            <label className="text-sm font-medium text-gray-700">Invoice Date</label>
+            <label className="text-sm font-medium text-gray-700">{t('invoiceDate')}</label>
             <Popover>
               <PopoverTrigger asChild>
                 <Button
@@ -96,7 +99,7 @@ const InvoiceHeader: React.FC<InvoiceHeaderProps> = ({ invoiceData, updateField 
                   )}
                 >
                   <CalendarIcon className="mr-2 h-4 w-4" />
-                  {invoiceData.invoiceDate ? format(invoiceData.invoiceDate, "MM/dd/yyyy") : "Select date"}
+                  {invoiceData.invoiceDate ? format(invoiceData.invoiceDate, "MM/dd/yyyy") : t('selectDate')}
                 </Button>
               </PopoverTrigger>
               <PopoverContent className="w-auto p-0">
@@ -111,7 +114,7 @@ const InvoiceHeader: React.FC<InvoiceHeaderProps> = ({ invoiceData, updateField 
             </Popover>
           </div>
           <div>
-            <label className="text-sm font-medium text-gray-700">Due Date</label>
+            <label className="text-sm font-medium text-gray-700">{t('dueDate')}</label>
             <Popover>
               <PopoverTrigger asChild>
                 <Button
@@ -122,7 +125,7 @@ const InvoiceHeader: React.FC<InvoiceHeaderProps> = ({ invoiceData, updateField 
                   )}
                 >
                   <CalendarIcon className="mr-2 h-4 w-4" />
-                  {invoiceData.dueDate ? format(invoiceData.dueDate, "MM/dd/yyyy") : "Select date"}
+                  {invoiceData.dueDate ? format(invoiceData.dueDate, "MM/dd/yyyy") : t('selectDate')}
                 </Button>
               </PopoverTrigger>
               <PopoverContent className="w-auto p-0">
@@ -139,18 +142,18 @@ const InvoiceHeader: React.FC<InvoiceHeaderProps> = ({ invoiceData, updateField 
         </div>
 
         <div>
-          <label className="text-sm font-medium text-gray-700">Purchase Order</label>
+          <label className="text-sm font-medium text-gray-700">{t('purchaseOrder')}</label>
           <Input
-            placeholder="Add purchase order number"
+            placeholder={t('addPurchaseOrderNumber')}
             value={invoiceData.purchaseOrder}
             onChange={(e) => updateField('purchaseOrder', e.target.value)}
           />
         </div>
 
         <div>
-          <label className="text-sm font-medium text-gray-700">Payment Terms</label>
+          <label className="text-sm font-medium text-gray-700">{t('paymentTerms')}</label>
           <Input
-            placeholder="Add payment terms"
+            placeholder={t('addPaymentTerms')}
             value={invoiceData.paymentTerms}
             onChange={(e) => updateField('paymentTerms', e.target.value)}
           />

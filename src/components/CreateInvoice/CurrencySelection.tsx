@@ -6,6 +6,7 @@ import { CURRENCIES } from '@/lib/currency';
 import { InvoiceFormData } from './types';
 import { useAuth } from '@/hooks/dashboard/useAuth';
 import { useUserCurrency } from '@/hooks/useUserCurrency';
+import { useT } from '@/lib/i18n';
 
 interface CurrencySelectionProps {
   invoiceData: InvoiceFormData;
@@ -16,6 +17,7 @@ const CurrencySelection: React.FC<CurrencySelectionProps> = ({
   invoiceData,
   updateField
 }) => {
+  const t = useT();
   const { user } = useAuth();
   const { currency: userCurrency } = useUserCurrency(user);
 
@@ -30,13 +32,13 @@ const CurrencySelection: React.FC<CurrencySelectionProps> = ({
     <Card>
       <CardContent className="pt-6">
         <div className="space-y-2">
-          <label className="text-sm font-medium">Currency</label>
+          <label className="text-sm font-medium">{t('currency')}</label>
           <Select
             value={invoiceData.currency}
             onValueChange={(value) => updateField('currency', value)}
           >
             <SelectTrigger>
-              <SelectValue placeholder="Select currency" />
+              <SelectValue placeholder={t('selectCurrency')} />
             </SelectTrigger>
             <SelectContent>
               {Object.entries(CURRENCIES).map(([code, currency]) => (

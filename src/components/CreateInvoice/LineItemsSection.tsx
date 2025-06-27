@@ -1,3 +1,4 @@
+
 import React, { useEffect } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -6,6 +7,7 @@ import { Plus, Trash2 } from 'lucide-react';
 import { InvoiceFormData } from './types';
 import { useAuth } from '@/hooks/dashboard/useAuth';
 import { useProjects } from '@/hooks/useProjects';
+import { useT } from '@/lib/i18n';
 
 interface LineItemsSectionProps {
   invoiceData: InvoiceFormData;
@@ -26,6 +28,7 @@ const LineItemsSection: React.FC<LineItemsSectionProps> = ({
   showTaxInput,
   setShowTaxInput
 }) => {
+  const t = useT();
   const { user } = useAuth();
   const { projects } = useProjects(user);
 
@@ -54,9 +57,9 @@ const LineItemsSection: React.FC<LineItemsSectionProps> = ({
       <CardContent className="pt-6">
         <div className="space-y-4">
           <div className="grid grid-cols-12 gap-4 text-sm font-medium text-gray-600 border-b pb-2">
-            <div className="col-span-6">DESCRIPTION</div>
-            <div className="col-span-2 text-center">QUANTITY</div>
-            <div className="col-span-3 text-right">AMOUNT</div>
+            <div className="col-span-6">{t('description').toUpperCase()}</div>
+            <div className="col-span-2 text-center">{t('quantity').toUpperCase()}</div>
+            <div className="col-span-3 text-right">{t('amount').toUpperCase()}</div>
             <div className="col-span-1"></div>
           </div>
 
@@ -64,7 +67,7 @@ const LineItemsSection: React.FC<LineItemsSectionProps> = ({
             <div key={item.id} className="grid grid-cols-12 gap-4 items-center">
               <div className="col-span-6">
                 <Input
-                  placeholder="Description"
+                  placeholder={t('description')}
                   value={item.description}
                   onChange={(e) => updateLineItem(item.id, 'description', e.target.value)}
                 />
@@ -107,13 +110,13 @@ const LineItemsSection: React.FC<LineItemsSectionProps> = ({
             className="text-blue-600 hover:text-blue-700"
           >
             <Plus className="w-4 h-4 mr-2" />
-            Add custom charge
+            {t('addCustomCharge')}
           </Button>
         </div>
 
         <div className="mt-6 space-y-4">
           <div className="flex justify-between items-center text-sm">
-            <span className="text-gray-600">SUBTOTAL</span>
+            <span className="text-gray-600">{t('subtotal').toUpperCase()}</span>
             <span className="font-medium">{invoiceData.subtotal.toFixed(2)} {invoiceData.currency}</span>
           </div>
 
@@ -124,11 +127,11 @@ const LineItemsSection: React.FC<LineItemsSectionProps> = ({
               onClick={() => setShowTaxInput(true)}
             >
               <Plus className="w-4 h-4 mr-2" />
-              Add tax
+              {t('addTax')}
             </Button>
           ) : (
             <div className="flex justify-between items-center text-sm">
-              <span className="text-gray-600">TAX</span>
+              <span className="text-gray-600">{t('tax').toUpperCase()}</span>
               <div className="flex items-center gap-2">
                 <Input
                   type="number"
@@ -145,7 +148,7 @@ const LineItemsSection: React.FC<LineItemsSectionProps> = ({
 
           <div className="border-t pt-4">
             <div className="flex justify-between items-center">
-              <span className="font-medium">TOTAL</span>
+              <span className="font-medium">{t('total').toUpperCase()}</span>
               <span className="text-xl font-bold">{invoiceData.total.toFixed(2)} {invoiceData.currency}</span>
             </div>
           </div>
