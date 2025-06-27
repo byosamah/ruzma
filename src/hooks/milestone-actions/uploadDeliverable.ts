@@ -1,7 +1,17 @@
+
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import { User } from '@supabase/supabase-js';
 import { trackDeliverableUploaded } from '@/lib/analytics';
+
+// Sanitize filename to remove invalid characters for Supabase Storage
+const sanitizeFilename = (filename: string): string => {
+  return filename
+    .replace(/[^a-zA-Z0-9.-]/g, '_') // Replace invalid characters with underscores
+    .replace(/_+/g, '_') // Replace multiple underscores with single
+    .replace(/^_|_$/g, '') // Remove leading/trailing underscores
+    .substring(0, 100); // Limit length
+};
 
 export const uploadDeliverableAction = async (
   user: User | null,
@@ -35,8 +45,12 @@ export const uploadDeliverableAction = async (
       return false;
     }
 
-    const fileName = `${Date.now()}-${file.name}`;
+    // Sanitize the filename to avoid invalid key errors
+    const sanitizedFileName = sanitizeFilename(file.name);
+    const fileName = `${Date.now()}-${sanitizedFileName}`;
     const filePath = `${user.id}/${milestoneId}/${fileName}`;
+
+    console.log('Sanitized file path:', filePath);
 
     const { error: uploadError } = await supabase.storage
       .from('deliverables')
@@ -59,7 +73,7 @@ export const uploadDeliverableAction = async (
       .from('milestones')
       .update({
         deliverable_url: publicUrl,
-        deliverable_name: file.name,
+        deliverable_name: file.name, // Keep original filename for display
         deliverable_size: file.size,
         updated_at: new Date().toISOString()
       })
