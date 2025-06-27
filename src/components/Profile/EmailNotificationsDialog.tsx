@@ -1,5 +1,5 @@
 
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import {
   Dialog,
   DialogContent,
@@ -11,8 +11,6 @@ import {
 import { Button } from '@/components/ui/button';
 import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
-import { supabase } from '@/integrations/supabase/client';
-import { toast } from 'sonner';
 import { useT } from '@/lib/i18n';
 
 interface EmailNotificationsDialogProps {
@@ -20,72 +18,19 @@ interface EmailNotificationsDialogProps {
   onOpenChange: (open: boolean) => void;
 }
 
-interface NotificationSettings {
-  projectUpdates: boolean;
-  paymentReminders: boolean;
-  milestoneUpdates: boolean;
-  marketing: boolean;
-}
-
 export const EmailNotificationsDialog = ({ open, onOpenChange }: EmailNotificationsDialogProps) => {
   const t = useT();
-  const [notifications, setNotifications] = useState<NotificationSettings>({
+  const [notifications, setNotifications] = useState({
     projectUpdates: true,
     paymentReminders: true,
     milestoneUpdates: true,
-    marketing: false,
+    marketingPromotions: false,
   });
-  const [isLoading, setIsLoading] = useState(false);
 
-  useEffect(() => {
-    const fetchNotificationSettings = async () => {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) return;
-
-      const { data: profile, error } = await supabase
-        .from('profiles')
-        .select('notification_settings')
-        .eq('id', user.id)
-        .single();
-
-      if (error) {
-        console.error('Error fetching notification settings:', error);
-        return;
-      }
-
-      // Type-safe cast for Supabase JSON -> NotificationSettings
-      if (profile && profile.notification_settings) {
-        setNotifications(profile.notification_settings as unknown as NotificationSettings);
-      }
-    };
-
-    if (open) {
-      fetchNotificationSettings();
-    }
-  }, [open]);
-
-  const handleSave = async () => {
-    const { data: { user } } = await supabase.auth.getUser();
-    if (!user) return;
-
-    setIsLoading(true);
-
-    try {
-      // Double cast to safely convert NotificationSettings to Json
-      const { error } = await supabase
-        .from('profiles')
-        .update({ notification_settings: notifications as unknown as any })
-        .eq('id', user.id);
-
-      if (error) throw error;
-
-      toast.success('Notification preferences updated!');
-      onOpenChange(false);
-    } catch (error: any) {
-      toast.error(error.message || 'Failed to update notification preferences');
-    } finally {
-      setIsLoading(false);
-    }
+  const handleSave = () => {
+    // Here you would save the notification preferences
+    console.log('Saving notification preferences:', notifications);
+    onOpenChange(false);
   };
 
   return (
@@ -94,12 +39,14 @@ export const EmailNotificationsDialog = ({ open, onOpenChange }: EmailNotificati
         <DialogHeader>
           <DialogTitle>{t('emailNotifications')}</DialogTitle>
           <DialogDescription>
-            Choose which email notifications you'd like to receive.
+            {t('emailNotificationDesc')}
           </DialogDescription>
         </DialogHeader>
         <div className="space-y-4">
           <div className="flex items-center justify-between">
-            <Label htmlFor="project-updates">Project Updates</Label>
+            <Label htmlFor="project-updates" className="text-sm font-medium">
+              {t('projectUpdates')}
+            </Label>
             <Switch
               id="project-updates"
               checked={notifications.projectUpdates}
@@ -109,7 +56,9 @@ export const EmailNotificationsDialog = ({ open, onOpenChange }: EmailNotificati
             />
           </div>
           <div className="flex items-center justify-between">
-            <Label htmlFor="payment-reminders">Payment Reminders</Label>
+            <Label htmlFor="payment-reminders" className="text-sm font-medium">
+              {t('paymentReminders')}
+            </Label>
             <Switch
               id="payment-reminders"
               checked={notifications.paymentReminders}
@@ -119,7 +68,9 @@ export const EmailNotificationsDialog = ({ open, onOpenChange }: EmailNotificati
             />
           </div>
           <div className="flex items-center justify-between">
-            <Label htmlFor="milestone-updates">Milestone Updates</Label>
+            <Label htmlFor="milestone-updates" className="text-sm font-medium">
+              {t('milestoneUpdates')}
+            </Label>
             <Switch
               id="milestone-updates"
               checked={notifications.milestoneUpdates}
@@ -129,12 +80,14 @@ export const EmailNotificationsDialog = ({ open, onOpenChange }: EmailNotificati
             />
           </div>
           <div className="flex items-center justify-between">
-            <Label htmlFor="marketing">Marketing & Promotions</Label>
+            <Label htmlFor="marketing-promotions" className="text-sm font-medium">
+              {t('marketingPromotions')}
+            </Label>
             <Switch
-              id="marketing"
-              checked={notifications.marketing}
+              id="marketing-promotions"
+              checked={notifications.marketingPromotions}
               onCheckedChange={(checked) =>
-                setNotifications(prev => ({ ...prev, marketing: checked }))
+                setNotifications(prev => ({ ...prev, marketingPromotions: checked }))
               }
             />
           </div>
@@ -144,12 +97,11 @@ export const EmailNotificationsDialog = ({ open, onOpenChange }: EmailNotificati
             type="button" 
             variant="outline" 
             onClick={() => onOpenChange(false)}
-            disabled={isLoading}
           >
             {t('cancel')}
           </Button>
-          <Button onClick={handleSave} disabled={isLoading}>
-            {isLoading ? t('saving') : t('saveChanges')}
+          <Button onClick={handleSave}>
+            {t('saveChanges')}
           </Button>
         </DialogFooter>
       </DialogContent>

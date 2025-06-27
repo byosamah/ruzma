@@ -82,24 +82,23 @@ export const DeleteAccountDialog = ({ open, onOpenChange }: DeleteAccountDialogP
           <AlertDialogTitle className="text-red-600">{t('deleteAccount')}</AlertDialogTitle>
           <AlertDialogDescription className="space-y-2">
             <p>
-              This action cannot be undone. This will permanently delete your account
-              and remove all your data from our servers, including:
+              {t('deleteAccountWarning')}
             </p>
             <ul className="list-disc list-inside space-y-1 text-sm">
-              <li>Your profile information</li>
-              <li>All your projects</li>
-              <li>All project milestones and deliverables</li>
-              <li>All payment history</li>
+              <li>{t('deleteAccountData1')}</li>
+              <li>{t('deleteAccountData2')}</li>
+              <li>{t('deleteAccountData3')}</li>
+              <li>{t('deleteAccountData4')}</li>
             </ul>
             <div className="mt-4">
               <Label htmlFor="confirm-delete">
-                Type <strong>DELETE</strong> to confirm:
+                {t('typeDeleteToConfirm')} <strong>{t('delete')}</strong>
               </Label>
               <Input
                 id="confirm-delete"
                 value={confirmText}
                 onChange={(e) => setConfirmText(e.target.value)}
-                placeholder="DELETE"
+                placeholder={t('delete')}
                 className="mt-2"
               />
             </div>
@@ -114,7 +113,7 @@ export const DeleteAccountDialog = ({ open, onOpenChange }: DeleteAccountDialogP
             disabled={isLoading || confirmText !== 'DELETE'}
             className="bg-red-600 hover:bg-red-700"
           >
-            {isLoading ? 'Deleting...' : t('deleteAccount')}
+            {isLoading ? t('deleting') : t('deleteAccount')}
           </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>

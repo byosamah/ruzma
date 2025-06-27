@@ -91,13 +91,13 @@ export const PersonalInfoSection = ({
       </div>
 
       <div className="space-y-2">
-        <Label htmlFor="professionalTitle" className="text-sm text-gray-700">Professional Title</Label>
+        <Label htmlFor="professionalTitle" className="text-sm text-gray-700">{t('professionalTitle')}</Label>
         <div className="relative">
           <Briefcase className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
           <Input
             id="professionalTitle"
             name="professionalTitle"
-            placeholder="e.g., UI/UX Designer, Web Developer"
+            placeholder={t('professionalTitlePlaceholder')}
             value={formData.professionalTitle || ''}
             onChange={onFormChange}
             className="pl-10 border-gray-200 focus:border-gray-300 focus:ring-0"
@@ -122,19 +122,19 @@ export const PersonalInfoSection = ({
       </div>
 
       <div className="space-y-2">
-        <Label htmlFor="shortBio" className="text-sm text-gray-700">Short Bio (1-2 lines for client pages)</Label>
+        <Label htmlFor="shortBio" className="text-sm text-gray-700">{t('shortBio')}</Label>
         <textarea
           id="shortBio"
           name="shortBio"
           rows={2}
           className="w-full px-3 py-2 border border-gray-200 rounded-md focus:outline-none focus:ring-1 focus:ring-gray-300 focus:border-gray-300 resize-none text-sm"
-          placeholder="A brief description of your expertise and experience..."
+          placeholder={t('shortBioPlaceholder')}
           value={formData.shortBio || ''}
           onChange={onFormChange}
           maxLength={200}
         />
         <p className="text-xs text-gray-500">
-          {(formData.shortBio || '').length}/200 characters
+          {(formData.shortBio || '').length}/200 {t('characters')}
         </p>
       </div>
     </div>

@@ -67,12 +67,12 @@ export const ChangePasswordDialog = ({ open, onOpenChange }: ChangePasswordDialo
         <DialogHeader>
           <DialogTitle>{t('changePassword')}</DialogTitle>
           <DialogDescription>
-            Enter your new password below. Make sure it's at least 6 characters long.
+            {t('newPasswordDesc')}
           </DialogDescription>
         </DialogHeader>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="space-y-2">
-            <Label htmlFor="new-password">New Password</Label>
+            <Label htmlFor="new-password">{t('newPassword')}</Label>
             <Input
               id="new-password"
               type="password"
@@ -83,7 +83,7 @@ export const ChangePasswordDialog = ({ open, onOpenChange }: ChangePasswordDialo
             />
           </div>
           <div className="space-y-2">
-            <Label htmlFor="confirm-password">Confirm New Password</Label>
+            <Label htmlFor="confirm-password">{t('confirmNewPassword')}</Label>
             <Input
               id="confirm-password"
               type="password"
