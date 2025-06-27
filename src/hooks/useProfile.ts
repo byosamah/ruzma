@@ -18,6 +18,9 @@ export const useProfile = (user?: User | null) => {
   const { formData, setFormData, profilePicture, setProfilePicture } = useProfileInfo(currentUser);
   const { isLoading, isSaved, handleChange, handleCurrencyChange, handleLogoUpload, handleSubmit } = useProfileActions(currentUser);
 
+  // Debug log to track profilePicture state
+  console.log('useProfile - current profilePicture state:', profilePicture);
+
   const wrappedHandleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     handleChange(e, setFormData);
   };
@@ -35,7 +38,10 @@ export const useProfile = (user?: User | null) => {
   };
 
   const updateProfilePicture = (newPictureUrl: string) => {
+    console.log('updateProfilePicture called with:', newPictureUrl);
     setProfilePicture(newPictureUrl);
+    // Force a re-render by updating the formData as well if needed
+    setFormData(prev => ({ ...prev }));
   };
 
   // Image cropping functionality

@@ -23,6 +23,9 @@ export const ProfilePictureCard = ({
 }: ProfilePictureCardProps) => {
   const t = useT();
 
+  // Debug log to see what profilePicture value we're getting
+  console.log('ProfilePictureCard - profilePicture value:', profilePicture);
+
   return (
     <Card className="border-gray-200 shadow-none bg-white">
       <CardHeader className="pb-3">
@@ -30,7 +33,12 @@ export const ProfilePictureCard = ({
       </CardHeader>
       <CardContent className="text-center space-y-4 pt-0">
         <Avatar className="w-24 h-24 mx-auto border border-gray-100">
-          <AvatarImage src={profilePicture || undefined} alt={userName} />
+          <AvatarImage 
+            src={profilePicture || undefined} 
+            alt={userName}
+            onLoad={() => console.log('Avatar image loaded successfully')}
+            onError={(e) => console.log('Avatar image failed to load:', e)}
+          />
           <AvatarFallback className="bg-gray-100 text-gray-600 text-xl font-medium">
             {userName?.charAt(0).toUpperCase() || 'U'}
           </AvatarFallback>
