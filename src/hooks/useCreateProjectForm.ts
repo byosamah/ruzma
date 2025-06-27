@@ -1,3 +1,4 @@
+
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -70,14 +71,33 @@ export const useCreateProjectForm = (templateData?: any) => {
 
       const slug = generateSlug(data.name);
 
-      // Create the project with paymentProofRequired field
+      // Look up client by email to get client_id
+      let clientId: string | null = null;
+      
+      if (data.clientEmail) {
+        const { data: existingClient, error: clientLookupError } = await supabase
+          .from('clients')
+          .select('id')
+          .eq('email', data.clientEmail)
+          .eq('user_id', user.id)
+          .maybeSingle();
+
+        if (clientLookupError) {
+          console.error('Error looking up client:', clientLookupError);
+        } else if (existingClient) {
+          clientId = existingClient.id;
+        }
+      }
+
+      // Create the project with proper client linking
       const { data: project, error: projectError } = await supabase
         .from('projects')
         .insert({
           name: data.name,
           brief: data.brief,
           client_email: data.clientEmail || null,
-          payment_proof_required: data.paymentProofRequired, // Ensure this is properly saved
+          client_id: clientId, // This is the key fix - properly set client_id
+          payment_proof_required: data.paymentProofRequired,
           user_id: user.id,
           slug: slug,
         })
