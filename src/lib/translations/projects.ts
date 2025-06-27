@@ -1,9 +1,11 @@
+
 export const projectTranslations = {
   en: {
     loadingProject: "Loading project...",
     projectNotFound: "Project not found",
     goToDashboard: "Go to Dashboard",
     backToDashboard: "Back to Dashboard",
+    backToProjects: "Back to Projects",
     projectId: "Project ID",
     created: "Created",
     openClientPage: "Open Client Page",
@@ -113,6 +115,7 @@ export const projectTranslations = {
     projectNotFound: "المشروع غير موجود",
     goToDashboard: "الذهاب إلى لوحة التحكم",
     backToDashboard: "العودة إلى لوحة التحكم",
+    backToProjects: "العودة إلى المشاريع",
     projectId: "معرف المشروع",
     created: "تم إنشاؤه",
     openClientPage: "فتح صفحة العميل",
