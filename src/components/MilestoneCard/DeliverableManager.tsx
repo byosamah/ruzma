@@ -87,43 +87,50 @@ const DeliverableManager: React.FC<DeliverableManagerProps> = ({
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
-        <h4 className="text-sm font-medium text-slate-700">Deliverable</h4>
+        <h4 className="text-sm font-medium text-gray-700">Deliverable</h4>
         {userType === 'free' && (
-          <span className="text-xs text-amber-600 bg-amber-50 px-2 py-1 rounded">
-            Upload: Upgrade to Plus/Pro
+          <span className="text-xs text-amber-600 bg-amber-50 px-2 py-1 rounded-md">
+            Upload requires Plus/Pro
           </span>
         )}
       </div>
 
       <Tabs defaultValue={isUploadEnabled ? "upload" : "link"} className="w-full">
-        <TabsList className="grid w-full grid-cols-2">
-          <TabsTrigger value="upload" disabled={!isUploadEnabled}>
-            <Upload className="w-4 h-4 mr-2" />
-            Upload File
+        <TabsList className="grid w-full grid-cols-2 bg-gray-50 h-9">
+          <TabsTrigger 
+            value="upload" 
+            disabled={!isUploadEnabled}
+            className="text-xs data-[state=active]:bg-white data-[state=active]:shadow-none"
+          >
+            <Upload className="w-3 h-3 mr-1.5" />
+            Upload
           </TabsTrigger>
-          <TabsTrigger value="link">
-            <Link className="w-4 h-4 mr-2" />
-            Share Link
+          <TabsTrigger 
+            value="link"
+            className="text-xs data-[state=active]:bg-white data-[state=active]:shadow-none"
+          >
+            <Link className="w-3 h-3 mr-1.5" />
+            Link
           </TabsTrigger>
         </TabsList>
 
-        <TabsContent value="upload" className="space-y-3">
+        <TabsContent value="upload" className="space-y-3 mt-4">
           {!isUploadEnabled ? (
-            <div className="text-center p-4 bg-amber-50 rounded-lg border border-amber-200">
-              <Upload className="w-8 h-8 mx-auto mb-2 text-amber-600" />
-              <p className="text-sm text-amber-800 mb-2">File upload is available for Plus and Pro plans</p>
-              <Button size="sm" variant="outline" className="text-amber-700 border-amber-300">
+            <div className="text-center p-6 bg-gray-50 rounded-lg border border-gray-100">
+              <Upload className="w-6 h-6 mx-auto mb-3 text-gray-400" />
+              <p className="text-sm text-gray-600 mb-3">File upload is available for Plus and Pro plans</p>
+              <Button size="sm" variant="outline" className="text-gray-600">
                 Upgrade Plan
               </Button>
             </div>
           ) : (
             <>
               {milestone.deliverable ? (
-                <div className="flex items-center justify-between bg-slate-50 p-3 rounded-lg">
-                  <div className="flex items-center space-x-2 text-sm text-slate-600">
-                    <Download className="w-4 h-4" />
-                    <span>{milestone.deliverable.name}</span>
-                    <span className="text-xs text-slate-400">
+                <div className="flex items-center justify-between bg-gray-50 p-3 rounded-lg border border-gray-100">
+                  <div className="flex items-center space-x-2 text-sm text-gray-600">
+                    <Download className="w-4 h-4 text-gray-400" />
+                    <span className="font-medium">{milestone.deliverable.name}</span>
+                    <span className="text-xs text-gray-400">
                       ({(milestone.deliverable.size / 1024 / 1024).toFixed(1)} MB)
                     </span>
                   </div>
@@ -136,9 +143,9 @@ const DeliverableManager: React.FC<DeliverableManagerProps> = ({
                       accept=".pdf,.zip,.rar,.docx,.pptx,.jpg,.png,.gif"
                     />
                     <label htmlFor={`deliverable-replace-${milestone.id}`}>
-                      <Button asChild size="sm" variant="outline">
+                      <Button asChild size="sm" variant="ghost" className="h-7 px-2 text-xs">
                         <span className="cursor-pointer flex items-center">
-                          <FileUp className="w-4 h-4 mr-1" />
+                          <FileUp className="w-3 h-3 mr-1" />
                           Replace
                         </span>
                       </Button>
@@ -147,9 +154,6 @@ const DeliverableManager: React.FC<DeliverableManagerProps> = ({
                 </div>
               ) : (
                 <div className="space-y-2">
-                  <Label htmlFor={`deliverable-upload-${milestone.id}`}>
-                    Upload File (PDF, ZIP, Images, etc.)
-                  </Label>
                   <input
                     type="file"
                     onChange={handleFileUpload}
@@ -158,12 +162,11 @@ const DeliverableManager: React.FC<DeliverableManagerProps> = ({
                     accept=".pdf,.zip,.rar,.docx,.pptx,.jpg,.png,.gif"
                   />
                   <label htmlFor={`deliverable-upload-${milestone.id}`}>
-                    <Button asChild size="sm" className="w-full">
-                      <span className="cursor-pointer flex items-center justify-center">
-                        <Upload className="w-4 h-4 mr-2" />
-                        Choose File to Upload
-                      </span>
-                    </Button>
+                    <div className="border-2 border-dashed border-gray-200 rounded-lg p-6 text-center hover:border-gray-300 transition-colors cursor-pointer">
+                      <Upload className="w-6 h-6 mx-auto mb-2 text-gray-400" />
+                      <p className="text-sm text-gray-600 mb-1">Choose file to upload</p>
+                      <p className="text-xs text-gray-400">PDF, ZIP, Images, etc.</p>
+                    </div>
                   </label>
                 </div>
               )}
@@ -171,11 +174,8 @@ const DeliverableManager: React.FC<DeliverableManagerProps> = ({
           )}
         </TabsContent>
 
-        <TabsContent value="link" className="space-y-3">
-          <div className="space-y-2">
-            <Label htmlFor={`deliverable-link-${milestone.id}`}>
-              Deliverable Link (Google Drive, Dropbox, etc.)
-            </Label>
+        <TabsContent value="link" className="space-y-3 mt-4">
+          <div className="space-y-3">
             <div className="flex space-x-2">
               <Input
                 id={`deliverable-link-${milestone.id}`}
@@ -183,11 +183,13 @@ const DeliverableManager: React.FC<DeliverableManagerProps> = ({
                 placeholder="https://drive.google.com/..."
                 value={deliverableLink}
                 onChange={(e) => setDeliverableLink(e.target.value)}
+                className="text-sm"
               />
               <Button 
                 onClick={handleLinkUpdate}
                 disabled={isUpdatingLink}
                 size="sm"
+                className="px-3"
               >
                 {isUpdatingLink ? 'Saving...' : 'Save'}
               </Button>
@@ -195,26 +197,27 @@ const DeliverableManager: React.FC<DeliverableManagerProps> = ({
           </div>
           
           {milestone.deliverable_link && (
-            <div className="flex items-center justify-between bg-blue-50 p-3 rounded-lg">
-              <div className="flex items-center space-x-2 text-sm text-blue-800">
+            <div className="flex items-center justify-between bg-blue-50 p-3 rounded-lg border border-blue-100">
+              <div className="flex items-center space-x-2 text-sm text-blue-700">
                 <Link className="w-4 h-4" />
-                <span>Link shared with client</span>
+                <span className="font-medium">Link shared with client</span>
               </div>
               <div className="flex items-center space-x-2">
                 <Button
                   size="sm"
-                  variant="outline"
+                  variant="ghost"
                   onClick={() => window.open(milestone.deliverable_link, '_blank')}
+                  className="h-7 px-2 text-xs text-blue-600 hover:bg-blue-100"
                 >
-                  <ExternalLink className="w-4 h-4 mr-1" />
+                  <ExternalLink className="w-3 h-3 mr-1" />
                   Open
                 </Button>
                 <Button
                   size="sm"
-                  variant="outline"
+                  variant="ghost"
                   onClick={handleLinkRemove}
                   disabled={isUpdatingLink}
-                  className="text-red-600 border-red-300 hover:bg-red-50"
+                  className="h-7 px-2 text-xs text-red-600 hover:bg-red-50"
                 >
                   Remove
                 </Button>
