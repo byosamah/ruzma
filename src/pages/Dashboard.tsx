@@ -1,3 +1,4 @@
+
 import React from 'react';
 import Layout from '@/components/Layout';
 import DashboardHeader from '@/components/dashboard/DashboardHeader';
@@ -66,7 +67,7 @@ const Dashboard = () => {
           canonical={`${window.location.origin}/dashboard`}
         />
         <div className="flex items-center justify-center min-h-[50vh] sm:min-h-[60vh]">
-          <div className="animate-spin rounded-full h-16 w-16 sm:h-32 sm:w-32 border-b-2 border-slate-900"></div>
+          <div className="animate-spin rounded-full h-16 w-16 sm:h-32 sm:w-32 border-b-2 border-gray-900"></div>
         </div>
       </Layout>
     );
@@ -82,7 +83,7 @@ const Dashboard = () => {
       <Button 
         onClick={handleNewProject} 
         size="lg" 
-        className={`${isMobile ? 'w-full' : 'w-full sm:w-auto'} px-6 py-3 text-base min-h-[44px] touch-manipulation`} 
+        className={`${isMobile ? 'w-full' : 'w-full sm:w-auto'} px-6 py-3 text-base min-h-[44px] touch-manipulation bg-gray-900 hover:bg-gray-800 text-white font-medium border-0 shadow-none`} 
         disabled={false}
       >
         <ButtonIcon className="w-5 h-5 mr-2" />
@@ -116,7 +117,7 @@ const Dashboard = () => {
         author={seoData.author}
         structuredData={seoData.structuredData}
       />
-      <div className={`space-y-6 ${isMobile ? 'px-2' : 'sm:space-y-8'}`}>
+      <div className={`space-y-8 ${isMobile ? 'px-2' : ''}`}>
         {/* Dashboard Header with semantic HTML structure */}
         <header>
           <DashboardHeader 
@@ -146,18 +147,18 @@ const Dashboard = () => {
         
         {/* Projects Section */}
         <main>
-          <div className="space-y-4 sm:space-y-6">
+          <div className="space-y-6">
             <div className="flex flex-col space-y-4 sm:flex-row sm:items-center sm:justify-between sm:space-y-0">
-              <h1 className="text-xl sm:text-2xl font-bold text-slate-800">{t('yourProjects')}</h1>
+              <h2 className="text-xl font-medium text-gray-900">{t('yourProjects')}</h2>
             </div>
 
             {projects.length === 0 ? (
-              <div className={`text-center py-8 sm:py-12 bg-white rounded-lg border border-slate-200 ${isMobile ? 'mx-0' : 'mx-2 sm:mx-0'}`}>
-                <FileText className="w-12 h-12 sm:w-16 sm:h-16 text-slate-300 mx-auto mb-4" aria-hidden="true" />
-                <h2 className="text-lg sm:text-xl font-medium text-slate-600 mb-2 px-4">
+              <div className={`text-center py-12 bg-white rounded-lg border border-gray-100 ${isMobile ? 'mx-0' : 'mx-2 sm:mx-0'}`}>
+                <FileText className="w-12 h-12 text-gray-300 mx-auto mb-4" aria-hidden="true" />
+                <h3 className="text-lg font-medium text-gray-600 mb-2 px-4">
                   {t('noProjectsYet')}
-                </h2>
-                <p className="text-sm sm:text-base text-slate-400 mb-6 px-4 max-w-md mx-auto">
+                </h3>
+                <p className="text-sm text-gray-500 mb-6 px-4 max-w-md mx-auto">
                   {t('createFirstProjectDesc')}
                 </p>
                 <div className="px-4">
@@ -165,7 +166,7 @@ const Dashboard = () => {
                 </div>
               </div>
             ) : (
-              <section aria-label="Your projects" className="space-y-4 sm:space-y-6">
+              <section aria-label="Your projects" className="space-y-4">
                 {projects.map(project => (
                   <div key={project.id} className={isMobile ? 'project-card-mobile' : ''}>
                     <ProjectCard 
