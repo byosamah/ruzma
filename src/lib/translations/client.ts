@@ -18,6 +18,21 @@ export const clientTranslations = {
     trackMilestoneProgressAndPayments: "Track milestone progress and payments",
     noMilestonesFound: "No milestones found",
     
+    // New keys for the redesigned components
+    trackProgressOfEachMilestone: "Track progress of each milestone",
+    uploadPaymentProofWhenRequested: "Upload payment proof when requested",
+    downloadDeliverablesWhenReady: "Download deliverables when ready",
+    timeline: "Timeline",
+    starts: "Starts",
+    ends: "Ends",
+    noDateSet: "No date set",
+    projectProgress: "Project Progress",
+    securePayments: "Secure Payments",
+    uploadProofOfPaymentForEachMilestone: "Upload proof of payment for each milestone",
+    instantAccess: "Instant Access",
+    downloadDeliverablesAfterPaymentApproval: "Download deliverables after payment approval",
+    downloadDeliverablesImmediately: "Download deliverables immediately",
+    
     // Milestone Status
     awaitingPayment: "Awaiting Payment",
     paymentUnderReview: "Payment Under Review",
@@ -67,6 +82,21 @@ export const clientTranslations = {
     projectMilestones: "مراحل المشروع",
     trackMilestoneProgressAndPayments: "تتبع تقدم المراحل والمدفوعات",
     noMilestonesFound: "لم يتم العثور على مراحل",
+    
+    // New keys for the redesigned components
+    trackProgressOfEachMilestone: "تتبع تقدم كل مرحلة",
+    uploadPaymentProofWhenRequested: "رفع إثبات الدفع عند الطلب",
+    downloadDeliverablesWhenReady: "تحميل التسليمات عند الجاهزية",
+    timeline: "الجدول الزمني",
+    starts: "يبدأ",
+    ends: "ينتهي",
+    noDateSet: "لم يتم تحديد تاريخ",
+    projectProgress: "تقدم المشروع",
+    securePayments: "المدفوعات الآمنة",
+    uploadProofOfPaymentForEachMilestone: "رفع إثبات الدفع لكل مرحلة",
+    instantAccess: "الوصول الفوري",
+    downloadDeliverablesAfterPaymentApproval: "تحميل التسليمات بعد الموافقة على الدفع",
+    downloadDeliverablesImmediately: "تحميل التسليمات فوراً",
     
     // Milestone Status
     awaitingPayment: "في انتظار الدفع",
