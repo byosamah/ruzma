@@ -117,17 +117,6 @@ const CreateProject = () => {
   return <Layout user={profile || user} onSignOut={handleSignOut}>
       <div className="min-h-screen bg-gray-50/30">
         <div className="max-w-3xl mx-auto px-4 py-8 space-y-8">
-          {/* Back Navigation */}
-          <div className="flex items-center gap-3">
-            <button
-              onClick={() => navigate('/dashboard')}
-              className="flex items-center gap-2 text-sm text-gray-600 hover:text-gray-900 transition-colors group"
-            >
-              <ArrowLeft className="w-4 h-4 group-hover:-translate-x-0.5 transition-transform" />
-              {t('backToDashboard')}
-            </button>
-          </div>
-
           {/* Header */}
           <div className="space-y-2">
             <h1 className="text-2xl font-semibold text-gray-900">
