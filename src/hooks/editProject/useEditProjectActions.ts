@@ -55,6 +55,7 @@ export const useEditProjectActions = (
   const handleSubmit = async (
     e: React.FormEvent,
     projectId: string | undefined,
+    projectSlug: string | undefined,
     name: string,
     brief: string,
     clientEmail: string,
@@ -94,7 +95,12 @@ export const useEditProjectActions = (
 
       if (success) {
         toast.success('Project updated successfully!');
-        navigate('/dashboard');
+        // Navigate back to the project management page instead of dashboard
+        if (projectSlug) {
+          navigate(`/project/${projectSlug}`);
+        } else {
+          navigate('/dashboard');
+        }
       }
     } catch (error) {
       console.error('Error updating project:', error);

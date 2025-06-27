@@ -46,7 +46,8 @@ export const useEditProject = (slugOrId: string | undefined) => {
 
   const wrappedHandleSubmit = (e: React.FormEvent) => {
     const projectId = project?.id;
-    handleSubmit(e, projectId, name, brief, clientEmail, paymentProofRequired, milestones);
+    const projectSlug = project?.slug;
+    handleSubmit(e, projectId, projectSlug, name, brief, clientEmail, paymentProofRequired, milestones);
   };
 
   return {
