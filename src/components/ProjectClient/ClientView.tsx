@@ -35,20 +35,33 @@ const ClientView: React.FC<ClientViewProps> = ({
       );
     }
 
-    if (milestone.status === 'rejected') {
-      return (
-        <div className="bg-red-50 p-3 rounded-lg">
-          <p className="text-sm font-medium text-red-800">Payment rejected</p>
-          <p className="text-xs text-red-600 mt-1">Please submit valid payment proof</p>
-        </div>
-      );
-    }
-
     if (milestone.status === 'payment_submitted') {
       return (
         <div className="bg-blue-50 p-3 rounded-lg">
           <p className="text-sm font-medium text-blue-800">Payment proof submitted</p>
           <p className="text-xs text-blue-600 mt-1">Waiting for freelancer approval</p>
+        </div>
+      );
+    }
+
+    if (milestone.status === 'rejected') {
+      return (
+        <div className="space-y-3">
+          <div className="bg-red-50 p-3 rounded-lg border border-red-200">
+            <p className="text-sm font-medium text-red-800">Payment proof rejected</p>
+            <p className="text-xs text-red-600 mt-1">Please submit valid payment proof to proceed</p>
+          </div>
+          
+          <PaymentUploadDialog
+            milestoneId={milestone.id}
+            onPaymentUpload={onPaymentUpload}
+            trigger={
+              <Button size="sm" className="w-full">
+                <Upload className="w-4 h-4 mr-2" />
+                Upload New Payment Proof
+              </Button>
+            }
+          />
         </div>
       );
     }
