@@ -1,7 +1,8 @@
 
 import React from 'react';
 import { Button } from '@/components/ui/button';
-import { Copy, ExternalLink, Send } from 'lucide-react';
+import { Copy, Link, Mail } from 'lucide-react';
+import { useIsMobile } from '@/hooks/use-mobile';
 
 interface ProjectCardActionsFooterProps {
   onCopyClientLink: (e: React.MouseEvent) => void;
@@ -16,39 +17,77 @@ const ProjectCardActionsFooter: React.FC<ProjectCardActionsFooterProps> = ({
   onSendClientLink,
   showClientActions = false
 }) => {
-  if (!showClientActions) return null;
+  const isMobile = useIsMobile();
+
+  if (showClientActions) {
+    return (
+      <div className={`flex ${isMobile ? 'flex-col gap-2' : 'gap-2'} pt-3 border-t border-slate-100`}>
+        <Button 
+          variant="outline" 
+          size="sm" 
+          onClick={onCopyClientLink} 
+          className={`flex items-center gap-2 ${isMobile ? 'w-full justify-start min-h-[44px]' : 'flex-1'} touch-manipulation`}
+        >
+          <Copy className="w-4 h-4 shrink-0" />
+          <span className={isMobile ? 'text-sm' : 'text-xs'}>Copy Link</span>
+        </Button>
+        
+        <Button 
+          variant="outline" 
+          size="sm" 
+          onClick={onViewClientPage} 
+          className={`flex items-center gap-2 ${isMobile ? 'w-full justify-start min-h-[44px]' : 'flex-1'} touch-manipulation`}
+        >
+          <Link className="w-4 h-4 shrink-0" />
+          <span className={isMobile ? 'text-sm' : 'text-xs'}>View Page</span>
+        </Button>
+        
+        {onSendClientLink && (
+          <Button 
+            variant="outline" 
+            size="sm" 
+            onClick={onSendClientLink} 
+            className={`flex items-center gap-2 ${isMobile ? 'w-full justify-start min-h-[44px]' : 'flex-1'} touch-manipulation`}
+          >
+            <Mail className="w-4 h-4 shrink-0" />
+            <span className={isMobile ? 'text-sm' : 'text-xs'}>Send Link</span>
+          </Button>
+        )}
+      </div>
+    );
+  }
 
   return (
-    <div className="flex items-center gap-2">
-      <Button
-        variant="ghost"
-        size="sm"
-        onClick={onCopyClientLink}
-        className="h-7 px-2 text-xs text-gray-600 hover:text-gray-900 hover:bg-gray-50 border-0"
+    <div className="flex flex-col gap-2">
+      <Button 
+        variant="outline" 
+        size="sm" 
+        onClick={onCopyClientLink} 
+        className="flex items-center gap-2 w-full justify-start min-h-[44px] touch-manipulation"
       >
-        <Copy className="mr-1.5 h-3 w-3" />
-        Copy Link
+        <Copy className="w-4 h-4 shrink-0" />
+        <span className="text-sm">Copy Client Link</span>
       </Button>
       
-      <Button
-        variant="ghost"
-        size="sm"
-        onClick={onViewClientPage}
-        className="h-7 px-2 text-xs text-gray-600 hover:text-gray-900 hover:bg-gray-50 border-0"
+      <Button 
+        variant="outline" 
+        size="sm" 
+        onClick={onViewClientPage} 
+        className="flex items-center gap-2 w-full justify-start min-h-[44px] touch-manipulation"
       >
-        <ExternalLink className="mr-1.5 h-3 w-3" />
-        View Page
+        <Link className="w-4 h-4 shrink-0" />
+        <span className="text-sm">View Client Page</span>
       </Button>
-
+      
       {onSendClientLink && (
-        <Button
-          variant="ghost"
-          size="sm"
-          onClick={onSendClientLink}
-          className="h-7 px-2 text-xs text-gray-600 hover:text-gray-900 hover:bg-gray-50 border-0"
+        <Button 
+          variant="outline" 
+          size="sm" 
+          onClick={onSendClientLink} 
+          className="flex items-center gap-2 w-full justify-start min-h-[44px] touch-manipulation"
         >
-          <Send className="mr-1.5 h-3 w-3" />
-          Send Link
+          <Mail className="w-4 h-4 shrink-0" />
+          <span className="text-sm">Send to Client</span>
         </Button>
       )}
     </div>

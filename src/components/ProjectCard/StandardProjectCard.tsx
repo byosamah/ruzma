@@ -19,36 +19,14 @@ const StandardProjectCard: React.FC<ProjectCardProps> = ({
 
   return (
     <Card 
-      className="group hover:shadow-sm transition-all duration-200 cursor-pointer border-0 bg-white rounded-lg" 
+      className="hover:shadow-md transition-shadow duration-200 cursor-pointer border-slate-200" 
       onClick={actions.handleCardClick}
     >
-      <CardHeader className="pb-3 px-5 pt-5">
+      <CardHeader className="pb-2 px-4 pt-4">
         <div className="flex justify-between items-start">
-          <CardTitle className="text-lg font-medium text-gray-900 line-clamp-2 leading-snug group-hover:text-gray-700 transition-colors">
+          <CardTitle className="text-base font-semibold text-slate-800 line-clamp-2 leading-tight">
             {project.name}
           </CardTitle>
-          <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-200">
-            <ProjectCardActions
-              onEditClick={actions.handleEditClick}
-              onViewClick={actions.handleViewClick}
-              onDeleteClick={onDeleteClick ? actions.handleDeleteClick : undefined}
-              onCopyClientLink={actions.handleCopyClientLink}
-              onViewClientPage={actions.handleViewClientPage}
-              onSendClientLink={actions.handleSendClientLink}
-              variant="header"
-            />
-          </div>
-        </div>
-      </CardHeader>
-      <CardContent className="px-5 pb-4">
-        <ProjectCardContent
-          project={project}
-          stats={stats}
-          currency={currency}
-          isVerticalLayout={false}
-        />
-        
-        <div className="mt-4 pt-3 border-t border-gray-50">
           <ProjectCardActions
             onEditClick={actions.handleEditClick}
             onViewClick={actions.handleViewClick}
@@ -56,10 +34,28 @@ const StandardProjectCard: React.FC<ProjectCardProps> = ({
             onCopyClientLink={actions.handleCopyClientLink}
             onViewClientPage={actions.handleViewClientPage}
             onSendClientLink={actions.handleSendClientLink}
-            showClientActions={true}
-            variant="footer"
+            variant="header"
           />
         </div>
+      </CardHeader>
+      <CardContent className="px-4 pb-3">
+        <ProjectCardContent
+          project={project}
+          stats={stats}
+          currency={currency}
+          isVerticalLayout={false}
+        />
+        
+        <ProjectCardActions
+          onEditClick={actions.handleEditClick}
+          onViewClick={actions.handleViewClick}
+          onDeleteClick={onDeleteClick ? actions.handleDeleteClick : undefined}
+          onCopyClientLink={actions.handleCopyClientLink}
+          onViewClientPage={actions.handleViewClientPage}
+          onSendClientLink={actions.handleSendClientLink}
+          showClientActions={true}
+          variant="footer"
+        />
       </CardContent>
     </Card>
   );
