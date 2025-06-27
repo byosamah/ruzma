@@ -5,7 +5,7 @@ import { Milestone } from '@/components/MilestoneCard/types';
 import MilestoneCard from '@/components/MilestoneCard';
 import { CurrencyCode } from '@/lib/currency';
 import { useT } from '@/lib/i18n';
-import { Target } from 'lucide-react';
+import { CheckCircle2 } from 'lucide-react';
 import { FreelancerBranding } from '@/types/branding';
 
 interface ProjectMilestonesListProps {
@@ -28,7 +28,6 @@ const ProjectMilestonesList: React.FC<ProjectMilestonesListProps> = ({
   paymentProofRequired = false,
 }) => {
   const t = useT();
-  const primaryColor = branding?.primary_color || '#4B72E5';
 
   // Transform database milestones to match expected Milestone interface
   const transformedMilestones: Milestone[] = milestones.map(milestone => ({
@@ -51,37 +50,23 @@ const ProjectMilestonesList: React.FC<ProjectMilestonesListProps> = ({
   }));
 
   return (
-    <Card className="bg-white shadow-sm border border-slate-100">
-      <CardHeader className="pb-6">
-        <CardTitle className="flex items-center gap-3 text-xl font-bold text-slate-800">
-          <div 
-            className="w-10 h-10 rounded-xl flex items-center justify-center"
-            style={{ backgroundColor: `${primaryColor}15` }}
-          >
-            <Target 
-              className="w-5 h-5" 
-              style={{ color: primaryColor }} 
-            />
-          </div>
+    <Card className="bg-white border border-gray-200">
+      <CardHeader className="pb-4">
+        <CardTitle className="flex items-center gap-2 text-lg font-semibold text-gray-900">
+          <CheckCircle2 className="w-5 h-5 text-gray-600" />
           {t('projectMilestones')}
         </CardTitle>
-        <p className="text-slate-600 mt-2">
-          {t('trackMilestoneProgressAndPayments')}
-        </p>
       </CardHeader>
-      <CardContent className="space-y-6">
+      <CardContent className="space-y-4">
         {transformedMilestones.map((milestone, index) => (
           <div key={milestone.id} className="relative">
             {/* Connection Line */}
             {index > 0 && (
-              <div 
-                className="absolute -top-3 left-6 w-0.5 h-3 z-0"
-                style={{ backgroundColor: `${primaryColor}20` }}
-              />
+              <div className="absolute -top-2 left-6 w-0.5 h-2 bg-gray-200" />
             )}
             
             {/* Milestone Card */}
-            <div className="relative z-10">
+            <div className="relative">
               <MilestoneCard
                 milestone={milestone}
                 isClient={true}
@@ -98,17 +83,11 @@ const ProjectMilestonesList: React.FC<ProjectMilestonesListProps> = ({
         
         {/* Empty State */}
         {milestones.length === 0 && (
-          <div className="text-center py-16">
-            <div 
-              className="w-16 h-16 rounded-2xl mx-auto mb-4 flex items-center justify-center"
-              style={{ backgroundColor: `${primaryColor}10` }}
-            >
-              <Target 
-                className="w-8 h-8" 
-                style={{ color: `${primaryColor}60` }} 
-              />
+          <div className="text-center py-12">
+            <div className="w-12 h-12 bg-gray-50 rounded-lg mx-auto mb-4 flex items-center justify-center">
+              <CheckCircle2 className="w-6 h-6 text-gray-300" />
             </div>
-            <p className="text-slate-500 text-lg">{t('noMilestonesFound')}</p>
+            <p className="text-sm text-gray-500">{t('noMilestonesFound')}</p>
           </div>
         )}
       </CardContent>
