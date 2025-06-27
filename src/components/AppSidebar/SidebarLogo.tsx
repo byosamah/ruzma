@@ -9,13 +9,23 @@ const SidebarLogo = () => {
   return (
     <div className={`${isCollapsed ? 'px-3 py-4' : 'px-6 py-5'} border-b border-gray-100`}>
       <div className={`flex items-center ${isCollapsed ? 'justify-center' : 'gap-3'}`}>
-        <div className="w-8 h-8 bg-black rounded-lg flex items-center justify-center flex-shrink-0">
-          <span className="text-white text-sm font-bold">R</span>
-        </div>
-        {!isCollapsed && (
-          <div className="flex flex-col">
-            <span className="text-gray-900 font-semibold text-lg">Ruzma</span>
-            <span className="text-gray-500 text-xs">Freelancer Platform</span>
+        {isCollapsed ? (
+          // Collapsed state - show icon logo
+          <div className="w-8 h-8 flex items-center justify-center flex-shrink-0">
+            <img 
+              src="/lovable-uploads/131bc2f1-0492-4bef-bf77-1fe94008afc4.png" 
+              alt="Ruzma" 
+              className="w-6 h-6 object-contain"
+            />
+          </div>
+        ) : (
+          // Expanded state - show full logo
+          <div className="flex items-center justify-start w-full">
+            <img 
+              src="/lovable-uploads/d7c62fd0-8ad6-4696-b936-c40ca12c9886.png" 
+              alt="Ruzma - Freelancer Platform" 
+              className="h-8 object-contain"
+            />
           </div>
         )}
       </div>
