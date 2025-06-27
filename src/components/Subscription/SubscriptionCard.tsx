@@ -4,7 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardFooter } from '@/componen
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Check } from 'lucide-react';
-import { SubscriptionPlan } from '@/hooks/useSubscription';
+import { SubscriptionPlan } from '@/hooks/subscription/useSubscription';
 import { CurrencyCode, formatCurrency } from '@/lib/currency';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useT } from '@/lib/i18n';

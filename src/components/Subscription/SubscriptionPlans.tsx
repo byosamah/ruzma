@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { SubscriptionCard } from './SubscriptionCard';
-import { useSubscription } from '@/hooks/useSubscription';
+import { useSubscription } from '@/hooks/subscription/useSubscription';
 import { useProjects } from '@/hooks/useProjects';
 import { supabase } from '@/integrations/supabase/client';
 import { useState, useEffect } from 'react';
