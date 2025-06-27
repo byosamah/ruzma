@@ -1,10 +1,8 @@
-
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Form } from '@/components/ui/form';
 import Layout from '@/components/Layout';
-import { ArrowLeft } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { User } from '@supabase/supabase-js';
 import { toast } from 'sonner';
@@ -18,6 +16,7 @@ import FormActions from '@/components/CreateProject/FormActions';
 import { useCreateProjectForm } from '@/hooks/useCreateProjectForm';
 import { useProjectTemplates } from '@/hooks/useProjectTemplates';
 import { useIsMobile } from '@/hooks/use-mobile';
+import { ArrowLeft } from 'lucide-react';
 
 const CreateProject = () => {
   const t = useT();
