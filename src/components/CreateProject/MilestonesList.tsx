@@ -2,7 +2,6 @@
 import React from 'react';
 import { useFieldArray, useFormContext } from 'react-hook-form';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
@@ -38,30 +37,39 @@ const MilestonesList = () => {
   };
 
   return (
-    <Card className="bg-white/80 backdrop-blur-sm">
-      <CardHeader>
-        <div className="flex justify-between items-center">
-          <CardTitle>{t('projectMilestones')}</CardTitle>
-          <Button type="button" onClick={addMilestone} variant="outline" size="sm">
-            <Plus className="w-4 h-4 mr-2" />
+    <div className="bg-white rounded-lg border border-gray-200 overflow-hidden">
+      <div className="px-6 py-4 border-b border-gray-100">
+        <div className="flex items-center justify-between">
+          <h3 className="text-sm font-medium text-gray-900">{t('projectMilestones')}</h3>
+          <Button 
+            type="button" 
+            onClick={addMilestone} 
+            variant="ghost" 
+            size="sm"
+            className="text-gray-600 hover:text-gray-900 hover:bg-gray-50 text-xs font-medium"
+          >
+            <Plus className="w-3 h-3 mr-1" />
             {t('addMilestone')}
           </Button>
         </div>
-      </CardHeader>
-      <CardContent className="space-y-6">
+      </div>
+      
+      <div className="p-6 space-y-6">
         {fields.map((field, index) => (
-          <div key={field.id} className="p-4 border border-slate-200 rounded-lg space-y-4 relative">
+          <div key={field.id} className="border border-gray-100 rounded-lg p-4 space-y-4 bg-gray-50/30">
             <div className="flex justify-between items-center">
-              <h3 className="font-medium text-slate-800">{t('milestoneLabel', { index: (index + 1).toString() })}</h3>
+              <h4 className="text-sm font-medium text-gray-800">
+                {t('milestoneLabel', { index: (index + 1).toString() })}
+              </h4>
               {fields.length > 1 && (
                 <Button
                   type="button"
                   variant="ghost"
                   size="sm"
                   onClick={() => remove(index)}
-                  className="text-red-600 hover:text-red-700"
+                  className="text-gray-400 hover:text-red-600 hover:bg-red-50 p-1 h-auto"
                 >
-                  <Trash2 className="w-4 h-4" />
+                  <Trash2 className="w-3 h-3" />
                 </Button>
               )}
             </div>
@@ -72,9 +80,15 @@ const MilestonesList = () => {
                 name={`milestones.${index}.title`}
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>{t('milestoneTitleLabel')}</FormLabel>
+                    <FormLabel className="text-xs font-medium text-gray-700">
+                      {t('milestoneTitleLabel')}
+                    </FormLabel>
                     <FormControl>
-                      <Input placeholder={t('milestoneTitlePlaceholder')} {...field} />
+                      <Input 
+                        placeholder={t('milestoneTitlePlaceholder')} 
+                        className="border-gray-200 focus:border-gray-400 focus:ring-0 text-sm h-9"
+                        {...field} 
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -85,13 +99,16 @@ const MilestonesList = () => {
                 name={`milestones.${index}.price`}
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>{t('priceLabel', { currency })}</FormLabel>
+                    <FormLabel className="text-xs font-medium text-gray-700">
+                      {t('priceLabel', { currency })}
+                    </FormLabel>
                     <FormControl>
                       <Input
                         type="number"
                         min="0"
                         step="0.01"
                         placeholder="0.00"
+                        className="border-gray-200 focus:border-gray-400 focus:ring-0 text-sm h-9"
                         {...field}
                       />
                     </FormControl>
@@ -107,9 +124,13 @@ const MilestonesList = () => {
                 name={`milestones.${index}.start_date`}
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>{t('startDate')}</FormLabel>
+                    <FormLabel className="text-xs font-medium text-gray-700">{t('startDate')}</FormLabel>
                     <FormControl>
-                      <Input type="date" {...field} />
+                      <Input 
+                        type="date" 
+                        className="border-gray-200 focus:border-gray-400 focus:ring-0 text-sm h-9"
+                        {...field} 
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -120,9 +141,13 @@ const MilestonesList = () => {
                 name={`milestones.${index}.end_date`}
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>{t('endDate')}</FormLabel>
+                    <FormLabel className="text-xs font-medium text-gray-700">{t('endDate')}</FormLabel>
                     <FormControl>
-                      <Input type="date" {...field} />
+                      <Input 
+                        type="date" 
+                        className="border-gray-200 focus:border-gray-400 focus:ring-0 text-sm h-9"
+                        {...field} 
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -135,9 +160,16 @@ const MilestonesList = () => {
               name={`milestones.${index}.description`}
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>{t('descriptionLabel')}</FormLabel>
+                  <FormLabel className="text-xs font-medium text-gray-700">
+                    {t('descriptionLabel')}
+                  </FormLabel>
                   <FormControl>
-                    <Textarea placeholder={t('milestoneDescriptionPlaceholder')} rows={3} {...field} />
+                    <Textarea 
+                      placeholder={t('milestoneDescriptionPlaceholder')} 
+                      rows={2} 
+                      className="border-gray-200 focus:border-gray-400 focus:ring-0 text-sm resize-none"
+                      {...field} 
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -154,8 +186,8 @@ const MilestonesList = () => {
              </FormItem>
           )}
         />
-      </CardContent>
-    </Card>
+      </div>
+    </div>
   );
 };
 

@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { useT } from '@/lib/i18n';
 
@@ -8,17 +7,10 @@ interface TemplateHeaderProps {
 
 const TemplateHeader = ({ hasTemplate }: TemplateHeaderProps) => {
   const t = useT();
-
-  return (
-    <div>
-      <h1 className="text-3xl font-bold text-slate-800">
-        {hasTemplate ? t('createProjectFromTemplate') : t('createNewProject')}
-      </h1>
-      <p className="text-slate-600 mt-2">
-        {hasTemplate ? t('customizeTemplateAndCreate') : t('setupProjectMilestones')}
-      </p>
-    </div>
-  );
+  
+  // This component is now integrated into the main CreateProject page header
+  // Keeping it for backward compatibility but functionality moved to main page
+  return null;
 };
 
 export default TemplateHeader;

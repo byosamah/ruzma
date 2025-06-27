@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
@@ -101,10 +102,10 @@ const CreateProject = () => {
 
   if (loading) {
     return <Layout>
-        <div className="flex items-center justify-center min-h-[400px]">
-          <div className="text-center">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
-            <p className="text-slate-600">{t('loading')}</p>
+        <div className="flex items-center justify-center min-h-[50vh]">
+          <div className="text-center space-y-3">
+            <div className="w-8 h-8 border-2 border-gray-300 border-t-gray-900 rounded-full animate-spin mx-auto"></div>
+            <p className="text-sm text-gray-600">{t('loading')}</p>
           </div>
         </div>
       </Layout>;
@@ -115,34 +116,40 @@ const CreateProject = () => {
   }
 
   return <Layout user={profile || user} onSignOut={handleSignOut}>
-      
-      
-      <div className={`${isMobile ? 'max-w-full' : 'max-w-4xl'} mx-auto space-y-6 sm:space-y-8`}>
-        <TemplateHeader hasTemplate={!!templateData} />
+      <div className="min-h-screen bg-gray-50/30">
+        <div className="max-w-3xl mx-auto px-4 py-8 space-y-8">
+          {/* Back Navigation */}
+          <div className="flex items-center gap-3">
+            <button
+              onClick={() => navigate('/dashboard')}
+              className="flex items-center gap-2 text-sm text-gray-600 hover:text-gray-900 transition-colors group"
+            >
+              <ArrowLeft className="w-4 h-4 group-hover:-translate-x-0.5 transition-transform" />
+              {t('backToDashboard')}
+            </button>
+          </div>
 
-        <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6 sm:space-y-8">
-            <div className={isMobile ? 'px-2' : ''}>
+          {/* Header */}
+          <div className="space-y-2">
+            <h1 className="text-2xl font-semibold text-gray-900">
+              {templateData ? t('createProjectFromTemplate') : t('createNewProject')}
+            </h1>
+            <p className="text-gray-600 text-sm">
+              {templateData ? t('customizeTemplateAndCreate') : t('setupProjectMilestones')}
+            </p>
+          </div>
+
+          {/* Form */}
+          <Form {...form}>
+            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
               <ProjectDetailsForm />
-              
-              <div className="mt-6 sm:mt-8">
-                <PaymentProofSettings />
-              </div>
-              
-              <div className="mt-6 sm:mt-8">
-                <MilestonesList />
-              </div>
-              
-              <div className="mt-6">
-                <SaveAsTemplateCheckbox checked={saveAsTemplate} onCheckedChange={handleSaveAsTemplateChange} />
-              </div>
-
-              <div className="mt-6 sm:mt-8">
-                <FormActions isSubmitting={isSubmitting} onCancel={() => navigate('/dashboard')} />
-              </div>
-            </div>
-          </form>
-        </Form>
+              <PaymentProofSettings />
+              <MilestonesList />
+              <SaveAsTemplateCheckbox checked={saveAsTemplate} onCheckedChange={handleSaveAsTemplateChange} />
+              <FormActions isSubmitting={isSubmitting} onCancel={() => navigate('/dashboard')} />
+            </form>
+          </Form>
+        </div>
       </div>
     </Layout>;
 };

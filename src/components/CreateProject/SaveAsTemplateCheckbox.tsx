@@ -12,16 +12,17 @@ const SaveAsTemplateCheckbox = ({ checked, onCheckedChange }: SaveAsTemplateChec
   const t = useT();
 
   return (
-    <div className="bg-white/80 backdrop-blur-sm rounded-lg p-4 border border-slate-200">
-      <div className="flex items-center space-x-2">
+    <div className="bg-white rounded-lg border border-gray-200 p-4">
+      <div className="flex items-start space-x-3">
         <Checkbox
           id="saveAsTemplate"
           checked={checked}
           onCheckedChange={onCheckedChange}
+          className="mt-0.5"
         />
         <label
           htmlFor="saveAsTemplate"
-          className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+          className="text-sm text-gray-700 leading-relaxed cursor-pointer"
         >
           {t('saveAsTemplateLabel')}
         </label>

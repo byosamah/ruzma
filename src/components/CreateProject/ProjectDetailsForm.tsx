@@ -1,7 +1,6 @@
 
 import React from 'react';
 import { useFormContext } from 'react-hook-form';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
@@ -14,19 +13,26 @@ const ProjectDetailsForm = () => {
   const { control } = useFormContext<CreateProjectFormData>();
 
   return (
-    <Card className="bg-white/80 backdrop-blur-sm">
-      <CardHeader>
-        <CardTitle>{t('projectDetails')}</CardTitle>
-      </CardHeader>
-      <CardContent className="space-y-6">
+    <div className="bg-white rounded-lg border border-gray-200 overflow-hidden">
+      <div className="px-6 py-4 border-b border-gray-100">
+        <h3 className="text-sm font-medium text-gray-900">{t('projectDetails')}</h3>
+      </div>
+      
+      <div className="p-6 space-y-5">
         <FormField
           control={control}
           name="name"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>{t('projectName')}</FormLabel>
+              <FormLabel className="text-sm font-medium text-gray-700">
+                {t('projectName')} <span className="text-red-500">*</span>
+              </FormLabel>
               <FormControl>
-                <Input placeholder={t('projectNamePlaceholder')} {...field} />
+                <Input 
+                  placeholder={t('projectNamePlaceholder')} 
+                  className="border-gray-200 focus:border-gray-400 focus:ring-0 text-sm"
+                  {...field} 
+                />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -38,11 +44,14 @@ const ProjectDetailsForm = () => {
           name="brief"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>{t('projectBrief')}</FormLabel>
+              <FormLabel className="text-sm font-medium text-gray-700">
+                {t('projectBrief')} <span className="text-red-500">*</span>
+              </FormLabel>
               <FormControl>
                 <Textarea 
                   placeholder={t('projectBriefPlaceholder')} 
-                  rows={4} 
+                  rows={3} 
+                  className="border-gray-200 focus:border-gray-400 focus:ring-0 text-sm resize-none"
                   {...field} 
                 />
               </FormControl>
@@ -56,7 +65,7 @@ const ProjectDetailsForm = () => {
           name="clientEmail"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>{t('client')}</FormLabel>
+              <FormLabel className="text-sm font-medium text-gray-700">{t('client')}</FormLabel>
               <FormControl>
                 <ClientDropdown
                   value={field.value}
@@ -67,8 +76,8 @@ const ProjectDetailsForm = () => {
             </FormItem>
           )}
         />
-      </CardContent>
-    </Card>
+      </div>
+    </div>
   );
 };
 
