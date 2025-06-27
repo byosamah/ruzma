@@ -4,6 +4,7 @@ import { User } from '@supabase/supabase-js';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import { trackBrandingUpdated, trackError } from '@/lib/analytics';
+import { brandingService } from '@/services/brandingService';
 
 export const useProfileActions = (user: User | null) => {
   const [isUpdating, setIsUpdating] = useState(false);
@@ -46,15 +47,32 @@ export const useProfileActions = (user: User | null) => {
     
     setIsUpdating(true);
     try {
-      const { error } = await supabase
+      // Update profile
+      const { error: profileError } = await supabase
         .from('profiles')
         .update({
-          ...profileData,
+          full_name: profileData.name,
+          email: profileData.email,
+          company: profileData.company,
+          website: profileData.website,
+          bio: profileData.bio,
+          currency: profileData.currency,
           updated_at: new Date().toISOString()
         })
         .eq('id', user.id);
 
-      if (error) throw error;
+      if (profileError) throw profileError;
+
+      // Update branding data
+      const brandingError = await brandingService.updateBranding(user.id, {
+        freelancer_name: profileData.name,
+        freelancer_title: profileData.professionalTitle,
+        freelancer_bio: profileData.shortBio,
+        primary_color: profileData.primaryColor,
+        logo_url: profileData.logoUrl
+      });
+
+      if (brandingError.error) throw brandingError.error;
 
       toast.success('Profile updated successfully!');
       setIsSaved(true);
@@ -80,8 +98,8 @@ export const useProfileActions = (user: User | null) => {
   };
 
   const handleLogoUpload = (file: File, setFormData: any) => {
-    // Handle logo upload logic here
-    console.log('Logo upload:', file);
+    // This is now handled in the BrandingSection component
+    console.log('Logo upload handled in BrandingSection:', file);
   };
 
   const handleSubmit = async (e: React.FormEvent, formData: any) => {

@@ -7,6 +7,9 @@ import { Separator } from '@/components/ui/separator';
 import { Upload, Palette } from 'lucide-react';
 import { ProfileFormData } from '@/hooks/profile/types';
 import { useT } from '@/lib/i18n';
+import { brandingService } from '@/services/brandingService';
+import { useAuth } from '@/hooks/dashboard/useAuth';
+import { toast } from 'sonner';
 
 interface BrandingSectionProps {
   formData: ProfileFormData;
@@ -20,13 +23,41 @@ export const BrandingSection = ({
   onLogoUpload
 }: BrandingSectionProps) => {
   const t = useT();
+  const { user } = useAuth();
   const logoInputRef = useRef<HTMLInputElement>(null);
 
   const handleLogoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
-    if (file) {
-      onLogoUpload(file);
+    if (file && user) {
+      try {
+        toast.loading('Uploading logo...');
+        
+        // Upload logo using brandingService
+        const result = await brandingService.uploadLogo(file, user.id);
+        
+        if (result.success && result.url) {
+          // Update the formData with the new logo URL
+          const syntheticEvent = {
+            target: {
+              name: 'logoUrl',
+              value: result.url
+            }
+          } as React.ChangeEvent<HTMLInputElement>;
+          
+          onFormChange(syntheticEvent);
+          toast.dismiss();
+          toast.success('Logo uploaded successfully!');
+        } else {
+          toast.dismiss();
+          toast.error(result.error || 'Failed to upload logo');
+        }
+      } catch (error) {
+        console.error('Error uploading logo:', error);
+        toast.dismiss();
+        toast.error('Failed to upload logo');
+      }
     }
+    
     // Reset file input
     if (logoInputRef.current) {
       logoInputRef.current.value = '';
