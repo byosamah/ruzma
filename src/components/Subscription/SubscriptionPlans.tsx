@@ -60,12 +60,12 @@ export const SubscriptionPlans: React.FC = () => {
   const getPopularPlan = (currentUserType: string) => {
     switch (currentUserType) {
       case 'free':
-        return 'plus'; // Highlight Plus as "Most Popular" for free users
+        return 'plus';
       case 'plus':
-        return 'pro'; // Highlight Pro as "Upgrade your work" for plus users
+        return 'pro';
       case 'pro':
       default:
-        return null; // No highlighting for pro users
+        return null;
     }
   };
 
@@ -81,20 +81,18 @@ export const SubscriptionPlans: React.FC = () => {
 
   if (profileLoading) {
     return (
-      <div className="space-y-6">
-        <div className="text-center">
-          <h2 className="text-3xl font-bold">{t('choosePlan')}</h2>
-          <p className="text-muted-foreground mt-2">
-            {t('loading')}...
-          </p>
+      <div className="flex items-center justify-center py-12">
+        <div className="text-center space-y-3">
+          <div className="w-6 h-6 border-2 border-gray-300 border-t-gray-600 rounded-full animate-spin mx-auto"></div>
+          <p className="text-sm text-gray-500">{t('loading')}...</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="space-y-6">
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-6xl mx-auto">
+    <div className="space-y-8">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-4xl mx-auto">
         {plans.map((plan) => (
           <SubscriptionCard
             key={plan.id}

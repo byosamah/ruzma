@@ -3,7 +3,7 @@ import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Check, Crown } from 'lucide-react';
+import { Check } from 'lucide-react';
 import { SubscriptionPlan } from '@/hooks/useSubscription';
 import { CurrencyCode, formatCurrency } from '@/lib/currency';
 import { useLanguage } from '@/contexts/LanguageContext';
@@ -35,27 +35,26 @@ export const SubscriptionCard: React.FC<SubscriptionCardProps> = ({
   
   const getCardClassName = () => {
     if (isCurrentPlan) {
-      return 'relative border-green-500 bg-green-50/50';
+      return 'relative border-2 border-gray-900 bg-gray-50/30';
     }
     if (isPopular) {
-      return 'relative border-primary shadow-lg scale-105';
+      return 'relative border-2 border-gray-900 bg-white shadow-sm';
     }
-    return 'relative';
+    return 'relative border border-gray-200 bg-white hover:border-gray-300 transition-colors';
   };
 
   const getBadge = () => {
     if (isCurrentPlan) {
       return (
-        <Badge className="absolute -top-2 left-1/2 transform -translate-x-1/2 bg-green-500 hover:bg-green-600">
+        <Badge className="absolute -top-3 left-1/2 transform -translate-x-1/2 bg-gray-900 text-white hover:bg-gray-800 px-3 py-1">
           {t('currentPlan')}
         </Badge>
       );
     }
     if (isPopular) {
-      const badgeText = plan.id === 'plus' ? t('recommended') : t('comingSoon');
       return (
-        <Badge className="absolute -top-2 left-1/2 transform -translate-x-1/2 bg-primary">
-          {badgeText}
+        <Badge className="absolute -top-3 left-1/2 transform -translate-x-1/2 bg-gray-900 text-white hover:bg-gray-800 px-3 py-1">
+          {t('recommended')}
         </Badge>
       );
     }
@@ -107,10 +106,7 @@ export const SubscriptionCard: React.FC<SubscriptionCardProps> = ({
     if (isCurrentPlan) {
       return 'secondary' as const;
     }
-    if (isDowngrade()) {
-      return 'outline' as const;
-    }
-    if (isPopular) {
+    if (isPopular || isUpgrade()) {
       return 'default' as const;
     }
     return 'outline' as const;
@@ -137,7 +133,6 @@ export const SubscriptionCard: React.FC<SubscriptionCardProps> = ({
   // Translate plan features
   const translateFeatures = (features: string[]) => {
     return features.map(feature => {
-      // Handle project count features
       if (feature.includes('project') && !feature.includes('projects')) {
         return `1 ${t('project')}`;
       }
@@ -151,7 +146,6 @@ export const SubscriptionCard: React.FC<SubscriptionCardProps> = ({
         }
       }
       
-      // Handle storage features
       if (feature.includes('storage') || feature.includes('GB')) {
         const match = feature.match(/(\d+)GB/);
         if (match) {
@@ -159,7 +153,6 @@ export const SubscriptionCard: React.FC<SubscriptionCardProps> = ({
         }
       }
       
-      // Handle support features
       if (feature.includes('Basic support')) {
         return t('basicSupport');
       }
@@ -167,7 +160,6 @@ export const SubscriptionCard: React.FC<SubscriptionCardProps> = ({
         return t('prioritySupport');
       }
       
-      // Handle analytics features
       if (feature.includes('Standard analytics')) {
         return t('standardAnalytics');
       }
@@ -175,7 +167,6 @@ export const SubscriptionCard: React.FC<SubscriptionCardProps> = ({
         return t('advancedAnalytics');
       }
       
-      // Handle sharing features
       if (feature.includes('Links-sharing only')) {
         return t('linksSharing');
       }
@@ -194,24 +185,24 @@ export const SubscriptionCard: React.FC<SubscriptionCardProps> = ({
     <Card className={getCardClassName()}>
       {getBadge()}
       
-      <CardHeader className="text-center">
-        <CardTitle className="text-xl font-bold">{getPlanName(plan.id)}</CardTitle>
-        <div className="mt-2">
-          <span className="text-3xl font-bold">{formatCurrency(plan.price, currency, language)}</span>
-          <span className="text-muted-foreground">/{plan.interval === 'month' ? t('month') : t('year')}</span>
+      <CardHeader className="text-center pb-4">
+        <CardTitle className="text-lg font-medium text-gray-900">{getPlanName(plan.id)}</CardTitle>
+        <div className="mt-3">
+          <span className="text-2xl font-semibold text-gray-900">{formatCurrency(plan.price, currency, language)}</span>
+          <span className="text-sm text-gray-500 ml-1">/{plan.interval === 'month' ? t('month') : t('year')}</span>
         </div>
       </CardHeader>
 
-      <CardContent className="space-y-3">
+      <CardContent className="space-y-3 pb-6">
         {translateFeatures(plan.features).map((feature, index) => (
-          <div key={index} className="flex items-center">
-            <Check className="h-4 w-4 text-green-500 mr-2 flex-shrink-0" />
-            <span className="text-sm">{feature}</span>
+          <div key={index} className="flex items-start gap-3">
+            <Check className="h-4 w-4 text-gray-600 mt-0.5 flex-shrink-0" />
+            <span className="text-sm text-gray-700 leading-relaxed">{feature}</span>
           </div>
         ))}
       </CardContent>
 
-      <CardFooter>
+      <CardFooter className="pt-0">
         <Button
           onClick={() => onSelectPlan(plan.id)}
           disabled={isButtonDisabled()}
