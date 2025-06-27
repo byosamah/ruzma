@@ -72,7 +72,7 @@ const Invoices: React.FC = () => {
           <InvoicesHeader />
           <Button onClick={handleCreateInvoice} className="bg-gray-900 hover:bg-gray-800 text-white px-4 py-2 rounded-lg">
             <Plus className="w-4 h-4 mr-2" />
-            New Invoice
+            {t('newInvoice')}
           </Button>
         </div>
 

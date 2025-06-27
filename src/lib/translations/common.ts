@@ -1,4 +1,3 @@
-
 export const commonTranslations = {
   en: {
     language: "Language",
@@ -54,7 +53,14 @@ export const commonTranslations = {
     paidInvoices: "Paid Invoices",
     pendingInvoices: "Pending Invoices",
     manageTrackInvoices: "Manage and track all your invoices in one place",
-    // Invoice creation specific translations
+    newInvoice: "New Invoice",
+    // Invoice status translations
+    draft: "Draft",
+    sent: "Sent",
+    paid: "Paid",
+    overdue: "Overdue",
+    cancelled: "Cancelled",
+    allStatus: "All Status",
     createInvoiceDescription: "Create and send professional invoices to your clients",
     invoiceDetails: "Invoice Details",
     invoiceId: "Invoice ID",
@@ -164,7 +170,14 @@ export const commonTranslations = {
     paidInvoices: "الفواتير المدفوعة",
     pendingInvoices: "الفواتير المعلقة",
     manageTrackInvoices: "إدارة وتتبع جميع الفواتير في مكان واحد",
-    // Invoice creation specific translations
+    newInvoice: "فاتورة جديدة",
+    // Invoice status translations
+    draft: "مسودة",
+    sent: "مُرسلة",
+    paid: "مدفوعة",
+    overdue: "متأخرة",
+    cancelled: "ملغاة",
+    allStatus: "جميع الحالات",
     createInvoiceDescription: "إنشاء وإرسال فواتير احترافية لعملائك",
     invoiceDetails: "تفاصيل الفاتورة",
     invoiceId: "رقم الفاتورة",
