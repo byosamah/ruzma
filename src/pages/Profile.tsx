@@ -19,6 +19,7 @@ const Profile = () => {
     isLoading,
     isSaved,
     imageToCrop,
+    isUploading,
     navigate,
     handleChange,
     handleCurrencyChange,
@@ -55,6 +56,7 @@ const Profile = () => {
           <ProfilePictureCard
             profilePicture={profilePicture}
             userName={formData.name}
+            isUploading={isUploading}
             onUploadClick={handleUploadClick}
             onFileChange={handleFileChange}
             fileInputRef={fileInputRef}

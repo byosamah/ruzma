@@ -5,21 +5,18 @@ import { useAuth } from '@/hooks/dashboard/useAuth';
 import { useDashboardActions } from '@/hooks/dashboard/useDashboardActions';
 import { useProfileInfo } from './profile/useProfileInfo';
 import { useProfileActions } from './profile/useProfileActions';
-import { useImageCropping } from './profile/useImageCropping';
+import { useProfilePictureUpload } from './profile/useProfilePictureUpload';
 
 export const useProfile = (user?: User | null) => {
   const navigate = useNavigate();
   const { user: authUser } = useAuth();
-  const { handleSignOut } = useDashboardActions(() => Promise.resolve(true)); // Provide dummy deleteProject function
+  const { handleSignOut } = useDashboardActions(() => Promise.resolve(true));
   
   // Use provided user or fallback to auth user
   const currentUser = user || authUser;
   
   const { formData, setFormData, profilePicture, setProfilePicture } = useProfileInfo(currentUser);
   const { isLoading, isSaved, handleChange, handleCurrencyChange, handleLogoUpload, handleSubmit } = useProfileActions(currentUser);
-
-  // Debug log to track profilePicture state
-  console.log('useProfile - current profilePicture state:', profilePicture);
 
   const wrappedHandleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     handleChange(e, setFormData);
@@ -40,21 +37,20 @@ export const useProfile = (user?: User | null) => {
   const updateProfilePicture = (newPictureUrl: string) => {
     console.log('updateProfilePicture called with:', newPictureUrl);
     setProfilePicture(newPictureUrl);
-    // Force a re-render by updating the formData as well if needed
-    setFormData(prev => ({ ...prev }));
   };
 
-  // Image cropping functionality
+  // New profile picture upload functionality
   const {
     fileInputRef,
     imageToCrop,
     croppedAreaPixels,
     setCroppedAreaPixels,
+    isUploading,
     handleUploadClick,
     handleFileChange,
     onCropSave,
     onCropCancel,
-  } = useImageCropping(currentUser, updateProfilePicture);
+  } = useProfilePictureUpload(currentUser, updateProfilePicture);
 
   return {
     user: currentUser,
@@ -64,6 +60,7 @@ export const useProfile = (user?: User | null) => {
     isSaved,
     fileInputRef,
     imageToCrop,
+    isUploading,
     navigate,
     handleChange: wrappedHandleChange,
     handleCurrencyChange: wrappedHandleCurrencyChange,
