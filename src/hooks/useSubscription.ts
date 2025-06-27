@@ -1,3 +1,4 @@
+
 import { useState } from 'react';
 import { toast } from 'sonner';
 import { supabase } from '@/integrations/supabase/client';
@@ -41,7 +42,7 @@ export const getSubscriptionPlans = (currency: CurrencyCode = 'USD'): Subscripti
       interval: 'month',
       features: [
         '1 project',
-        '500MB storage',
+        'Links-sharing only',
         'Basic support',
         'Standard analytics',
       ],
