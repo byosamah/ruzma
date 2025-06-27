@@ -53,19 +53,19 @@ const InvoicesStats: React.FC<InvoicesStatsProps> = ({ invoices, user }) => {
   ];
 
   return (
-    <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
       {stats.map((stat, index) => {
         const Icon = stat.icon;
         return (
           <Card key={index} className="border-0 shadow-none bg-gray-50">
-            <CardContent className="p-4">
-              <div className="flex items-center space-x-3">
-                <div className={`p-2 rounded-lg ${stat.bgColor}`}>
-                  <Icon className={`w-4 h-4 ${stat.iconColor}`} />
+            <CardContent className="p-4 sm:p-6">
+              <div className="flex items-start space-x-3">
+                <div className={`p-2 rounded-lg flex-shrink-0 ${stat.bgColor}`}>
+                  <Icon className={`w-4 h-4 sm:w-5 sm:h-5 ${stat.iconColor}`} />
                 </div>
-                <div className="min-w-0 flex-1">
-                  <p className="text-xs text-gray-500 truncate">{stat.label}</p>
-                  <p className="text-lg font-medium text-gray-900 truncate">{stat.value}</p>
+                <div className="min-w-0 flex-1 overflow-hidden">
+                  <p className="text-xs sm:text-sm text-gray-500 mb-1 break-words">{stat.label}</p>
+                  <p className="text-lg sm:text-xl font-medium text-gray-900 break-words word-break">{stat.value}</p>
                 </div>
               </div>
             </CardContent>

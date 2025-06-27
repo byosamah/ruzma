@@ -58,6 +58,13 @@ button, [role="button"], input, select, textarea {
   touch-action: manipulation;
 }
 
+/* Word breaking for long text */
+.word-break {
+  word-break: break-word;
+  overflow-wrap: break-word;
+  hyphens: auto;
+}
+
 /* Better text readability on mobile */
 @media (max-width: 768px) {
   body {
