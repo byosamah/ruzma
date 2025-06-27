@@ -11,6 +11,7 @@ export const useProjectCardActions = (
 ) => {
   const handleCopyClientLink = (e: React.MouseEvent) => {
     e.stopPropagation();
+    // Use the full client_access_token directly
     const clientUrl = `https://hub.ruzma.co/client/project/${project.client_access_token}`;
     navigator.clipboard.writeText(clientUrl);
     toast.success('Client link copied to clipboard');
@@ -18,6 +19,7 @@ export const useProjectCardActions = (
 
   const handleViewClientPage = (e: React.MouseEvent) => {
     e.stopPropagation();
+    // Use the full client_access_token directly
     const clientUrl = `https://hub.ruzma.co/client/project/${project.client_access_token}`;
     window.open(clientUrl, '_blank');
   };
@@ -40,7 +42,7 @@ export const useProjectCardActions = (
         clientEmail: project.client_email,
         projectName: project.name,
         freelancerName: 'Your freelancer', // fallback name
-        clientToken: project.client_access_token,
+        clientToken: project.client_access_token, // Use full token directly
         userId: user?.id,
       });
 

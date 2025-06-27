@@ -24,11 +24,13 @@ const ProjectHeaderActions: React.FC<ProjectHeaderActionsProps> = ({
   const t = useT();
 
   const handleViewProjectPage = () => {
+    // Use the full client_access_token directly
     const clientUrl = `https://hub.ruzma.co/client/project/${project.client_access_token}`;
     window.open(clientUrl, '_blank');
   };
 
   const handleCopyClientLink = async () => {
+    // Use the full client_access_token directly
     const clientUrl = `https://hub.ruzma.co/client/project/${project.client_access_token}`;
     try {
       await navigator.clipboard.writeText(clientUrl);
@@ -53,7 +55,7 @@ const ProjectHeaderActions: React.FC<ProjectHeaderActionsProps> = ({
         clientEmail: project.client_email,
         projectName: project.name,
         freelancerName: 'Your freelancer',
-        clientToken: project.client_access_token,
+        clientToken: project.client_access_token, // Use full token directly
         userId: user?.id,
       });
 
