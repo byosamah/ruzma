@@ -1,12 +1,17 @@
-
+import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { useNavigate } from 'react-router-dom';
+import { toast } from 'sonner';
+import { supabase } from '@/integrations/supabase/client';
 import { createProjectFormSchema, CreateProjectFormData } from '@/lib/validators/project';
-import { useCreateProjectSubmission } from '@/hooks/createProject/useCreateProjectSubmission';
-import { ProjectTemplate } from '@/types/projectTemplate';
-import { trackTemplateUsed } from '@/lib/analytics';
+import { useT } from '@/lib/i18n';
+import { generateSlug } from '@/lib/slugUtils';
 
-export const useCreateProjectForm = (templateData?: ProjectTemplate) => {
+export const useCreateProjectForm = (templateData?: any) => {
+  const navigate = useNavigate();
+  const t = useT();
+
   const form = useForm<CreateProjectFormData>({
     resolver: zodResolver(createProjectFormSchema),
     defaultValues: {
@@ -25,8 +30,6 @@ export const useCreateProjectForm = (templateData?: ProjectTemplate) => {
       ],
     },
   });
-
-  const { handleSubmit: handleSubmitProject } = useCreateProjectSubmission();
 
   const addMilestone = () => {
     const currentMilestones = form.getValues('milestones');
@@ -49,18 +52,77 @@ export const useCreateProjectForm = (templateData?: ProjectTemplate) => {
     }
   };
 
-  const loadFromTemplate = (template: ProjectTemplate) => {
-    // Track template usage
-    trackTemplateUsed(template.id, template.name);
-    
+  const loadFromTemplate = (template: any) => {
     form.setValue('name', template.name);
     form.setValue('brief', template.brief);
     form.setValue('milestones', template.milestones);
-    form.setValue('paymentProofRequired', false); // Default for templates
+    // Keep paymentProofRequired as false when loading from template
+    form.setValue('paymentProofRequired', false);
   };
 
   const handleSubmit = async (data: CreateProjectFormData) => {
-    await handleSubmitProject(data);
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) {
+        toast.error(t('mustBeLoggedIn'));
+        return;
+      }
+
+      const slug = generateSlug(data.name);
+
+      // Create the project with paymentProofRequired field
+      const { data: project, error: projectError } = await supabase
+        .from('projects')
+        .insert({
+          name: data.name,
+          brief: data.brief,
+          client_email: data.clientEmail || null,
+          payment_proof_required: data.paymentProofRequired, // Ensure this is properly saved
+          user_id: user.id,
+          slug: slug,
+        })
+        .select()
+        .single();
+
+      if (projectError) {
+        console.error('Error creating project:', projectError);
+        toast.error(t('failedToCreateProject'));
+        return;
+      }
+
+      // Create milestones
+      const milestonesToInsert = data.milestones.map((milestone) => ({
+        project_id: project.id,
+        title: milestone.title,
+        description: milestone.description,
+        price: milestone.price,
+        start_date: milestone.start_date || null,
+        end_date: milestone.end_date || null,
+        status: 'pending',
+      }));
+
+      const { error: milestonesError } = await supabase
+        .from('milestones')
+        .insert(milestonesToInsert);
+
+      if (milestonesError) {
+        console.error('Error creating milestones:', milestonesError);
+        toast.error(t('failedToCreateMilestones'));
+        return;
+      }
+
+      // Update project count
+      await supabase.rpc('update_project_count', {
+        _user_id: user.id,
+        _count_change: 1,
+      });
+
+      toast.success(t('projectCreatedSuccessfully'));
+      navigate('/dashboard');
+    } catch (error) {
+      console.error('Error in handleSubmit:', error);
+      toast.error(t('unexpectedError'));
+    }
   };
 
   return {

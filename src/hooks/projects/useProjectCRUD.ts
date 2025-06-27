@@ -1,3 +1,4 @@
+
 import { useState, useCallback } from 'react';
 import { User } from '@supabase/supabase-js';
 import { supabase } from '@/integrations/supabase/client';
@@ -57,15 +58,20 @@ export const useProjectCRUD = (user: User | null) => {
     if (!user) return false;
 
     try {
+      // Ensure paymentProofRequired is properly handled
+      const projectUpdateData = {
+        name: data.name,
+        brief: data.brief,
+        client_email: data.clientEmail || null,
+        payment_proof_required: data.paymentProofRequired ?? false, // Use nullish coalescing to handle undefined
+        updated_at: new Date().toISOString(),
+      };
+
+      console.log('Updating project with data:', projectUpdateData); // Debug log
+
       const { error: projectError } = await supabase
         .from('projects')
-        .update({
-          name: data.name,
-          brief: data.brief,
-          client_email: data.clientEmail || null,
-          payment_proof_required: data.paymentProofRequired || false,
-          updated_at: new Date().toISOString(),
-        })
+        .update(projectUpdateData)
         .eq('id', projectId)
         .eq('user_id', user.id);
 
