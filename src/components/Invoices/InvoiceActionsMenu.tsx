@@ -61,31 +61,39 @@ const InvoiceActionsMenu: React.FC<InvoiceActionsMenuProps> = ({
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
-          <MoreHorizontal className="h-4 w-4" />
+        <Button variant="ghost" size="sm" className="h-8 w-8 p-0 hover:bg-gray-100">
+          <MoreHorizontal className="h-4 w-4 text-gray-500" />
           <span className="sr-only">{t('viewMore')}</span>
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent align="end" className="w-48">
-        <DropdownMenuItem onClick={handleDownload} className="cursor-pointer" disabled={isDownloading}>
+      <DropdownMenuContent align="end" className="w-44 border-gray-200">
+        <DropdownMenuItem 
+          onClick={handleDownload} 
+          className="cursor-pointer text-gray-700 hover:bg-gray-50" 
+          disabled={isDownloading}
+        >
           {isDownloading ? (
             <Loader2 className="mr-2 h-4 w-4 animate-spin" />
           ) : (
             <Download className="mr-2 h-4 w-4" />
           )}
-          {isDownloading ? 'Generating PDF...' : t('downloadPDF')}
+          {isDownloading ? 'Generating...' : t('downloadPDF')}
         </DropdownMenuItem>
-        <DropdownMenuItem onClick={handleSendToClient} className="cursor-pointer" disabled={isSending}>
+        <DropdownMenuItem 
+          onClick={handleSendToClient} 
+          className="cursor-pointer text-gray-700 hover:bg-gray-50" 
+          disabled={isSending}
+        >
           {isSending ? (
             <Loader2 className="mr-2 h-4 w-4 animate-spin" />
           ) : (
             <Send className="mr-2 h-4 w-4" />
           )}
-          {isSending ? 'Sending to client...' : t('sendToClient')}
+          {isSending ? 'Sending...' : t('sendToClient')}
         </DropdownMenuItem>
         <DropdownMenuItem 
           onClick={handleDelete}
-          className="text-red-600 hover:text-red-700 cursor-pointer"
+          className="text-red-600 hover:text-red-700 hover:bg-red-50 cursor-pointer"
         >
           <Trash2 className="mr-2 h-4 w-4" />
           {t('deleteInvoice')}

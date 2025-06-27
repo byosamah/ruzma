@@ -36,36 +36,41 @@ const InvoiceTable: React.FC<InvoiceTableProps> = ({
   if (invoices.length === 0) {
     return (
       <div className="text-center py-12">
-        <p className="text-gray-500 text-lg">{t('noInvoicesFound')}</p>
-        <p className="text-gray-400 mt-2">{t('noInvoicesDescription')}</p>
+        <div className="w-12 h-12 mx-auto mb-4 bg-gray-100 rounded-lg flex items-center justify-center">
+          <svg className="w-6 h-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+          </svg>
+        </div>
+        <p className="text-gray-500 text-base font-medium">{t('noInvoicesFound')}</p>
+        <p className="text-gray-400 text-sm mt-1">{t('noInvoicesDescription')}</p>
       </div>
     );
   }
 
   return (
-    <div className="overflow-x-auto">
+    <div className="overflow-hidden">
       <Table>
         <TableHeader>
-          <TableRow>
-            <TableHead>{t('transactionId')}</TableHead>
-            <TableHead>{t('invoiceAmount')}</TableHead>
-            <TableHead>{t('projectName')}</TableHead>
-            <TableHead>{t('dateOfInvoice')}</TableHead>
-            <TableHead>{t('status')}</TableHead>
-            <TableHead className="text-right">{t('actions')}</TableHead>
+          <TableRow className="border-gray-100">
+            <TableHead className="text-gray-500 font-medium text-xs uppercase tracking-wide">{t('transactionId')}</TableHead>
+            <TableHead className="text-gray-500 font-medium text-xs uppercase tracking-wide">{t('invoiceAmount')}</TableHead>
+            <TableHead className="text-gray-500 font-medium text-xs uppercase tracking-wide">{t('projectName')}</TableHead>
+            <TableHead className="text-gray-500 font-medium text-xs uppercase tracking-wide">{t('dateOfInvoice')}</TableHead>
+            <TableHead className="text-gray-500 font-medium text-xs uppercase tracking-wide">{t('status')}</TableHead>
+            <TableHead className="text-right text-gray-500 font-medium text-xs uppercase tracking-wide">{t('actions')}</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
           {invoices.map((invoice) => (
-            <TableRow key={invoice.id}>
-              <TableCell className="font-medium">
+            <TableRow key={invoice.id} className="border-gray-50 hover:bg-gray-25">
+              <TableCell className="font-mono text-sm text-gray-900">
                 {invoice.transactionId}
               </TableCell>
-              <TableCell>
+              <TableCell className="font-medium text-gray-900">
                 {formatCurrency(invoice.amount)}
               </TableCell>
-              <TableCell>{invoice.projectName}</TableCell>
-              <TableCell>
+              <TableCell className="text-gray-700">{invoice.projectName}</TableCell>
+              <TableCell className="text-gray-500 text-sm">
                 {format(invoice.date, 'MMM dd, yyyy')}
               </TableCell>
               <TableCell>

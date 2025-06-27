@@ -4,14 +4,14 @@ import { useNavigate } from 'react-router-dom';
 import Layout from '@/components/Layout';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { FileText, DollarSign, Clock, CheckCircle, Plus } from 'lucide-react';
+import { Plus } from 'lucide-react';
 import { useInvoices } from '@/hooks/useInvoices';
 import { useAuth } from '@/hooks/dashboard/useAuth';
 import { useUserProfile } from '@/hooks/dashboard/useUserProfile';
-import { useUserCurrency } from '@/hooks/useUserCurrency';
 import { useT } from '@/lib/i18n';
-import InvoiceFilters from '@/components/Invoices/InvoiceFilters';
-import InvoiceTable from '@/components/Invoices/InvoiceTable';
+import InvoicesHeader from '@/components/Invoices/InvoicesHeader';
+import InvoicesStats from '@/components/Invoices/InvoicesStats';
+import InvoicesSection from '@/components/Invoices/InvoicesSection';
 
 const Invoices: React.FC = () => {
   const navigate = useNavigate();
@@ -25,7 +25,6 @@ const Invoices: React.FC = () => {
     profile,
     loading: profileLoading
   } = useUserProfile(user);
-  const { formatCurrency } = useUserCurrency(user);
   const {
     invoices,
     loading: invoicesLoading,
@@ -37,12 +36,6 @@ const Invoices: React.FC = () => {
     handleSendToClient,
     handleDeleteInvoice
   } = useInvoices();
-
-  // Calculate stats
-  const totalInvoices = invoices.length;
-  const totalAmount = invoices.reduce((sum, invoice) => sum + invoice.amount, 0);
-  const paidInvoices = invoices.filter(invoice => invoice.status === 'paid').length;
-  const pendingInvoices = invoices.filter(invoice => invoice.status === 'sent' || invoice.status === 'draft').length;
 
   // Show loading while auth is being checked
   if (!authChecked || authLoading) {
@@ -68,90 +61,36 @@ const Invoices: React.FC = () => {
       </Layout>;
   }
 
-  return <Layout user={profile || user}>
-      <div className="space-y-6">
-        {/* Header */}
-        <div className="flex justify-between items-center">
-          <div>
-            <h1 className="text-3xl font-bold text-gray-900">{t('invoices')}</h1>
-            <p className="text-gray-600 mt-1">{t('manageTrackInvoices')}</p>
-          </div>
-          
+  const handleCreateInvoice = () => {
+    navigate('/create-invoice');
+  };
+
+  return (
+    <Layout user={profile || user}>
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
+        <div className="flex items-center justify-between">
+          <InvoicesHeader />
+          <Button onClick={handleCreateInvoice} className="bg-gray-900 hover:bg-gray-800 text-white px-4 py-2 rounded-lg">
+            <Plus className="w-4 h-4 mr-2" />
+            New Invoice
+          </Button>
         </div>
 
-        {/* Stats Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-          <Card>
-            <CardContent className="p-6">
-              <div className="flex items-center space-x-3">
-                <div className="p-2 bg-blue-100 rounded-lg">
-                  <FileText className="w-5 h-5 text-blue-600" />
-                </div>
-                <div>
-                  <p className="text-sm text-gray-600">{t('totalInvoices')}</p>
-                  <p className="text-2xl font-bold text-gray-900">{totalInvoices}</p>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
+        <InvoicesStats invoices={invoices} user={user} />
 
-          <Card>
-            <CardContent className="p-6">
-              <div className="flex items-center space-x-3">
-                <div className="p-2 bg-green-100 rounded-lg">
-                  <DollarSign className="w-5 h-5 text-green-600" />
-                </div>
-                <div>
-                  <p className="text-sm text-gray-600">{t('totalAmount')}</p>
-                  <p className="text-2xl font-bold text-gray-900">{formatCurrency(totalAmount)}</p>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardContent className="p-6">
-              <div className="flex items-center space-x-3">
-                <div className="p-2 bg-purple-100 rounded-lg">
-                  <CheckCircle className="w-5 h-5 text-purple-600" />
-                </div>
-                <div>
-                  <p className="text-sm text-gray-600">{t('paidInvoices')}</p>
-                  <p className="text-2xl font-bold text-gray-900">{paidInvoices}</p>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardContent className="p-6">
-              <div className="flex items-center space-x-3">
-                <div className="p-2 bg-orange-100 rounded-lg">
-                  <Clock className="w-5 h-5 text-orange-600" />
-                </div>
-                <div>
-                  <p className="text-sm text-gray-600">{t('pendingInvoices')}</p>
-                  <p className="text-2xl font-bold text-gray-900">{pendingInvoices}</p>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-        </div>
-
-        {/* Invoices Table */}
-        <Card>
-          <CardContent className="p-6 space-y-4">
-            <div className="flex justify-between items-center">
-              <h2 className="text-xl font-semibold">{t('allInvoices')}</h2>
-            </div>
-            
-            <InvoiceFilters searchTerm={searchTerm} onSearchChange={setSearchTerm} statusFilter={statusFilter} onStatusChange={setStatusFilter} />
-            
-            <InvoiceTable invoices={invoices} onDownloadPDF={handleDownloadPDF} onSendToClient={handleSendToClient} onDeleteInvoice={handleDeleteInvoice} />
-          </CardContent>
-        </Card>
+        <InvoicesSection
+          invoices={invoices}
+          searchTerm={searchTerm}
+          setSearchTerm={setSearchTerm}
+          statusFilter={statusFilter}
+          setStatusFilter={setStatusFilter}
+          handleDownloadPDF={handleDownloadPDF}
+          handleSendToClient={handleSendToClient}
+          handleDeleteInvoice={handleDeleteInvoice}
+        />
       </div>
-    </Layout>;
+    </Layout>
+  );
 };
 
 export default Invoices;

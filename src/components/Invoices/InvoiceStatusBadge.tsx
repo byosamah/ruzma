@@ -8,43 +8,55 @@ interface InvoiceStatusBadgeProps {
 }
 
 const InvoiceStatusBadge: React.FC<InvoiceStatusBadgeProps> = ({ status }) => {
-  const getStatusVariant = (status: InvoiceStatus) => {
+  const getStatusConfig = (status: InvoiceStatus) => {
     switch (status) {
       case 'paid':
-        return 'default'; // Green
+        return {
+          variant: 'default' as const,
+          className: 'bg-green-50 text-green-700 border-green-200 hover:bg-green-100',
+          text: 'Paid'
+        };
       case 'sent':
-        return 'secondary'; // Blue
+        return {
+          variant: 'secondary' as const,
+          className: 'bg-blue-50 text-blue-700 border-blue-200 hover:bg-blue-100',
+          text: 'Sent'
+        };
       case 'overdue':
-        return 'destructive'; // Red
+        return {
+          variant: 'destructive' as const,
+          className: 'bg-red-50 text-red-700 border-red-200 hover:bg-red-100',
+          text: 'Overdue'
+        };
       case 'draft':
-        return 'outline'; // Gray
+        return {
+          variant: 'outline' as const,
+          className: 'bg-gray-50 text-gray-600 border-gray-200 hover:bg-gray-100',
+          text: 'Draft'
+        };
       case 'cancelled':
-        return 'destructive'; // Red
+        return {
+          variant: 'destructive' as const,
+          className: 'bg-red-50 text-red-700 border-red-200 hover:bg-red-100',
+          text: 'Cancelled'
+        };
       default:
-        return 'outline';
+        return {
+          variant: 'outline' as const,
+          className: 'bg-gray-50 text-gray-600 border-gray-200',
+          text: status
+        };
     }
   };
 
-  const getStatusText = (status: InvoiceStatus) => {
-    switch (status) {
-      case 'paid':
-        return 'Paid';
-      case 'sent':
-        return 'Sent';
-      case 'overdue':
-        return 'Overdue';
-      case 'draft':
-        return 'Draft';
-      case 'cancelled':
-        return 'Cancelled';
-      default:
-        return status;
-    }
-  };
+  const config = getStatusConfig(status);
 
   return (
-    <Badge variant={getStatusVariant(status)} className="capitalize">
-      {getStatusText(status)}
+    <Badge 
+      variant={config.variant} 
+      className={`text-xs font-medium px-2 py-1 ${config.className}`}
+    >
+      {config.text}
     </Badge>
   );
 };
