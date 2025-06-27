@@ -36,6 +36,7 @@ export const useProfileInfo = (user: User | null) => {
       if (profileData) {
         // Handle existing profile
         setFormData(setProfileFormData(profileData, branding, user));
+        // Ensure profile picture is set from the fetched data
         setProfilePicture(profileData.avatar_url || null);
       } else {
         // Handle new profile creation

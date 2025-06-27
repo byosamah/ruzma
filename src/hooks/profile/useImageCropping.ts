@@ -45,6 +45,7 @@ export const useImageCropping = (
 
             if (error) throw error;
             
+            // Immediately update the profile picture state with the new cropped image
             onProfilePictureUpdate(croppedImage);
             toast.success("Profile picture updated!");
         } catch (error) {
