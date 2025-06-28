@@ -1,4 +1,3 @@
-
 import { supabase } from '@/integrations/supabase/client';
 
 export interface SecurityEvent {
@@ -63,8 +62,13 @@ class SecurityMonitor {
 
   private async storeInDatabase(event: SecurityEvent) {
     try {
-      // Store security events in the notifications table for now
+      // Get current user ID
+      const { data: { user } } = await supabase.auth.getUser();
+      const userId = user?.id || '00000000-0000-0000-0000-000000000000';
+
+      // Store security events in the notifications table
       await supabase.from('notifications').insert({
+        user_id: userId,
         type: `security_${event.type}`,
         title: `Security Event: ${event.message}`,
         message: JSON.stringify({
