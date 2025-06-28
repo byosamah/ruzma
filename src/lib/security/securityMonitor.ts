@@ -1,3 +1,4 @@
+
 import { supabase } from '@/integrations/supabase/client';
 
 export interface SecurityEvent {
@@ -35,7 +36,7 @@ class SecurityMonitor {
     // Log to console for immediate visibility
     console.log(`SECURITY_EVENT [${event.severity.toUpperCase()}]:`, securityEvent);
 
-    // Store critical and high severity events in database
+    // Store critical and high severity events in database using notifications table
     if (event.severity === 'critical' || event.severity === 'high') {
       try {
         await this.storeInDatabase(securityEvent);
@@ -62,17 +63,18 @@ class SecurityMonitor {
 
   private async storeInDatabase(event: SecurityEvent) {
     try {
-      await supabase.rpc('log_security_event', {
-        event_type: `${event.type}_${event.severity}`,
-        user_id: event.userId,
-        details: {
-          message: event.message,
+      // Store security events in the notifications table for now
+      await supabase.from('notifications').insert({
+        type: `security_${event.type}`,
+        title: `Security Event: ${event.message}`,
+        message: JSON.stringify({
           severity: event.severity,
           details: event.details,
           ipAddress: event.ipAddress,
           userAgent: event.userAgent,
           timestamp: event.timestamp.toISOString(),
-        }
+        }),
+        created_at: new Date().toISOString()
       });
     } catch (error) {
       console.error('Database security logging failed:', error);

@@ -82,13 +82,9 @@ export const PersonalInformationForm = ({
 
   const handleSecureSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    secureHandleSubmit(async (data) => {
-      // Use the existing submit handler but with validated data
-      const syntheticEvent = {
-        ...e,
-        target: { ...formData } // Use original formData for submission
-      } as React.FormEvent;
-      onFormSubmit(syntheticEvent);
+    secureHandleSubmit(async () => {
+      // Call the original submit handler directly
+      onFormSubmit(e);
     });
   };
 
@@ -167,7 +163,7 @@ export const PersonalInformationForm = ({
                 name="company"
                 value={formData.company}
                 onChange={handleSecureChange}
-                placeholder={t('enterCompany')}
+                placeholder={t('company')}
                 className="border-gray-200 focus:border-blue-500 focus:ring-blue-500"
               />
               {errors.company && (
@@ -203,7 +199,7 @@ export const PersonalInformationForm = ({
               name="bio"
               value={formData.bio}
               onChange={handleSecureChange}
-              placeholder={t('enterBio')}
+              placeholder={t('bio')}
               rows={3}
               className="border-gray-200 focus:border-blue-500 focus:ring-blue-500 resize-none"
             />
@@ -243,7 +239,7 @@ export const PersonalInformationForm = ({
                 name="professionalTitle"
                 value={formData.professionalTitle}
                 onChange={handleSecureChange}
-                placeholder={t('enterProfessionalTitle')}
+                placeholder={t('professionalTitle')}
                 className="border-gray-200 focus:border-blue-500 focus:ring-blue-500"
               />
               {errors.professionalTitle && (
@@ -253,14 +249,14 @@ export const PersonalInformationForm = ({
             
             <div className="space-y-2">
               <Label htmlFor="shortBio" className="text-sm font-medium text-gray-700">
-                {t('shortBio')}
+                Short Bio
               </Label>
               <Input
                 id="shortBio"
                 name="shortBio"
                 value={formData.shortBio}
                 onChange={handleSecureChange}
-                placeholder={t('enterShortBio')}
+                placeholder="Brief description"
                 className="border-gray-200 focus:border-blue-500 focus:ring-blue-500"
               />
               {errors.shortBio && (
@@ -274,7 +270,7 @@ export const PersonalInformationForm = ({
 
           <div className="space-y-2">
             <Label htmlFor="logo" className="text-sm font-medium text-gray-700">
-              {t('logo')}
+              Logo
             </Label>
             <div className="flex items-center space-x-4">
               <Input
@@ -292,7 +288,7 @@ export const PersonalInformationForm = ({
                 className="border-gray-200 text-gray-600 hover:bg-gray-50"
               >
                 <Upload className="w-4 h-4 mr-2" />
-                {t('uploadLogo')}
+                Upload Logo
               </Button>
               {formData.logoUrl && (
                 <img 
