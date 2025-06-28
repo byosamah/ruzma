@@ -28,13 +28,6 @@ export const CURRENCIES = {
 
 export type CurrencyCode = keyof typeof CURRENCIES;
 
-// Export currencies array for compatibility
-export const currencies = Object.entries(CURRENCIES).map(([code, data]) => ({
-  code: code as CurrencyCode,
-  name: data.name,
-  symbol: data.symbol
-}));
-
 export const formatCurrency = (amount: number, currency: CurrencyCode = 'USD', language: 'en' | 'ar' = 'en'): string => {
   // Add safety check for undefined currency
   if (!currency || !CURRENCIES[currency]) {
