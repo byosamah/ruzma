@@ -11,8 +11,8 @@ interface LanguageContextProps {
 const LanguageContext = createContext<LanguageContextProps | undefined>(undefined);
 
 export const LanguageProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-  // Default to English; optionally auto-detect here
-  const [language, setLanguage] = useState<Language>("en");
+  // Default to Arabic instead of English
+  const [language, setLanguage] = useState<Language>("ar");
 
   useEffect(() => {
     if (language === "ar") {
