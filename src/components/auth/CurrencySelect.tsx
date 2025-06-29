@@ -23,23 +23,23 @@ export const CurrencySelect: React.FC<CurrencySelectProps> = ({
 
   return (
     <div className="space-y-2">
-      <Label htmlFor="currency">{t('preferredCurrencyLabel')}{required && ' *'}</Label>
+      <Label htmlFor="currency" className="text-sm font-medium">{t('preferredCurrencyLabel')}{required && ' *'}</Label>
       <div className="relative">
-        <DollarSign className="absolute left-3 top-3 h-4 w-4 text-slate-400 z-10" />
+        <DollarSign className="absolute left-3 rtl:left-auto rtl:right-3 top-3 h-4 w-4 text-slate-400 z-10 pointer-events-none" />
         <Select value={value} onValueChange={onChange}>
-          <SelectTrigger className="pl-10">
+          <SelectTrigger className="pl-10 rtl:pl-3 rtl:pr-10 h-10 sm:h-11 text-sm">
             <SelectValue placeholder={t('selectCurrencyPlaceholder')} />
           </SelectTrigger>
-          <SelectContent>
+          <SelectContent className="bg-white border border-gray-200 shadow-lg z-50">
             {Object.entries(CURRENCIES).map(([code, { symbol, name }]) => (
-              <SelectItem key={code} value={code}>
+              <SelectItem key={code} value={code} className="hover:bg-gray-50">
                 {symbol.en} {name} ({code})
               </SelectItem>
             ))}
           </SelectContent>
         </Select>
       </div>
-      {error && <p className="text-sm text-red-600 mt-1">{error}</p>}
+      {error && <p className="text-xs sm:text-sm text-red-600 mt-1">{error}</p>}
     </div>
   );
 };

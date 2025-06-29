@@ -33,9 +33,9 @@ const SignUp = () => {
   }
 
   return (
-    <div className="relative">
-      {/* Language Switcher - Top Right */}
-      <div className="absolute top-4 right-4 z-10">
+    <div className="relative min-h-screen">
+      {/* Language Switcher - Top Right/Left based on direction */}
+      <div className="absolute top-4 right-4 rtl:right-auto rtl:left-4 z-10">
         <LanguageSelector 
           className="border-gray-200 hover:border-gray-300 bg-white" 
           showTextWhenCollapsed={true}

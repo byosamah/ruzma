@@ -51,16 +51,16 @@ const Login = () => {
   console.log('Rendering login form');
 
   return (
-    <div className="min-h-screen bg-white flex items-center justify-center px-4 relative">
-      {/* Language Switcher - Top Right */}
-      <div className="absolute top-4 right-4 z-10">
+    <div className="min-h-screen bg-white flex items-center justify-center px-4 sm:px-6 lg:px-8 relative">
+      {/* Language Switcher - Top Right/Left based on direction */}
+      <div className="absolute top-4 right-4 rtl:right-auto rtl:left-4 z-10">
         <LanguageSelector 
           className="border-gray-200 hover:border-gray-300 bg-white" 
           showTextWhenCollapsed={true}
         />
       </div>
       
-      <div className="w-full max-w-md space-y-8">
+      <div className="w-full max-w-md space-y-6 sm:space-y-8">
         <LoginHeader />
         <AuthToggle />
         <LoginForm 

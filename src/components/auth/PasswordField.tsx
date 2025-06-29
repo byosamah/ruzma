@@ -32,9 +32,9 @@ export const PasswordField: React.FC<PasswordFieldProps> = ({
 }) => {
   return (
     <div className="space-y-2">
-      <Label htmlFor={id}>{label}{required && ' *'}</Label>
+      <Label htmlFor={id} className="text-sm font-medium">{label}{required && ' *'}</Label>
       <div className="relative">
-        <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-400" />
+        <Lock className="absolute left-3 rtl:left-auto rtl:right-3 top-1/2 -translate-y-1/2 h-4 w-4 sm:h-5 sm:w-5 text-slate-400" />
         <Input
           id={id}
           name={name}
@@ -42,19 +42,19 @@ export const PasswordField: React.FC<PasswordFieldProps> = ({
           placeholder={placeholder}
           value={value}
           onChange={onChange}
-          className={`pl-10 ${error ? 'border-red-500' : ''}`}
+          className={`pl-10 rtl:pl-3 rtl:pr-10 pr-10 rtl:pr-10 rtl:pl-10 ${error ? 'border-red-500' : ''} h-10 sm:h-11 text-sm`}
         />
         <Button
           type="button"
           variant="ghost"
           size="sm"
-          className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
+          className="absolute right-0 rtl:right-auto rtl:left-0 top-0 h-full px-3 py-2 hover:bg-transparent"
           onClick={onTogglePassword}
         >
-          {showPassword ? <EyeOff className="h-5 w-5 text-slate-400" /> : <Eye className="h-5 w-5 text-slate-400" />}
+          {showPassword ? <EyeOff className="h-4 w-4 sm:h-5 sm:w-5 text-slate-400" /> : <Eye className="h-4 w-4 sm:h-5 sm:w-5 text-slate-400" />}
         </Button>
       </div>
-      {error && <p className="text-sm text-red-600 mt-1">{error}</p>}
+      {error && <p className="text-xs sm:text-sm text-red-600 mt-1">{error}</p>}
     </div>
   );
 };
