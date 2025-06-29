@@ -4,6 +4,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Label } from '@/components/ui/label';
 import { DollarSign } from 'lucide-react';
 import { CURRENCIES } from '@/lib/currency';
+import { useT } from '@/lib/i18n';
 
 interface CurrencySelectProps {
   value: string;
@@ -18,14 +19,16 @@ export const CurrencySelect: React.FC<CurrencySelectProps> = ({
   error,
   required = false
 }) => {
+  const t = useT();
+
   return (
     <div className="space-y-2">
-      <Label htmlFor="currency">Preferred Currency{required && ' *'}</Label>
+      <Label htmlFor="currency">{t('preferredCurrencyLabel')}{required && ' *'}</Label>
       <div className="relative">
         <DollarSign className="absolute left-3 top-3 h-4 w-4 text-slate-400 z-10" />
         <Select value={value} onValueChange={onChange}>
           <SelectTrigger className="pl-10">
-            <SelectValue placeholder="Select your currency" />
+            <SelectValue placeholder={t('selectCurrencyPlaceholder')} />
           </SelectTrigger>
           <SelectContent>
             {Object.entries(CURRENCIES).map(([code, { symbol, name }]) => (

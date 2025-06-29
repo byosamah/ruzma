@@ -8,8 +8,10 @@ import { PasswordField } from './PasswordField';
 import { CurrencySelect } from './CurrencySelect';
 import { User, Mail } from 'lucide-react';
 import { useSignUpForm } from '@/hooks/auth/useSignUpForm';
+import { useT } from '@/lib/i18n';
 
 const SignUpContainer: React.FC = () => {
+  const t = useT();
   const {
     formData,
     errors,
@@ -33,23 +35,23 @@ const SignUpContainer: React.FC = () => {
 
       <Card className="w-full max-w-md shadow-lg bg-white">
         <CardHeader className="text-center">
-          <CardTitle className="text-2xl font-bold text-slate-800">Welcome to Ruzma</CardTitle>
-          <p className="text-slate-600">Secure payment management for freelancers</p>
+          <CardTitle className="text-2xl font-bold text-slate-800">{t('welcomeToRuzma')}</CardTitle>
+          <p className="text-slate-600">{t('signUpSubtitle')}</p>
         </CardHeader>
         <CardContent>
           <div className="flex bg-slate-100 rounded-md p-1 mb-6">
             <Button asChild variant="ghost" className="w-1/2 text-slate-500">
-              <Link to="/login">Sign In</Link>
+              <Link to="/login">{t('signIn')}</Link>
             </Button>
-            <Button variant="ghost" className="w-1/2 bg-white shadow-sm text-brand-navy font-semibold">Sign Up</Button>
+            <Button variant="ghost" className="w-1/2 bg-white shadow-sm text-brand-navy font-semibold">{t('signUp')}</Button>
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-4">
             <FormField
               id="name"
               name="name"
-              label="Full Name"
-              placeholder="Enter your full name"
+              label={t('fullNameLabel')}
+              placeholder={t('fullNamePlaceholder')}
               value={formData.name}
               onChange={handleFormDataChange}
               error={errors.name}
@@ -61,8 +63,8 @@ const SignUpContainer: React.FC = () => {
               id="email"
               name="email"
               type="email"
-              label="Email"
-              placeholder="you@example.com"
+              label={t('emailLabel')}
+              placeholder={t('emailPlaceholder')}
               value={formData.email}
               onChange={handleFormDataChange}
               error={errors.email}
@@ -79,8 +81,8 @@ const SignUpContainer: React.FC = () => {
             <PasswordField
               id="password"
               name="password"
-              label="Password"
-              placeholder="Create a password"
+              label={t('passwordLabel')}
+              placeholder={t('passwordPlaceholder')}
               value={formData.password}
               onChange={handleFormDataChange}
               error={errors.password}
@@ -92,8 +94,8 @@ const SignUpContainer: React.FC = () => {
             <PasswordField
               id="confirmPassword"
               name="confirmPassword"
-              label="Confirm Password"
-              placeholder="Confirm your password"
+              label={t('confirmPasswordLabel')}
+              placeholder={t('confirmPasswordPlaceholder')}
               value={formData.confirmPassword}
               onChange={handleFormDataChange}
               error={errors.confirmPassword}
@@ -107,14 +109,14 @@ const SignUpContainer: React.FC = () => {
               className="w-full bg-brand-yellow text-brand-black hover:bg-brand-yellow/90" 
               disabled={isLoading}
             >
-              {isLoading ? 'Creating Account...' : 'Create Account'}
+              {isLoading ? t('creatingAccount') : t('createAccount')}
             </Button>
           </form>
         </CardContent>
       </Card>
       
       <div className="absolute bottom-8 text-sm text-slate-600">
-        © {new Date().getFullYear()} Ruzma. All rights reserved.
+        {t('footerRights', { year: new Date().getFullYear().toString() })}
       </div>
     </div>
   );
