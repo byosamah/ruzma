@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
@@ -7,6 +8,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import { useT } from '@/lib/i18n';
+import LanguageSelector from '@/components/LanguageSelector';
 
 const ForgotPassword = () => {
   const t = useT();
@@ -43,7 +45,15 @@ const ForgotPassword = () => {
 
   if (emailSent) {
     return (
-      <div className="min-h-screen bg-auth-background flex flex-col items-center justify-center p-4">
+      <div className="min-h-screen bg-auth-background flex flex-col items-center justify-center p-4 relative">
+        {/* Language Switcher - Top Right */}
+        <div className="absolute top-4 right-4 z-10">
+          <LanguageSelector 
+            className="border-gray-200 hover:border-gray-300 bg-white" 
+            showTextWhenCollapsed={true}
+          />
+        </div>
+        
         <div className="absolute top-10 sm:top-16">
           <Link to="/">
             <img src="/lovable-uploads/bca9fbc0-5ee9-455b-91b3-b7eff1f56169.png" alt="Ruzma Logo" className="h-10" />
@@ -75,7 +85,15 @@ const ForgotPassword = () => {
   }
 
   return (
-    <div className="min-h-screen bg-auth-background flex flex-col items-center justify-center p-4">
+    <div className="min-h-screen bg-auth-background flex flex-col items-center justify-center p-4 relative">
+      {/* Language Switcher - Top Right */}
+      <div className="absolute top-4 right-4 z-10">
+        <LanguageSelector 
+          className="border-gray-200 hover:border-gray-300 bg-white" 
+          showTextWhenCollapsed={true}
+        />
+      </div>
+      
       <div className="absolute top-10 sm:top-16">
         <Link to="/">
           <img src="/lovable-uploads/bca9fbc0-5ee9-455b-91b3-b7eff1f56169.png" alt="Ruzma Logo" className="h-10" />

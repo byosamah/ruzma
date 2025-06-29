@@ -3,6 +3,7 @@ import React, { useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '@/hooks/dashboard/useAuth';
 import SignUpContainer from '@/components/auth/SignUpContainer';
+import LanguageSelector from '@/components/LanguageSelector';
 
 const SignUp = () => {
   const navigate = useNavigate();
@@ -31,7 +32,19 @@ const SignUp = () => {
     return null;
   }
 
-  return <SignUpContainer />;
+  return (
+    <div className="relative">
+      {/* Language Switcher - Top Right */}
+      <div className="absolute top-4 right-4 z-10">
+        <LanguageSelector 
+          className="border-gray-200 hover:border-gray-300 bg-white" 
+          showTextWhenCollapsed={true}
+        />
+      </div>
+      
+      <SignUpContainer />
+    </div>
+  );
 };
 
 export default SignUp;

@@ -6,6 +6,7 @@ import LoginHeader from '@/components/auth/LoginHeader';
 import AuthToggle from '@/components/auth/AuthToggle';
 import LoginForm from '@/components/auth/LoginForm';
 import LoginFooter from '@/components/auth/LoginFooter';
+import LanguageSelector from '@/components/LanguageSelector';
 
 const Login = () => {
   const [rememberMe, setRememberMe] = useState(
@@ -50,7 +51,15 @@ const Login = () => {
   console.log('Rendering login form');
 
   return (
-    <div className="min-h-screen bg-white flex items-center justify-center px-4">
+    <div className="min-h-screen bg-white flex items-center justify-center px-4 relative">
+      {/* Language Switcher - Top Right */}
+      <div className="absolute top-4 right-4 z-10">
+        <LanguageSelector 
+          className="border-gray-200 hover:border-gray-300 bg-white" 
+          showTextWhenCollapsed={true}
+        />
+      </div>
+      
       <div className="w-full max-w-md space-y-8">
         <LoginHeader />
         <AuthToggle />
