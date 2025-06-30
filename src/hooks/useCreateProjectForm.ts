@@ -172,7 +172,7 @@ export const useCreateProjectForm = (templateData?: any) => {
     removeMilestone,
     loadFromTemplate,
     generateMilestonesFromAI,
-    isAIGenerating,
+    isAIGenerating: isGenerating,
     handleSubmit,
   };
 };
