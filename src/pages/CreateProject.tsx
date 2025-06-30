@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
@@ -35,6 +36,8 @@ const CreateProject = () => {
     addMilestone,
     removeMilestone,
     loadFromTemplate,
+    generateMilestonesFromAI,
+    isAIGenerating,
     handleSubmit
   } = useCreateProjectForm(templateData);
   const {
@@ -130,11 +133,14 @@ const CreateProject = () => {
           {/* Form */}
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-              <ProjectDetailsForm />
+              <ProjectDetailsForm 
+                onAIGenerate={generateMilestonesFromAI}
+                isAIGenerating={isAIGenerating}
+              />
               <PaymentProofSettings />
               <MilestonesList />
               <SaveAsTemplateCheckbox checked={saveAsTemplate} onCheckedChange={handleSaveAsTemplateChange} />
-              <FormActions isSubmitting={isSubmitting} onCancel={() => navigate('/dashboard')} />
+              <FormActions isSubmitting={isSubmitting || isAIGenerating} onCancel={() => navigate('/dashboard')} />
             </form>
           </Form>
         </div>

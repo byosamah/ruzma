@@ -7,10 +7,21 @@ import { Textarea } from '@/components/ui/textarea';
 import { useT } from '@/lib/i18n';
 import { CreateProjectFormData } from '@/lib/validators/project';
 import ClientDropdown from './ClientDropdown';
+import MagicAIButton from './MagicAIButton';
 
-const ProjectDetailsForm = () => {
+interface ProjectDetailsFormProps {
+  onAIGenerate?: () => void;
+  isAIGenerating?: boolean;
+}
+
+const ProjectDetailsForm: React.FC<ProjectDetailsFormProps> = ({
+  onAIGenerate,
+  isAIGenerating = false
+}) => {
   const t = useT();
-  const { control } = useFormContext<CreateProjectFormData>();
+  const { control, watch } = useFormContext<CreateProjectFormData>();
+  
+  const briefValue = watch('brief');
 
   return (
     <div className="bg-white rounded-lg border border-gray-200 overflow-hidden">
@@ -44,8 +55,17 @@ const ProjectDetailsForm = () => {
           name="brief"
           render={({ field }) => (
             <FormItem>
-              <FormLabel className="text-sm font-medium text-gray-700">
-                {t('projectBrief')} <span className="text-red-500">*</span>
+              <FormLabel className="text-sm font-medium text-gray-700 flex items-center justify-between">
+                <span>
+                  {t('projectBrief')} <span className="text-red-500">*</span>
+                </span>
+                {onAIGenerate && (
+                  <MagicAIButton
+                    brief={field.value || ''}
+                    onGenerate={onAIGenerate}
+                    isGenerating={isAIGenerating}
+                  />
+                )}
               </FormLabel>
               <FormControl>
                 <Textarea 
@@ -55,6 +75,11 @@ const ProjectDetailsForm = () => {
                   {...field} 
                 />
               </FormControl>
+              {briefValue && briefValue.length >= 20 && onAIGenerate && (
+                <p className="text-xs text-purple-600 mt-1">
+                  {t('aiGenerationHint')}
+                </p>
+              )}
               <FormMessage />
             </FormItem>
           )}
