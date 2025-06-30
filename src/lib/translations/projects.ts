@@ -112,6 +112,11 @@ export const projectTranslations = {
     failedToGenerateMilestones: "Failed to generate milestones. Please try again.",
     aiMilestonesApplied: "AI-generated milestones have been applied to your project",
     aiGenerationHint: "✨ Click Magic AI to auto-generate milestones from this brief",
+    aiServiceError: 'AI service error',
+    apiKeyInvalid: 'Your OpenAI API key appears to be invalid or expired. Please check your API key configuration.',
+    rateLimitExceeded: 'OpenAI API rate limit exceeded. Please try again in a few minutes.',
+    aiServiceNotConfigured: 'AI service is not properly configured. Please contact support.',
+    checkApiKey: 'Please check your OpenAI API key',
   },
   ar: {
     loadingProject: "جاري تحميل المشروع...",
@@ -226,5 +231,10 @@ export const projectTranslations = {
     failedToGenerateMilestones: "فشل في إنشاء المراحل. يرجى المحاولة مرة أخرى.",
     aiMilestonesApplied: "تم تطبيق المراحل المُنشأة بالذكاء الاصطناعي على مشروعك",
     aiGenerationHint: "✨ اضغط على الذكاء السحري لإنشاء المراحل تلقائياً من هذا الموجز",
+    aiServiceError: 'خطأ في خدمة الذكاء الاصطناعي',
+    apiKeyInvalid: 'يبدو أن مفتاح OpenAI API الخاص بك غير صالح أو منتهي الصلاحية. يرجى التحقق من إعدادات مفتاح API.',
+    rateLimitExceeded: 'تم تجاوز حد معدل OpenAI API. يرجى المحاولة مرة أخرى خلال بضع دقائق.',
+    aiServiceNotConfigured: 'خدمة الذكاء الاصطناعي غير مكونة بشكل صحيح. يرجى التواصل مع الدعم.',
+    checkApiKey: 'يرجى التحقق من مفتاح OpenAI API الخاص بك',
   },
 };

@@ -16,6 +16,21 @@ serve(async (req) => {
   }
 
   try {
+    // Check if API key is available
+    if (!openAIApiKey) {
+      console.error('OpenAI API key is not configured in Supabase secrets');
+      return new Response(
+        JSON.stringify({ 
+          error: 'OpenAI API key not configured',
+          details: 'Please add your OpenAI API key to Supabase Edge Function Secrets'
+        }),
+        { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
+    // Log API key status (first few characters only for security)
+    console.log('OpenAI API Key status:', openAIApiKey ? `Configured (${openAIApiKey.substring(0, 8)}...)` : 'Not configured');
+
     const { brief, language = 'en' } = await req.json();
 
     if (!brief || brief.length < 10) {
@@ -53,6 +68,8 @@ Ensure prices are realistic and appropriate for the project type and market.`;
       ? `قم بتحليل موجز المشروع التالي وإنشاء مراحل مفصلة:\n\n${brief}\n\nأرجع فقط JSON صحيح بدون أي نص إضافي.`
       : `Analyze the following project brief and create detailed milestones:\n\n${brief}\n\nReturn only valid JSON without any additional text.`;
 
+    console.log('Making request to OpenAI API...');
+
     const response = await fetch('https://api.openai.com/v1/chat/completions', {
       method: 'POST',
       headers: {
@@ -70,12 +87,37 @@ Ensure prices are realistic and appropriate for the project type and market.`;
       }),
     });
 
+    console.log('OpenAI API response status:', response.status);
+
     if (!response.ok) {
-      throw new Error(`OpenAI API error: ${response.status}`);
+      const errorText = await response.text();
+      console.error('OpenAI API error response:', errorText);
+      
+      if (response.status === 401) {
+        return new Response(
+          JSON.stringify({ 
+            error: 'OpenAI API authentication failed',
+            details: 'Your OpenAI API key is invalid or expired. Please check your API key in the OpenAI dashboard and update it in Supabase secrets.'
+          }),
+          { status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+        );
+      } else if (response.status === 429) {
+        return new Response(
+          JSON.stringify({ 
+            error: 'OpenAI API rate limit exceeded',
+            details: 'You have exceeded your OpenAI API rate limit. Please try again later or upgrade your OpenAI plan.'
+          }),
+          { status: 429, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+        );
+      } else {
+        throw new Error(`OpenAI API error: ${response.status} - ${errorText}`);
+      }
     }
 
     const data = await response.json();
     const aiResponse = data.choices[0].message.content;
+
+    console.log('AI response received, parsing JSON...');
 
     // Parse the AI response as JSON
     let parsedResponse;
@@ -108,6 +150,8 @@ Ensure prices are realistic and appropriate for the project type and market.`;
       };
     });
 
+    console.log('Successfully processed milestones:', processedMilestones.length);
+
     return new Response(
       JSON.stringify({
         suggestedName: parsedResponse.suggestedName || parsedResponse.name || '',
@@ -122,7 +166,7 @@ Ensure prices are realistic and appropriate for the project type and market.`;
     return new Response(
       JSON.stringify({ 
         error: error.message || 'Failed to generate milestones',
-        details: 'Please try again with a more detailed project brief.'
+        details: 'Please try again with a more detailed project brief. If the issue persists, check your OpenAI API key configuration.'
       }),
       {
         status: 500,

@@ -42,11 +42,40 @@ export const useAIMilestoneGeneration = () => {
 
       if (error) {
         console.error('Supabase function error:', error);
+        
+        // Handle specific error types
+        if (error.message?.includes('OpenAI API authentication failed')) {
+          toast.error('OpenAI API key is invalid. Please check your API key configuration.');
+          return null;
+        } else if (error.message?.includes('rate limit')) {
+          toast.error('OpenAI API rate limit exceeded. Please try again later.');
+          return null;
+        } else if (error.message?.includes('not configured')) {
+          toast.error('OpenAI API key is not configured. Please contact support.');
+          return null;
+        }
+        
         throw new Error(error.message || 'Failed to generate milestones');
       }
 
       if (!data) {
         throw new Error('No data received from AI service');
+      }
+
+      // Handle error responses from the edge function
+      if (data.error) {
+        console.error('Edge function error:', data.error, data.details);
+        
+        if (data.error.includes('authentication failed')) {
+          toast.error('OpenAI API key is invalid. Please check your API key configuration.');
+        } else if (data.error.includes('rate limit')) {
+          toast.error('OpenAI API rate limit exceeded. Please try again later.');
+        } else if (data.error.includes('not configured')) {
+          toast.error('AI service is not properly configured. Please contact support.');
+        } else {
+          toast.error(data.details || data.error || 'Failed to generate milestones');
+        }
+        return null;
       }
 
       console.log('AI Generation successful:', data);
