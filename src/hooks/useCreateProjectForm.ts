@@ -8,12 +8,10 @@ import { supabase } from '@/integrations/supabase/client';
 import { createProjectFormSchema, CreateProjectFormData } from '@/lib/validators/project';
 import { useT } from '@/lib/i18n';
 import { generateSlug } from '@/lib/slugUtils';
-import { useAIMilestoneGeneration, AIGenerationResult } from './useAIMilestoneGeneration';
 
 export const useCreateProjectForm = (templateData?: any) => {
   const navigate = useNavigate();
   const t = useT();
-  const { generateMilestones, isGenerating } = useAIMilestoneGeneration();
 
   const form = useForm<CreateProjectFormData>({
     resolver: zodResolver(createProjectFormSchema),
@@ -61,25 +59,6 @@ export const useCreateProjectForm = (templateData?: any) => {
     form.setValue('milestones', template.milestones);
     // Keep paymentProofRequired as false when loading from template
     form.setValue('paymentProofRequired', false);
-  };
-
-  const generateMilestonesFromAI = async () => {
-    const brief = form.getValues('brief');
-    const result = await generateMilestones(brief);
-    
-    if (result) {
-      // Update project name if it's empty or if AI suggests a better one
-      const currentName = form.getValues('name');
-      if (!currentName && result.suggestedName) {
-        form.setValue('name', result.suggestedName);
-      }
-      
-      // Replace milestones with AI-generated ones
-      form.setValue('milestones', result.milestones);
-      
-      // Show success message
-      toast.success(t('aiMilestonesApplied'));
-    }
   };
 
   const handleSubmit = async (data: CreateProjectFormData) => {
@@ -171,8 +150,6 @@ export const useCreateProjectForm = (templateData?: any) => {
     addMilestone,
     removeMilestone,
     loadFromTemplate,
-    generateMilestonesFromAI,
-    isAIGenerating: isGenerating,
     handleSubmit,
   };
 };

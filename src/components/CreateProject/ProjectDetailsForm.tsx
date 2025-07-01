@@ -7,21 +7,10 @@ import { Textarea } from '@/components/ui/textarea';
 import { useT } from '@/lib/i18n';
 import { CreateProjectFormData } from '@/lib/validators/project';
 import ClientDropdown from './ClientDropdown';
-import MagicAIButton from './MagicAIButton';
 
-interface ProjectDetailsFormProps {
-  onAIGenerate?: () => void;
-  isAIGenerating?: boolean;
-}
-
-const ProjectDetailsForm: React.FC<ProjectDetailsFormProps> = ({
-  onAIGenerate,
-  isAIGenerating = false
-}) => {
+const ProjectDetailsForm = () => {
   const t = useT();
-  const { control, watch } = useFormContext<CreateProjectFormData>();
-  
-  const briefValue = watch('brief');
+  const { control } = useFormContext<CreateProjectFormData>();
 
   return (
     <div className="bg-white rounded-lg border border-gray-200 overflow-hidden">
@@ -55,17 +44,8 @@ const ProjectDetailsForm: React.FC<ProjectDetailsFormProps> = ({
           name="brief"
           render={({ field }) => (
             <FormItem>
-              <FormLabel className="text-sm font-medium text-gray-700 flex items-center justify-between">
-                <span>
-                  {t('projectBrief')} <span className="text-red-500">*</span>
-                </span>
-                {onAIGenerate && (
-                  <MagicAIButton
-                    brief={field.value || ''}
-                    onGenerate={onAIGenerate}
-                    isGenerating={isAIGenerating}
-                  />
-                )}
+              <FormLabel className="text-sm font-medium text-gray-700">
+                {t('projectBrief')} <span className="text-red-500">*</span>
               </FormLabel>
               <FormControl>
                 <Textarea 
@@ -75,11 +55,6 @@ const ProjectDetailsForm: React.FC<ProjectDetailsFormProps> = ({
                   {...field} 
                 />
               </FormControl>
-              {briefValue && briefValue.length >= 20 && onAIGenerate && (
-                <p className="text-xs text-purple-600 mt-1">
-                  {t('aiGenerationHint')}
-                </p>
-              )}
               <FormMessage />
             </FormItem>
           )}
