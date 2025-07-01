@@ -18,7 +18,7 @@ const SaveAsTemplateCheckbox = ({ checked, onCheckedChange }: SaveAsTemplateChec
           id="saveAsTemplate"
           checked={checked}
           onCheckedChange={onCheckedChange}
-          className="mt-0.5 h-3 w-3"
+          className="mt-0.5"
         />
         <label
           htmlFor="saveAsTemplate"
