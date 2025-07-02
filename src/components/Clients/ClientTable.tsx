@@ -79,18 +79,18 @@ const ClientTable: React.FC<ClientTableProps> = ({
                   <DropdownMenuContent align="end" className="w-40">
                     <DropdownMenuItem onClick={() => onViewDetails(client)}>
                       <Eye className="w-4 h-4 mr-2" />
-                      View details
+                      {t('view')}
                     </DropdownMenuItem>
                     <DropdownMenuItem onClick={() => onEdit(client)}>
                       <Edit className="w-4 h-4 mr-2" />
-                      Edit
+                      {t('edit')}
                     </DropdownMenuItem>
                     <DropdownMenuItem 
                       onClick={() => onDelete(client)}
                       className="text-red-600 focus:text-red-600"
                     >
                       <Trash2 className="w-4 h-4 mr-2" />
-                      Delete
+                      {t('delete')}
                     </DropdownMenuItem>
                   </DropdownMenuContent>
                 </DropdownMenu>

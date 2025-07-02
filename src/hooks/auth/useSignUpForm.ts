@@ -4,6 +4,7 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import { toast } from 'sonner';
 import { supabase } from '@/integrations/supabase/client';
 import { useSignUpValidation } from './useSignUpValidation';
+import { useT } from '@/lib/i18n';
 
 interface FormData {
   name: string;
@@ -16,6 +17,7 @@ interface FormData {
 export const useSignUpForm = () => {
   const navigate = useNavigate();
   const location = useLocation();
+  const t = useT();
   const [formData, setFormData] = useState<FormData>({
     name: '',
     email: '',
@@ -99,18 +101,18 @@ export const useSignUpForm = () => {
 
       if (data.user) {
         console.log('Signup successful for user:', data.user.email);
-        toast.success('Account created successfully! Please check your email for verification.');
+        toast.success(t('accountCreatedSuccess'));
         const redirectTo = location.state?.from?.pathname || '/dashboard';
         navigate(redirectTo, { replace: true });
       }
     } catch (error: any) {
       console.error('Sign up error:', error);
       if (error.message?.includes('currency') || error.message?.includes('constraint')) {
-        toast.error('There was an issue with the currency selection. Please try again or contact support.');
+        toast.error(t('currencySelectionIssue'));
       } else if (error.message?.includes('Email rate limit exceeded')) {
-        toast.error('Too many signup attempts. Please wait a moment before trying again.');
+        toast.error(t('tooManySignupAttempts'));
       } else {
-        toast.error(error.message || 'Failed to create account. Please try again.');
+        toast.error(error.message || t('accountCreationFailed'));
       }
     } finally {
       setIsLoading(false);

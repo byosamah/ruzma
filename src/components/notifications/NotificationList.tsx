@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
 import { NotificationItem } from './NotificationItem';
 import { Notification } from '@/types/notifications';
+import { useT } from '@/lib/i18n';
 
 interface NotificationListProps {
   notifications: Notification[];
@@ -23,6 +24,7 @@ export const NotificationList: React.FC<NotificationListProps> = ({
   onClose,
 }) => {
   const navigate = useNavigate();
+  const t = useT();
 
   const handleNotificationClick = (notification: Notification) => {
     // Mark as read first
@@ -56,7 +58,7 @@ export const NotificationList: React.FC<NotificationListProps> = ({
   if (loading) {
     return (
       <div className="p-4 text-center text-sm text-muted-foreground">
-        Loading notifications...
+        {t('loadingNotifications')}
       </div>
     );
   }
@@ -64,7 +66,7 @@ export const NotificationList: React.FC<NotificationListProps> = ({
   return (
     <div className="w-full">
       <div className="flex items-center justify-between p-4 pb-2">
-        <h3 className="font-semibold">Notifications</h3>
+        <h3 className="font-semibold">{t('notifications')}</h3>
         {unreadCount > 0 && (
           <Button
             variant="ghost"
@@ -72,7 +74,7 @@ export const NotificationList: React.FC<NotificationListProps> = ({
             onClick={onMarkAllAsRead}
             className="text-xs"
           >
-            Mark all read
+            {t('markAllRead')}
           </Button>
         )}
       </div>
@@ -81,7 +83,7 @@ export const NotificationList: React.FC<NotificationListProps> = ({
       
       {notifications.length === 0 ? (
         <div className="p-8 text-center text-sm text-muted-foreground">
-          No notifications yet
+          {t('noNotificationsYet')}
         </div>
       ) : (
         <ScrollArea className="h-96">

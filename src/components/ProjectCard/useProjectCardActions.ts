@@ -2,6 +2,7 @@
 import { toast } from 'sonner';
 import { sendClientLink } from '@/services/clientLinkService';
 import { supabase } from '@/integrations/supabase/client';
+import { useT } from '@/lib/i18n';
 
 export const useProjectCardActions = (
   project: any,
@@ -9,12 +10,13 @@ export const useProjectCardActions = (
   onEditClick: (slug: string) => void,
   onDeleteClick?: (id: string) => void
 ) => {
+  const t = useT();
   const handleCopyClientLink = (e: React.MouseEvent) => {
     e.stopPropagation();
     // Use the full client_access_token directly
     const clientUrl = `https://hub.ruzma.co/client/project/${project.client_access_token}`;
     navigator.clipboard.writeText(clientUrl);
-    toast.success('Client link copied to clipboard');
+    toast.success(t('clientLinkCopied'));
   };
 
   const handleViewClientPage = (e: React.MouseEvent) => {
@@ -28,12 +30,12 @@ export const useProjectCardActions = (
     e.stopPropagation();
     
     if (!project.client_email) {
-      toast.error('No client email address found for this project');
+      toast.error(t('noClientEmailFound') || 'No client email address found for this project');
       return;
     }
 
     try {
-      toast.loading('Sending client link...');
+      toast.loading(t('sendingClientLink') || 'Sending client link...');
       
       // Get current user
       const { data: { user } } = await supabase.auth.getUser();
@@ -47,15 +49,15 @@ export const useProjectCardActions = (
       });
 
       toast.dismiss();
-      toast.success('Client link sent successfully!');
+      toast.success(t('clientLinkSent'));
     } catch (error: any) {
       toast.dismiss();
       
       // Handle domain verification error specifically
       if (error.message && error.message.includes('Domain verification required')) {
-        toast.error('Email domain needs verification. Please contact support.');
+        toast.error(t('emailDomainVerificationRequired'));
       } else {
-        toast.error('Failed to send client link. Please try again.');
+        toast.error(t('clientLinkSendFailed'));
       }
       
       console.error('Error sending client link:', error);
