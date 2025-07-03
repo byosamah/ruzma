@@ -1,8 +1,33 @@
-# Welcome to your Lovable project
+# Ruzma - Freelancer Project Management Platform
+
+Ruzma is a comprehensive SaaS platform designed for freelancers to manage projects, clients, and payments efficiently.
 
 ## Project info
 
 **URL**: https://lovable.dev/projects/f60a1915-b5a8-429d-bf2a-ffca2468a2f7
+
+## Features
+
+- 📋 **Project Management**: Create, track, and manage freelance projects with milestones
+- 👥 **Client Management**: Organize client information and communications  
+- 💰 **Invoice Generation**: Create and send professional invoices
+- 📊 **Analytics Dashboard**: Track revenue, project progress, and business metrics
+- 🔐 **Client Portal**: Secure client access to project updates and deliverables
+- 💳 **Payment Processing**: Integrated payment tracking and proof submission
+- 🌐 **Multi-language Support**: English and Arabic language support
+- 📱 **Responsive Design**: Mobile-friendly interface for on-the-go management
+
+## Architecture
+
+### Recently Restructured Codebase
+The codebase has been reorganized using domain-driven design principles:
+
+- **Domain Organization**: Components and hooks organized by business domain (auth, projects, clients, invoices)
+- **Centralized Services**: API calls consolidated in service layer
+- **Shared Types**: Common type definitions in dedicated files  
+- **Backward Compatibility**: Existing imports continue to work alongside new structure
+
+See `RESTRUCTURE_GUIDE.md` for detailed information about the new code organization.
 
 ## How can I edit this code?
 
