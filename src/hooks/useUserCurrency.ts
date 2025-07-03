@@ -5,31 +5,27 @@ import { User } from '@supabase/supabase-js';
 import { CurrencyCode, formatCurrency as formatCurrencyUtil } from '@/lib/currency';
 import { useLanguage } from '@/contexts/LanguageContext';
 
-export const useUserCurrency = (profile: any = null) => {
+export const useUserCurrency = (user: User | null = null) => {
   const [currency, setCurrency] = useState<CurrencyCode>('USD');
   const { language } = useLanguage();
 
   useEffect(() => {
     const fetchUserCurrency = async () => {
-      console.log('useUserCurrency: called with profile:', !!profile);
+      if (!user) return;
       
-      if (!profile) {
-        console.log('useUserCurrency: No profile, using default USD');
-        setCurrency('USD');
-        return;
-      }
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('currency')
+        .eq('id', user.id)
+        .single();
         
       if (profile?.currency) {
-        console.log('useUserCurrency: Setting currency from profile:', profile.currency);
         setCurrency(profile.currency as CurrencyCode);
-      } else {
-        console.log('useUserCurrency: No currency in profile, using USD');
-        setCurrency('USD');
       }
     };
 
     fetchUserCurrency();
-  }, [profile]);
+  }, [user]);
 
   const formatCurrency = (amount: number) => {
     return formatCurrencyUtil(amount, currency, language);

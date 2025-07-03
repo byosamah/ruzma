@@ -11,12 +11,7 @@ export const useDashboardData = (user: User | null) => {
   const [loading, setLoading] = useState(true);
 
   const fetchData = async () => {
-    console.log('useDashboardData: fetchData called with user:', !!user);
-    if (!user) {
-      console.log('useDashboardData: No user, returning early');
-      setLoading(false);
-      return;
-    }
+    if (!user) return;
 
     setLoading(true);
     

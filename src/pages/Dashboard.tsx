@@ -19,38 +19,23 @@ const Dashboard = () => {
   const navigate = useNavigate();
   const t = useT();
   const isMobile = useIsMobile();
+  const {
+    user,
+    profile,
+    loading,
+    projects,
+    userCurrency,
+    stats,
+    displayName,
+    handleSignOut,
+    handleEditProject,
+    handleDeleteProject
+  } = useDashboard();
   
-  console.log('Dashboard: Component starting to render');
+  const usage = useUsageTracking(profile, projects);
   
-  try {
-    const {
-      user,
-      profile,
-      loading,
-      projects,
-      userCurrency,
-      stats,
-      displayName,
-      handleSignOut,
-      handleEditProject,
-      handleDeleteProject
-    } = useDashboard();
-
-    // Debug logging
-    console.log('Dashboard render state:', {
-      user: !!user,
-      profile: !!profile,
-      loading,
-      projectsCount: projects?.length || 0,
-      userCurrency,
-      stats,
-      displayName
-    });
-    
-    const usage = useUsageTracking(profile, projects);
-    
-    // Generate SEO data
-    const seoData = useDashboardSEO(displayName, stats, userCurrency.currency, projects);
+  // Generate SEO data
+  const seoData = useDashboardSEO(displayName, stats, userCurrency.currency, projects);
 
   const handleNewProject = () => {
     if (usage.canCreateProject) {
@@ -72,10 +57,7 @@ const Dashboard = () => {
     navigate(`/edit-project/${projectSlug}`);
   };
 
-  console.log('Dashboard: About to check loading state, loading =', loading);
-
   if (loading) {
-    console.log('Dashboard: Showing loading state');
     return (
       <Layout user={user} onSignOut={handleSignOut}>
         <SEOHead 
@@ -89,8 +71,6 @@ const Dashboard = () => {
       </Layout>
     );
   }
-
-  console.log('Dashboard: Not loading, about to render main dashboard');
 
   const EmptyProjectsButton = () => {
     const userType = profile?.user_type || 'free';
@@ -204,23 +184,6 @@ const Dashboard = () => {
       </div>
     </Layout>
   );
-  } catch (error) {
-    console.error('Dashboard: Error rendering dashboard:', error);
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="text-center">
-          <h1 className="text-2xl font-bold text-red-600 mb-4">Dashboard Error</h1>
-          <p className="text-gray-600 mb-4">An error occurred while loading the dashboard.</p>
-          <button 
-            onClick={() => window.location.reload()} 
-            className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
-          >
-            Refresh Page
-          </button>
-        </div>
-      </div>
-    );
-  }
 };
 
 export default Dashboard;
