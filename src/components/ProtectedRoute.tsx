@@ -1,7 +1,8 @@
 
 import React from 'react';
-import { Navigate, useLocation } from 'react-router-dom';
+import { Navigate } from 'react-router-dom';
 import { useAuth } from '@/hooks/dashboard/useAuth';
+import { useLanguageNavigation } from '@/hooks/useLanguageNavigation';
 
 interface ProtectedRouteProps {
   children: React.ReactNode;
@@ -9,7 +10,7 @@ interface ProtectedRouteProps {
 
 const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
   const { user, loading, authChecked } = useAuth();
-  const location = useLocation();
+  const { getCurrentPath } = useLanguageNavigation();
 
   // Show loading while checking authentication
   if (loading || !authChecked) {
@@ -20,9 +21,10 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
     );
   }
 
-  // If user is not authenticated, redirect to login with return URL
+  // If user is not authenticated, redirect to login with current language
   if (!user) {
-    return <Navigate to="/login" state={{ from: location }} replace />;
+    const currentPath = getCurrentPath();
+    return <Navigate to="/login" state={{ from: currentPath }} replace />;
   }
 
   // User is authenticated, render the protected component

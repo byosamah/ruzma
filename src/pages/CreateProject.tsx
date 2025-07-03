@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import { useLanguageNavigation } from '@/hooks/useLanguageNavigation';
@@ -17,7 +18,6 @@ import FormActions from '@/components/CreateProject/FormActions';
 import { useCreateProjectForm } from '@/hooks/useCreateProjectForm';
 import { useProjectTemplates } from '@/hooks/useProjectTemplates';
 import { useIsMobile } from '@/hooks/use-mobile';
-import { ArrowLeft } from 'lucide-react';
 
 const CreateProject = () => {
   const t = useT();
@@ -48,27 +48,35 @@ const CreateProject = () => {
   } = form;
 
   useEffect(() => {
-    const checkAuthAndLoadData = async () => {
-      setLoading(true);
-      const {
-        data: {
-          user
-        },
-        error: userError
-      } = await supabase.auth.getUser();
-      if (userError || !user) {
-        console.log('No user found, redirecting to login');
+    const loadUserData = async () => {
+      try {
+        setLoading(true);
+        const { data: { user }, error: userError } = await supabase.auth.getUser();
+        
+        if (userError || !user) {
+          console.log('No user found, redirecting to login');
+          navigate('/login');
+          return;
+        }
+        
+        setUser(user);
+        
+        const { data: profileData } = await supabase
+          .from('profiles')
+          .select('*')
+          .eq('id', user.id)
+          .maybeSingle();
+        
+        setProfile(profileData);
+      } catch (error) {
+        console.error('Error loading user data:', error);
         navigate('/login');
-        return;
+      } finally {
+        setLoading(false);
       }
-      setUser(user);
-      const {
-        data: profileData
-      } = await supabase.from('profiles').select('*').eq('id', user.id).maybeSingle();
-      setProfile(profileData);
-      setLoading(false);
     };
-    checkAuthAndLoadData();
+
+    loadUserData();
   }, [navigate]);
 
   const handleSignOut = async () => {
@@ -101,21 +109,24 @@ const CreateProject = () => {
   };
 
   if (loading) {
-    return <Layout>
+    return (
+      <Layout>
         <div className="flex items-center justify-center min-h-[50vh]">
           <div className="text-center space-y-3">
             <div className="w-8 h-8 border-2 border-gray-300 border-t-gray-900 rounded-full animate-spin mx-auto"></div>
             <p className="text-sm text-gray-600">{t('loading')}</p>
           </div>
         </div>
-      </Layout>;
+      </Layout>
+    );
   }
 
   if (!user) {
     return <div>{t('loading')}</div>;
   }
 
-  return <Layout user={profile || user} onSignOut={handleSignOut}>
+  return (
+    <Layout user={profile || user} onSignOut={handleSignOut}>
       <div className="min-h-screen bg-gray-50/30">
         <div className="max-w-3xl mx-auto px-4 py-8 space-y-8">
           {/* Header */}
@@ -133,14 +144,15 @@ const CreateProject = () => {
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
               <ProjectDetailsForm user={user} />
               <PaymentProofSettings />
-              <MilestonesList />
+              <MilestonesList user={user} />
               <SaveAsTemplateCheckbox checked={saveAsTemplate} onCheckedChange={handleSaveAsTemplateChange} />
               <FormActions isSubmitting={isSubmitting} onCancel={() => navigate('/dashboard')} />
             </form>
           </Form>
         </div>
       </div>
-    </Layout>;
+    </Layout>
+  );
 };
 
 export default CreateProject;

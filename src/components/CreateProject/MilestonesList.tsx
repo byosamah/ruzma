@@ -9,11 +9,12 @@ import { Plus, Trash2 } from 'lucide-react';
 import { useT } from '@/lib/i18n';
 import { CreateProjectFormData } from '@/lib/validators/project';
 import { useUserCurrency } from '@/hooks/useUserCurrency';
-import { supabase } from '@/integrations/supabase/client';
-import { useState, useEffect } from 'react';
-import { User } from '@supabase/supabase-js';
 
-const MilestonesList = () => {
+interface MilestonesListProps {
+  user?: any;
+}
+
+const MilestonesList: React.FC<MilestonesListProps> = ({ user }) => {
   const t = useT();
   const { control } = useFormContext<CreateProjectFormData>();
   const { fields, append, remove } = useFieldArray({
@@ -21,16 +22,7 @@ const MilestonesList = () => {
     name: 'milestones',
   });
   
-  const [user, setUser] = useState<User | null>(null);
   const { currency, formatCurrency } = useUserCurrency(user);
-
-  useEffect(() => {
-    const getUser = async () => {
-      const { data: { user } } = await supabase.auth.getUser();
-      setUser(user);
-    };
-    getUser();
-  }, []);
 
   const addMilestone = () => {
     append({ title: '', description: '', price: 0, start_date: '', end_date: '' });
