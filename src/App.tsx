@@ -127,7 +127,9 @@ function App() {
                   } />
                   <Route path="/:lang/create-project" element={
                     <LanguageLayout>
-                      <ProtectedRoute><CreateProject /></ProtectedRoute>
+                      <ProtectedRoute>
+                        {({ user, profile }) => <CreateProject user={user} profile={profile} />}
+                      </ProtectedRoute>
                     </LanguageLayout>
                   } />
                   <Route path="/:lang/edit-project/:slug" element={

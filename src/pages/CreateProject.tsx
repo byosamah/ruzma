@@ -1,8 +1,7 @@
 
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import { useLanguageNavigation } from '@/hooks/useLanguageNavigation';
-import { Button } from '@/components/ui/button';
 import { Form } from '@/components/ui/form';
 import Layout from '@/components/Layout';
 import { supabase } from '@/integrations/supabase/client';
@@ -11,20 +10,19 @@ import { toast } from 'sonner';
 import { useT } from '@/lib/i18n';
 import ProjectDetailsForm from '@/components/CreateProject/ProjectDetailsForm';
 import MilestonesList from '@/components/CreateProject/MilestonesList';
-import TemplateHeader from '@/components/CreateProject/TemplateHeader';
 import SaveAsTemplateCheckbox from '@/components/CreateProject/SaveAsTemplateCheckbox';
 import PaymentProofSettings from '@/components/CreateProject/PaymentProofSettings';
 import FormActions from '@/components/CreateProject/FormActions';
 import { useCreateProjectForm } from '@/hooks/useCreateProjectForm';
 import { useProjectTemplates } from '@/hooks/useProjectTemplates';
-import { useIsMobile } from '@/hooks/use-mobile';
 
-const CreateProject = () => {
+interface CreateProjectProps {
+  user: User;
+  profile: any;
+}
+
+const CreateProject: React.FC<CreateProjectProps> = ({ user, profile }) => {
   const t = useT();
-  const isMobile = useIsMobile();
-  const [user, setUser] = useState<User | null>(null);
-  const [profile, setProfile] = useState<any>(null);
-  const [loading, setLoading] = useState(true);
   const [saveAsTemplate, setSaveAsTemplate] = useState(false);
   const { navigate } = useLanguageNavigation();
   const location = useLocation();
@@ -47,37 +45,7 @@ const CreateProject = () => {
     }
   } = form;
 
-  useEffect(() => {
-    const loadUserData = async () => {
-      try {
-        setLoading(true);
-        const { data: { user }, error: userError } = await supabase.auth.getUser();
-        
-        if (userError || !user) {
-          console.log('No user found, redirecting to login');
-          navigate('/login');
-          return;
-        }
-        
-        setUser(user);
-        
-        const { data: profileData } = await supabase
-          .from('profiles')
-          .select('*')
-          .eq('id', user.id)
-          .maybeSingle();
-        
-        setProfile(profileData);
-      } catch (error) {
-        console.error('Error loading user data:', error);
-        navigate('/login');
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    loadUserData();
-  }, [navigate]);
+  // No need for authentication logic - handled by ProtectedRoute
 
   const handleSignOut = async () => {
     await supabase.auth.signOut();
@@ -107,23 +75,6 @@ const CreateProject = () => {
   const handleSaveAsTemplateChange = (checked: boolean | "indeterminate") => {
     setSaveAsTemplate(checked === true);
   };
-
-  if (loading) {
-    return (
-      <Layout>
-        <div className="flex items-center justify-center min-h-[50vh]">
-          <div className="text-center space-y-3">
-            <div className="w-8 h-8 border-2 border-gray-300 border-t-gray-900 rounded-full animate-spin mx-auto"></div>
-            <p className="text-sm text-gray-600">{t('loading')}</p>
-          </div>
-        </div>
-      </Layout>
-    );
-  }
-
-  if (!user) {
-    return <div>{t('loading')}</div>;
-  }
 
   return (
     <Layout user={profile || user} onSignOut={handleSignOut}>
