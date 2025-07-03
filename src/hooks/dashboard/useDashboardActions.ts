@@ -1,6 +1,6 @@
 
 import { useCallback } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useLanguageNavigation } from '@/hooks/useLanguageNavigation';
 import { secureSignOut, logSecurityEvent } from '@/lib/authSecurity';
 import { toast } from 'sonner';
 
@@ -8,7 +8,7 @@ export const useDashboardActions = (
   deleteProject: (projectId: string) => Promise<boolean>,
   refetchProjects?: () => void
 ) => {
-  const navigate = useNavigate();
+  const { navigate } = useLanguageNavigation();
 
   const handleSignOut = useCallback(async () => {
     logSecurityEvent('user_sign_out_initiated');

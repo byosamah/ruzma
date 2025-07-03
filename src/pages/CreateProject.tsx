@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
+import { useLanguageNavigation } from '@/hooks/useLanguageNavigation';
 import { Button } from '@/components/ui/button';
 import { Form } from '@/components/ui/form';
 import Layout from '@/components/Layout';
@@ -25,7 +26,7 @@ const CreateProject = () => {
   const [profile, setProfile] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [saveAsTemplate, setSaveAsTemplate] = useState(false);
-  const navigate = useNavigate();
+  const { navigate } = useLanguageNavigation();
   const location = useLocation();
 
   // Get template data from navigation state

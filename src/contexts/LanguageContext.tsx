@@ -1,5 +1,14 @@
 
 import React, { createContext, useContext, useState, ReactNode, useEffect } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
+import { 
+  getLanguageFromPath, 
+  getStoredLanguage, 
+  storeLanguage, 
+  shouldRedirectToLanguage,
+  addLanguageToPath,
+  DEFAULT_LANGUAGE
+} from "@/lib/languageRoutes";
 
 type Language = "en" | "ar";
 
@@ -11,8 +20,50 @@ interface LanguageContextProps {
 const LanguageContext = createContext<LanguageContextProps | undefined>(undefined);
 
 export const LanguageProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-  // Default to Arabic instead of English
-  const [language, setLanguage] = useState<Language>("ar");
+  // Initialize from URL or localStorage, default to English as requested
+  const location = useLocation();
+  const navigate = useNavigate();
+  
+  const initialLanguage = (() => {
+    const urlLanguage = getLanguageFromPath(location.pathname);
+    if (urlLanguage) return urlLanguage;
+    return getStoredLanguage();
+  })();
+  
+  const [language, setLanguage] = useState<Language>(initialLanguage);
+
+  // Enhanced setLanguage that handles persistence and navigation
+  const enhancedSetLanguage = (newLanguage: Language) => {
+    setLanguage(newLanguage);
+    storeLanguage(newLanguage);
+    
+    // If we're on a route that should have language prefix, navigate to new language
+    const currentPath = location.pathname;
+    const urlLanguage = getLanguageFromPath(currentPath);
+    
+    if (urlLanguage && urlLanguage !== newLanguage) {
+      const pathWithoutLang = currentPath.replace(`/${urlLanguage}`, '');
+      const newPath = addLanguageToPath(pathWithoutLang, newLanguage);
+      navigate(newPath, { replace: true });
+    }
+  };
+
+  // Handle initial redirect if needed
+  useEffect(() => {
+    const currentPath = location.pathname;
+    
+    // Redirect root to default language dashboard
+    if (currentPath === '/') {
+      navigate(`/${DEFAULT_LANGUAGE}/dashboard`, { replace: true });
+      return;
+    }
+    
+    // Redirect old routes to language-prefixed routes
+    if (shouldRedirectToLanguage(currentPath)) {
+      const newPath = addLanguageToPath(currentPath, language);
+      navigate(newPath, { replace: true });
+    }
+  }, [location.pathname, navigate, language]);
 
   useEffect(() => {
     if (language === "ar") {
@@ -27,7 +78,7 @@ export const LanguageProvider: React.FC<{ children: ReactNode }> = ({ children }
   }, [language]);
 
   return (
-    <LanguageContext.Provider value={{ language, setLanguage }}>
+    <LanguageContext.Provider value={{ language, setLanguage: enhancedSetLanguage }}>
       {children}
     </LanguageContext.Provider>
   );

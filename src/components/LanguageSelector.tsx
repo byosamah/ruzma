@@ -19,6 +19,7 @@ const LanguageSelector = ({ className, showTextWhenCollapsed = true }: LanguageS
   const { language, setLanguage } = useLanguage();
 
   const onSelectLanguage = (lang: string) => {
+    // The enhanced setLanguage will handle navigation and persistence
     setLanguage(lang as 'en' | 'ar');
   };
 

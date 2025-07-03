@@ -8,7 +8,7 @@ import SEOHead from '@/components/SEO/SEOHead';
 import { useDashboard } from '@/hooks/useDashboard';
 import { useDashboardSEO } from '@/hooks/dashboard/useDashboardSEO';
 import { useUsageTracking } from '@/hooks/useUsageTracking';
-import { useNavigate } from 'react-router-dom';
+import { useLanguageNavigation } from '@/hooks/useLanguageNavigation';
 import { Button } from '@/components/ui/button';
 import { Plus, FileText, MessageCircle } from 'lucide-react';
 import { useT } from '@/lib/i18n';
@@ -16,7 +16,7 @@ import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip
 import { useIsMobile } from '@/hooks/use-mobile';
 
 const Dashboard = () => {
-  const navigate = useNavigate();
+  const { navigate } = useLanguageNavigation();
   const t = useT();
   const isMobile = useIsMobile();
   const {

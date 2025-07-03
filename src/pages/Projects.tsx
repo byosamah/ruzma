@@ -7,11 +7,11 @@ import { Plus, FileText } from 'lucide-react';
 import { useT } from '@/lib/i18n';
 import { useDashboard } from '@/hooks/useDashboard';
 import { useUsageTracking } from '@/hooks/useUsageTracking';
-import { useNavigate } from 'react-router-dom';
+import { useLanguageNavigation } from '@/hooks/useLanguageNavigation';
 import { useIsMobile } from '@/hooks/use-mobile';
 
 const Projects = () => {
-  const navigate = useNavigate();
+  const { navigate } = useLanguageNavigation();
   const t = useT();
   const isMobile = useIsMobile();
   const {

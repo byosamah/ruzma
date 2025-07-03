@@ -6,6 +6,8 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { LanguageProvider } from "@/contexts/LanguageContext";
 import { InvoiceProvider } from "@/contexts/InvoiceContext";
 import ProtectedRoute from "@/components/ProtectedRoute";
+import { LanguageLayout } from "@/components/LanguageLayout";
+import { RedirectWithParams } from "@/components/RedirectWithParams";
 import { Suspense, lazy } from "react";
 
 // Lazy load all route components
@@ -41,45 +43,136 @@ const queryClient = new QueryClient();
 function App() {
   return (
     <QueryClientProvider client={queryClient}>
-      <LanguageProvider>
-        <TooltipProvider>
-          <Toaster />
-          <BrowserRouter>
+      <BrowserRouter>
+        <LanguageProvider>
+          <TooltipProvider>
+            <Toaster />
             <InvoiceProvider>
               <Suspense fallback={<PageLoader />}>
                 <Routes>
-                  {/* Public routes */}
-                  <Route path="/" element={<Navigate to="/login" replace />} />
-                  <Route path="/login" element={<Login />} />
-                  <Route path="/signup" element={<SignUp />} />
-                  <Route path="/forgot-password" element={<ForgotPassword />} />
-                  <Route path="/reset-password" element={<ResetPassword />} />
-                  <Route path="/contact" element={<ContactUs />} />
+                  {/* Root redirect - handled by LanguageProvider */}
+                  <Route path="/" element={<Navigate to="/en/dashboard" replace />} />
+                  
+                  {/* Language-agnostic routes */}
                   <Route path="/client/:token" element={<ClientProject />} />
                   <Route path="/client/project/:token" element={<ClientProject />} />
                   
-                  {/* Protected routes */}
-                  <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
-                  <Route path="/projects" element={<ProtectedRoute><Projects /></ProtectedRoute>} />
-                  <Route path="/clients" element={<ProtectedRoute><Clients /></ProtectedRoute>} />
-                  <Route path="/invoices" element={<ProtectedRoute><Invoices /></ProtectedRoute>} />
-                  <Route path="/create-invoice" element={<ProtectedRoute><CreateInvoice /></ProtectedRoute>} />
-                  <Route path="/analytics" element={<ProtectedRoute><Analytics /></ProtectedRoute>} />
-                  <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
-                  <Route path="/plans" element={<ProtectedRoute><Plans /></ProtectedRoute>} />
-                  <Route path="/create-project" element={<ProtectedRoute><CreateProject /></ProtectedRoute>} />
-                  <Route path="/edit-project/:slug" element={<ProtectedRoute><EditProject /></ProtectedRoute>} />
-                  <Route path="/project/:slug" element={<ProtectedRoute><ProjectManagement /></ProtectedRoute>} />
-                  <Route path="/templates" element={<ProtectedRoute><ProjectTemplates /></ProtectedRoute>} />
+                  {/* Language-specific auth routes */}
+                  <Route path="/:lang/login" element={
+                    <LanguageLayout>
+                      <Login />
+                    </LanguageLayout>
+                  } />
+                  <Route path="/:lang/signup" element={
+                    <LanguageLayout>
+                      <SignUp />
+                    </LanguageLayout>
+                  } />
+                  <Route path="/:lang/forgot-password" element={
+                    <LanguageLayout>
+                      <ForgotPassword />
+                    </LanguageLayout>
+                  } />
+                  <Route path="/:lang/reset-password" element={
+                    <LanguageLayout>
+                      <ResetPassword />
+                    </LanguageLayout>
+                  } />
+                  <Route path="/:lang/contact" element={
+                    <LanguageLayout>
+                      <ContactUs />
+                    </LanguageLayout>
+                  } />
+                  
+                  {/* Language-specific protected routes */}
+                  <Route path="/:lang/dashboard" element={
+                    <LanguageLayout>
+                      <ProtectedRoute><Dashboard /></ProtectedRoute>
+                    </LanguageLayout>
+                  } />
+                  <Route path="/:lang/projects" element={
+                    <LanguageLayout>
+                      <ProtectedRoute><Projects /></ProtectedRoute>
+                    </LanguageLayout>
+                  } />
+                  <Route path="/:lang/clients" element={
+                    <LanguageLayout>
+                      <ProtectedRoute><Clients /></ProtectedRoute>
+                    </LanguageLayout>
+                  } />
+                  <Route path="/:lang/invoices" element={
+                    <LanguageLayout>
+                      <ProtectedRoute><Invoices /></ProtectedRoute>
+                    </LanguageLayout>
+                  } />
+                  <Route path="/:lang/create-invoice" element={
+                    <LanguageLayout>
+                      <ProtectedRoute><CreateInvoice /></ProtectedRoute>
+                    </LanguageLayout>
+                  } />
+                  <Route path="/:lang/analytics" element={
+                    <LanguageLayout>
+                      <ProtectedRoute><Analytics /></ProtectedRoute>
+                    </LanguageLayout>
+                  } />
+                  <Route path="/:lang/profile" element={
+                    <LanguageLayout>
+                      <ProtectedRoute><Profile /></ProtectedRoute>
+                    </LanguageLayout>
+                  } />
+                  <Route path="/:lang/plans" element={
+                    <LanguageLayout>
+                      <ProtectedRoute><Plans /></ProtectedRoute>
+                    </LanguageLayout>
+                  } />
+                  <Route path="/:lang/create-project" element={
+                    <LanguageLayout>
+                      <ProtectedRoute><CreateProject /></ProtectedRoute>
+                    </LanguageLayout>
+                  } />
+                  <Route path="/:lang/edit-project/:slug" element={
+                    <LanguageLayout>
+                      <ProtectedRoute><EditProject /></ProtectedRoute>
+                    </LanguageLayout>
+                  } />
+                  <Route path="/:lang/project/:slug" element={
+                    <LanguageLayout>
+                      <ProtectedRoute><ProjectManagement /></ProtectedRoute>
+                    </LanguageLayout>
+                  } />
+                  <Route path="/:lang/templates" element={
+                    <LanguageLayout>
+                      <ProtectedRoute><ProjectTemplates /></ProtectedRoute>
+                    </LanguageLayout>
+                  } />
+                  
+                  {/* Backward compatibility redirects */}
+                  <Route path="/login" element={<Navigate to="/en/login" replace />} />
+                  <Route path="/signup" element={<Navigate to="/en/signup" replace />} />
+                  <Route path="/forgot-password" element={<Navigate to="/en/forgot-password" replace />} />
+                  <Route path="/reset-password" element={<Navigate to="/en/reset-password" replace />} />
+                  <Route path="/contact" element={<Navigate to="/en/contact" replace />} />
+                  <Route path="/dashboard" element={<Navigate to="/en/dashboard" replace />} />
+                  <Route path="/projects" element={<Navigate to="/en/projects" replace />} />
+                  <Route path="/clients" element={<Navigate to="/en/clients" replace />} />
+                  <Route path="/invoices" element={<Navigate to="/en/invoices" replace />} />
+                  <Route path="/create-invoice" element={<Navigate to="/en/create-invoice" replace />} />
+                  <Route path="/analytics" element={<Navigate to="/en/analytics" replace />} />
+                  <Route path="/profile" element={<Navigate to="/en/profile" replace />} />
+                  <Route path="/plans" element={<Navigate to="/en/plans" replace />} />
+                  <Route path="/create-project" element={<Navigate to="/en/create-project" replace />} />
+                  <Route path="/edit-project/*" element={<RedirectWithParams from="/edit-project" to="/en/edit-project" />} />
+                  <Route path="/project/*" element={<RedirectWithParams from="/project" to="/en/project" />} />
+                  <Route path="/templates" element={<Navigate to="/en/templates" replace />} />
                   
                   {/* 404 route */}
                   <Route path="*" element={<NotFound />} />
                 </Routes>
               </Suspense>
             </InvoiceProvider>
-          </BrowserRouter>
-        </TooltipProvider>
-      </LanguageProvider>
+          </TooltipProvider>
+        </LanguageProvider>
+      </BrowserRouter>
     </QueryClientProvider>
   );
 }
