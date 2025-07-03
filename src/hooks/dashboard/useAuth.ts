@@ -13,11 +13,13 @@ export const useAuth = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
+    console.log('useAuth: useEffect triggered, authChecked =', authChecked);
     if (authChecked) return;
     
     let isMounted = true;
     
     const fetchUser = async () => {
+      console.log('useAuth: fetchUser starting, isMounted =', isMounted);
       if (!isMounted) return;
       
       console.log('Dashboard: Starting secure auth check...');
@@ -60,6 +62,13 @@ export const useAuth = () => {
           userEmail: user?.email,
           emailConfirmed: user?.email_confirmed_at,
           error: userError?.message 
+        });
+        
+        // Add debug logging for the dashboard issue
+        console.log('useAuth: About to set user state', { 
+          user: !!user, 
+          userError: !!userError,
+          isMounted 
         });
         
         if (!isMounted) return;
@@ -110,6 +119,7 @@ export const useAuth = () => {
 
     // Add a timeout to prevent infinite loading
     const timeout = setTimeout(() => {
+      console.log('useAuth: Auth check timeout triggered');
       if (!authChecked && isMounted) {
         console.warn('Auth check timeout - forcing completion');
         setLoading(false);
@@ -117,9 +127,11 @@ export const useAuth = () => {
       }
     }, 10000); // 10 second timeout
 
+    console.log('useAuth: About to call fetchUser');
     fetchUser();
     
     return () => {
+      console.log('useAuth: Cleanup function called');
       isMounted = false;
       clearTimeout(timeout);
     };
