@@ -8,7 +8,7 @@ import { useT } from '@/lib/i18n';
 import { CreateProjectFormData } from '@/lib/validators/project';
 import ClientDropdown from './ClientDropdown';
 
-const ProjectDetailsForm = () => {
+const ProjectDetailsForm = ({ user }: { user?: any }) => {
   const t = useT();
   const { control } = useFormContext<CreateProjectFormData>();
 
@@ -70,6 +70,7 @@ const ProjectDetailsForm = () => {
                 <ClientDropdown
                   value={field.value}
                   onChange={field.onChange}
+                  user={user}
                 />
               </FormControl>
               <FormMessage />

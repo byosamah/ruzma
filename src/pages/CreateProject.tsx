@@ -131,7 +131,7 @@ const CreateProject = () => {
           {/* Form */}
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-              <ProjectDetailsForm />
+              <ProjectDetailsForm user={user} />
               <PaymentProofSettings />
               <MilestonesList />
               <SaveAsTemplateCheckbox checked={saveAsTemplate} onCheckedChange={handleSaveAsTemplateChange} />

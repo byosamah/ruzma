@@ -7,18 +7,17 @@ import { Command, CommandEmpty, CommandGroup, CommandItem, CommandList } from '@
 import { Check, ChevronsUpDown, Plus } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useClients } from '@/hooks/useClients';
-import { useAuth } from '@/hooks/dashboard/useAuth';
 import AddClientDialog from '@/components/Clients/AddClientDialog';
 import { useT } from '@/lib/i18n';
 
 interface ClientDropdownProps {
   value: string;
   onChange: (value: string) => void;
+  user?: any; // Add user prop
 }
 
-const ClientDropdown: React.FC<ClientDropdownProps> = ({ value, onChange }) => {
+const ClientDropdown: React.FC<ClientDropdownProps> = ({ value, onChange, user }) => {
   const t = useT();
-  const { user } = useAuth();
   const { clients, createClient } = useClients(user);
   const [open, setOpen] = useState(false);
   const [showAddDialog, setShowAddDialog] = useState(false);
