@@ -1,5 +1,5 @@
 
-import React from 'react';
+import React, { memo } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -195,4 +195,4 @@ const DashboardProjectList: React.FC<DashboardProjectListProps> = ({
   );
 };
 
-export default DashboardProjectList;
+export default memo(DashboardProjectList);

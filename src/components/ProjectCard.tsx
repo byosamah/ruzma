@@ -1,5 +1,5 @@
 
-import React from 'react';
+import React, { memo } from 'react';
 import { ProjectCardProps } from './ProjectCard/types';
 import VerticalProjectCard from './ProjectCard/VerticalProjectCard';
 import StandardProjectCard from './ProjectCard/StandardProjectCard';
@@ -12,4 +12,4 @@ const ProjectCard: React.FC<ProjectCardProps> = (props) => {
   return <StandardProjectCard {...props} />;
 };
 
-export default ProjectCard;
+export default memo(ProjectCard);

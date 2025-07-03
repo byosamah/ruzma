@@ -1,5 +1,5 @@
 
-import React from "react";
+import React, { memo } from "react";
 import {
   Card,
   CardContent,
@@ -83,4 +83,4 @@ const DashboardStats: React.FC<DashboardStatsProps> = ({
   );
 };
 
-export default DashboardStats;
+export default memo(DashboardStats);

@@ -1,5 +1,5 @@
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback, useMemo } from 'react';
 import { User } from '@supabase/supabase-js';
 import { supabase } from '@/integrations/supabase/client';
 import { DatabaseProject } from '@/hooks/projectTypes';
@@ -10,30 +10,33 @@ export const useDashboardData = (user: User | null) => {
   const [profile, setProfile] = useState<any>(null);
   const [loading, setLoading] = useState(true);
 
-  const fetchData = async () => {
+  const fetchData = useCallback(async () => {
     if (!user) return;
 
     setLoading(true);
     
     try {
-      // Fetch user profile
-      const { data: profileData } = await supabase
-        .from('profiles')
-        .select('*')
-        .eq('id', user.id)
-        .single();
+      // Fetch both profile and projects in parallel
+      const [profileResult, projectsResult] = await Promise.all([
+        supabase
+          .from('profiles')
+          .select('*')
+          .eq('id', user.id)
+          .single(),
+        supabase
+          .from('projects')
+          .select(`
+            *,
+            milestones (*)
+          `)
+          .eq('user_id', user.id)
+          .order('created_at', { ascending: false })
+      ]);
+
+      const { data: profileData } = profileResult;
+      const { data: projectsData } = projectsResult;
 
       setProfile(profileData);
-
-      // Fetch projects
-      const { data: projectsData } = await supabase
-        .from('projects')
-        .select(`
-          *,
-          milestones (*)
-        `)
-        .eq('user_id', user.id)
-        .order('created_at', { ascending: false });
 
       // Type the projects data properly
       const typedProjects: DatabaseProject[] = (projectsData || []).map(project => ({
@@ -61,16 +64,18 @@ export const useDashboardData = (user: User | null) => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [user]);
 
   useEffect(() => {
     fetchData();
   }, [user]);
 
-  return {
+  const memoizedReturn = useMemo(() => ({
     projects,
     profile,
     loading,
     refetch: fetchData
-  };
+  }), [projects, profile, loading, fetchData]);
+
+  return memoizedReturn;
 };
