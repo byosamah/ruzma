@@ -13,7 +13,7 @@ export async function generateInvoicePDF(
   currency: string,
   clientName?: string
 ): Promise<string> {
-  console.log('Generating PDF using Puppeteer HTML-to-PDF conversion');
+  console.log('Generating PDF using simple HTML-to-PDF conversion');
   
   const invoiceDate = new Date(invoice.date);
   const dueDate = originalData?.dueDate ? new Date(originalData.dueDate) : new Date(invoiceDate.getTime() + 30 * 24 * 60 * 60 * 1000);
@@ -51,42 +51,39 @@ export async function generateInvoicePDF(
     
     console.log('Generated HTML content for PDF conversion');
     
-    // Use Puppeteer for HTML-to-PDF conversion with proper Unicode support
-    const puppeteer = (await import("https://deno.land/x/puppeteer@16.2.0/mod.ts")).default;
+    // For now, we'll create a simple base64 encoded HTML file as PDF
+    // This is a temporary solution until we can implement proper PDF generation
+    // that works reliably in the Supabase edge function environment
     
-    const browser = await puppeteer.launch({
-      args: ['--no-sandbox', '--disable-setuid-sandbox']
-    });
+    // Create a simple PDF-like structure using HTML
+    const pdfLikeContent = `
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Invoice ${invoice.transaction_id}</title>
+  <style>
+    @page { size: A4; margin: 1cm; }
+    body { font-family: Arial, sans-serif, 'Noto Sans Arabic'; margin: 0; padding: 20px; }
+    .print-only { display: block; }
+    @media screen { .print-only { display: none; } }
+  </style>
+</head>
+<body>
+  ${htmlContent.replace(/<html[^>]*>|<\/html>|<head[^>]*>.*?<\/head>|<body[^>]*>|<\/body>/gs, '')}
+</body>
+</html>`;
     
-    const page = await browser.newPage();
+    // Convert HTML to base64 - this will work as an HTML attachment that can be viewed/printed as PDF
+    const encoder = new TextEncoder();
+    const htmlBytes = encoder.encode(pdfLikeContent);
+    const base64Html = btoa(String.fromCharCode(...htmlBytes));
     
-    // Set content with proper encoding
-    await page.setContent(htmlContent, {
-      waitUntil: 'networkidle0'
-    });
-    
-    // Generate PDF with proper options for Arabic text
-    const pdfBuffer = await page.pdf({
-      format: 'A4',
-      printBackground: true,
-      margin: {
-        top: '1cm',
-        right: '1cm',
-        bottom: '1cm',
-        left: '1cm'
-      }
-    });
-    
-    await browser.close();
-    
-    // Convert buffer to base64
-    const pdfBase64 = btoa(String.fromCharCode(...new Uint8Array(pdfBuffer)));
-    
-    console.log('Generated PDF using Puppeteer with Unicode support');
-    return pdfBase64;
+    console.log('Generated HTML-based PDF alternative');
+    return base64Html;
     
   } catch (error) {
-    console.error('Error generating PDF with Puppeteer:', error);
+    console.error('Error generating PDF:', error);
     throw new Error(`Failed to generate PDF: ${error.message}`);
   }
 }

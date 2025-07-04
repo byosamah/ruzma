@@ -17,19 +17,25 @@ const handler = async (req: Request): Promise<Response> => {
   }
 
   try {
+    console.log('Starting invoice email process');
+    
     const { invoiceId, clientEmail, clientName }: InvoiceEmailRequest = await req.json();
     
     console.log('Processing invoice email request:', { invoiceId, clientEmail, clientName });
 
     // Fetch all required data
     const invoice = await fetchInvoiceData(invoiceId);
+    console.log('Fetched invoice data successfully');
+    
     const profile = await fetchUserProfile(invoice.user_id);
+    console.log('Fetched user profile');
+    
     const branding = await fetchBrandingData(invoice.user_id);
-
-    console.log('Fetched profile and branding data');
+    console.log('Fetched branding data');
 
     // Parse invoice data
     const originalData = parseInvoiceData(invoice);
+    console.log('Parsed invoice data');
 
     // Generate invoice calculations
     const invoiceDate = new Date(invoice.date);
@@ -38,7 +44,10 @@ const handler = async (req: Request): Promise<Response> => {
     const { subtotal, total } = calculateTotals(lineItems, originalData?.tax || 0);
     const currency = originalData?.currency || profile?.currency || 'USD';
 
+    console.log('Generated calculations:', { subtotal, total, currency });
+
     // Generate PDF
+    console.log('Starting PDF generation');
     const pdfBase64 = await generateInvoicePDF(
       invoice,
       profile,
@@ -50,8 +59,10 @@ const handler = async (req: Request): Promise<Response> => {
       currency,
       clientName
     );
+    console.log('PDF generation completed');
 
     // Send email
+    console.log('Sending email');
     const emailResponse = await sendInvoiceEmail(
       invoice,
       profile,
@@ -63,6 +74,7 @@ const handler = async (req: Request): Promise<Response> => {
       currency,
       dueDate
     );
+    console.log('Email sent successfully');
 
     return new Response(
       JSON.stringify({ 
@@ -81,10 +93,12 @@ const handler = async (req: Request): Promise<Response> => {
 
   } catch (error: any) {
     console.error('Error in send-invoice-email function:', error);
+    console.error('Error stack:', error.stack);
     return new Response(
       JSON.stringify({ 
         success: false, 
-        error: error.message || 'Failed to send invoice email' 
+        error: error.message || 'Failed to send invoice email',
+        details: error.stack 
       }),
       {
         status: 500,

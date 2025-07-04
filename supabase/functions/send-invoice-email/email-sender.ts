@@ -17,39 +17,45 @@ export async function sendInvoiceEmail(
 ) {
   const businessName = branding?.freelancer_name || profile?.full_name || 'Ruzma';
   
-  console.log('Sending email with PDF attachment');
-  const emailResponse = await resend.emails.send({
-    from: `${businessName} <notifications@ruzma.co>`,
-    to: [clientEmail],
-    subject: `Invoice ${invoice.transaction_id} from ${businessName}`,
-    html: `
-      <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
-        <h2>Invoice ${invoice.transaction_id}</h2>
-        <p>Dear ${clientName || 'Valued Client'},</p>
-        <p>Please find attached your invoice for the services provided.</p>
-        
-        <div style="background-color: #f8f9fa; padding: 20px; border-radius: 8px; margin: 20px 0;">
-          <h3>Invoice Details:</h3>
-          <p><strong>Invoice ID:</strong> ${invoice.transaction_id}</p>
-          <p><strong>Project:</strong> ${invoice.project_name}</p>
-          <p><strong>Amount:</strong> ${total.toFixed(2)} ${currency}</p>
-          <p><strong>Due Date:</strong> ${dueDate.toLocaleDateString()}</p>
+  console.log('Sending email with HTML attachment (PDF alternative)');
+  
+  try {
+    const emailResponse = await resend.emails.send({
+      from: `${businessName} <notifications@ruzma.co>`,
+      to: [clientEmail],
+      subject: `Invoice ${invoice.transaction_id} from ${businessName}`,
+      html: `
+        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+          <h2>Invoice ${invoice.transaction_id}</h2>
+          <p>Dear ${clientName || 'Valued Client'},</p>
+          <p>Please find attached your invoice for the services provided.</p>
+          
+          <div style="background-color: #f8f9fa; padding: 20px; border-radius: 8px; margin: 20px 0;">
+            <h3>Invoice Details:</h3>
+            <p><strong>Invoice ID:</strong> ${invoice.transaction_id}</p>
+            <p><strong>Project:</strong> ${invoice.project_name}</p>
+            <p><strong>Amount:</strong> ${total.toFixed(2)} ${currency}</p>
+            <p><strong>Due Date:</strong> ${dueDate.toLocaleDateString()}</p>
+          </div>
+          
+          <p>If you have any questions about this invoice, please don't hesitate to contact us.</p>
+          
+          <p>Best regards,<br>
+          ${businessName}</p>
         </div>
-        
-        <p>If you have any questions about this invoice, please don't hesitate to contact us.</p>
-        
-        <p>Best regards,<br>
-        ${businessName}</p>
-      </div>
-    `,
-    attachments: [
-      {
-        filename: `Invoice-${invoice.transaction_id}.pdf`,
-        content: pdfBase64,
-      },
-    ],
-  });
+      `,
+      attachments: [
+        {
+          filename: `Invoice-${invoice.transaction_id}.html`,
+          content: pdfBase64,
+        },
+      ],
+    });
 
-  console.log('Email sent successfully:', emailResponse);
-  return emailResponse;
+    console.log('Email sent successfully:', emailResponse);
+    return emailResponse;
+  } catch (error) {
+    console.error('Error sending email:', error);
+    throw error;
+  }
 }
