@@ -1,3 +1,4 @@
+
 export const projectTranslations = {
   en: {
     loadingProject: "Loading project...",
