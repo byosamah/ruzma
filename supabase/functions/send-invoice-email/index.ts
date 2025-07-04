@@ -23,6 +23,11 @@ const handler = async (req: Request): Promise<Response> => {
     
     console.log('Processing invoice email request:', { invoiceId, clientEmail, clientName });
 
+    // Validate input
+    if (!invoiceId || !clientEmail) {
+      throw new Error('Missing required fields: invoiceId and clientEmail');
+    }
+
     // Fetch all required data
     const invoice = await fetchInvoiceData(invoiceId);
     console.log('Fetched invoice data successfully');
@@ -46,9 +51,9 @@ const handler = async (req: Request): Promise<Response> => {
 
     console.log('Generated calculations:', { subtotal, total, currency });
 
-    // Generate PDF
-    console.log('Starting PDF generation');
-    const pdfBase64 = await generateInvoicePDF(
+    // Generate invoice HTML content
+    console.log('Starting invoice HTML generation');
+    const invoiceHtml = await generateInvoicePDF(
       invoice,
       profile,
       branding,
@@ -59,17 +64,17 @@ const handler = async (req: Request): Promise<Response> => {
       currency,
       clientName
     );
-    console.log('PDF generation completed');
+    console.log('Invoice HTML generation completed');
 
-    // Send email
-    console.log('Sending email');
+    // Send email with proper HTML attachment
+    console.log('Sending email with invoice attachment');
     const emailResponse = await sendInvoiceEmail(
       invoice,
       profile,
       branding,
       clientEmail,
       clientName,
-      pdfBase64,
+      invoiceHtml,
       total,
       currency,
       dueDate
@@ -94,6 +99,7 @@ const handler = async (req: Request): Promise<Response> => {
   } catch (error: any) {
     console.error('Error in send-invoice-email function:', error);
     console.error('Error stack:', error.stack);
+    
     return new Response(
       JSON.stringify({ 
         success: false, 
