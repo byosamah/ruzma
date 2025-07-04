@@ -7,11 +7,35 @@ export const getInvoiceStyles = (): string => {
       box-sizing: border-box;
     }
     body {
-      font-family: Arial, sans-serif;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif, 'Noto Sans Arabic', 'Arial Unicode MS', sans-serif;
       font-size: 14px;
       line-height: 1.4;
       color: #000000;
       background: #ffffff;
+      direction: ltr;
+    }
+    /* RTL support for Arabic text */
+    .rtl {
+      direction: rtl;
+      text-align: right;
+    }
+    .rtl .header-section {
+      flex-direction: row-reverse;
+    }
+    .rtl .billing-section {
+      flex-direction: row-reverse;
+    }
+    .rtl .detail-row {
+      flex-direction: row-reverse;
+    }
+    .rtl .total-row {
+      flex-direction: row-reverse;
+    }
+    .rtl .line-items-header th:first-child {
+      text-align: right;
+    }
+    .rtl .line-items-header th:last-child {
+      text-align: left;
     }
     .invoice-container {
       width: 800px;
@@ -89,10 +113,14 @@ export const getInvoiceStyles = (): string => {
       color: #000000;
       font-weight: 500;
       margin-bottom: 4px;
+      word-wrap: break-word;
+      overflow-wrap: break-word;
     }
     .billing-address {
       color: #666666;
       white-space: pre-line;
+      word-wrap: break-word;
+      overflow-wrap: break-word;
     }
     .currency-section {
       text-align: right;
@@ -134,6 +162,15 @@ export const getInvoiceStyles = (): string => {
       color: #000000;
       padding: 8px;
       border-bottom: 1px solid #f3f4f6;
+      word-wrap: break-word;
+      overflow-wrap: break-word;
+      vertical-align: top;
+    }
+    .line-item-description {
+      max-width: 400px;
+      white-space: normal;
+      word-wrap: break-word;
+      overflow-wrap: break-word;
     }
     .line-item-qty {
       text-align: center;

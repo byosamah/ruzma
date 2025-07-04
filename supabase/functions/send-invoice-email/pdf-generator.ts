@@ -1,11 +1,8 @@
 
 import { generateInvoiceHTML, SharedInvoiceData } from './shared-invoice-template.ts';
-import { generatePDFContent } from './pdf-content-generator.ts';
-import { buildPDFStructure } from './pdf-structure-builder.ts';
-import { convertToBase64 } from './pdf-utils.ts';
 import type { InvoiceData, ProfileData, BrandingData, ParsedInvoiceData, LineItem } from './types.ts';
 
-export function generateInvoicePDF(
+export async function generateInvoicePDF(
   invoice: InvoiceData,
   profile: ProfileData | null,
   branding: BrandingData | null,
@@ -15,8 +12,8 @@ export function generateInvoicePDF(
   total: number,
   currency: string,
   clientName?: string
-): string {
-  console.log('Generating PDF using shared HTML template');
+): Promise<string> {
+  console.log('Generating PDF using Puppeteer HTML-to-PDF conversion');
   
   const invoiceDate = new Date(invoice.date);
   const dueDate = originalData?.dueDate ? new Date(originalData.dueDate) : new Date(invoiceDate.getTime() + 30 * 24 * 60 * 60 * 1000);
@@ -49,28 +46,47 @@ export function generateInvoicePDF(
   };
 
   try {
-    // Generate the exact same HTML template used by frontend
+    // Generate HTML with proper Arabic support
     const htmlContent = generateInvoiceHTML(sharedData);
     
-    // Calculate subtotal and total
-    const calculatedSubtotal = sharedData.lineItems.reduce((sum, item) => sum + (item.quantity * item.amount), 0);
-    const tax = sharedData.tax || 0;
-    const calculatedTotal = calculatedSubtotal + tax;
+    console.log('Generated HTML content for PDF conversion');
     
-    // Create the content stream with proper formatting
-    const contentStream = generatePDFContent(sharedData, calculatedSubtotal, calculatedTotal);
+    // Use Puppeteer for HTML-to-PDF conversion with proper Unicode support
+    const puppeteer = (await import("https://deno.land/x/puppeteer@16.2.0/mod.ts")).default;
     
-    // Build the complete PDF structure
-    const fullPDF = buildPDFStructure(contentStream);
+    const browser = await puppeteer.launch({
+      args: ['--no-sandbox', '--disable-setuid-sandbox']
+    });
     
-    // Convert to base64
-    const pdfBase64 = convertToBase64(fullPDF);
+    const page = await browser.newPage();
     
-    console.log('Generated PDF using shared template approach');
+    // Set content with proper encoding
+    await page.setContent(htmlContent, {
+      waitUntil: 'networkidle0'
+    });
+    
+    // Generate PDF with proper options for Arabic text
+    const pdfBuffer = await page.pdf({
+      format: 'A4',
+      printBackground: true,
+      margin: {
+        top: '1cm',
+        right: '1cm',
+        bottom: '1cm',
+        left: '1cm'
+      }
+    });
+    
+    await browser.close();
+    
+    // Convert buffer to base64
+    const pdfBase64 = btoa(String.fromCharCode(...new Uint8Array(pdfBuffer)));
+    
+    console.log('Generated PDF using Puppeteer with Unicode support');
     return pdfBase64;
     
   } catch (error) {
-    console.error('Error generating PDF:', error);
+    console.error('Error generating PDF with Puppeteer:', error);
     throw new Error(`Failed to generate PDF: ${error.message}`);
   }
 }

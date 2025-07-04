@@ -39,7 +39,7 @@ const handler = async (req: Request): Promise<Response> => {
     const currency = originalData?.currency || profile?.currency || 'USD';
 
     // Generate PDF
-    const pdfBase64 = generateInvoicePDF(
+    const pdfBase64 = await generateInvoicePDF(
       invoice,
       profile,
       branding,

@@ -1,18 +1,44 @@
 
 import type { SharedInvoiceData } from './types';
-import { formatInvoiceDate } from './invoiceUtils';
+import { calculateInvoiceTotals, formatInvoiceDate } from './invoiceUtils';
+import { getInvoiceStyles } from './invoiceStyles';
+
+// Function to detect Arabic text
+function containsArabic(text: string): boolean {
+  const arabicRegex = /[\u0600-\u06FF\u0750-\u077F\u08A0-\u08FF\uFB50-\uFDFF\uFE70-\uFEFF]/;
+  return arabicRegex.test(text);
+}
+
+// Function to detect if any content contains Arabic text
+function hasArabicContent(data: SharedInvoiceData): boolean {
+  // Check all text fields for Arabic content
+  const textsToCheck = [
+    data.billedTo.name,
+    data.billedTo.address,
+    data.payTo.name,
+    data.payTo.address,
+    data.purchaseOrder || '',
+    data.paymentTerms || '',
+    ...data.lineItems.map(item => item.description)
+  ];
+  
+  return textsToCheck.some(text => containsArabic(text));
+}
 
 export const buildInvoiceHTML = (data: SharedInvoiceData, styles: string, subtotal: number, total: number): string => {
+  const isRTL = hasArabicContent(data);
+
   return `
     <!DOCTYPE html>
-    <html>
+    <html lang="${isRTL ? 'ar' : 'en'}">
     <head>
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width, initial-scale=1">
       <title>Invoice ${data.invoice.transactionId}</title>
       <style>${styles}</style>
+      <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Arabic:wght@400;500;600;700&display=swap" rel="stylesheet">
     </head>
-    <body>
+    <body${isRTL ? ' class="rtl"' : ''}>
       <div class="invoice-container">
         <!-- Header Section -->
         <div class="header-section">
@@ -86,7 +112,7 @@ export const buildInvoiceHTML = (data: SharedInvoiceData, styles: string, subtot
           <tbody>
             ${data.lineItems.map(item => `
               <tr class="line-item-row">
-                <td>${item.description}</td>
+                <td class="line-item-description">${item.description}</td>
                 <td class="line-item-qty">${item.quantity}</td>
                 <td class="line-item-amount">${(item.quantity * item.amount).toFixed(2)}</td>
               </tr>
