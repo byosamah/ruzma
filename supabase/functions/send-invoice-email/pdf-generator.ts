@@ -12,13 +12,13 @@ export async function generateInvoicePDF(
   total: number,
   currency: string,
   clientName?: string
-): Promise<{ htmlContent: string; base64Html: string }> {
-  console.log('Generating invoice HTML for email and attachment');
+): Promise<{ pdfBuffer: Uint8Array; filename: string }> {
+  console.log('Generating invoice PDF');
   
   const invoiceDate = new Date(invoice.date);
   const dueDate = originalData?.dueDate ? new Date(originalData.dueDate) : new Date(invoiceDate.getTime() + 30 * 24 * 60 * 60 * 1000);
 
-  // Convert to shared data format - exactly the same as frontend
+  // Convert to shared data format
   const sharedData: SharedInvoiceData = {
     invoice: {
       id: invoice.id,
@@ -46,72 +46,101 @@ export async function generateInvoicePDF(
   };
 
   try {
-    // Generate clean HTML content for email body and attachment
+    // Generate HTML content
     const htmlContent = generateInvoiceHTML(sharedData);
+    console.log('Generated HTML content for PDF conversion');
+
+    // Create a simple PDF using basic PDF structure
+    const pdfContent = await createPDFFromHTML(htmlContent, sharedData);
+    const filename = `Invoice-${invoice.transaction_id}.pdf`;
     
-    console.log('Generated HTML content for invoice');
-    
-    // Create proper HTML file content with enhanced styling for standalone viewing
-    const standaloneHtmlContent = `<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Invoice ${invoice.transaction_id}</title>
-    <style>
-        @media print {
-            @page { size: A4; margin: 1cm; }
-            body { -webkit-print-color-adjust: exact; }
-        }
-        body { 
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-            margin: 0; 
-            padding: 20px; 
-            background: #ffffff;
-            color: #000000;
-        }
-        .print-btn {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            background: #007bff;
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 5px;
-            cursor: pointer;
-            z-index: 1000;
-        }
-        .print-btn:hover { background: #0056b3; }
-        @media print { .print-btn { display: none; } }
-    </style>
-</head>
-<body>
-    <button class="print-btn" onclick="window.print()">Print Invoice</button>
-    ${htmlContent.replace(/<html[^>]*>|<\/html>|<head[^>]*>.*?<\/head>|<body[^>]*>|<\/body>/gs, '')}
-    <script>
-        // Auto-focus for better user experience
-        document.addEventListener('DOMContentLoaded', function() {
-            console.log('Invoice loaded successfully');
-        });
-    </script>
-</body>
-</html>`;
-    
-    // Convert to base64 for attachment
-    const encoder = new TextEncoder();
-    const htmlBytes = encoder.encode(standaloneHtmlContent);
-    const base64Html = btoa(String.fromCharCode(...htmlBytes));
-    
-    console.log('Generated standalone HTML invoice for attachment');
+    console.log('Generated PDF buffer successfully');
     
     return {
-      htmlContent: htmlContent,
-      base64Html: base64Html
+      pdfBuffer: pdfContent,
+      filename: filename
     };
     
   } catch (error) {
-    console.error('Error generating invoice HTML:', error);
-    throw new Error(`Failed to generate invoice: ${error.message}`);
+    console.error('Error generating invoice PDF:', error);
+    throw new Error(`Failed to generate PDF invoice: ${error.message}`);
   }
+}
+
+async function createPDFFromHTML(htmlContent: string, data: SharedInvoiceData): Promise<Uint8Array> {
+  // Simple PDF generation using basic PDF structure
+  const pdfHeader = '%PDF-1.4\n';
+  
+  // Calculate totals
+  const subtotal = data.lineItems.reduce((sum, item) => sum + (item.quantity * item.amount), 0);
+  const total = subtotal + (data.tax || 0);
+  
+  // Create PDF content stream with invoice data
+  const contentStream = `
+BT
+/F1 24 Tf
+50 750 Td
+(INVOICE) Tj
+0 -30 Td
+/F1 12 Tf
+(Invoice ID: ${data.invoice.transactionId}) Tj
+0 -20 Td
+(Date: ${data.invoiceDate.toLocaleDateString()}) Tj
+0 -20 Td
+(Due Date: ${data.dueDate.toLocaleDateString()}) Tj
+0 -40 Td
+/F1 14 Tf
+(Bill To:) Tj
+0 -20 Td
+/F1 12 Tf
+(${data.billedTo.name}) Tj
+0 -15 Td
+(${data.billedTo.address.replace(/\n/g, ') Tj 0 -15 Td (')}) Tj
+0 -40 Td
+/F1 14 Tf
+(From:) Tj
+0 -20 Td
+/F1 12 Tf
+(${data.payTo.name}) Tj
+0 -15 Td
+(${data.payTo.address.replace(/\n/g, ') Tj 0 -15 Td (')}) Tj
+0 -40 Td
+/F1 14 Tf
+(Items:) Tj
+0 -25 Td
+/F1 12 Tf
+${data.lineItems.map(item => `(${item.description} - Qty: ${item.quantity} - Amount: ${(item.quantity * item.amount).toFixed(2)} ${data.currency}) Tj 0 -20 Td`).join('\n')}
+0 -20 Td
+/F1 14 Tf
+(Subtotal: ${subtotal.toFixed(2)} ${data.currency}) Tj
+${data.tax > 0 ? `0 -20 Td (Tax: ${data.tax.toFixed(2)} ${data.currency}) Tj` : ''}
+0 -20 Td
+/F1 16 Tf
+(Total: ${total.toFixed(2)} ${data.currency}) Tj
+ET
+`;
+
+  const contentLength = contentStream.length;
+
+  // Build PDF structure
+  const catalog = `1 0 obj\n<< /Type /Catalog /Pages 2 0 R >>\nendobj\n\n`;
+  const pages = `2 0 obj\n<< /Type /Pages /Kids [3 0 R] /Count 1 >>\nendobj\n\n`;
+  const page = `3 0 obj\n<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Contents 4 0 R /Resources << /Font << /F1 << /Type /Font /Subtype /Type1 /BaseFont /Helvetica >> >> >> >>\nendobj\n\n`;
+  const content = `4 0 obj\n<< /Length ${contentLength} >>\nstream\n${contentStream}\nendstream\nendobj\n\n`;
+
+  // Calculate positions for xref table
+  const catalogPos = pdfHeader.length;
+  const pagesPos = catalogPos + catalog.length;
+  const pagePos = pagesPos + pages.length;
+  const contentPos = pagePos + page.length;
+  const xrefPos = contentPos + content.length;
+
+  const xref = `xref\n0 5\n0000000000 65535 f \n${catalogPos.toString().padStart(10, '0')} 00000 n \n${pagesPos.toString().padStart(10, '0')} 00000 n \n${pagePos.toString().padStart(10, '0')} 00000 n \n${contentPos.toString().padStart(10, '0')} 00000 n \n`;
+  const trailer = `trailer\n<< /Size 5 /Root 1 0 R >>\nstartxref\n${xrefPos}\n%%EOF`;
+
+  const fullPdf = pdfHeader + catalog + pages + page + content + xref + trailer;
+  
+  // Convert string to Uint8Array
+  const encoder = new TextEncoder();
+  return encoder.encode(fullPdf);
 }

@@ -10,17 +10,20 @@ export async function sendInvoiceEmail(
   branding: BrandingData | null,
   clientEmail: string,
   clientName: string | undefined,
-  invoiceHtml: { htmlContent: string; base64Html: string },
+  pdfData: { pdfBuffer: Uint8Array; filename: string },
   total: number,
   currency: string,
   dueDate: Date
 ) {
   const businessName = branding?.freelancer_name || profile?.full_name || 'Ruzma';
   
-  console.log('Sending invoice email with HTML attachment');
+  console.log('Sending invoice email with PDF attachment');
   
   try {
-    // Create email with invoice content in body AND as attachment
+    // Convert PDF buffer to base64 for attachment
+    const base64Pdf = btoa(String.fromCharCode(...pdfData.pdfBuffer));
+    
+    // Create email with invoice content in body AND PDF as attachment
     const emailResponse = await resend.emails.send({
       from: `${businessName} <notifications@ruzma.co>`,
       to: [clientEmail],
@@ -34,7 +37,7 @@ export async function sendInvoiceEmail(
           
           <div style="background: #f8f9fa; padding: 20px; border-radius: 8px; margin: 20px 0;">
             <p style="margin: 0 0 10px 0;"><strong>Dear ${clientName || 'Valued Client'},</strong></p>
-            <p style="margin: 10px 0;">Please find your invoice attached to this email. You can view it directly in your browser or print it as needed.</p>
+            <p style="margin: 10px 0;">Please find your invoice attached as a PDF file. You can download and view it using any PDF viewer.</p>
           </div>
           
           <div style="background: #ffffff; border: 1px solid #e1e5e9; border-radius: 8px; padding: 20px; margin: 20px 0;">
@@ -60,7 +63,7 @@ export async function sendInvoiceEmail(
           </div>
           
           <div style="background: #e7f3ff; border-left: 4px solid #007bff; padding: 15px; margin: 20px 0;">
-            <p style="margin: 0; color: #0056b3;"><strong>📎 Attachment:</strong> Your complete invoice is attached as an HTML file that you can open in any web browser.</p>
+            <p style="margin: 0; color: #0056b3;"><strong>📎 Attachment:</strong> Your invoice is attached as a PDF file that you can download and print.</p>
           </div>
           
           <div style="margin: 30px 0; text-align: center;">
@@ -75,9 +78,9 @@ export async function sendInvoiceEmail(
       `,
       attachments: [
         {
-          filename: `Invoice-${invoice.transaction_id}.html`,
-          content: invoiceHtml.base64Html,
-          type: 'text/html',
+          filename: pdfData.filename,
+          content: base64Pdf,
+          type: 'application/pdf',
           disposition: 'attachment'
         }
       ]

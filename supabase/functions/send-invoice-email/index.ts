@@ -51,9 +51,9 @@ const handler = async (req: Request): Promise<Response> => {
 
     console.log('Generated calculations:', { subtotal, total, currency });
 
-    // Generate invoice HTML content
-    console.log('Starting invoice HTML generation');
-    const invoiceHtml = await generateInvoicePDF(
+    // Generate invoice PDF
+    console.log('Starting PDF generation');
+    const pdfData = await generateInvoicePDF(
       invoice,
       profile,
       branding,
@@ -64,17 +64,17 @@ const handler = async (req: Request): Promise<Response> => {
       currency,
       clientName
     );
-    console.log('Invoice HTML generation completed');
+    console.log('PDF generation completed');
 
-    // Send email with proper HTML attachment
-    console.log('Sending email with invoice attachment');
+    // Send email with PDF attachment
+    console.log('Sending email with PDF attachment');
     const emailResponse = await sendInvoiceEmail(
       invoice,
       profile,
       branding,
       clientEmail,
       clientName,
-      invoiceHtml,
+      pdfData,
       total,
       currency,
       dueDate
