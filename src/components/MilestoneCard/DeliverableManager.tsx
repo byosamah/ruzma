@@ -87,10 +87,10 @@ const DeliverableManager: React.FC<DeliverableManagerProps> = ({
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
-        <h4 className="text-sm font-medium text-gray-700">Deliverable</h4>
+        <h4 className="text-sm font-medium text-gray-700">{t('deliverable')}</h4>
         {userType === 'free' && (
           <span className="text-xs text-amber-600 bg-amber-50 px-2 py-1 rounded-md">
-            Upload requires Plus/Pro
+            {t('uploadRequiresPlusPro')}
           </span>
         )}
       </div>
@@ -103,14 +103,14 @@ const DeliverableManager: React.FC<DeliverableManagerProps> = ({
             className="text-xs data-[state=active]:bg-white data-[state=active]:shadow-none"
           >
             <Upload className="w-3 h-3 mr-1.5" />
-            Upload
+            {t('upload')}
           </TabsTrigger>
           <TabsTrigger 
             value="link"
             className="text-xs data-[state=active]:bg-white data-[state=active]:shadow-none"
           >
             <Link className="w-3 h-3 mr-1.5" />
-            Link
+            {t('link')}
           </TabsTrigger>
         </TabsList>
 
@@ -146,7 +146,7 @@ const DeliverableManager: React.FC<DeliverableManagerProps> = ({
                       <Button asChild size="sm" variant="ghost" className="h-7 px-2 text-xs">
                         <span className="cursor-pointer flex items-center">
                           <FileUp className="w-3 h-3 mr-1" />
-                          Replace
+                          {t('replace')}
                         </span>
                       </Button>
                     </label>
@@ -191,7 +191,7 @@ const DeliverableManager: React.FC<DeliverableManagerProps> = ({
                 size="sm"
                 className="px-3"
               >
-                {isUpdatingLink ? 'Saving...' : 'Save'}
+                {isUpdatingLink ? t('saving') : t('save')}
               </Button>
             </div>
           </div>
@@ -210,7 +210,7 @@ const DeliverableManager: React.FC<DeliverableManagerProps> = ({
                   className="h-7 px-2 text-xs text-blue-600 hover:bg-blue-100"
                 >
                   <ExternalLink className="w-3 h-3 mr-1" />
-                  Open
+                  {t('open')}
                 </Button>
                 <Button
                   size="sm"

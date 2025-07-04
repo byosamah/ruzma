@@ -34,7 +34,7 @@ const ProjectHeaderActions: React.FC<ProjectHeaderActionsProps> = ({
     const clientUrl = `https://hub.ruzma.co/client/project/${project.client_access_token}`;
     try {
       await navigator.clipboard.writeText(clientUrl);
-      toast.success('Client link copied to clipboard');
+      toast.success(t('clientLinkCopied'));
     } catch (error) {
       toast.error('Failed to copy link');
     }
@@ -42,12 +42,12 @@ const ProjectHeaderActions: React.FC<ProjectHeaderActionsProps> = ({
 
   const handleSendClientLink = async () => {
     if (!project.client_email) {
-      toast.error('No client email address found for this project');
+      toast.error(t('noClientEmailFound'));
       return;
     }
 
     try {
-      toast.loading('Sending client link...');
+      toast.loading(t('sendingClientLink'));
       
       const { data: { user } } = await supabase.auth.getUser();
       
@@ -60,14 +60,14 @@ const ProjectHeaderActions: React.FC<ProjectHeaderActionsProps> = ({
       });
 
       toast.dismiss();
-      toast.success('Client link sent successfully!');
+      toast.success(t('clientLinkSent'));
     } catch (error: any) {
       toast.dismiss();
       
       if (error.message && error.message.includes('Domain verification required')) {
-        toast.error('Email domain needs verification. Please contact support.');
+        toast.error(t('emailDomainVerificationRequired'));
       } else {
-        toast.error('Failed to send client link. Please try again.');
+        toast.error(t('clientLinkSendFailed'));
       }
       
       console.error('Error sending client link:', error);
@@ -83,7 +83,7 @@ const ProjectHeaderActions: React.FC<ProjectHeaderActionsProps> = ({
         className="text-gray-600 hover:text-gray-900 hover:bg-gray-50"
       >
         <ExternalLink className="w-4 h-4 mr-2" />
-        View Client Page
+        {t('viewClientPage')}
       </Button>
       
       <Button
@@ -93,7 +93,7 @@ const ProjectHeaderActions: React.FC<ProjectHeaderActionsProps> = ({
         className="text-gray-600 hover:text-gray-900 hover:bg-gray-50"
       >
         <Send className="w-4 h-4 mr-2" />
-        Send to Client
+        {t('sendToClient')}
       </Button>
       
       <Button
@@ -103,7 +103,7 @@ const ProjectHeaderActions: React.FC<ProjectHeaderActionsProps> = ({
         className="text-gray-600 hover:text-gray-900 hover:bg-gray-50"
       >
         <Copy className="w-4 h-4 mr-2" />
-        Copy Link
+        {t('copyLink')}
       </Button>
       
       <Button

@@ -27,12 +27,12 @@ const FreelancerView: React.FC<FreelancerViewProps> = ({
     if (milestone.status !== 'payment_submitted' || !milestone.paymentProofUrl) return null;
     return <div className="space-y-3">
         <div className="flex items-center justify-between bg-blue-50 p-3 rounded-lg">
-          <p className="text-sm font-medium text-blue-800">Payment proof submitted by client</p>
+          <p className="text-sm font-medium text-blue-800">{t('paymentProofSubmittedByClient')}</p>
           <div className="flex items-center space-x-2">
             
             <Button variant="outline" size="sm" onClick={() => window.open(milestone.paymentProofUrl, '_blank')} className="flex items-center space-x-1">
               <ExternalLink className="w-4 h-4" />
-              <span>Open</span>
+              <span>{t('open')}</span>
             </Button>
           </div>
         </div>
@@ -40,11 +40,11 @@ const FreelancerView: React.FC<FreelancerViewProps> = ({
         {onApprove && onReject && <div className="flex space-x-2">
             <Button onClick={() => onApprove(milestone.id)} size="sm" className="flex-1 bg-green-600 hover:bg-green-700">
               <CheckCircle className="w-4 h-4 mr-2" />
-              Approve Payment
+              {t('approvePayment')}
             </Button>
             <Button onClick={() => onReject(milestone.id)} variant="outline" size="sm" className="flex-1 text-red-600 border-red-300 hover:bg-red-50">
               <XCircle className="w-4 h-4 mr-2" />
-              Reject
+              {t('reject')}
             </Button>
           </div>}
       </div>;
@@ -52,9 +52,9 @@ const FreelancerView: React.FC<FreelancerViewProps> = ({
   return <div className="space-y-4">
       {renderPaymentProofSection()}
       
-      {milestone.status === 'pending' && <p className="text-sm text-slate-600">Waiting for client payment</p>}
+      {milestone.status === 'pending' && <p className="text-sm text-slate-600">{t('waitingForClientPayment')}</p>}
       
-      {milestone.status === 'approved' && <p className="text-sm text-green-600">Payment approved - Client can download</p>}
+      {milestone.status === 'approved' && <p className="text-sm text-green-600">{t('paymentApprovedClientDownload')}</p>}
 
       <div className="pt-2 border-t">
         <DeliverableManager milestone={milestone} userType={userType} onDeliverableUpload={onDeliverableUpload} onDeliverableLinkUpdate={onDeliverableLinkUpdate} />

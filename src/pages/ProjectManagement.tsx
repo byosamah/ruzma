@@ -107,7 +107,7 @@ const ProjectManagement: React.FC = () => {
           <div className="bg-gray-50/50 rounded-lg p-5 border border-gray-100">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-gray-500 mb-1">Progress</p>
+                <p className="text-sm text-gray-500 mb-1">{t('progress')}</p>
                 <p className="text-xl font-medium text-gray-900">
                   {completedMilestones}/{project.milestones.length}
                 </p>
@@ -119,7 +119,7 @@ const ProjectManagement: React.FC = () => {
           <div className="bg-gray-50/50 rounded-lg p-5 border border-gray-100">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-gray-500 mb-1">Total Value</p>
+                <p className="text-sm text-gray-500 mb-1">{t('totalValue')}</p>
                 <p className="text-xl font-medium text-gray-900">
                   {userCurrency.formatCurrency(totalValue)}
                 </p>
@@ -131,7 +131,7 @@ const ProjectManagement: React.FC = () => {
           <div className="bg-gray-50/50 rounded-lg p-5 border border-gray-100">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-gray-500 mb-1">Completed</p>
+                <p className="text-sm text-gray-500 mb-1">{t('completed')}</p>
                 <p className="text-xl font-medium text-gray-900">
                   {userCurrency.formatCurrency(completedValue)}
                 </p>
@@ -144,9 +144,9 @@ const ProjectManagement: React.FC = () => {
         {/* Milestones Section */}
         <div className="space-y-6">
           <div className="flex items-center justify-between">
-            <h2 className="text-xl font-medium text-gray-900">Milestones</h2>
+            <h2 className="text-xl font-medium text-gray-900">{t('milestones')}</h2>
             <span className="text-sm text-gray-500">
-              {project.milestones.length} {project.milestones.length === 1 ? 'milestone' : 'milestones'}
+              {project.milestones.length} {project.milestones.length === 1 ? t('milestone') : t('milestones')}
             </span>
           </div>
           
