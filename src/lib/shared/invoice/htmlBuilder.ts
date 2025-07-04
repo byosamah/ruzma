@@ -1,6 +1,5 @@
-
-import type { SharedInvoiceData } from './shared-invoice-types.ts';
-import { formatDate, calculateInvoiceTotals } from './invoice-template-utils.ts';
+import type { SharedInvoiceData } from './types';
+import { calculateInvoiceTotals, formatInvoiceDate } from './utils';
 
 // Function to detect Arabic text
 function containsArabic(text: string): boolean {
@@ -24,7 +23,7 @@ function hasArabicContent(data: SharedInvoiceData): boolean {
   return textsToCheck.some(text => containsArabic(text));
 }
 
-export function buildInvoiceHTML(data: SharedInvoiceData, styles: string): string {
+export const buildInvoiceHTML = (data: SharedInvoiceData, styles: string): string => {
   const { subtotal, total } = calculateInvoiceTotals(data.lineItems, data.tax);
   const isRTL = hasArabicContent(data);
 
@@ -51,11 +50,11 @@ export function buildInvoiceHTML(data: SharedInvoiceData, styles: string): strin
               </div>
               <div class="detail-row">
                 <span class="detail-label">Invoice Date:</span>
-                <span class="detail-value">${formatDate(data.invoiceDate)}</span>
+                <span class="detail-value">${formatInvoiceDate(data.invoiceDate)}</span>
               </div>
               <div class="detail-row">
                 <span class="detail-label">Due date:</span>
-                <span class="detail-value">${formatDate(data.dueDate)}</span>
+                <span class="detail-value">${formatInvoiceDate(data.dueDate)}</span>
               </div>
               ${data.purchaseOrder ? `
                 <div class="detail-row">
@@ -141,4 +140,4 @@ export function buildInvoiceHTML(data: SharedInvoiceData, styles: string): strin
     </body>
     </html>
   `;
-}
+};

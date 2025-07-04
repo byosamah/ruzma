@@ -3,7 +3,7 @@ import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
 import { Invoice } from '@/hooks/invoices/types';
 import { format } from 'date-fns';
-import { generateInvoiceHTML, SharedInvoiceData } from './shared/invoiceHtmlTemplate';
+import { generateInvoiceHTML, SharedInvoiceData } from './shared/invoice/template';
 
 export interface InvoicePDFData {
   invoice: Invoice;

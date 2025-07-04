@@ -1,4 +1,3 @@
-
 export const getInvoiceStyles = (): string => {
   return `
     * {
@@ -169,7 +168,7 @@ export const getInvoiceStyles = (): string => {
     .line-item-description {
       max-width: 400px;
       white-space: normal;
-      word-wrap: break-word;
+      word-wrap: break-word;  
       overflow-wrap: break-word;
     }
     .line-item-qty {

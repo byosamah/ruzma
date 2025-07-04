@@ -1,4 +1,3 @@
-
 export interface SharedInvoiceData {
   invoice: {
     id: string;
