@@ -1,3 +1,4 @@
+
 import type { SharedInvoiceData } from './shared-types.ts';
 import { calculateInvoiceTotals, formatInvoiceDate } from './shared-utils.ts';
 
@@ -56,12 +57,14 @@ export const buildInvoiceHTML = (data: SharedInvoiceData, styles: string): strin
                 <span class="detail-label">Due date:</span>
                 <span class="detail-value">${formatInvoiceDate(data.dueDate)}</span>
               </div>
+              <!-- Optional Purchase Order -->
               ${data.purchaseOrder ? `
                 <div class="detail-row">
                   <span class="detail-label">Purchase Order:</span>
                   <span class="detail-value">${data.purchaseOrder}</span>
                 </div>
               ` : ''}
+              <!-- Optional Payment Terms -->
               ${data.paymentTerms ? `
                 <div class="detail-row">
                   <span class="detail-label">Payment Terms:</span>
@@ -71,6 +74,7 @@ export const buildInvoiceHTML = (data: SharedInvoiceData, styles: string): strin
             </div>
           </div>
           <div class="logo-section">
+            <!-- Logo if provided, otherwise placeholder -->
             ${data.logoUrl ? `
               <img src="${data.logoUrl}" alt="Logo" class="logo-img" />
             ` : `
@@ -109,6 +113,7 @@ export const buildInvoiceHTML = (data: SharedInvoiceData, styles: string): strin
             </tr>
           </thead>
           <tbody>
+            <!-- Dynamic line items -->
             ${data.lineItems.map(item => `
               <tr class="line-item-row">
                 <td class="line-item-description">${item.description}</td>
@@ -125,6 +130,7 @@ export const buildInvoiceHTML = (data: SharedInvoiceData, styles: string): strin
             <span class="total-label">SUBTOTAL</span>
             <span class="total-value">${subtotal.toFixed(2)} ${data.currency}</span>
           </div>
+          <!-- Optional Tax -->
           ${data.tax > 0 ? `
             <div class="total-row">
               <span class="total-label">TAX</span>
