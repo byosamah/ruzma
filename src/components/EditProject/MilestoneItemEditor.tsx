@@ -64,11 +64,12 @@ export const MilestoneItemEditor: React.FC<MilestoneItemEditorProps> = ({
           <Input
             id={`milestone-price-${index}`}
             type="number"
-            value={milestone.price}
+            value={milestone.price || 0}
             onChange={(e) => onMilestoneChange(index, 'price', e.target.value)}
             placeholder={t('milestonePricePlaceholder_edit')}
             required
             min="0"
+            step="0.01"
           />
         </div>
         <div className="space-y-2">
