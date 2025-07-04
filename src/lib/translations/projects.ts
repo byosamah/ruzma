@@ -1,10 +1,9 @@
-
 export const projectTranslations = {
   en: {
     loadingProject: "Loading project...",
     projectNotFound: "Project not found",
     goToDashboard: "Go to Dashboard",
-    backToDashboard: "Back to Dashboard",
+    backToDashboard: "Back to Dashboard", 
     backToProjects: "Back to Projects",
     projectId: "Project ID",
     created: "Created",
@@ -63,7 +62,6 @@ export const projectTranslations = {
     milestoneTitlePlaceholder_edit: "e.g. Phase 1: Discovery",
     milestoneDescriptionPlaceholder_edit: "Briefly describe this milestone",
     milestonePricePlaceholder_edit: "e.g. 500",
-    // New keys for Project Templates page
     projectTemplatesTitle: "Project Templates",
     projectTemplatesSubtitle: "Save time by creating projects from templates",
     noTemplatesYet: "No Templates Yet",
@@ -73,7 +71,6 @@ export const projectTranslations = {
     total: "Total",
     useTemplate: "Use Template",
     deleteTemplateConfirmation: "Are you sure you want to delete this template?",
-    // New keys for project management page
     projectMilestones: "Project Milestones",
     trackProgressAndDeliverables: "Track progress and manage deliverables",
     projectHeaderStats: "Project Statistics",
@@ -83,13 +80,11 @@ export const projectTranslations = {
     copyClientLink: "Copy Client Link",
     clientEmail: "Client Email",
     clientEmailPlaceholder: "Enter client email (optional)",
-    // Missing keys that were causing errors
     mustBeLoggedIn: "You must be logged in to create a project",
     failedToCreateProject: "Failed to create project",
     failedToCreateMilestones: "Failed to create milestones",
     projectCreatedSuccessfully: "Project created successfully",
     unexpectedError: "An unexpected error occurred",
-    // New keys for Create Project page
     createProjectFromTemplate: "Create Project from Template",
     customizeTemplateAndCreate: "Customize the template and create your project",
     cancel: "Cancel",
@@ -100,12 +95,10 @@ export const projectTranslations = {
     addNewClient: "Add new client",
     startDate: "Start Date",
     endDate: "End Date",
-    // New translations for Payment & Delivery Settings
     paymentDeliverySettings: "Payment & Delivery Settings",
     requirePaymentProof: "Require Payment Proof",
     paymentProofDescription: "When enabled, clients must upload payment proof before they can download deliverables. This helps ensure you receive payment before delivery.",
     saveAsTemplateLabel: "Save this project structure as a template for future use",
-    // Missing translations for project page
     viewClientPage: "View Client Page",
     sendToClient: "Send to Client", 
     copyLink: "Copy Link",
@@ -115,10 +108,11 @@ export const projectTranslations = {
     milestone: "Milestone",
     uploadRequiresPlusPro: "Upload requires Plus/Pro",
     link: "Link",
-    // Status translations
+    upload: "Upload",
     waitingForClientPayment: "Waiting for client payment",
     paymentApprovedClientDownload: "Payment approved - Client can download",
     saving: "Saving...",
+    save: "Save",
   },
   ar: {
     loadingProject: "جاري تحميل المشروع...",
@@ -183,7 +177,6 @@ export const projectTranslations = {
     milestoneTitlePlaceholder_edit: "مثال: المرحلة الأولى: الاستكشاف",
     milestoneDescriptionPlaceholder_edit: "صف هذه المرحلة باختصار",
     milestonePricePlaceholder_edit: "مثال: 500",
-    // New keys for Project Templates page
     projectTemplatesTitle: "قوالب المشاريع",
     projectTemplatesSubtitle: "وفّر الوقت بإنشاء مشاريع من القوالب",
     noTemplatesYet: "لا توجد قوالب بعد",
@@ -193,7 +186,6 @@ export const projectTranslations = {
     total: "الإجمالي",
     useTemplate: "استخدام القالب",
     deleteTemplateConfirmation: "هل أنت متأكد من أنك تريد حذف هذا القالب؟",
-    // New keys for project management page
     projectMilestones: "مراحل المشروع",
     trackProgressAndDeliverables: "تتبع التقدم وإدارة التسليمات",
     projectHeaderStats: "إحصائيات المشروع",
@@ -203,13 +195,11 @@ export const projectTranslations = {
     copyClientLink: "نسخ رابط العميل",
     clientEmail: "بريد العميل الإلكتروني",
     clientEmailPlaceholder: "أدخل بريد العميل الإلكتروني (اختياري)",
-    // Missing keys that were causing errors
     mustBeLoggedIn: "يجب أن تكون مسجل الدخول لإنشاء مشروع",
     failedToCreateProject: "فشل في إنشاء المشروع",
     failedToCreateMilestones: "فشل في إنشاء المراحل",
     projectCreatedSuccessfully: "تم إنشاء المشروع بنجاح",
     unexpectedError: "حدث خطأ غير متوقع",
-    // New keys for Create Project page
     createProjectFromTemplate: "إنشاء مشروع من قالب",
     customizeTemplateAndCreate: "خصص القالب وأنشئ مشروعك",
     cancel: "إلغاء",
@@ -220,12 +210,10 @@ export const projectTranslations = {
     addNewClient: "إضافة عميل جديد",
     startDate: "تاريخ البدء",
     endDate: "تاريخ الانتهاء",
-    // New Arabic translations for Payment & Delivery Settings
     paymentDeliverySettings: "إعدادات الدفع والتسليم",
     requirePaymentProof: "طلب إثبات الدفع",
     paymentProofDescription: "عند التفعيل، يجب على العملاء رفع إثبات الدفع قبل تنزيل التسليمات. هذا يساعد في ضمان استلام الدفع قبل التسليم.",
     saveAsTemplateLabel: "احفظ هيكل هذا المشروع كقالب للاستخدام المستقبلي",
-    // Missing Arabic translations for project page
     viewClientPage: "عرض صفحة العميل",
     sendToClient: "إرسال للعميل", 
     copyLink: "نسخ الرابط",
@@ -235,9 +223,10 @@ export const projectTranslations = {
     milestone: "مرحلة",
     uploadRequiresPlusPro: "الرفع يتطلب Plus/Pro",
     link: "رابط",
-    // Status translations in Arabic
+    upload: "رفع",
     waitingForClientPayment: "في انتظار دفع العميل",
     paymentApprovedClientDownload: "تمت الموافقة على الدفع - يمكن للعميل التحميل",
     saving: "جاري الحفظ...",
+    save: "احفظ",
   },
 };
