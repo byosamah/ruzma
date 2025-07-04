@@ -1,5 +1,5 @@
 
-import { generateInvoiceHTML, SharedInvoiceData } from '../../../src/lib/shared/invoice/template.ts';
+import { generateInvoiceHTML, SharedInvoiceData } from './shared-template.ts';
 import type { InvoiceData, ProfileData, BrandingData, ParsedInvoiceData, LineItem } from './types.ts';
 
 export async function generateInvoicePDF(
