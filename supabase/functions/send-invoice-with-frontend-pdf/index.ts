@@ -35,6 +35,7 @@ const handler = async (req: Request): Promise<Response> => {
     const { invoiceId, clientEmail, clientName, pdfBase64, filename }: SendInvoiceRequest = await req.json();
 
     if (!invoiceId || !clientEmail || !pdfBase64 || !filename) {
+      console.error('Missing required fields:', { invoiceId: !!invoiceId, clientEmail: !!clientEmail, pdfBase64: !!pdfBase64, filename: !!filename });
       return new Response(
         JSON.stringify({ 
           success: false, 
@@ -47,7 +48,22 @@ const handler = async (req: Request): Promise<Response> => {
       );
     }
 
-    console.log(`Sending invoice ${invoiceId} to ${clientEmail}`);
+    // Validate payload size (base64 string should not be too large)
+    if (pdfBase64.length > 10 * 1024 * 1024) { // 10MB limit for base64
+      console.error('PDF payload too large:', pdfBase64.length);
+      return new Response(
+        JSON.stringify({ 
+          success: false, 
+          error: 'PDF file too large for email attachment' 
+        }),
+        { 
+          status: 413,
+          headers: { 'Content-Type': 'application/json', ...corsHeaders }
+        }
+      );
+    }
+
+    console.log(`Sending invoice ${invoiceId} to ${clientEmail}, PDF size: ${pdfBase64.length} chars`);
 
     // Initialize Supabase client
     const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
@@ -75,8 +91,22 @@ const handler = async (req: Request): Promise<Response> => {
       );
     }
 
-    // Convert base64 PDF to binary data
-    const pdfData = Uint8Array.from(atob(pdfBase64), c => c.charCodeAt(0));
+    // Validate base64 format
+    try {
+      atob(pdfBase64); // Test if valid base64
+    } catch (e) {
+      console.error('Invalid base64 PDF data:', e);
+      return new Response(
+        JSON.stringify({ 
+          success: false, 
+          error: 'Invalid PDF data format' 
+        }),
+        { 
+          status: 400,
+          headers: { 'Content-Type': 'application/json', ...corsHeaders }
+        }
+      );
+    }
 
     // Send email using Resend
     const resendApiKey = Deno.env.get('RESEND_API_KEY');
@@ -117,7 +147,7 @@ const handler = async (req: Request): Promise<Response> => {
         attachments: [
           {
             filename: filename,
-            content: Array.from(pdfData)
+            content: pdfBase64
           }
         ]
       }),
@@ -125,8 +155,26 @@ const handler = async (req: Request): Promise<Response> => {
 
     if (!emailResponse.ok) {
       const errorText = await emailResponse.text();
-      console.error('Resend API error:', errorText);
-      throw new Error(`Failed to send email: ${errorText}`);
+      console.error('Resend API error - Status:', emailResponse.status, 'Response:', errorText);
+      
+      let errorMessage = 'Failed to send email';
+      try {
+        const errorData = JSON.parse(errorText);
+        errorMessage = errorData.message || errorText;
+      } catch {
+        errorMessage = errorText || `HTTP ${emailResponse.status}`;
+      }
+      
+      return new Response(
+        JSON.stringify({ 
+          success: false, 
+          error: `Email service error: ${errorMessage}` 
+        }),
+        { 
+          status: 502,
+          headers: { 'Content-Type': 'application/json', ...corsHeaders }
+        }
+      );
     }
 
     const emailResult = await emailResponse.json();
