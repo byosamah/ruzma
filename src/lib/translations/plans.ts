@@ -87,7 +87,7 @@ export const plansTranslations = {
     year: "سنة",
     billed: "يتم الدفع",
     annually: "سنوياً",
-    save: "وفر",
+    save: "حفظ",
     contactSales: "تواصل مع المبيعات",
     getStarted: "ابدأ",
     freeForever: "مجاني للأبد",
