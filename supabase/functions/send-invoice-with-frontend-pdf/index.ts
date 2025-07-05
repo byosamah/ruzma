@@ -131,7 +131,7 @@ const handler = async (req: Request): Promise<Response> => {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        from: 'invoices@resend.dev',
+        from: 'notifications@ruzma.co',
         to: [clientEmail],
         subject: `Invoice ${invoice.transaction_id} from ${invoice.project_name}`,
         html: `
