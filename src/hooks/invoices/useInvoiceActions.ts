@@ -89,10 +89,17 @@ export const useInvoiceActions = (
       const invoicePDFData = await buildInvoicePDFData(invoice);
       const pdfBlob = await generateInvoicePDFBlob(invoicePDFData);
       
-      // Convert PDF blob to base64
+      // Convert PDF blob to base64 using chunked processing to prevent call stack overflow
       const arrayBuffer = await pdfBlob.arrayBuffer();
       const uint8Array = new Uint8Array(arrayBuffer);
-      const binaryString = String.fromCharCode(...uint8Array);
+      
+      // Process in chunks to avoid "Maximum call stack size exceeded" error
+      const chunkSize = 8192;
+      let binaryString = '';
+      for (let i = 0; i < uint8Array.length; i += chunkSize) {
+        const chunk = uint8Array.subarray(i, i + chunkSize);
+        binaryString += String.fromCharCode.apply(null, Array.from(chunk));
+      }
       const pdfBase64 = btoa(binaryString);
 
       const filename = `Invoice-${invoice.transactionId}-${format(invoice.date, 'yyyy-MM-dd')}.pdf`;
