@@ -1,7 +1,9 @@
-
 project_id = "***REMOVED***"
 
 [functions.send-invoice-with-frontend-pdf]
+verify_jwt = true
+
+[functions.ai-chat]
 verify_jwt = true
 
 [functions.upload-client-payment-proof]
