@@ -91,6 +91,22 @@ const handler = async (req: Request): Promise<Response> => {
       );
     }
 
+    // Get freelancer details for sender name
+    const { data: branding, error: brandingError } = await supabase
+      .from('freelancer_branding')
+      .select('freelancer_name')
+      .eq('user_id', invoice.user_id)
+      .single();
+
+    const { data: profile, error: profileError } = await supabase
+      .from('profiles')
+      .select('full_name')
+      .eq('id', invoice.user_id)
+      .single();
+
+    // Use freelancer name from branding, or fallback to profile full_name, or default
+    const freelancerName = branding?.freelancer_name || profile?.full_name || 'Your Freelancer';
+
     // Validate base64 format
     try {
       atob(pdfBase64); // Test if valid base64
@@ -131,18 +147,17 @@ const handler = async (req: Request): Promise<Response> => {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        from: 'notifications@ruzma.co',
+        from: `${freelancerName} <notifications@ruzma.co>`,
         to: [clientEmail],
         subject: `Invoice ${invoice.transaction_id} from ${invoice.project_name}`,
         html: `
           <h2>Invoice ${invoice.transaction_id}</h2>
           <p>Dear ${clientName || 'Valued Client'},</p>
           <p>Please find your invoice attached for project: <strong>${invoice.project_name}</strong></p>
-          <p><strong>Amount:</strong> $${invoice.amount}</p>
           <p><strong>Due Date:</strong> ${new Date(invoice.date).toLocaleDateString()}</p>
           <p>Thank you for your business!</p>
           <br>
-          <p>Best regards,<br>Your Freelance Team</p>
+          <p>Best regards,<br>${freelancerName}</p>
         `,
         attachments: [
           {
