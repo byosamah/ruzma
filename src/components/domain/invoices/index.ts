@@ -1,3 +1,4 @@
+
 // Invoice domain components
 export { default as InvoiceActionsMenu } from '../../Invoices/InvoiceActionsMenu';
 export { default as InvoiceFilters } from '../../Invoices/InvoiceFilters';
