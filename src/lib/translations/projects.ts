@@ -229,5 +229,6 @@ export const projectTranslations = {
     paymentApprovedClientDownload: "تمت الموافقة على الدفع - يمكن للعميل التحميل",
     saving: "جاري الحفظ...",
     save: "حفظ",
+    pending: "قيد الانتظار",
   },
 };
