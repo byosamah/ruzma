@@ -109,5 +109,6 @@ export const plansTranslations = {
     training: "التدريب",
     sla: "ضمان مستوى الخدمة",
     loading: "جاري التحميل",
+    pending: "قيد الانتظار",
   },
 };
