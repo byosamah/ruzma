@@ -170,7 +170,7 @@ export const projectTranslations = {
     projectNotFoundAccessDenied: "المشروع غير موجود أو الوصول مرفوض.",
     title: "العنوان",
     description: "الوصف",
-    price: "السعر ($)",
+    price: "السعر",
     projectName: "اسم المشروع",
     projectBrief: "موجز المشروع",
     projectNamePlaceholder_edit: "مثال: تصميم موقع تجارة إلكترونية",
@@ -228,6 +228,6 @@ export const projectTranslations = {
     waitingForClientPayment: "في انتظار دفع العميل",
     paymentApprovedClientDownload: "تمت الموافقة على الدفع - يمكن للعميل التحميل",
     saving: "جاري الحفظ...",
-    save: "احفظ",
+    save: "حفظ",
   },
 };
