@@ -136,6 +136,7 @@ const handler = async (req: Request): Promise<Response> => {
     }
     
     return createErrorResponse(error.message, 500);
+  }
 };
 
 serve(handler);
