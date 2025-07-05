@@ -30,7 +30,6 @@ const NotFound = lazy(() => import("./pages/NotFound"));
 const Invoices = lazy(() => import("./pages/Invoices"));
 const CreateInvoice = lazy(() => import("./pages/CreateInvoice"));
 const Clients = lazy(() => import("./pages/Clients"));
-const AIChat = lazy(() => import("./pages/AIChat"));
 
 // Loading component
 const PageLoader = () => (
@@ -116,11 +115,6 @@ function App() {
                       <ProtectedRoute><Analytics /></ProtectedRoute>
                     </LanguageLayout>
                   } />
-                  <Route path="/:lang/ai-chat" element={
-                    <LanguageLayout>
-                      <ProtectedRoute><AIChat /></ProtectedRoute>
-                    </LanguageLayout>
-                  } />
                   <Route path="/:lang/profile" element={
                     <LanguageLayout>
                       <ProtectedRoute><Profile /></ProtectedRoute>
@@ -166,7 +160,6 @@ function App() {
                   <Route path="/invoices" element={<Navigate to="/en/invoices" replace />} />
                   <Route path="/create-invoice" element={<Navigate to="/en/create-invoice" replace />} />
                   <Route path="/analytics" element={<Navigate to="/en/analytics" replace />} />
-                  <Route path="/ai-chat" element={<Navigate to="/en/ai-chat" replace />} />
                   <Route path="/profile" element={<Navigate to="/en/profile" replace />} />
                   <Route path="/plans" element={<Navigate to="/en/plans" replace />} />
                   <Route path="/create-project" element={<Navigate to="/en/create-project" replace />} />

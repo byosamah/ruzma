@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { Home, FolderOpen, Users, FileText, BarChart3, Bot } from 'lucide-react';
+import { Home, FolderOpen, Users, FileText, BarChart3 } from 'lucide-react';
 import { useLocation } from 'react-router-dom';
 import { SidebarGroup, SidebarGroupContent, SidebarGroupLabel, SidebarMenu, SidebarMenuButton, SidebarMenuItem, useSidebar } from '@/components/ui/sidebar';
 import { useT } from '@/lib/i18n';
@@ -38,11 +38,6 @@ const SidebarNavigation = () => {
       title: t('analytics'),
       url: '/analytics',
       icon: BarChart3
-    },
-    {
-      title: 'AI Chat',
-      url: '/ai-chat',
-      icon: Bot
     }
   ];
 
