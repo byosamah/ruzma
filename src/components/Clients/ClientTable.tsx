@@ -6,6 +6,7 @@ import { Badge } from '@/components/ui/badge';
 import { Edit, Trash2, Eye, MoreHorizontal } from 'lucide-react';
 import { ClientWithProjectCount } from '@/types/client';
 import { useT } from '@/lib/i18n';
+import { useLanguage } from '@/contexts/LanguageContext';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 
 interface ClientTableProps {
@@ -22,6 +23,8 @@ const ClientTable: React.FC<ClientTableProps> = ({
   onViewDetails
 }) => {
   const t = useT();
+  const { language } = useLanguage();
+  const isRTL = language === 'ar';
 
   if (clients.length === 0) {
     return (
@@ -40,17 +43,25 @@ const ClientTable: React.FC<ClientTableProps> = ({
       <Table>
         <TableHeader>
           <TableRow className="border-gray-100">
-            <TableHead className="text-xs font-medium text-gray-500 uppercase tracking-wide">{t('clientName')}</TableHead>
-            <TableHead className="text-xs font-medium text-gray-500 uppercase tracking-wide">{t('clientEmail')}</TableHead>
-            <TableHead className="text-xs font-medium text-gray-500 uppercase tracking-wide">{t('connectedProjects')}</TableHead>
-            <TableHead className="text-right text-xs font-medium text-gray-500 uppercase tracking-wide">{t('actions')}</TableHead>
+            <TableHead className={`text-xs font-medium text-gray-500 uppercase tracking-wide ${isRTL ? 'text-right' : 'text-left'}`}>
+              {t('clientName')}
+            </TableHead>
+            <TableHead className={`text-xs font-medium text-gray-500 uppercase tracking-wide ${isRTL ? 'text-right' : 'text-left'}`}>
+              {t('clientEmail')}
+            </TableHead>
+            <TableHead className={`text-xs font-medium text-gray-500 uppercase tracking-wide ${isRTL ? 'text-right' : 'text-left'}`}>
+              {t('connectedProjects')}
+            </TableHead>
+            <TableHead className={`text-xs font-medium text-gray-500 uppercase tracking-wide ${isRTL ? 'text-left' : 'text-right'}`}>
+              {t('actions')}
+            </TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
           {clients.map((client) => (
             <TableRow key={client.id} className="border-gray-50 hover:bg-gray-50/50">
-              <TableCell>
-                <div className="flex items-center space-x-3">
+              <TableCell className={isRTL ? 'text-right' : 'text-left'}>
+                <div className={`flex items-center space-x-3 ${isRTL ? 'flex-row-reverse space-x-reverse' : ''}`}>
                   <div className="w-8 h-8 bg-gray-100 rounded-full flex items-center justify-center">
                     <span className="text-xs font-medium text-gray-600">
                       {client.name.charAt(0).toUpperCase()}
@@ -59,13 +70,15 @@ const ClientTable: React.FC<ClientTableProps> = ({
                   <span className="font-medium text-gray-900">{client.name}</span>
                 </div>
               </TableCell>
-              <TableCell className="text-gray-600">{client.email}</TableCell>
-              <TableCell>
+              <TableCell className={`text-gray-600 ${isRTL ? 'text-right' : 'text-left'}`}>
+                {client.email}
+              </TableCell>
+              <TableCell className={isRTL ? 'text-right' : 'text-left'}>
                 <Badge variant="secondary" className="bg-gray-100 text-gray-700 hover:bg-gray-100">
                   {client.project_count} {client.project_count === 1 ? t('project') : t('projects')}
                 </Badge>
               </TableCell>
-              <TableCell className="text-right">
+              <TableCell className={isRTL ? 'text-left' : 'text-right'}>
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
                     <Button
@@ -76,7 +89,7 @@ const ClientTable: React.FC<ClientTableProps> = ({
                       <MoreHorizontal className="w-4 h-4" />
                     </Button>
                   </DropdownMenuTrigger>
-                  <DropdownMenuContent align="end" className="w-40">
+                  <DropdownMenuContent align={isRTL ? 'start' : 'end'} className="w-40">
                     <DropdownMenuItem onClick={() => onViewDetails(client)}>
                       <Eye className="w-4 h-4 mr-2" />
                       {t('view')}
