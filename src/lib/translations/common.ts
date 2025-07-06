@@ -1,3 +1,4 @@
+
 export const commonTranslations = {
   en: {
     language: "Language",
@@ -156,6 +157,13 @@ export const commonTranslations = {
     view: "View",
     noClientEmailFound: "No client email address found for this project",
     sendingClientLink: "Sending client link...",
+    viewPage: "View Page",
+    sendLink: "Send Link",
+    copyLink: "Copy Link",
+    newProject: "New Project",
+    noProjectsYet: "No projects yet",
+    createFirstProjectDesc: "Create your first project to get started with managing your freelance work.",
+    createFirstProject: "Create First Project",
   },
   ar: {
     language: "اللغة",
@@ -314,5 +322,12 @@ export const commonTranslations = {
     view: "عرض",
     noClientEmailFound: "لم يتم العثور على عنوان بريد إلكتروني للعميل في هذا المشروع",
     sendingClientLink: "جاري إرسال رابط العميل...",
+    viewPage: "عرض الصفحة",
+    sendLink: "إرسال رابط",
+    copyLink: "نسخ رابط",
+    newProject: "مشروع جديد",
+    noProjectsYet: "لا توجد مشاريع بعد",
+    createFirstProjectDesc: "أنشئ مشروعك الأول للبدء في إدارة أعمالك الحرة.",
+    createFirstProject: "إنشاء أول مشروع",
   },
 };
