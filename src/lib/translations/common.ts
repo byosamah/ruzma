@@ -1,4 +1,5 @@
 
+
 export const commonTranslations = {
   en: {
     // Navigation
@@ -78,6 +79,7 @@ export const commonTranslations = {
     aed: "AED",
     currency: "Currency",
     selectCurrency: "Select Currency",
+    setCurrency: "Set Currency",
     
     // General
     yes: "Yes",
@@ -94,6 +96,8 @@ export const commonTranslations = {
     subtotal: "Subtotal",
     tax: "Tax",
     discount: "Discount",
+    quantity: "Quantity",
+    description: "Description",
     
     // Pagination
     page: "Page",
@@ -143,7 +147,53 @@ export const commonTranslations = {
     viewMore: "View More",
     downloadPDF: "Download PDF",
     sendToClient: "Send to Client",
-    deleteInvoice: "Delete Invoice"
+    deleteInvoice: "Delete Invoice",
+    addCustomCharge: "Add Custom Charge",
+    addTax: "Add Tax",
+    totalInvoices: "Total Invoices",
+    totalAmount: "Total Amount",
+    paidInvoices: "Paid Invoices",
+    pendingInvoices: "Pending Invoices",
+    
+    // Project related
+    project: "Project",
+    selectProject: "Select Project",
+    loadingProjects: "Loading projects...",
+    noActiveProjectsFound: "No active projects found",
+    clientLinkCopied: "Client link copied to clipboard",
+    noClientEmailFound: "No client email found",
+    sendingClientLink: "Sending client link...",
+    clientLinkSent: "Client link sent successfully",
+    emailDomainVerificationRequired: "Email domain verification required",
+    clientLinkSendFailed: "Failed to send client link",
+    copyLink: "Copy Link",
+    viewPage: "View Page",
+    sendLink: "Send Link",
+    
+    // Common labels and placeholders
+    enterName: "Enter name",
+    enterEmail: "Enter email",
+    selectOption: "Select option",
+    chooseFile: "Choose file",
+    noFileSelected: "No file selected",
+    
+    // Form validation
+    fieldRequired: "This field is required",
+    invalidEmail: "Invalid email address",
+    passwordTooShort: "Password is too short",
+    passwordsMustMatch: "Passwords must match",
+    
+    // Additional common terms
+    home: "Home",
+    contact: "Contact",
+    about: "About",
+    help: "Help",
+    support: "Support",
+    documentation: "Documentation",
+    terms: "Terms",
+    privacy: "Privacy",
+    license: "License",
+    version: "Version"
   },
   ar: {
     // Navigation
@@ -223,6 +273,7 @@ export const commonTranslations = {
     aed: "درهم إماراتي",
     currency: "العملة",
     selectCurrency: "اختر العملة",
+    setCurrency: "تعيين العملة",
     
     // General
     yes: "نعم",
@@ -239,6 +290,8 @@ export const commonTranslations = {
     subtotal: "المجموع الفرعي",
     tax: "الضريبة",
     discount: "الخصم",
+    quantity: "الكمية",
+    description: "الوصف",
     
     // Pagination
     page: "الصفحة",
@@ -288,6 +341,53 @@ export const commonTranslations = {
     viewMore: "عرض المزيد",
     downloadPDF: "تحميل PDF",
     sendToClient: "إرسال للعميل",
-    deleteInvoice: "حذف الفاتورة"
+    deleteInvoice: "حذف الفاتورة",
+    addCustomCharge: "إضافة رسوم مخصصة",
+    addTax: "إضافة ضريبة",
+    totalInvoices: "إجمالي الفواتير",
+    totalAmount: "إجمالي المبلغ",
+    paidInvoices: "الفواتير المدفوعة",
+    pendingInvoices: "الفواتير قيد الانتظار",
+    
+    // Project related
+    project: "مشروع",
+    selectProject: "اختر مشروع",
+    loadingProjects: "جاري تحميل المشاريع...",
+    noActiveProjectsFound: "لم يتم العثور على مشاريع نشطة",
+    clientLinkCopied: "تم نسخ رابط العميل إلى الحافظة",
+    noClientEmailFound: "لم يتم العثور على بريد العميل الإلكتروني",
+    sendingClientLink: "جاري إرسال رابط العميل...",
+    clientLinkSent: "تم إرسال رابط العميل بنجاح",
+    emailDomainVerificationRequired: "مطلوب التحقق من نطاق البريد الإلكتروني",
+    clientLinkSendFailed: "فشل في إرسال رابط العميل",
+    copyLink: "نسخ الرابط",
+    viewPage: "عرض الصفحة",
+    sendLink: "إرسال الرابط",
+    
+    // Common labels and placeholders
+    enterName: "أدخل الاسم",
+    enterEmail: "أدخل البريد الإلكتروني",
+    selectOption: "اختر خيار",
+    chooseFile: "اختر ملف",
+    noFileSelected: "لم يتم اختيار ملف",
+    
+    // Form validation
+    fieldRequired: "هذا الحقل مطلوب",
+    invalidEmail: "عنوان بريد إلكتروني غير صالح",
+    passwordTooShort: "كلمة المرور قصيرة جداً",
+    passwordsMustMatch: "كلمات المرور يجب أن تتطابق",
+    
+    // Additional common terms
+    home: "الرئيسية",
+    contact: "اتصل بنا",
+    about: "حول",
+    help: "مساعدة",
+    support: "الدعم",
+    documentation: "التوثيق",
+    terms: "الشروط",
+    privacy: "الخصوصية",
+    license: "الترخيص",
+    version: "الإصدار"
   }
 };
+
