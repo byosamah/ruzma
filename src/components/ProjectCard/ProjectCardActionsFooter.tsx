@@ -3,6 +3,7 @@ import React from 'react';
 import { Button } from '@/components/ui/button';
 import { Copy, Link, Mail } from 'lucide-react';
 import { useIsMobile } from '@/hooks/use-mobile';
+import { useT } from '@/lib/i18n';
 
 interface ProjectCardActionsFooterProps {
   onCopyClientLink: (e: React.MouseEvent) => void;
@@ -18,6 +19,7 @@ const ProjectCardActionsFooter: React.FC<ProjectCardActionsFooterProps> = ({
   showClientActions = false
 }) => {
   const isMobile = useIsMobile();
+  const t = useT();
 
   if (showClientActions) {
     return (
@@ -29,7 +31,7 @@ const ProjectCardActionsFooter: React.FC<ProjectCardActionsFooterProps> = ({
           className={`flex items-center gap-2 ${isMobile ? 'w-full justify-start min-h-[44px]' : 'flex-1'} touch-manipulation`}
         >
           <Copy className="w-4 h-4 shrink-0" />
-          <span className={isMobile ? 'text-sm' : 'text-xs'}>Copy Link</span>
+          <span className={isMobile ? 'text-sm' : 'text-xs'}>{t('copyLink')}</span>
         </Button>
         
         <Button 
@@ -39,7 +41,7 @@ const ProjectCardActionsFooter: React.FC<ProjectCardActionsFooterProps> = ({
           className={`flex items-center gap-2 ${isMobile ? 'w-full justify-start min-h-[44px]' : 'flex-1'} touch-manipulation`}
         >
           <Link className="w-4 h-4 shrink-0" />
-          <span className={isMobile ? 'text-sm' : 'text-xs'}>View Page</span>
+          <span className={isMobile ? 'text-sm' : 'text-xs'}>{t('viewPage')}</span>
         </Button>
         
         {onSendClientLink && (
@@ -50,7 +52,7 @@ const ProjectCardActionsFooter: React.FC<ProjectCardActionsFooterProps> = ({
             className={`flex items-center gap-2 ${isMobile ? 'w-full justify-start min-h-[44px]' : 'flex-1'} touch-manipulation`}
           >
             <Mail className="w-4 h-4 shrink-0" />
-            <span className={isMobile ? 'text-sm' : 'text-xs'}>Send Link</span>
+            <span className={isMobile ? 'text-sm' : 'text-xs'}>{t('sendLink')}</span>
           </Button>
         )}
       </div>
@@ -66,7 +68,7 @@ const ProjectCardActionsFooter: React.FC<ProjectCardActionsFooterProps> = ({
         className="flex items-center gap-2 w-full justify-start min-h-[44px] touch-manipulation"
       >
         <Copy className="w-4 h-4 shrink-0" />
-        <span className="text-sm">Copy Client Link</span>
+        <span className="text-sm">{t('copyClientLink')}</span>
       </Button>
       
       <Button 
@@ -76,7 +78,7 @@ const ProjectCardActionsFooter: React.FC<ProjectCardActionsFooterProps> = ({
         className="flex items-center gap-2 w-full justify-start min-h-[44px] touch-manipulation"
       >
         <Link className="w-4 h-4 shrink-0" />
-        <span className="text-sm">View Client Page</span>
+        <span className="text-sm">{t('viewClientPage')}</span>
       </Button>
       
       {onSendClientLink && (
@@ -87,7 +89,7 @@ const ProjectCardActionsFooter: React.FC<ProjectCardActionsFooterProps> = ({
           className="flex items-center gap-2 w-full justify-start min-h-[44px] touch-manipulation"
         >
           <Mail className="w-4 h-4 shrink-0" />
-          <span className="text-sm">Send to Client</span>
+          <span className="text-sm">{t('sendToClient')}</span>
         </Button>
       )}
     </div>

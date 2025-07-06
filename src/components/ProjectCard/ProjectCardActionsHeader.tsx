@@ -3,6 +3,7 @@ import React from 'react';
 import { Button } from '@/components/ui/button';
 import { Edit, Trash2 } from 'lucide-react';
 import { useIsMobile } from '@/hooks/use-mobile';
+import { useT } from '@/lib/i18n';
 
 interface ProjectCardActionsHeaderProps {
   onEditClick: (e: React.MouseEvent) => void;
@@ -14,6 +15,7 @@ const ProjectCardActionsHeader: React.FC<ProjectCardActionsHeaderProps> = ({
   onDeleteClick
 }) => {
   const isMobile = useIsMobile();
+  const t = useT();
 
   const handleDeleteClick = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -33,7 +35,7 @@ const ProjectCardActionsHeader: React.FC<ProjectCardActionsHeaderProps> = ({
         className="flex items-center gap-1 min-w-[44px] min-h-[44px] touch-manipulation"
       >
         <Edit className="w-4 h-4" />
-        {!isMobile && <span className="hidden sm:inline">Edit</span>}
+        {!isMobile && <span className="hidden sm:inline">{t('edit')}</span>}
       </Button>
       
       {onDeleteClick && (
@@ -44,7 +46,7 @@ const ProjectCardActionsHeader: React.FC<ProjectCardActionsHeaderProps> = ({
           className="flex items-center gap-1 text-red-500 hover:text-red-700 hover:bg-red-50 min-w-[44px] min-h-[44px] touch-manipulation"
         >
           <Trash2 className="w-4 h-4" />
-          {!isMobile && <span className="hidden sm:inline">Delete</span>}
+          {!isMobile && <span className="hidden sm:inline">{t('delete')}</span>}
         </Button>
       )}
     </div>

@@ -230,5 +230,8 @@ export const projectTranslations = {
     saving: "جاري الحفظ...",
     save: "حفظ",
     pending: "قيد الانتظار",
+    sendLink: "إرسال الرابط",
+    viewPage: "عرض الصفحة",
+    sar: "ريال سعودي",
   },
 };
