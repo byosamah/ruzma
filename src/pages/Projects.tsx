@@ -69,26 +69,25 @@ const Projects = () => {
                 }
               </p>
             </div>
-            {projects.length > 0 && (
-              <div className="flex gap-3">
-                <Button 
-                  variant="outline" 
-                  onClick={() => navigate('/templates')}
-                  className={`flex items-center gap-2 ${isMobile ? 'w-full' : 'w-auto'} border-gray-200 text-gray-600 hover:bg-gray-50`}
-                >
-                  <FileText className="w-4 h-4" />
-                  {t('templates')}
-                </Button>
-                <Button 
-                  onClick={handleNewProject}
-                  disabled={!usage.canCreateProject}
-                  className={`flex items-center gap-2 ${isMobile ? 'w-full' : 'w-auto'} bg-gray-900 hover:bg-gray-800 text-white font-medium border-0 shadow-none`}
-                >
-                  <Plus className="w-4 h-4" />
-                  {t('newProject')}
-                </Button>
-              </div>
-            )}
+            {/* Always show buttons */}
+            <div className="flex gap-3">
+              <Button 
+                variant="outline" 
+                onClick={() => navigate('/templates')}
+                className={`flex items-center gap-2 ${isMobile ? 'w-full' : 'w-auto'} border-gray-200 text-gray-600 hover:bg-gray-50`}
+              >
+                <FileText className="w-4 h-4" />
+                {t('templates')}
+              </Button>
+              <Button 
+                onClick={handleNewProject}
+                disabled={!usage.canCreateProject}
+                className={`flex items-center gap-2 ${isMobile ? 'w-full' : 'w-auto'} bg-gray-900 hover:bg-gray-800 text-white font-medium border-0 shadow-none`}
+              >
+                <Plus className="w-4 h-4" />
+                {t('newProject')}
+              </Button>
+            </div>
           </div>
         </div>
 
@@ -102,17 +101,6 @@ const Projects = () => {
             <p className="text-sm text-gray-500 mb-8 px-4 max-w-md mx-auto">
               {t('createFirstProjectDesc')}
             </p>
-            <div className="px-4">
-              <Button 
-                onClick={handleNewProject}
-                disabled={!usage.canCreateProject}
-                size="lg"
-                className={`${isMobile ? 'w-full' : 'w-full sm:w-auto'} px-6 py-3 text-base min-h-[44px] touch-manipulation bg-gray-900 hover:bg-gray-800 text-white font-medium border-0 shadow-none`}
-              >
-                <Plus className="w-5 h-5 mr-2" />
-                {t('createFirstProject')}
-              </Button>
-            </div>
           </div>
         ) : (
           <div className="space-y-4">
