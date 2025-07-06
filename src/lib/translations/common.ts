@@ -13,6 +13,7 @@ export const commonTranslations = {
     logout: "Logout",
     main: "Main",
     account: "Account",
+    plans: "Plans",
     
     // Actions
     save: "Save",
@@ -40,6 +41,10 @@ export const commonTranslations = {
     completed: "Completed",
     draft: "Draft",
     published: "Published",
+    paid: "Paid",
+    sent: "Sent",
+    overdue: "Overdue",
+    cancelled: "Cancelled",
     
     // Common UI
     search: "Search",
@@ -71,6 +76,8 @@ export const commonTranslations = {
     gbp: "GBP",
     sar: "SAR",
     aed: "AED",
+    currency: "Currency",
+    selectCurrency: "Select Currency",
     
     // General
     yes: "Yes",
@@ -98,7 +105,45 @@ export const commonTranslations = {
     download: "Download",
     file: "File",
     image: "Image",
-    document: "Document"
+    document: "Document",
+    
+    // Invoice related
+    invoice: "Invoice",
+    createInvoice: "Create Invoice",
+    createInvoiceDescription: "Create and send professional invoices to your clients",
+    invoiceDetails: "Invoice Details",
+    invoiceId: "Invoice ID",
+    addInvoiceId: "Add Invoice ID",
+    invoiceDate: "Invoice Date",
+    dueDate: "Due Date",
+    selectDate: "Select Date",
+    purchaseOrder: "Purchase Order",
+    addPurchaseOrderNumber: "Add Purchase Order Number",
+    paymentTerms: "Payment Terms",
+    addPaymentTerms: "Add Payment Terms",
+    billedTo: "Billed To",
+    payTo: "Pay To",
+    yourName: "Your Name",
+    addLogo: "Add Logo",
+    usingProfileLogo: "Using Profile Logo",
+    useDifferentLogo: "Use Different Logo",
+    usingLogoFromProfile: "Using logo from profile",
+    allInvoices: "All Invoices",
+    manageTrackInvoices: "Manage and track all your invoices",
+    searchInvoices: "Search invoices...",
+    allStatus: "All Status",
+    noInvoicesFound: "No invoices found",
+    noInvoicesDescription: "Start by creating your first invoice",
+    transactionId: "Transaction ID",
+    invoiceAmount: "Invoice Amount",
+    projectName: "Project Name",
+    dateOfInvoice: "Date of Invoice",
+    status: "Status",
+    actions: "Actions",
+    viewMore: "View More",
+    downloadPDF: "Download PDF",
+    sendToClient: "Send to Client",
+    deleteInvoice: "Delete Invoice"
   },
   ar: {
     // Navigation
@@ -113,6 +158,7 @@ export const commonTranslations = {
     logout: "تسجيل الخروج",
     main: "الرئيسية",
     account: "الحساب",
+    plans: "الخطط",
     
     // Actions
     save: "حفظ",
@@ -140,6 +186,10 @@ export const commonTranslations = {
     completed: "مكتمل",
     draft: "مسودة",
     published: "منشور",
+    paid: "مدفوع",
+    sent: "مرسل",
+    overdue: "متأخر",
+    cancelled: "ملغى",
     
     // Common UI
     search: "بحث",
@@ -171,6 +221,8 @@ export const commonTranslations = {
     gbp: "جنيه إسترليني", 
     sar: "ريال سعودي",
     aed: "درهم إماراتي",
+    currency: "العملة",
+    selectCurrency: "اختر العملة",
     
     // General
     yes: "نعم",
@@ -198,6 +250,44 @@ export const commonTranslations = {
     download: "تحميل",
     file: "ملف",
     image: "صورة",
-    document: "مستند"
+    document: "مستند",
+    
+    // Invoice related
+    invoice: "فاتورة",
+    createInvoice: "إنشاء فاتورة",
+    createInvoiceDescription: "أنشئ وأرسل فواتير احترافية لعملائك",
+    invoiceDetails: "تفاصيل الفاتورة",
+    invoiceId: "رقم الفاتورة",
+    addInvoiceId: "أضف رقم الفاتورة",
+    invoiceDate: "تاريخ الفاتورة",
+    dueDate: "تاريخ الاستحقاق",
+    selectDate: "اختر التاريخ",
+    purchaseOrder: "أمر الشراء",
+    addPurchaseOrderNumber: "أضف رقم أمر الشراء",
+    paymentTerms: "شروط الدفع",
+    addPaymentTerms: "أضف شروط الدفع",
+    billedTo: "فاتورة إلى",
+    payTo: "ادفع إلى",
+    yourName: "اسمك",
+    addLogo: "أضف شعار",
+    usingProfileLogo: "استخدام شعار الملف الشخصي",
+    useDifferentLogo: "استخدم شعار مختلف",
+    usingLogoFromProfile: "استخدام الشعار من الملف الشخصي",
+    allInvoices: "جميع الفواتير",
+    manageTrackInvoices: "إدارة وتتبع جميع فواتيرك",
+    searchInvoices: "البحث في الفواتير...",
+    allStatus: "جميع الحالات",
+    noInvoicesFound: "لم يتم العثور على فواتير",
+    noInvoicesDescription: "ابدأ بإنشاء فاتورتك الأولى",
+    transactionId: "رقم المعاملة",
+    invoiceAmount: "مبلغ الفاتورة",
+    projectName: "اسم المشروع",
+    dateOfInvoice: "تاريخ الفاتورة",
+    status: "الحالة",
+    actions: "الإجراءات",
+    viewMore: "عرض المزيد",
+    downloadPDF: "تحميل PDF",
+    sendToClient: "إرسال للعميل",
+    deleteInvoice: "حذف الفاتورة"
   }
 };
