@@ -1,5 +1,4 @@
 
-
 export const commonTranslations = {
   en: {
     // Navigation
@@ -14,7 +13,6 @@ export const commonTranslations = {
     logout: "Logout",
     main: "Main",
     account: "Account",
-    plans: "Plans",
     
     // Actions
     save: "Save",
@@ -42,10 +40,6 @@ export const commonTranslations = {
     completed: "Completed",
     draft: "Draft",
     published: "Published",
-    paid: "Paid",
-    sent: "Sent",
-    overdue: "Overdue",
-    cancelled: "Cancelled",
     
     // Common UI
     search: "Search",
@@ -77,9 +71,6 @@ export const commonTranslations = {
     gbp: "GBP",
     sar: "SAR",
     aed: "AED",
-    currency: "Currency",
-    selectCurrency: "Select Currency",
-    setCurrency: "Set Currency",
     
     // General
     yes: "Yes",
@@ -96,8 +87,6 @@ export const commonTranslations = {
     subtotal: "Subtotal",
     tax: "Tax",
     discount: "Discount",
-    quantity: "Quantity",
-    description: "Description",
     
     // Pagination
     page: "Page",
@@ -109,91 +98,7 @@ export const commonTranslations = {
     download: "Download",
     file: "File",
     image: "Image",
-    document: "Document",
-    
-    // Invoice related
-    invoice: "Invoice",
-    createInvoice: "Create Invoice",
-    createInvoiceDescription: "Create and send professional invoices to your clients",
-    invoiceDetails: "Invoice Details",
-    invoiceId: "Invoice ID",
-    addInvoiceId: "Add Invoice ID",
-    invoiceDate: "Invoice Date",
-    dueDate: "Due Date",
-    selectDate: "Select Date",
-    purchaseOrder: "Purchase Order",
-    addPurchaseOrderNumber: "Add Purchase Order Number",
-    paymentTerms: "Payment Terms",
-    addPaymentTerms: "Add Payment Terms",
-    billedTo: "Billed To",
-    payTo: "Pay To",
-    yourName: "Your Name",
-    addLogo: "Add Logo",
-    usingProfileLogo: "Using Profile Logo",
-    useDifferentLogo: "Use Different Logo",
-    usingLogoFromProfile: "Using logo from profile",
-    allInvoices: "All Invoices",
-    manageTrackInvoices: "Manage and track all your invoices",
-    searchInvoices: "Search invoices...",
-    allStatus: "All Status",
-    noInvoicesFound: "No invoices found",
-    noInvoicesDescription: "Start by creating your first invoice",
-    transactionId: "Transaction ID",
-    invoiceAmount: "Invoice Amount",
-    projectName: "Project Name",
-    dateOfInvoice: "Date of Invoice",
-    status: "Status",
-    actions: "Actions",
-    viewMore: "View More",
-    downloadPDF: "Download PDF",
-    sendToClient: "Send to Client",
-    deleteInvoice: "Delete Invoice",
-    addCustomCharge: "Add Custom Charge",
-    addTax: "Add Tax",
-    totalInvoices: "Total Invoices",
-    totalAmount: "Total Amount",
-    paidInvoices: "Paid Invoices",
-    pendingInvoices: "Pending Invoices",
-    
-    // Project related
-    project: "Project",
-    selectProject: "Select Project",
-    loadingProjects: "Loading projects...",
-    noActiveProjectsFound: "No active projects found",
-    clientLinkCopied: "Client link copied to clipboard",
-    noClientEmailFound: "No client email found",
-    sendingClientLink: "Sending client link...",
-    clientLinkSent: "Client link sent successfully",
-    emailDomainVerificationRequired: "Email domain verification required",
-    clientLinkSendFailed: "Failed to send client link",
-    copyLink: "Copy Link",
-    viewPage: "View Page",
-    sendLink: "Send Link",
-    
-    // Common labels and placeholders
-    enterName: "Enter name",
-    enterEmail: "Enter email",
-    selectOption: "Select option",
-    chooseFile: "Choose file",
-    noFileSelected: "No file selected",
-    
-    // Form validation
-    fieldRequired: "This field is required",
-    invalidEmail: "Invalid email address",
-    passwordTooShort: "Password is too short",
-    passwordsMustMatch: "Passwords must match",
-    
-    // Additional common terms
-    home: "Home",
-    contact: "Contact",
-    about: "About",
-    help: "Help",
-    support: "Support",
-    documentation: "Documentation",
-    terms: "Terms",
-    privacy: "Privacy",
-    license: "License",
-    version: "Version"
+    document: "Document"
   },
   ar: {
     // Navigation
@@ -208,7 +113,6 @@ export const commonTranslations = {
     logout: "تسجيل الخروج",
     main: "الرئيسية",
     account: "الحساب",
-    plans: "الخطط",
     
     // Actions
     save: "حفظ",
@@ -236,10 +140,6 @@ export const commonTranslations = {
     completed: "مكتمل",
     draft: "مسودة",
     published: "منشور",
-    paid: "مدفوع",
-    sent: "مرسل",
-    overdue: "متأخر",
-    cancelled: "ملغى",
     
     // Common UI
     search: "بحث",
@@ -271,9 +171,6 @@ export const commonTranslations = {
     gbp: "جنيه إسترليني", 
     sar: "ريال سعودي",
     aed: "درهم إماراتي",
-    currency: "العملة",
-    selectCurrency: "اختر العملة",
-    setCurrency: "تعيين العملة",
     
     // General
     yes: "نعم",
@@ -290,8 +187,6 @@ export const commonTranslations = {
     subtotal: "المجموع الفرعي",
     tax: "الضريبة",
     discount: "الخصم",
-    quantity: "الكمية",
-    description: "الوصف",
     
     // Pagination
     page: "الصفحة",
@@ -303,91 +198,6 @@ export const commonTranslations = {
     download: "تحميل",
     file: "ملف",
     image: "صورة",
-    document: "مستند",
-    
-    // Invoice related
-    invoice: "فاتورة",
-    createInvoice: "إنشاء فاتورة",
-    createInvoiceDescription: "أنشئ وأرسل فواتير احترافية لعملائك",
-    invoiceDetails: "تفاصيل الفاتورة",
-    invoiceId: "رقم الفاتورة",
-    addInvoiceId: "أضف رقم الفاتورة",
-    invoiceDate: "تاريخ الفاتورة",
-    dueDate: "تاريخ الاستحقاق",
-    selectDate: "اختر التاريخ",
-    purchaseOrder: "أمر الشراء",
-    addPurchaseOrderNumber: "أضف رقم أمر الشراء",
-    paymentTerms: "شروط الدفع",
-    addPaymentTerms: "أضف شروط الدفع",
-    billedTo: "فاتورة إلى",
-    payTo: "ادفع إلى",
-    yourName: "اسمك",
-    addLogo: "أضف شعار",
-    usingProfileLogo: "استخدام شعار الملف الشخصي",
-    useDifferentLogo: "استخدم شعار مختلف",
-    usingLogoFromProfile: "استخدام الشعار من الملف الشخصي",
-    allInvoices: "جميع الفواتير",
-    manageTrackInvoices: "إدارة وتتبع جميع فواتيرك",
-    searchInvoices: "البحث في الفواتير...",
-    allStatus: "جميع الحالات",
-    noInvoicesFound: "لم يتم العثور على فواتير",
-    noInvoicesDescription: "ابدأ بإنشاء فاتورتك الأولى",
-    transactionId: "رقم المعاملة",
-    invoiceAmount: "مبلغ الفاتورة",
-    projectName: "اسم المشروع",
-    dateOfInvoice: "تاريخ الفاتورة",
-    status: "الحالة",
-    actions: "الإجراءات",
-    viewMore: "عرض المزيد",
-    downloadPDF: "تحميل PDF",
-    sendToClient: "إرسال للعميل",
-    deleteInvoice: "حذف الفاتورة",
-    addCustomCharge: "إضافة رسوم مخصصة",
-    addTax: "إضافة ضريبة",
-    totalInvoices: "إجمالي الفواتير",
-    totalAmount: "إجمالي المبلغ",
-    paidInvoices: "الفواتير المدفوعة",
-    pendingInvoices: "الفواتير قيد الانتظار",
-    
-    // Project related
-    project: "مشروع",
-    selectProject: "اختر مشروع",
-    loadingProjects: "جاري تحميل المشاريع...",
-    noActiveProjectsFound: "لم يتم العثور على مشاريع نشطة",
-    clientLinkCopied: "تم نسخ رابط العميل إلى الحافظة",
-    noClientEmailFound: "لم يتم العثور على بريد العميل الإلكتروني",
-    sendingClientLink: "جاري إرسال رابط العميل...",
-    clientLinkSent: "تم إرسال رابط العميل بنجاح",
-    emailDomainVerificationRequired: "مطلوب التحقق من نطاق البريد الإلكتروني",
-    clientLinkSendFailed: "فشل في إرسال رابط العميل",
-    copyLink: "نسخ الرابط",
-    viewPage: "عرض الصفحة",
-    sendLink: "إرسال الرابط",
-    
-    // Common labels and placeholders
-    enterName: "أدخل الاسم",
-    enterEmail: "أدخل البريد الإلكتروني",
-    selectOption: "اختر خيار",
-    chooseFile: "اختر ملف",
-    noFileSelected: "لم يتم اختيار ملف",
-    
-    // Form validation
-    fieldRequired: "هذا الحقل مطلوب",
-    invalidEmail: "عنوان بريد إلكتروني غير صالح",
-    passwordTooShort: "كلمة المرور قصيرة جداً",
-    passwordsMustMatch: "كلمات المرور يجب أن تتطابق",
-    
-    // Additional common terms
-    home: "الرئيسية",
-    contact: "اتصل بنا",
-    about: "حول",
-    help: "مساعدة",
-    support: "الدعم",
-    documentation: "التوثيق",
-    terms: "الشروط",
-    privacy: "الخصوصية",
-    license: "الترخيص",
-    version: "الإصدار"
+    document: "مستند"
   }
 };
-
