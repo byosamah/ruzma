@@ -8,6 +8,8 @@ import { supabase } from '@/integrations/supabase/client';
 import { User } from '@supabase/supabase-js';
 import { useT } from '@/lib/i18n';
 import { useProjectTemplates } from '@/hooks/useProjectTemplates';
+import { useUserCurrency } from '@/hooks/useUserCurrency';
+
 const ProjectTemplates = () => {
   const t = useT();
   const navigate = useNavigate();
@@ -21,6 +23,10 @@ const ProjectTemplates = () => {
     loading,
     deleteTemplate
   } = useProjectTemplates(user);
+
+  // Get user's currency formatting function
+  const { formatCurrency } = useUserCurrency(user);
+
   useEffect(() => {
     const checkAuthAndLoadData = async () => {
       setAuthLoading(true);
@@ -44,10 +50,12 @@ const ProjectTemplates = () => {
     };
     checkAuthAndLoadData();
   }, [navigate]);
+
   const handleSignOut = async () => {
     await supabase.auth.signOut();
     navigate('/');
   };
+
   const handleCreateFromTemplate = (template: any) => {
     // Navigate to create project with template data
     navigate('/create-project', {
@@ -60,10 +68,12 @@ const ProjectTemplates = () => {
       }
     });
   };
+
   const handleDeleteTemplate = async (templateId: string) => {
     if (!confirm(t('deleteTemplateConfirmation'))) return;
     await deleteTemplate(templateId);
   };
+
   if (authLoading || loading) {
     return <Layout>
         <div className="flex items-center justify-center min-h-[400px]">
@@ -74,6 +84,7 @@ const ProjectTemplates = () => {
         </div>
       </Layout>;
   }
+
   return <Layout user={profile || user} onSignOut={handleSignOut}>
       <div className="space-y-8">
         <div className="flex items-center justify-between">
@@ -126,7 +137,7 @@ const ProjectTemplates = () => {
                 })}
                     </div>
                     <div className="text-sm text-slate-600">
-                      {t('total')}: ${template.milestones.reduce((sum: number, m: any) => sum + m.price, 0).toFixed(2)}
+                      {t('total')}: {formatCurrency(template.milestones.reduce((sum: number, m: any) => sum + m.price, 0))}
                     </div>
                     <Button onClick={() => handleCreateFromTemplate(template)} className="w-full">
                       <Plus className="w-4 h-4 mr-2" />
@@ -139,4 +150,5 @@ const ProjectTemplates = () => {
       </div>
     </Layout>;
 };
+
 export default ProjectTemplates;
