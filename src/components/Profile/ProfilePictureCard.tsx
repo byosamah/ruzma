@@ -31,15 +31,15 @@ export const ProfilePictureCard = ({
         <CardTitle className="text-base font-medium text-gray-900">{t('profilePicture')}</CardTitle>
       </CardHeader>
       <CardContent className="text-center space-y-4 pt-0">
-        <Avatar className="w-24 h-24 mx-auto">
+        <Avatar className="w-24 h-24 mx-auto rounded-full">
           {profilePicture && (
             <AvatarImage 
               src={profilePicture}
               alt={userName}
-              className="object-cover w-full h-full"
+              className="object-cover w-full h-full rounded-full"
             />
           )}
-          <AvatarFallback className="bg-gray-100 text-gray-600 text-xl font-medium">
+          <AvatarFallback className="bg-gray-100 text-gray-600 text-xl font-medium rounded-full">
             {userName?.charAt(0).toUpperCase() || 'U'}
           </AvatarFallback>
         </Avatar>
