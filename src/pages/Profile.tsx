@@ -1,7 +1,6 @@
 
 import React from 'react';
 import Layout from '@/components/Layout';
-import { ImageCropperDialog } from '@/components/ImageCropperDialog';
 import { ProfilePictureCard } from '@/components/Profile/ProfilePictureCard';
 import { PersonalInformationForm } from '@/components/Profile/PersonalInformationForm';
 import { AccountSettingsCard } from '@/components/Profile/AccountSettingsCard';
@@ -14,22 +13,15 @@ const Profile = () => {
   const {
     user,
     profilePicture,
-    fileInputRef,
     formData,
     isLoading,
     isSaved,
-    imageToCrop,
-    isUploading,
     navigate,
     handleChange,
     handleCurrencyChange,
     handleLogoUpload,
     handleSubmit,
-    handleUploadClick,
-    handleFileChange,
-    onCropSave,
-    onCropCancel,
-    setCroppedAreaPixels,
+    updateProfilePicture,
     handleSignOut
   } = useProfile();
 
@@ -45,21 +37,14 @@ const Profile = () => {
           <p className="text-sm text-gray-500">{t('manageAccountInfo')}</p>
         </div>
 
-        <ImageCropperDialog
-          image={imageToCrop}
-          onCropComplete={setCroppedAreaPixels}
-          onSave={onCropSave}
-          onClose={onCropCancel}
-        />
-
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           <ProfilePictureCard
-            profilePicture={profilePicture}
+            profile
+
+Picture={profilePicture}
             userName={formData.name}
-            isUploading={isUploading}
-            onUploadClick={handleUploadClick}
-            onFileChange={handleFileChange}
-            fileInputRef={fileInputRef}
+            user={user}
+            onProfilePictureUpdate={updateProfilePicture}
           />
           <PersonalInformationForm
             formData={formData}

@@ -1,84 +1,70 @@
+
 import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Button } from '@/components/ui/button';
-import { Upload, Loader2 } from 'lucide-react';
+import { ImageCropperDialog } from '@/components/ImageCropperDialog';
+import { ProfileAvatar } from './ProfileAvatar';
+import { ProfilePictureUpload } from './ProfilePictureUpload';
+import { useProfilePictureManager } from '@/hooks/profile/useProfilePictureManager';
 import { useT } from '@/lib/i18n';
+import { User } from '@supabase/supabase-js';
 
 interface ProfilePictureCardProps {
   profilePicture: string | null;
   userName: string;
-  isUploading: boolean;
-  onUploadClick: () => void;
-  onFileChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-  fileInputRef: React.RefObject<HTMLInputElement>;
+  user: User | null;
+  onProfilePictureUpdate: (url: string) => void;
 }
 
 export const ProfilePictureCard = ({
   profilePicture,
   userName,
-  isUploading,
-  onUploadClick,
-  onFileChange,
-  fileInputRef,
+  user,
+  onProfilePictureUpdate,
 }: ProfilePictureCardProps) => {
   const t = useT();
+  
+  const {
+    imageToCrop,
+    croppedAreaPixels,
+    setCroppedAreaPixels,
+    isUploading,
+    handleFileSelect,
+    uploadProfilePicture,
+    cancelCrop,
+  } = useProfilePictureManager({
+    user,
+    onSuccess: onProfilePictureUpdate,
+  });
 
   return (
-    <Card className="border-gray-200 shadow-none bg-white">
-      <CardHeader className="pb-3">
-        <CardTitle className="text-base font-medium text-gray-900">{t('profilePicture')}</CardTitle>
-      </CardHeader>
-      <CardContent className="text-center space-y-4 pt-0">
-        <div className="w-24 h-24 mx-auto">
-          <Avatar className="w-full h-full rounded-full">
-            {profilePicture && (
-              <AvatarImage 
-                src={profilePicture}
-                alt={userName}
-                className="object-cover w-full h-full rounded-full"
-              />
-            )}
-            <AvatarFallback className="bg-gray-100 text-gray-600 text-xl font-medium rounded-full w-full h-full flex items-center justify-center">
-              {userName?.charAt(0).toUpperCase() || 'U'}
-            </AvatarFallback>
-          </Avatar>
-        </div>
-        
-        <input
-          type="file"
-          ref={fileInputRef}
-          onChange={onFileChange}
-          className="hidden"
-          accept="image/png,image/jpeg,image/webp,image/gif"
-        />
-        
-        <div>
-          <Button 
-            variant="outline" 
-            size="sm" 
-            onClick={onUploadClick}
-            disabled={isUploading}
-            className="border-gray-200 text-gray-600 hover:bg-gray-50"
-          >
-            {isUploading ? (
-              <>
-                <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                Uploading...
-              </>
-            ) : (
-              <>
-                <Upload className="w-4 h-4 mr-2" />
-                {t('uploadPhoto')}
-              </>
-            )}
-          </Button>
-        </div>
-        
-        <p className="text-xs text-gray-500">
-          PNG, JPEG, WebP, GIF up to 5MB
-        </p>
-      </CardContent>
-    </Card>
+    <>
+      <Card className="border-gray-200 shadow-none bg-white">
+        <CardHeader className="pb-3">
+          <CardTitle className="text-base font-medium text-gray-900">
+            {t('profilePicture')}
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="text-center space-y-4 pt-0">
+          <ProfileAvatar
+            src={profilePicture}
+            alt={userName}
+            fallbackText={userName?.charAt(0).toUpperCase() || 'U'}
+            size="md"
+          />
+          
+          <ProfilePictureUpload
+            onFileSelect={handleFileSelect}
+            isUploading={isUploading}
+          />
+        </CardContent>
+      </Card>
+
+      <ImageCropperDialog
+        image={imageToCrop}
+        onCropComplete={setCroppedAreaPixels}
+        onSave={uploadProfilePicture}
+        onClose={cancelCrop}
+      />
+    </>
   );
 };

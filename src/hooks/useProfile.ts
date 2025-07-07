@@ -5,7 +5,6 @@ import { useAuth } from '@/hooks/dashboard/useAuth';
 import { useDashboardActions } from '@/hooks/dashboard/useDashboardActions';
 import { useProfileInfo } from './profile/useProfileInfo';
 import { useProfileActions } from './profile/useProfileActions';
-import { useProfilePictureUpload } from './profile/useProfilePictureUpload';
 
 export const useProfile = (user?: User | null) => {
   const navigate = useNavigate();
@@ -39,39 +38,18 @@ export const useProfile = (user?: User | null) => {
     setProfilePicture(newPictureUrl);
   };
 
-  // New profile picture upload functionality
-  const {
-    fileInputRef,
-    imageToCrop,
-    croppedAreaPixels,
-    setCroppedAreaPixels,
-    isUploading,
-    handleUploadClick,
-    handleFileChange,
-    onCropSave,
-    onCropCancel,
-  } = useProfilePictureUpload(currentUser, updateProfilePicture);
-
   return {
     user: currentUser,
     formData,
     profilePicture,
     isLoading,
     isSaved,
-    fileInputRef,
-    imageToCrop,
-    isUploading,
     navigate,
     handleChange: wrappedHandleChange,
     handleCurrencyChange: wrappedHandleCurrencyChange,
     handleLogoUpload: wrappedHandleLogoUpload,
     handleSubmit: wrappedHandleSubmit,
     updateProfilePicture,
-    handleUploadClick,
-    handleFileChange,
-    onCropSave,
-    onCropCancel,
-    setCroppedAreaPixels,
     handleSignOut,
   };
 };
