@@ -39,9 +39,7 @@ const Profile = () => {
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           <ProfilePictureCard
-            profile
-
-Picture={profilePicture}
+            profilePicture={profilePicture}
             userName={formData.name}
             user={user}
             onProfilePictureUpdate={updateProfilePicture}
