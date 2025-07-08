@@ -61,7 +61,7 @@ const ClientTable: React.FC<ClientTableProps> = ({
           {clients.map((client) => (
             <TableRow key={client.id} className="border-gray-50 hover:bg-gray-50/50">
               <TableCell className={isRTL ? 'text-right' : 'text-left'}>
-                <div className="flex items-center justify-between">
+                <div className="flex items-center gap-3">
                   <div className="w-8 h-8 bg-gray-100 rounded-full flex items-center justify-center">
                     <span className="text-xs font-medium text-gray-600">
                       {client.name.charAt(0).toUpperCase()}
