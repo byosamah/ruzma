@@ -4,10 +4,14 @@ import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { MessageCircle } from 'lucide-react';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 const FloatingContactButton = () => {
+  const { language } = useLanguage();
+  const isRTL = language === 'ar';
+
   return (
-    <div className="fixed bottom-4 right-4 sm:bottom-6 sm:right-6 z-50">
+    <div className={`fixed bottom-4 ${isRTL ? 'left-4 sm:left-6' : 'right-4 sm:right-6'} sm:bottom-6 z-50`}>
       <Tooltip>
         <TooltipTrigger asChild>
           <Link to="/contact">
@@ -19,7 +23,7 @@ const FloatingContactButton = () => {
             </Button>
           </Link>
         </TooltipTrigger>
-        <TooltipContent side="left">
+        <TooltipContent side={isRTL ? 'right' : 'left'}>
           <p>Contact Us</p>
         </TooltipContent>
       </Tooltip>
