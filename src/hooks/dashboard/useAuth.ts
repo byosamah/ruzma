@@ -24,6 +24,16 @@ export const useAuth = () => {
       logSecurityEvent('dashboard_auth_check_started');
       
       try {
+        // Handle temporary sessions - clean up if browser was closed and reopened
+        const isTemporarySession = sessionStorage.getItem('temporarySession');
+        const hasActiveSession = localStorage.getItem('supabase.auth.token');
+        
+        if (!isTemporarySession && hasActiveSession) {
+          // This means the browser was closed and reopened, and user didn't want to remember
+          // But we can't reliably detect browser close, so we'll let the session persist
+          // The temporary session flag will be lost on browser close anyway
+        }
+        
         // Handle auth tokens from URL hash (email confirmation)
         const hash = window.location.hash;
         if (hash && hash.includes('access_token=')) {

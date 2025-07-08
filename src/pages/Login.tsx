@@ -9,12 +9,16 @@ import LoginFooter from '@/components/auth/LoginFooter';
 import LanguageSelector from '@/components/LanguageSelector';
 
 const Login = () => {
-  const [rememberMe, setRememberMe] = useState(
-    localStorage.getItem("rememberMe") === "true"
-  );
+  const [rememberMe, setRememberMe] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
   const { user, loading: authLoading, authChecked } = useAuth();
+
+  // Initialize "Remember Me" state from localStorage
+  useEffect(() => {
+    const savedRememberMe = localStorage.getItem("rememberMe") === "true";
+    setRememberMe(savedRememberMe);
+  }, []);
 
   console.log('Login component render:', { user, authLoading, authChecked });
 

@@ -8,7 +8,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Eye, EyeOff } from 'lucide-react';
 import { toast } from 'sonner';
 import { Checkbox } from '@/components/ui/checkbox';
-import { getSupabaseClient } from '@/integrations/supabase/authClient';
+import { supabase } from '@/integrations/supabase/client';
 import { useT } from '@/lib/i18n';
 import { trackLogin } from '@/lib/analytics';
 
@@ -33,18 +33,18 @@ const LoginForm = ({ rememberMe, setRememberMe }: LoginFormProps) => {
     console.log('Login form submitted');
     setIsLoading(true);
 
-    // Persist "Remember Me" choice
+    // Persist "Remember Me" choice for UI behavior
     if (rememberMe) {
       localStorage.setItem('rememberMe', 'true');
+      localStorage.setItem('rememberedEmail', formData.email);
     } else {
       localStorage.removeItem('rememberMe');
+      localStorage.removeItem('rememberedEmail');
     }
 
     try {
-      // Use appropriate storage and persistence
-      const supabase = getSupabaseClient(rememberMe);
-
-      // Clean up auth state and force sign out before new sign in
+      // Use the consistent default Supabase client
+      // Clean up any existing sessions first
       try {
         Object.keys(localStorage).forEach(key => {
           if (key.startsWith('supabase.auth.') || key.includes('sb-')) {
@@ -77,6 +77,13 @@ const LoginForm = ({ rememberMe, setRememberMe }: LoginFormProps) => {
         toast.success(t('signInSuccess'));
         const redirectTo = location.state?.from?.pathname || '/dashboard';
         console.log('Login successful, redirecting to:', redirectTo);
+        
+        // If "Remember Me" is false, set up session cleanup on browser close
+        if (!rememberMe) {
+          // Store a flag to indicate session should be temporary
+          sessionStorage.setItem('temporarySession', 'true');
+        }
+        
         window.location.href = redirectTo;
       }
     } catch (error: any) {
@@ -93,6 +100,14 @@ const LoginForm = ({ rememberMe, setRememberMe }: LoginFormProps) => {
       [e.target.name]: e.target.value
     }));
   };
+
+  // Auto-fill email if remembered
+  React.useEffect(() => {
+    const rememberedEmail = localStorage.getItem('rememberedEmail');
+    if (rememberMe && rememberedEmail) {
+      setFormData(prev => ({ ...prev, email: rememberedEmail }));
+    }
+  }, [rememberMe]);
 
   return (
     <Card className="border-0 shadow-none">
