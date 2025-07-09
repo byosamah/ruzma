@@ -13,6 +13,7 @@ import { Invoice } from '@/hooks/invoices/types';
 import { useUserCurrency } from '@/hooks/useUserCurrency';
 import { useAuth } from '@/hooks/dashboard/useAuth';
 import { useT } from '@/lib/i18n';
+import { useLanguage } from '@/contexts/LanguageContext';
 import InvoiceStatusBadge from './InvoiceStatusBadge';
 import InvoiceActionsMenu from './InvoiceActionsMenu';
 
@@ -31,7 +32,9 @@ const InvoiceTable: React.FC<InvoiceTableProps> = ({
 }) => {
   const t = useT();
   const { user } = useAuth();
+  const { language } = useLanguage();
   const { formatCurrency } = useUserCurrency(user);
+  const isRTL = language === 'ar';
 
   if (invoices.length === 0) {
     return (
@@ -52,31 +55,45 @@ const InvoiceTable: React.FC<InvoiceTableProps> = ({
       <Table>
         <TableHeader>
           <TableRow className="border-gray-100">
-            <TableHead className="text-gray-500 font-medium text-xs uppercase tracking-wide">{t('transactionId')}</TableHead>
-            <TableHead className="text-gray-500 font-medium text-xs uppercase tracking-wide">{t('invoiceAmount')}</TableHead>
-            <TableHead className="text-gray-500 font-medium text-xs uppercase tracking-wide">{t('projectName')}</TableHead>
-            <TableHead className="text-gray-500 font-medium text-xs uppercase tracking-wide">{t('dateOfInvoice')}</TableHead>
-            <TableHead className="text-gray-500 font-medium text-xs uppercase tracking-wide">{t('status')}</TableHead>
-            <TableHead className="text-right text-gray-500 font-medium text-xs uppercase tracking-wide">{t('actions')}</TableHead>
+            <TableHead className={`text-gray-500 font-medium text-xs uppercase tracking-wide ${isRTL ? 'text-right' : 'text-left'}`}>
+              {t('transactionId')}
+            </TableHead>
+            <TableHead className={`text-gray-500 font-medium text-xs uppercase tracking-wide ${isRTL ? 'text-right' : 'text-left'}`}>
+              {t('invoiceAmount')}
+            </TableHead>
+            <TableHead className={`text-gray-500 font-medium text-xs uppercase tracking-wide ${isRTL ? 'text-right' : 'text-left'}`}>
+              {t('projectName')}
+            </TableHead>
+            <TableHead className={`text-gray-500 font-medium text-xs uppercase tracking-wide ${isRTL ? 'text-right' : 'text-left'}`}>
+              {t('dateOfInvoice')}
+            </TableHead>
+            <TableHead className={`text-gray-500 font-medium text-xs uppercase tracking-wide ${isRTL ? 'text-right' : 'text-left'}`}>
+              {t('status')}
+            </TableHead>
+            <TableHead className={`text-gray-500 font-medium text-xs uppercase tracking-wide ${isRTL ? 'text-left' : 'text-right'}`}>
+              {t('actions')}
+            </TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
           {invoices.map((invoice) => (
             <TableRow key={invoice.id} className="border-gray-50 hover:bg-gray-25">
-              <TableCell className="font-mono text-sm text-gray-900">
+              <TableCell className={`font-mono text-sm text-gray-900 ${isRTL ? 'text-right' : 'text-left'}`}>
                 {invoice.transactionId}
               </TableCell>
-              <TableCell className="font-medium text-gray-900">
+              <TableCell className={`font-medium text-gray-900 ${isRTL ? 'text-right' : 'text-left'}`}>
                 {formatCurrency(invoice.amount)}
               </TableCell>
-              <TableCell className="text-gray-700">{invoice.projectName}</TableCell>
-              <TableCell className="text-gray-500 text-sm">
+              <TableCell className={`text-gray-700 ${isRTL ? 'text-right' : 'text-left'}`}>
+                {invoice.projectName}
+              </TableCell>
+              <TableCell className={`text-gray-500 text-sm ${isRTL ? 'text-right' : 'text-left'}`}>
                 {format(invoice.date, 'MMM dd, yyyy')}
               </TableCell>
-              <TableCell>
+              <TableCell className={isRTL ? 'text-right' : 'text-left'}>
                 <InvoiceStatusBadge status={invoice.status} />
               </TableCell>
-              <TableCell className="text-right">
+              <TableCell className={isRTL ? 'text-left' : 'text-right'}>
                 <InvoiceActionsMenu
                   invoiceId={invoice.id}
                   onDownloadPDF={onDownloadPDF}
