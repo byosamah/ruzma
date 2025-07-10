@@ -124,7 +124,7 @@ const ProjectManagement: React.FC = () => {
                   {userCurrency.formatCurrency(totalValue)}
                 </p>
               </div>
-              <DollarSign className="w-5 h-5 text-gray-400" />
+              <BankNotes className="w-5 h-5 text-gray-400" />
             </div>
           </div>
 
