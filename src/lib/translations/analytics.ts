@@ -2,6 +2,7 @@
 export const analyticsTranslations = {
   en: {
     analytics: "Analytics",
+    trackBusinessPerformance: "Track your business performance and growth",
     overview: "Overview",
     projectsOverTime: "Projects Over Time",
     revenueOverTime: "Revenue Over Time",
@@ -44,6 +45,7 @@ export const analyticsTranslations = {
   },
   ar: {
     analytics: "التحليلات",
+    trackBusinessPerformance: "تتبع أداء عملك ونموه",
     overview: "نظرة عامة",
     projectsOverTime: "المشاريع عبر الوقت",
     revenueOverTime: "الإيرادات عبر الوقت",

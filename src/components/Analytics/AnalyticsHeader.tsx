@@ -8,7 +8,7 @@ const AnalyticsHeader: React.FC = () => {
   return (
     <div className="space-y-1">
       <h1 className="text-2xl font-medium text-gray-900">{t('analytics')}</h1>
-      <p className="text-sm text-gray-500">Track your business performance and growth</p>
+      <p className="text-sm text-gray-500">{t('trackBusinessPerformance')}</p>
     </div>
   );
 };
