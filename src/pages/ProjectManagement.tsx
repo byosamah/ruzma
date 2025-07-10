@@ -3,6 +3,7 @@ import React from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import Layout from "@/components/Layout";
 import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Calendar, DollarSign, CheckCircle2 } from "lucide-react";
 import { useT, TranslationKey } from "@/lib/i18n";
 import { useProjectManagement } from "@/hooks/useProjectManagement";
@@ -23,7 +24,6 @@ const ProjectManagement: React.FC = () => {
     loading,
     userCurrency,
     updateMilestoneStatus,
-    changeMilestoneStatus,
     uploadPaymentProof,
     uploadDeliverable,
     updateDeliverableLink,
@@ -84,17 +84,14 @@ const ProjectManagement: React.FC = () => {
     );
   }
 
-  const completedMilestones = project.milestones.filter(m => 
-    ['approved', 'completed'].includes(m.status)
-  ).length;
+  const completedMilestones = project.milestones.filter(m => m.status === 'approved').length;
   const totalValue = project.milestones.reduce((sum, m) => sum + m.price, 0);
-  const completedValue = project.milestones.filter(m => 
-    ['approved', 'completed'].includes(m.status)
-  ).reduce((sum, m) => sum + m.price, 0);
+  const completedValue = project.milestones.filter(m => m.status === 'approved').reduce((sum, m) => sum + m.price, 0);
 
   return (
     <Layout user={profile || user}>
       <div className="max-w-5xl mx-auto space-y-8">
+        {/* Project Header */}
         <div className="space-y-6">
           <ProjectHeader 
             project={project} 
@@ -105,6 +102,7 @@ const ProjectManagement: React.FC = () => {
           />
         </div>
 
+        {/* Project Stats */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div className="bg-gray-50/50 rounded-lg p-5 border border-gray-100">
             <div className="flex items-center justify-between">
@@ -143,6 +141,7 @@ const ProjectManagement: React.FC = () => {
           </div>
         </div>
 
+        {/* Milestones Section */}
         <div className="space-y-6">
           <div className="flex items-center justify-between">
             <h2 className="text-xl font-medium text-gray-900">{t('milestones')}</h2>
@@ -156,7 +155,6 @@ const ProjectManagement: React.FC = () => {
             userCurrency={userCurrency.currency}
             userType={profile?.user_type as 'free' | 'plus' | 'pro' || 'free'}
             onUpdateMilestoneStatus={updateMilestoneStatus} 
-            onStatusChange={changeMilestoneStatus}
             onPaymentUpload={uploadPaymentProof} 
             onDeliverableUpload={uploadDeliverable}
             onDeliverableLinkUpdate={updateDeliverableLink}

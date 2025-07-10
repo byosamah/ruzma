@@ -15,7 +15,6 @@ export const useProjectManagement = (slug: string | undefined) => {
 
   const {
     updateMilestoneStatus,
-    changeMilestoneStatus,
     uploadPaymentProof,
     uploadDeliverable,
     updateDeliverableLink,
@@ -40,7 +39,6 @@ export const useProjectManagement = (slug: string | undefined) => {
     fetchProjects,
     userCurrency,
     updateMilestoneStatus,
-    changeMilestoneStatus,
     uploadPaymentProof,
     uploadDeliverable,
     updateDeliverableLink,

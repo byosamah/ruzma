@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { Button } from '@/components/ui/button';
-import { Upload, Download, Link, File, Clock, Eye, RefreshCw } from 'lucide-react';
+import { Upload, Download, Link, File } from 'lucide-react';
 import { Milestone } from './types';
 import { useT } from '@/lib/i18n';
 import PaymentUploadDialog from './PaymentUploadDialog';
@@ -20,74 +20,6 @@ const ClientView: React.FC<ClientViewProps> = ({
   paymentProofRequired = false,
 }) => {
   const t = useT();
-
-  const getClientStatusMessage = () => {
-    switch (milestone.status) {
-      case 'pending':
-        return (
-          <div className="bg-yellow-50 p-3 rounded-lg border border-yellow-200">
-            <div className="flex items-center gap-2">
-              <Clock className="w-4 h-4 text-yellow-600" />
-              <p className="text-sm font-medium text-yellow-800">{t('waitingForFreelancer')}</p>
-            </div>
-            <p className="text-xs text-yellow-600 mt-1">{t('statusPendingDesc')}</p>
-          </div>
-        );
-      case 'in_progress':
-        return (
-          <div className="bg-blue-50 p-3 rounded-lg border border-blue-200">
-            <div className="flex items-center gap-2">
-              <Clock className="w-4 h-4 text-blue-600" />
-              <p className="text-sm font-medium text-blue-800">{t('freelancerWorking')}</p>
-            </div>
-            <p className="text-xs text-blue-600 mt-1">{t('statusInProgressDesc')}</p>
-          </div>
-        );
-      case 'under_review':
-        return (
-          <div className="bg-purple-50 p-3 rounded-lg border border-purple-200">
-            <div className="flex items-center gap-2">
-              <Eye className="w-4 h-4 text-purple-600" />
-              <p className="text-sm font-medium text-purple-800">{t('readyForYourReview')}</p>
-            </div>
-            <p className="text-xs text-purple-600 mt-1">{t('statusUnderReviewDesc')}</p>
-          </div>
-        );
-      case 'revision_requested':
-        return (
-          <div className="bg-orange-50 p-3 rounded-lg border border-orange-200">
-            <div className="flex items-center gap-2">
-              <RefreshCw className="w-4 h-4 text-orange-600" />
-              <p className="text-sm font-medium text-orange-800">{t('changesRequested')}</p>
-            </div>
-            <p className="text-xs text-orange-600 mt-1">{t('statusRevisionRequestedDesc')}</p>
-          </div>
-        );
-      case 'completed':
-        return (
-          <div className="bg-emerald-50 p-3 rounded-lg border border-emerald-200">
-            <p className="text-sm font-medium text-emerald-800">{t('milestoneCompleted')}</p>
-            <p className="text-xs text-emerald-600 mt-1">{t('statusCompletedDesc')}</p>
-          </div>
-        );
-      case 'on_hold':
-        return (
-          <div className="bg-gray-50 p-3 rounded-lg border border-gray-200">
-            <p className="text-sm font-medium text-gray-800">{t('workTemporarilyPaused')}</p>
-            <p className="text-xs text-gray-600 mt-1">{t('statusOnHoldDesc')}</p>
-          </div>
-        );
-      case 'cancelled':
-        return (
-          <div className="bg-slate-50 p-3 rounded-lg border border-slate-200">
-            <p className="text-sm font-medium text-slate-800">{t('milestoneCancelled')}</p>
-            <p className="text-xs text-slate-600 mt-1">{t('statusCancelledDesc')}</p>
-          </div>
-        );
-      default:
-        return null;
-    }
-  };
 
   const renderPaymentSection = () => {
     if (!paymentProofRequired) {
@@ -134,30 +66,26 @@ const ClientView: React.FC<ClientViewProps> = ({
       );
     }
 
-    // Show payment upload for completed milestones that need payment
-    if (['under_review', 'completed'].includes(milestone.status)) {
-      return (
-        <div className="space-y-3">
-          <div className="bg-amber-50 p-3 rounded-lg border border-amber-200">
-            <p className="text-sm font-medium text-amber-800">Payment proof required</p>
-            <p className="text-xs text-amber-600 mt-1">Please upload proof of payment for this milestone</p>
-          </div>
-          
-          <PaymentUploadDialog
-            milestoneId={milestone.id}
-            onPaymentUpload={onPaymentUpload}
-            trigger={
-              <Button size="sm" className="w-full">
-                <Upload className="w-4 h-4 mr-2" />
-                Upload Payment Proof
-              </Button>
-            }
-          />
+    // Pending status - show payment upload
+    return (
+      <div className="space-y-3">
+        <div className="bg-amber-50 p-3 rounded-lg border border-amber-200">
+          <p className="text-sm font-medium text-amber-800">Payment proof required</p>
+          <p className="text-xs text-amber-600 mt-1">Please upload proof of payment for this milestone</p>
         </div>
-      );
-    }
-
-    return null;
+        
+        <PaymentUploadDialog
+          milestoneId={milestone.id}
+          onPaymentUpload={onPaymentUpload}
+          trigger={
+            <Button size="sm" className="w-full">
+              <Upload className="w-4 h-4 mr-2" />
+              Upload Payment Proof
+            </Button>
+          }
+        />
+      </div>
+    );
   };
 
   const handleDownload = () => {
@@ -168,7 +96,7 @@ const ClientView: React.FC<ClientViewProps> = ({
 
   const canAccessDeliverables = () => {
     if (!paymentProofRequired) {
-      return ['under_review', 'completed', 'approved'].includes(milestone.status);
+      return true;
     }
     return milestone.status === 'approved';
   };
@@ -193,6 +121,7 @@ const ClientView: React.FC<ClientViewProps> = ({
 
     return (
       <div className="space-y-4">
+        {/* File Deliverable */}
         {hasFileDeliverable && (
           <div className="space-y-2">
             <h5 className="text-sm font-medium text-slate-700 flex items-center gap-2">
@@ -233,6 +162,7 @@ const ClientView: React.FC<ClientViewProps> = ({
           </div>
         )}
 
+        {/* Link Deliverable */}
         {hasLinkDeliverable && (
           <div className="space-y-2">
             <h5 className="text-sm font-medium text-slate-700 flex items-center gap-2">
@@ -270,12 +200,6 @@ const ClientView: React.FC<ClientViewProps> = ({
 
   return (
     <div className="space-y-6 pt-4 border-t border-slate-200">
-      {/* Status Message */}
-      <div>
-        <h4 className="text-sm font-medium text-slate-700 mb-3">Current Status</h4>
-        {getClientStatusMessage()}
-      </div>
-
       {/* Payment Section */}
       {paymentProofRequired && (
         <div>

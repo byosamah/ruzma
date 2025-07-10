@@ -10,7 +10,6 @@ interface MilestoneListProps {
   userCurrency: import('@/lib/currency').CurrencyCode;
   userType?: 'free' | 'plus' | 'pro';
   onUpdateMilestoneStatus: (milestoneId: string, newStatus: Milestone["status"]) => Promise<void>;
-  onStatusChange: (milestoneId: string, newStatus: string) => Promise<void>;
   onPaymentUpload: (milestoneId: string, file: File) => Promise<void>;
   onDeliverableUpload: (milestoneId: string, file: File) => Promise<void>;
   onDeliverableLinkUpdate: (milestoneId: string, link: string) => Promise<void>;
@@ -22,7 +21,6 @@ const MilestoneList: React.FC<MilestoneListProps> = ({
   userCurrency,
   userType = 'free',
   onUpdateMilestoneStatus,
-  onStatusChange,
   onPaymentUpload,
   onDeliverableUpload,
   onDeliverableLinkUpdate,
@@ -48,14 +46,6 @@ const MilestoneList: React.FC<MilestoneListProps> = ({
     }
   };
 
-  const handleStatusChange = async (milestoneId: string, newStatus: Milestone['status']) => {
-    try {
-      await onStatusChange(milestoneId, newStatus);
-    } catch (error) {
-      console.error('Status change failed:', error);
-    }
-  };
-
   return (
     <div className="space-y-4">
       {milestones.length === 0 ? (
@@ -73,7 +63,7 @@ const MilestoneList: React.FC<MilestoneListProps> = ({
                 title: milestone.title,
                 description: milestone.description,
                 price: milestone.price,
-                status: milestone.status as Milestone['status'],
+                status: milestone.status,
                 deliverable: milestone.deliverable_name ? {
                   name: milestone.deliverable_name,
                   size: milestone.deliverable_size || 0,
@@ -92,7 +82,6 @@ const MilestoneList: React.FC<MilestoneListProps> = ({
                   ? (mId, status) => onUpdateMilestoneStatus(mId, status)
                   : undefined
               }
-              onStatusChange={handleStatusChange}
               onDeliverableUpload={onDeliverableUpload}
               onDeliverableLinkUpdate={handleDeliverableLinkUpdate}
               onDeliverableDownload={onDeliverableDownload}

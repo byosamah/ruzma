@@ -1,3 +1,4 @@
+
 export const commonTranslations = {
   en: {
     language: "Language",
@@ -163,11 +164,6 @@ export const commonTranslations = {
     noProjectsYet: "No projects yet",
     createFirstProjectDesc: "Create your first project to get started with managing your freelance work.",
     createFirstProject: "Create First Project",
-    // Additional status-related translations
-    currentStatus: "Current Status",
-    changeStatusToUpdate: "Change status to update progress",
-    confirm: "Confirm",
-    cancel: "Cancel",
   },
   ar: {
     language: "اللغة",
@@ -333,10 +329,5 @@ export const commonTranslations = {
     noProjectsYet: "لا توجد مشاريع بعد",
     createFirstProjectDesc: "أنشئ مشروعك الأول للبدء في إدارة أعمالك الحرة.",
     createFirstProject: "إنشاء أول مشروع",
-    // Additional status-related translations
-    currentStatus: "الحالة الحالية",
-    changeStatusToUpdate: "غير الحالة لتحديث التقدم",
-    confirm: "تأكيد",
-    cancel: "إلغاء",
-  }
+  },
 };
