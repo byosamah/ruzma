@@ -31,19 +31,7 @@ const MilestonesList: React.FC<MilestonesListProps> = ({ user }) => {
   return (
     <div className="bg-white rounded-lg border border-gray-200 overflow-hidden">
       <div className="px-6 py-4 border-b border-gray-100">
-        <div className="flex items-center justify-between">
-          <h3 className="text-sm font-medium text-gray-900">{t('projectMilestones')}</h3>
-          <Button 
-            type="button" 
-            onClick={addMilestone} 
-            variant="ghost" 
-            size="sm"
-            className="text-gray-600 hover:text-gray-900 hover:bg-gray-50 text-xs font-medium"
-          >
-            <Plus className="w-3 h-3 mr-1" />
-            {t('addMilestone')}
-          </Button>
-        </div>
+        <h3 className="text-sm font-medium text-gray-900">{t('projectMilestones')}</h3>
       </div>
       
       <div className="p-6 space-y-6">
@@ -169,6 +157,21 @@ const MilestonesList: React.FC<MilestonesListProps> = ({ user }) => {
             />
           </div>
         ))}
+        
+        {/* Add Milestone Button - Now positioned after all milestones */}
+        <div className="flex justify-center pt-4">
+          <Button 
+            type="button" 
+            onClick={addMilestone} 
+            variant="outline" 
+            size="sm"
+            className="text-gray-600 hover:text-gray-900 hover:bg-gray-50 text-sm font-medium"
+          >
+            <Plus className="w-4 h-4 mr-2" />
+            {t('addMilestone')}
+          </Button>
+        </div>
+        
         <FormField
           control={control}
           name="milestones"
