@@ -1,4 +1,3 @@
-
 import React from 'react';
 import Layout from '@/components/Layout';
 import DashboardHeader from '@/components/dashboard/DashboardHeader';
@@ -119,15 +118,7 @@ const Dashboard = () => {
         structuredData={seoData.structuredData}
       />
       <div className={`space-y-8 ${isMobile ? 'px-2' : ''}`}>
-        {/* YouTube Tutorial Button */}
-        <div className="flex justify-end">
-          <YouTubePopup 
-            videoId="9KHLTZaJcR8"
-            buttonText={t('watchDashboardTutorial')}
-          />
-        </div>
-
-        {/* Dashboard Header with semantic HTML structure */}
+        {/* Dashboard Header with tutorial button integrated */}
         <header>
           <DashboardHeader 
             displayName={displayName} 

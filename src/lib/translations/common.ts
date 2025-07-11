@@ -175,6 +175,7 @@ export const commonTranslations = {
     watchInvoicesTutorial: 'Watch Invoices Tutorial',
     watchAnalyticsTutorial: 'Watch Analytics Tutorial',
     watchProfileTutorial: 'Watch Profile Tutorial',
+    knowMore: 'Know more',
   },
   ar: {
     // Basic actions and states
@@ -351,5 +352,6 @@ export const commonTranslations = {
     watchInvoicesTutorial: 'مشاهدة درس الفواتير',
     watchAnalyticsTutorial: 'مشاهدة درس التحليلات',
     watchProfileTutorial: 'مشاهدة درس الملف الشخصي',
+    knowMore: 'إعرف أكثر',
   },
 };
