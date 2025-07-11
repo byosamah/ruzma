@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -20,7 +19,13 @@ export const useCreateProjectForm = (templateData?: any) => {
       brief: templateData?.brief || '',
       clientEmail: '',
       paymentProofRequired: false,
-      milestones: templateData?.milestones || [
+      milestones: templateData?.milestones?.map((milestone: any) => ({
+        title: milestone.title || '',
+        description: milestone.description || '',
+        price: milestone.price || 0,
+        start_date: milestone.start_date || '',
+        end_date: milestone.end_date || '',
+      })) || [
         {
           title: '',
           description: '',
@@ -56,7 +61,21 @@ export const useCreateProjectForm = (templateData?: any) => {
   const loadFromTemplate = (template: any) => {
     form.setValue('name', template.name);
     form.setValue('brief', template.brief);
-    form.setValue('milestones', template.milestones);
+    form.setValue('milestones', template.milestones?.map((milestone: any) => ({
+      title: milestone.title || '',
+      description: milestone.description || '',
+      price: milestone.price || 0,
+      start_date: milestone.start_date || '',
+      end_date: milestone.end_date || '',
+    })) || [
+      {
+        title: '',
+        description: '',
+        price: 0,
+        start_date: '',
+        end_date: '',
+      },
+    ]);
     // Keep paymentProofRequired as false when loading from template
     form.setValue('paymentProofRequired', false);
   };
