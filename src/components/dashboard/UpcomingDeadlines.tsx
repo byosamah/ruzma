@@ -1,7 +1,6 @@
 
 import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
 import { Calendar, Clock, AlertTriangle, CheckCircle } from 'lucide-react';
 import { useLanguageNavigation } from '@/hooks/useLanguageNavigation';
 import { useUpcomingDeadlines } from '@/hooks/useUpcomingDeadlines';
@@ -17,10 +16,6 @@ export const UpcomingDeadlines: React.FC<UpcomingDeadlinesProps> = ({ projects }
   const { navigate } = useLanguageNavigation();
   const { stats } = useUpcomingDeadlines(projects);
 
-  const handleViewProjects = () => {
-    navigate('/projects');
-  };
-
   const getDisplayContent = () => {
     if (stats.total === 0) {
       return {
@@ -28,7 +23,6 @@ export const UpcomingDeadlines: React.FC<UpcomingDeadlinesProps> = ({ projects }
         iconColor: 'text-green-600',
         title: t('noUpcomingDeadlines'),
         subtitle: t('allProjectsOnTrack'),
-        showButton: false,
       };
     }
 
@@ -38,7 +32,6 @@ export const UpcomingDeadlines: React.FC<UpcomingDeadlinesProps> = ({ projects }
         iconColor: 'text-red-600',
         title: `${stats.overdue} ${t('overdue')}`,
         subtitle: t('needsAttention'),
-        showButton: true,
       };
     }
 
@@ -48,7 +41,6 @@ export const UpcomingDeadlines: React.FC<UpcomingDeadlinesProps> = ({ projects }
         iconColor: 'text-amber-600',
         title: `${stats.dueSoon} ${t('dueSoon')}`,
         subtitle: t('within7Days'),
-        showButton: true,
       };
     }
 
@@ -59,7 +51,6 @@ export const UpcomingDeadlines: React.FC<UpcomingDeadlinesProps> = ({ projects }
         iconColor: 'text-blue-600',
         title: daysText,
         subtitle: stats.nextDeadline.projectName,
-        showButton: true,
       };
     }
 
@@ -68,7 +59,6 @@ export const UpcomingDeadlines: React.FC<UpcomingDeadlinesProps> = ({ projects }
       iconColor: 'text-gray-400',
       title: t('noDeadlines'),
       subtitle: t('noProjectDeadlines'),
-      showButton: false,
     };
   };
 
@@ -93,16 +83,6 @@ export const UpcomingDeadlines: React.FC<UpcomingDeadlinesProps> = ({ projects }
                 <p className="text-xs text-gray-500 truncate">{content.subtitle}</p>
               </div>
             </div>
-            {content.showButton && (
-              <Button 
-                size="sm" 
-                onClick={handleViewProjects} 
-                className="text-xs px-3 py-1 font-medium bg-gray-900 hover:bg-gray-800 text-white border-0 shadow-none"
-              >
-                <Calendar className="h-3 w-3 mr-1" />
-                {t('viewProjects')}
-              </Button>
-            )}
           </div>
         </div>
       </CardContent>
