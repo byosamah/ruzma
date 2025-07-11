@@ -60,35 +60,6 @@ export interface UserProfile {
   updated_at: string;
 }
 
-export interface BrandingData {
-  id: string;
-  user_id: string;
-  freelancer_name: string;
-  freelancer_title: string;
-  freelancer_bio: string;
-  primary_color: string;
-  secondary_color: string;
-  logo_url?: string;
-  created_at: string;
-  updated_at: string;
-}
-
-// API Response types
-export interface ApiResponse<T = any> {
-  data?: T;
-  error?: string;
-  message?: string;
-}
-
-export interface PaginatedResponse<T> extends ApiResponse<T[]> {
-  pagination?: {
-    page: number;
-    limit: number;
-    total: number;
-    totalPages: number;
-  };
-}
-
 // Form data types
 export interface CreateProjectData {
   name: string;
