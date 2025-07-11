@@ -88,12 +88,12 @@ export const projectTranslations = {
   en: {
     // Project management
     projects: "Projects",
-    createProject: "Create Project",
+    createProject: "Create Project", 
     editProject: "Edit Project",
     deleteProject: "Delete Project",
     projectName: "Project Name",
     projectBrief: "Project Brief",
-    clientEmail: "Client Email",
+    clientEmail: "Client Email", 
     startDate: "Start Date",
     endDate: "End Date",
     
@@ -102,14 +102,14 @@ export const projectTranslations = {
     projectNamePlaceholder: "Enter project name",
     projectBriefPlaceholder: "Describe your project requirements and goals",
     projectNamePlaceholder_edit: "Enter project name",
-    projectBriefPlaceholder_edit: "Describe your project requirements and goals",
+    projectBriefPlaceholder_edit: "Describe your project requirements and goals", 
     client: "Client",
     
     // Milestones
     milestones: "Milestones",
     milestone: "Milestone",
     addMilestone: "Add Milestone",
-    editMilestone: "Edit Milestone",
+    editMilestone: "Edit Milestone", 
     deleteMilestone: "Delete Milestone",
     milestoneTitle: "Milestone Title",
     milestoneDescription: "Milestone Description",
@@ -167,7 +167,7 @@ export const projectTranslations = {
     
     // Messages
     projectCreated: "Project created successfully",
-    projectUpdated: "Project updated successfully",
+    projectUpdated: "Project updated successfully", 
     projectDeleted: "Project deleted successfully",
     milestoneCreated: "Milestone created successfully",
     milestoneUpdated: "Milestone updated successfully",
@@ -178,7 +178,7 @@ export const projectTranslations = {
     
     // Milestone status messages
     milestoneAwaitingStart: "This milestone is awaiting to be started",
-    milestoneInProgress: "Work is currently in progress on this milestone",
+    milestoneInProgress: "Work is currently in progress on this milestone", 
     milestoneUnderReview: "This milestone is under client review",
     milestoneRevisionRequested: "Client has requested revisions",
     paymentApprovedClientDownload: "Payment approved - client can download deliverables",
@@ -234,7 +234,7 @@ export const projectTranslations = {
     // Payment and delivery settings
     paymentDeliverySettings: "إعدادات الدفع والتسليم",
     requirePaymentProof: "مطالبة بإثبات الدفع",
-    paymentProofDescription: "عند التفعيل، يجب على العملاء رفع إثبات الدفع قبل أن يتمكنوا من تحميل التسليمات. هذا يساعد في ضمان الحصول على الدفع قبل التسليم.",
+    paymentProofDescription: "عند التفعيل، يجب على العملاء رفع إثبات الدفع قبل أن يتmكنوا من تحميل التسليمات. هذا يساعد في ضمان الحصول على الدفع قبل التسليم.",
     
     // Template settings
     saveAsTemplateLabel: "حفظ كقالب",

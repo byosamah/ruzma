@@ -4,7 +4,7 @@ export interface Milestone {
   title: string;
   description: string;
   price: number;
-  status: 'pending' | 'payment_submitted' | 'approved' | 'rejected';
+  status: 'pending' | 'in_progress' | 'under_review' | 'revision_requested' | 'payment_submitted' | 'approved' | 'rejected' | 'completed' | 'on_hold' | 'cancelled';
   deliverable?: {
     url?: string;
     name?: string;
