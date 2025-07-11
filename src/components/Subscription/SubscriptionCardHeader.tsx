@@ -28,9 +28,9 @@ export const SubscriptionCardHeader: React.FC<SubscriptionCardHeaderProps> = ({
       case 'free':
         return t('free');
       case 'plus':
-        return 'Monthly';
+        return t('plus');
       case 'pro':
-        return 'Lifetime';
+        return t('pro');
       default:
         return planId;
     }
