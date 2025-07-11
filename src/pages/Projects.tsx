@@ -2,6 +2,7 @@
 import React from 'react';
 import Layout from '@/components/Layout';
 import ProjectCard from '@/components/ProjectCard';
+import YouTubePopup from '@/components/YouTubePopup';
 import { Button } from '@/components/ui/button';
 import { Plus, FileText } from 'lucide-react';
 import { useT } from '@/lib/i18n';
@@ -57,6 +58,14 @@ const Projects = () => {
   return (
     <Layout user={user} onSignOut={handleSignOut}>
       <div className={`space-y-8 ${isMobile ? 'px-2' : ''}`}>
+        {/* YouTube Tutorial Button */}
+        <div className="flex justify-end">
+          <YouTubePopup 
+            videoId="9KHLTZaJcR8"
+            buttonText={t('watchProjectsTutorial', 'Watch Projects Tutorial')}
+          />
+        </div>
+
         {/* Header */}
         <div className="space-y-4">
           <div className="flex flex-col space-y-4 sm:flex-row sm:items-center sm:justify-between sm:space-y-0">

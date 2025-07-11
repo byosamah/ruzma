@@ -1,3 +1,4 @@
+
 import React from 'react';
 import Layout from '@/components/Layout';
 import DashboardHeader from '@/components/dashboard/DashboardHeader';
@@ -5,6 +6,7 @@ import DashboardStats from '@/components/dashboard/DashboardStats';
 import ProjectCard from '@/components/ProjectCard';
 import { UsageIndicators } from '@/components/dashboard/UsageIndicators';
 import SEOHead from '@/components/SEO/SEOHead';
+import YouTubePopup from '@/components/YouTubePopup';
 import { useDashboard } from '@/hooks/useDashboard';
 import { useDashboardSEO } from '@/hooks/dashboard/useDashboardSEO';
 import { useUsageTracking } from '@/hooks/useUsageTracking';
@@ -117,6 +119,14 @@ const Dashboard = () => {
         structuredData={seoData.structuredData}
       />
       <div className={`space-y-8 ${isMobile ? 'px-2' : ''}`}>
+        {/* YouTube Tutorial Button */}
+        <div className="flex justify-end">
+          <YouTubePopup 
+            videoId="9KHLTZaJcR8"
+            buttonText={t('watchDashboardTutorial', 'Watch Dashboard Tutorial')}
+          />
+        </div>
+
         {/* Dashboard Header with semantic HTML structure */}
         <header>
           <DashboardHeader 

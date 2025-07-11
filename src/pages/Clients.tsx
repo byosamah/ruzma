@@ -1,7 +1,7 @@
-
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Layout from '@/components/Layout';
+import YouTubePopup from '@/components/YouTubePopup';
 import { useClients } from '@/hooks/useClients';
 import { useAuth } from '@/hooks/dashboard/useAuth';
 import { useUserProfile } from '@/hooks/dashboard/useUserProfile';
@@ -13,9 +13,11 @@ import EditClientDialog from '@/components/Clients/EditClientDialog';
 import DeleteClientDialog from '@/components/Clients/DeleteClientDialog';
 import ClientDetailsDialog from '@/components/Clients/ClientDetailsDialog';
 import { ClientWithProjectCount } from '@/types/client';
+import { useT } from '@/lib/i18n';
 
 const Clients: React.FC = () => {
   const navigate = useNavigate();
+  const t = useT();
   const { user, loading: authLoading, authChecked } = useAuth();
   const { profile, loading: profileLoading } = useUserProfile(user);
   const { clients, loading: clientsLoading, createClient, updateClient, deleteClient } = useClients(user);
@@ -76,6 +78,14 @@ const Clients: React.FC = () => {
   return (
     <Layout user={profile || user}>
       <div className="space-y-8">
+        {/* YouTube Tutorial Button */}
+        <div className="flex justify-end">
+          <YouTubePopup 
+            videoId="9KHLTZaJcR8"
+            buttonText={t('watchClientsTutorial', 'Watch Clients Tutorial')}
+          />
+        </div>
+
         <ClientsHeader />
         <ClientsStats clients={clients} />
         <ClientsSection

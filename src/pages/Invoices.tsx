@@ -1,7 +1,7 @@
-
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import Layout from '@/components/Layout';
+import YouTubePopup from '@/components/YouTubePopup';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Plus } from 'lucide-react';
@@ -68,6 +68,14 @@ const Invoices: React.FC = () => {
   return (
     <Layout user={profile || user}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
+        {/* YouTube Tutorial Button */}
+        <div className="flex justify-end">
+          <YouTubePopup 
+            videoId="9KHLTZaJcR8"
+            buttonText={t('watchInvoicesTutorial', 'Watch Invoices Tutorial')}
+          />
+        </div>
+
         <div className="flex items-center justify-between">
           <InvoicesHeader />
           <Button onClick={handleCreateInvoice} className="bg-gray-900 hover:bg-gray-800 text-white px-4 py-2 rounded-lg">

@@ -1,4 +1,3 @@
-
 export const commonTranslations = {
   en: {
     language: "Language",
@@ -164,6 +163,14 @@ export const commonTranslations = {
     noProjectsYet: "No projects yet",
     createFirstProjectDesc: "Create your first project to get started with managing your freelance work.",
     createFirstProject: "Create First Project",
+    watchTutorial: "Watch Tutorial",
+    tutorial: "Tutorial",
+    watchDashboardTutorial: "Watch Dashboard Tutorial",
+    watchProjectsTutorial: "Watch Projects Tutorial", 
+    watchClientsTutorial: "Watch Clients Tutorial",
+    watchInvoicesTutorial: "Watch Invoices Tutorial",
+    watchAnalyticsTutorial: "Watch Analytics Tutorial",
+    watchProfileTutorial: "Watch Profile Tutorial",
   },
   ar: {
     language: "اللغة",
@@ -329,5 +336,13 @@ export const commonTranslations = {
     noProjectsYet: "لا توجد مشاريع بعد",
     createFirstProjectDesc: "أنشئ مشروعك الأول للبدء في إدارة أعمالك الحرة.",
     createFirstProject: "إنشاء أول مشروع",
+    watchTutorial: "مشاهدة الشرح",
+    tutorial: "الشرح",
+    watchDashboardTutorial: "مشاهدة شرح لوحة التحكم",
+    watchProjectsTutorial: "مشاهدة شرح المشاريع",
+    watchClientsTutorial: "مشاهدة شرح العملاء", 
+    watchInvoicesTutorial: "مشاهدة شرح الفواتير",
+    watchAnalyticsTutorial: "مشاهدة شرح التحليلات",
+    watchProfileTutorial: "مشاهدة شرح الملف الشخصي",
   },
 };

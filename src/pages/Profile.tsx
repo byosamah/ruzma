@@ -1,6 +1,7 @@
 
 import React from 'react';
 import Layout from '@/components/Layout';
+import YouTubePopup from '@/components/YouTubePopup';
 import { ProfilePictureCard } from '@/components/Profile/ProfilePictureCard';
 import { PersonalInformationForm } from '@/components/Profile/PersonalInformationForm';
 import { AccountSettingsCard } from '@/components/Profile/AccountSettingsCard';
@@ -32,6 +33,14 @@ const Profile = () => {
   return (
     <Layout user={user} onSignOut={handleSignOut}>
       <div className="max-w-4xl mx-auto space-y-6">
+        {/* YouTube Tutorial Button */}
+        <div className="flex justify-end">
+          <YouTubePopup 
+            videoId="9KHLTZaJcR8"
+            buttonText={t('watchProfileTutorial', 'Watch Profile Tutorial')}
+          />
+        </div>
+
         <div className="space-y-1">
           <h1 className="text-2xl font-medium text-gray-900">{t('profileSettings')}</h1>
           <p className="text-sm text-gray-500">{t('manageAccountInfo')}</p>

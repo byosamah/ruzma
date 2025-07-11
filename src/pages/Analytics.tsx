@@ -1,13 +1,15 @@
-
 import React from 'react';
 import Layout from '@/components/Layout';
+import YouTubePopup from '@/components/YouTubePopup';
 import { useDashboard } from '@/hooks/useDashboard';
 import { useDashboardAnalytics } from '@/hooks/useDashboardAnalytics';
 import AnalyticsHeader from '@/components/Analytics/AnalyticsHeader';
 import AnalyticsMetrics from '@/components/Analytics/AnalyticsMetrics';
 import AnalyticsCharts from '@/components/Analytics/AnalyticsCharts';
+import { useT } from '@/lib/i18n';
 
 const Analytics = () => {
+  const t = useT();
   const {
     user,
     loading,
@@ -31,6 +33,14 @@ const Analytics = () => {
   return (
     <Layout user={user} onSignOut={handleSignOut}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
+        {/* YouTube Tutorial Button */}
+        <div className="flex justify-end">
+          <YouTubePopup 
+            videoId="9KHLTZaJcR8"
+            buttonText={t('watchAnalyticsTutorial', 'Watch Analytics Tutorial')}
+          />
+        </div>
+
         <AnalyticsHeader />
         
         <AnalyticsMetrics
