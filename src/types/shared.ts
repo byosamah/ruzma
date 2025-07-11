@@ -9,7 +9,7 @@ export interface DatabaseMilestone {
   deliverable_name?: string;
   deliverable_url?: string;
   deliverable_size?: number;
-  deliverable_link?: string;
+  deliverable_link?: string; // Can now store JSON array of links or single string for backward compatibility
   payment_proof_url?: string;
   watermark_text?: string;
   start_date?: string;

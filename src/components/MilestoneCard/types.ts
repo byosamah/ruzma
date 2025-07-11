@@ -10,7 +10,7 @@ export interface Milestone {
     size: number;
     url?: string;
   };
-  deliverable_link?: string; // New field for link sharing
+  deliverable_link?: string; // Can now store JSON array of links or single string for backward compatibility
   paymentProofUrl?: string;
   start_date?: string;
   end_date?: string;

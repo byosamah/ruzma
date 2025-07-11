@@ -5,6 +5,7 @@ import { Upload, Download, Link, File } from 'lucide-react';
 import { Milestone } from './types';
 import { useT } from '@/lib/i18n';
 import PaymentUploadDialog from './PaymentUploadDialog';
+import { parseDeliverableLinks } from '@/lib/linkUtils';
 
 interface ClientViewProps {
   milestone: Milestone;
@@ -103,9 +104,9 @@ const ClientView: React.FC<ClientViewProps> = ({
 
   const renderDeliverableSection = () => {
     const hasFileDeliverable = milestone.deliverable?.url;
-    const hasLinkDeliverable = milestone.deliverable_link;
+    const deliverableLinks = parseDeliverableLinks(milestone.deliverable_link);
     
-    if (!hasFileDeliverable && !hasLinkDeliverable) {
+    if (!hasFileDeliverable && deliverableLinks.length === 0) {
       return (
         <div className="text-center py-6">
           <div className="w-12 h-12 bg-slate-100 rounded-xl flex items-center justify-center mx-auto mb-3">
@@ -162,35 +163,46 @@ const ClientView: React.FC<ClientViewProps> = ({
           </div>
         )}
 
-        {/* Link Deliverable */}
-        {hasLinkDeliverable && (
+        {/* Multiple Link Deliverables */}
+        {deliverableLinks.length > 0 && (
           <div className="space-y-2">
             <h5 className="text-sm font-medium text-slate-700 flex items-center gap-2">
               <Link className="w-4 h-4" />
-              Shared Link
+              Shared Links ({deliverableLinks.length})
             </h5>
-            <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center space-x-2 text-sm text-blue-800">
-                  <Link className="w-4 h-4" />
-                  <span className="font-medium">External deliverable link</span>
-                </div>
-                {canAccess ? (
-                  <Button
-                    size="sm"
-                    variant="outline"
-                    onClick={() => window.open(milestone.deliverable_link, '_blank')}
-                    className="border-blue-200 text-blue-700 hover:bg-blue-100"
-                  >
-                    <Link className="w-4 h-4 mr-1" />
-                    Open Link
-                  </Button>
-                ) : (
-                  <div className="text-xs text-amber-600 px-2 py-1 bg-amber-50 rounded">
-                    {paymentProofRequired ? 'Payment required' : 'Not available'}
+            <div className="space-y-2">
+              {deliverableLinks.map((link, index) => (
+                <div key={index} className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center space-x-2 text-sm text-blue-800 flex-1 min-w-0">
+                      <Link className="w-4 h-4 flex-shrink-0" />
+                      <div className="min-w-0 flex-1">
+                        <span className="font-medium block truncate">
+                          {link.title || `Link ${index + 1}`}
+                        </span>
+                        <span className="text-xs text-blue-600 block truncate">
+                          {link.url}
+                        </span>
+                      </div>
+                    </div>
+                    {canAccess ? (
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        onClick={() => window.open(link.url, '_blank')}
+                        className="border-blue-200 text-blue-700 hover:bg-blue-100 ml-2 flex-shrink-0"
+                      >
+                        <Link className="w-4 h-4 mr-1" />
+                        Open
+                      </Button>
+                    ) : (
+                      <div className="text-xs text-amber-600 px-2 py-1 bg-amber-50 rounded ml-2 flex-shrink-0">
+                        {paymentProofRequired ? 'Payment required' : 'Not available'}
+                      </div>
+                    )}
                   </div>
-                )}
-              </div>
+                </div>
+              ))}
             </div>
           </div>
         )}

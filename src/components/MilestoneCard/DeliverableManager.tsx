@@ -1,12 +1,10 @@
 
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Upload, Link, ExternalLink, Download, FileUp } from 'lucide-react';
+import { Upload, Link, Download, FileUp } from 'lucide-react';
 import { useT } from '@/lib/i18n';
-import { toast } from 'sonner';
+import MultiLinkManager from './MultiLinkManager';
 
 interface DeliverableManagerProps {
   milestone: {
@@ -31,56 +29,12 @@ const DeliverableManager: React.FC<DeliverableManagerProps> = ({
   onDeliverableLinkUpdate,
 }) => {
   const t = useT();
-  const [deliverableLink, setDeliverableLink] = useState(milestone.deliverable_link || '');
-  const [isUpdatingLink, setIsUpdatingLink] = useState(false);
-
   const isUploadEnabled = userType === 'plus' || userType === 'pro';
 
   const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file && onDeliverableUpload) {
       onDeliverableUpload(milestone.id, file);
-    }
-  };
-
-  const handleLinkUpdate = async () => {
-    if (!deliverableLink.trim()) {
-      toast.error('Please enter a valid link');
-      return;
-    }
-
-    try {
-      new URL(deliverableLink);
-    } catch {
-      toast.error('Please enter a valid URL');
-      return;
-    }
-
-    setIsUpdatingLink(true);
-    try {
-      if (onDeliverableLinkUpdate) {
-        await onDeliverableLinkUpdate(milestone.id, deliverableLink);
-        toast.success('Deliverable link updated successfully');
-      }
-    } catch (error) {
-      toast.error('Failed to update deliverable link');
-    } finally {
-      setIsUpdatingLink(false);
-    }
-  };
-
-  const handleLinkRemove = async () => {
-    setIsUpdatingLink(true);
-    try {
-      if (onDeliverableLinkUpdate) {
-        await onDeliverableLinkUpdate(milestone.id, '');
-        setDeliverableLink('');
-        toast.success('Deliverable link removed successfully');
-      }
-    } catch (error) {
-      toast.error('Failed to remove deliverable link');
-    } finally {
-      setIsUpdatingLink(false);
     }
   };
 
@@ -110,7 +64,7 @@ const DeliverableManager: React.FC<DeliverableManagerProps> = ({
             className="text-xs data-[state=active]:bg-white data-[state=active]:shadow-none"
           >
             <Link className="w-3 h-3 mr-1.5" />
-            {t('link')}
+            Links
           </TabsTrigger>
         </TabsList>
 
@@ -175,55 +129,10 @@ const DeliverableManager: React.FC<DeliverableManagerProps> = ({
         </TabsContent>
 
         <TabsContent value="link" className="space-y-3 mt-4">
-          <div className="space-y-3">
-            <div className="flex space-x-2">
-              <Input
-                id={`deliverable-link-${milestone.id}`}
-                type="url"
-                placeholder="https://drive.google.com/..."
-                value={deliverableLink}
-                onChange={(e) => setDeliverableLink(e.target.value)}
-                className="text-sm"
-              />
-              <Button 
-                onClick={handleLinkUpdate}
-                disabled={isUpdatingLink}
-                size="sm"
-                className="px-3"
-              >
-                {isUpdatingLink ? t('saving') : t('save')}
-              </Button>
-            </div>
-          </div>
-          
-          {milestone.deliverable_link && (
-            <div className="flex items-center justify-between bg-blue-50 p-3 rounded-lg border border-blue-100">
-              <div className="flex items-center space-x-2 text-sm text-blue-700">
-                <Link className="w-4 h-4" />
-                <span className="font-medium">Link shared with client</span>
-              </div>
-              <div className="flex items-center space-x-2">
-                <Button
-                  size="sm"
-                  variant="ghost"
-                  onClick={() => window.open(milestone.deliverable_link, '_blank')}
-                  className="h-7 px-2 text-xs text-blue-600 hover:bg-blue-100"
-                >
-                  <ExternalLink className="w-3 h-3 mr-1" />
-                  {t('open')}
-                </Button>
-                <Button
-                  size="sm"
-                  variant="ghost"
-                  onClick={handleLinkRemove}
-                  disabled={isUpdatingLink}
-                  className="h-7 px-2 text-xs text-red-600 hover:bg-red-50"
-                >
-                  Remove
-                </Button>
-              </div>
-            </div>
-          )}
+          <MultiLinkManager
+            milestone={milestone}
+            onDeliverableLinkUpdate={onDeliverableLinkUpdate}
+          />
         </TabsContent>
       </Tabs>
     </div>

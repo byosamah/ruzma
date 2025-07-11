@@ -1,3 +1,4 @@
+
 export interface MilestoneFormData {
   title: string;
   description: string;
@@ -5,7 +6,7 @@ export interface MilestoneFormData {
   status: 'pending' | 'payment_submitted' | 'approved' | 'rejected';
   start_date?: string;
   end_date?: string;
-  deliverable_link?: string; // New field for link sharing
+  deliverable_link?: string; // Can now store JSON array of links or single string for backward compatibility
 }
 
 export interface ProjectFormData {

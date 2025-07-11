@@ -10,7 +10,7 @@ export interface Milestone {
     name?: string;
     size?: number;
   };
-  deliverable_link?: string;
+  deliverable_link?: string; // Can now store JSON array of links or single string for backward compatibility
   start_date?: string;
   end_date?: string;
   created_at: string;
