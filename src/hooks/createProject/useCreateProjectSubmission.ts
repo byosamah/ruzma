@@ -29,8 +29,9 @@ export const useCreateProjectSubmission = () => {
         return;
       }
 
-      if (data.clientEmail) {
-        const emailValidation = validateEmail(data.clientEmail);
+      // Enhanced input validation - only validate email if provided
+      if (data.clientEmail?.trim()) {
+        const emailValidation = validateEmail(data.clientEmail.trim());
         if (!emailValidation.isValid) {
           toast.error(emailValidation.error || 'Invalid client email');
           securityMonitor.monitorValidationFailure(data.clientEmail, 'email_validation');
@@ -137,14 +138,17 @@ export const useCreateProjectSubmission = () => {
       // Look up or create client by email
       let clientId: string | null = null;
       
-      if (data.clientEmail) {
-        console.log('Looking up client by email:', data.clientEmail);
+      // Ensure client_email is null if empty to avoid constraint violation
+      const clientEmail = data.clientEmail?.trim() || null;
+      
+      if (clientEmail) {
+        console.log('Looking up client by email:', clientEmail);
         
         // First, try to find existing client by email
         const { data: existingClient, error: clientLookupError } = await supabase
           .from('clients')
           .select('id')
-          .eq('email', data.clientEmail)
+          .eq('email', clientEmail)
           .eq('user_id', user.id)
           .maybeSingle();
 
@@ -158,10 +162,10 @@ export const useCreateProjectSubmission = () => {
           console.log('Client not found, creating new client');
           
           // Extract name from email if not provided elsewhere
-          const clientName = sanitizeInput(data.clientEmail.split('@')[0]);
+          const clientName = sanitizeInput(clientEmail.split('@')[0]);
           
           securityMonitor.monitorDataModification('clients', 'auto_create', { 
-            email: data.clientEmail,
+            email: clientEmail,
             userId: user.id 
           });
           
@@ -169,7 +173,7 @@ export const useCreateProjectSubmission = () => {
             .from('clients')
             .insert({
               name: clientName,
-              email: data.clientEmail,
+              email: clientEmail,
               user_id: user.id
             })
             .select('id')
@@ -179,7 +183,7 @@ export const useCreateProjectSubmission = () => {
             console.error('Error creating client:', clientCreateError);
             securityMonitor.monitorPermissionViolation('clients', 'auto_create', {
               error: clientCreateError.message,
-              email: data.clientEmail,
+              email: clientEmail,
               userId: user.id
             });
             toast.error('Failed to create client record');
@@ -200,7 +204,7 @@ export const useCreateProjectSubmission = () => {
         .insert({
           name: sanitizedName,
           brief: sanitizedBrief,
-          client_email: data.clientEmail,
+          client_email: clientEmail,
           client_id: clientId,
           user_id: user.id,
           start_date,
