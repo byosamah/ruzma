@@ -3,20 +3,17 @@ import React from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import Layout from "@/components/Layout";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Calendar, DollarSign, CheckCircle2 } from "lucide-react";
-import { useT, TranslationKey } from "@/lib/i18n";
+import { CheckCircle2, DollarSign } from "lucide-react";
+import { useT } from "@/lib/i18n";
 import { useProjectManagement } from "@/hooks/useProjectManagement";
 import { useProjects } from "@/hooks/useProjects";
 import ProjectHeader from "@/components/ProjectManagement/ProjectHeader";
 import MilestoneList from "@/components/ProjectManagement/MilestoneList";
-import { useIsMobile } from "@/hooks/use-mobile";
 
 const ProjectManagement: React.FC = () => {
   const { slug } = useParams<{ slug: string; }>();
   const navigate = useNavigate();
   const t = useT();
-  const isMobile = useIsMobile();
   const {
     user,
     profile,
@@ -25,9 +22,7 @@ const ProjectManagement: React.FC = () => {
     userCurrency,
     updateMilestoneStatus,
     uploadPaymentProof,
-    uploadDeliverable,
-    updateDeliverableLink,
-    downloadDeliverable
+    updateDeliverableLink
   } = useProjectManagement(slug);
   const { deleteProject } = useProjects(user);
 
@@ -153,12 +148,9 @@ const ProjectManagement: React.FC = () => {
           <MilestoneList 
             milestones={project.milestones} 
             userCurrency={userCurrency.currency}
-            userType={profile?.user_type as 'free' | 'plus' | 'pro' || 'free'}
             onUpdateMilestoneStatus={updateMilestoneStatus} 
             onPaymentUpload={uploadPaymentProof} 
-            onDeliverableUpload={uploadDeliverable}
             onDeliverableLinkUpdate={updateDeliverableLink}
-            onDeliverableDownload={downloadDeliverable} 
           />
         </div>
       </div>

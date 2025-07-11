@@ -8,23 +8,17 @@ import { useT } from '@/lib/i18n';
 interface MilestoneListProps {
   milestones: DatabaseMilestone[];
   userCurrency: import('@/lib/currency').CurrencyCode;
-  userType?: 'free' | 'plus' | 'pro';
   onUpdateMilestoneStatus: (milestoneId: string, newStatus: Milestone["status"]) => Promise<void>;
   onPaymentUpload: (milestoneId: string, file: File) => Promise<void>;
-  onDeliverableUpload: (milestoneId: string, file: File) => Promise<void>;
   onDeliverableLinkUpdate: (milestoneId: string, link: string) => Promise<void>;
-  onDeliverableDownload: (milestoneId: string) => Promise<void>;
 }
 
 const MilestoneList: React.FC<MilestoneListProps> = ({
   milestones,
   userCurrency,
-  userType = 'free',
   onUpdateMilestoneStatus,
   onPaymentUpload,
-  onDeliverableUpload,
   onDeliverableLinkUpdate,
-  onDeliverableDownload,
 }) => {
   const t = useT();
 
@@ -64,11 +58,6 @@ const MilestoneList: React.FC<MilestoneListProps> = ({
                 description: milestone.description,
                 price: milestone.price,
                 status: milestone.status,
-                deliverable: milestone.deliverable_name ? {
-                  name: milestone.deliverable_name,
-                  size: milestone.deliverable_size || 0,
-                  url: milestone.deliverable_url
-                } : undefined,
                 deliverable_link: milestone.deliverable_link,
                 paymentProofUrl: milestone.payment_proof_url,
                 start_date: milestone.start_date || undefined,
@@ -76,15 +65,12 @@ const MilestoneList: React.FC<MilestoneListProps> = ({
                 created_at: milestone.created_at,
                 updated_at: milestone.updated_at,
               }}
-              userType={userType}
               onUpdateMilestoneStatus={
                 milestone.status === "payment_submitted"
                   ? (mId, status) => onUpdateMilestoneStatus(mId, status)
                   : undefined
               }
-              onDeliverableUpload={onDeliverableUpload}
               onDeliverableLinkUpdate={handleDeliverableLinkUpdate}
-              onDeliverableDownload={onDeliverableDownload}
               onPaymentUpload={handlePaymentUpload}
               currency={userCurrency}
             />

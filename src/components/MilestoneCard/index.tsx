@@ -11,12 +11,9 @@ import { FreelancerBranding } from '@/types/branding';
 interface MilestoneCardProps {
   milestone: Milestone;
   isClient?: boolean;
-  userType?: 'free' | 'plus' | 'pro';
   onUpdateMilestoneStatus?: (milestoneId: string, status: 'approved' | 'rejected') => void;
   onPaymentUpload?: (milestoneId: string, file: File) => Promise<boolean>;
-  onDeliverableUpload?: (milestoneId: string, file: File) => void;
   onDeliverableLinkUpdate?: (milestoneId: string, link: string) => void;
-  onDeliverableDownload?: (milestoneId: string) => void;
   currency?: CurrencyCode;
   freelancerCurrency?: CurrencyCode | null;
   branding?: FreelancerBranding | null;
@@ -26,12 +23,9 @@ interface MilestoneCardProps {
 const MilestoneCard: React.FC<MilestoneCardProps> = ({
   milestone,
   isClient = false,
-  userType = 'free',
   onUpdateMilestoneStatus,
   onPaymentUpload,
-  onDeliverableUpload,
   onDeliverableLinkUpdate,
-  onDeliverableDownload,
   currency = 'USD',
   freelancerCurrency,
   branding,
@@ -50,13 +44,11 @@ const MilestoneCard: React.FC<MilestoneCardProps> = ({
           <ClientView
             milestone={milestone}
             onPaymentUpload={onPaymentUpload}
-            onDeliverableDownload={onDeliverableDownload}
             paymentProofRequired={paymentProofRequired}
           />
         ) : (
           <FreelancerView
             milestone={milestone}
-            userType={userType}
             onApprove={
               milestone.status === "payment_submitted" && onUpdateMilestoneStatus
                 ? (mId) => onUpdateMilestoneStatus(mId, "approved")
@@ -67,7 +59,6 @@ const MilestoneCard: React.FC<MilestoneCardProps> = ({
                 ? (mId) => onUpdateMilestoneStatus(mId, "rejected")
                 : undefined
             }
-            onDeliverableUpload={onDeliverableUpload}
             onDeliverableLinkUpdate={onDeliverableLinkUpdate}
             onShowPaymentProofPreview={() => {}}
           />

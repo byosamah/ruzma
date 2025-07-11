@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { Button } from '@/components/ui/button';
-import { Upload, Download, Link, File } from 'lucide-react';
+import { Upload, Link, File } from 'lucide-react';
 import { Milestone } from './types';
 import { useT } from '@/lib/i18n';
 import PaymentUploadDialog from './PaymentUploadDialog';
@@ -10,14 +10,12 @@ import { parseDeliverableLinks } from '@/lib/linkUtils';
 interface ClientViewProps {
   milestone: Milestone;
   onPaymentUpload?: (milestoneId: string, file: File) => Promise<boolean>;
-  onDeliverableDownload?: (milestoneId: string) => void;
   paymentProofRequired?: boolean;
 }
 
 const ClientView: React.FC<ClientViewProps> = ({
   milestone,
   onPaymentUpload,
-  onDeliverableDownload,
   paymentProofRequired = false,
 }) => {
   const t = useT();
@@ -89,12 +87,6 @@ const ClientView: React.FC<ClientViewProps> = ({
     );
   };
 
-  const handleDownload = () => {
-    if (onDeliverableDownload) {
-      onDeliverableDownload(milestone.id);
-    }
-  };
-
   const canAccessDeliverables = () => {
     if (!paymentProofRequired) {
       return true;
@@ -103,17 +95,16 @@ const ClientView: React.FC<ClientViewProps> = ({
   };
 
   const renderDeliverableSection = () => {
-    const hasFileDeliverable = milestone.deliverable?.url;
     const deliverableLinks = parseDeliverableLinks(milestone.deliverable_link);
     
-    if (!hasFileDeliverable && deliverableLinks.length === 0) {
+    if (deliverableLinks.length === 0) {
       return (
         <div className="text-center py-6">
           <div className="w-12 h-12 bg-slate-100 rounded-xl flex items-center justify-center mx-auto mb-3">
             <File className="w-6 h-6 text-slate-400" />
           </div>
           <p className="text-sm text-slate-500">No deliverable available yet</p>
-          <p className="text-xs text-slate-400 mt-1">Your freelancer will upload the deliverable once completed</p>
+          <p className="text-xs text-slate-400 mt-1">Your freelancer will share deliverable links once completed</p>
         </div>
       );
     }
@@ -122,90 +113,47 @@ const ClientView: React.FC<ClientViewProps> = ({
 
     return (
       <div className="space-y-4">
-        {/* File Deliverable */}
-        {hasFileDeliverable && (
+        {/* Multiple Link Deliverables */}
+        <div className="space-y-2">
+          <h5 className="text-sm font-medium text-slate-700 flex items-center gap-2">
+            <Link className="w-4 h-4" />
+            Shared Links ({deliverableLinks.length})
+          </h5>
           <div className="space-y-2">
-            <h5 className="text-sm font-medium text-slate-700 flex items-center gap-2">
-              <File className="w-4 h-4" />
-              File Deliverable
-            </h5>
-            <div className="bg-slate-50 border border-slate-200 rounded-lg p-4">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center space-x-3 text-sm text-slate-700">
-                  <Download className="w-4 h-4 text-slate-500" />
-                  <div>
-                    <span className="font-medium">{milestone.deliverable?.name || 'Deliverable file'}</span>
-                    {milestone.deliverable?.size && (
-                      <span className="text-xs text-slate-500 block">
-                        {(milestone.deliverable.size / 1024 / 1024).toFixed(1)} MB
+            {deliverableLinks.map((link, index) => (
+              <div key={index} className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center space-x-2 text-sm text-blue-800 flex-1 min-w-0">
+                    <Link className="w-4 h-4 flex-shrink-0" />
+                    <div className="min-w-0 flex-1">
+                      <span className="font-medium block truncate">
+                        {link.title || `Link ${index + 1}`}
                       </span>
-                    )}
+                      <span className="text-xs text-blue-600 block truncate">
+                        {link.url}
+                      </span>
+                    </div>
                   </div>
-                </div>
-                <div className="flex items-center space-x-2">
-                  {canAccess && onDeliverableDownload ? (
+                  {canAccess ? (
                     <Button
                       size="sm"
-                      onClick={handleDownload}
-                      className="bg-green-600 hover:bg-green-700 text-white"
+                      variant="outline"
+                      onClick={() => window.open(link.url, '_blank')}
+                      className="border-blue-200 text-blue-700 hover:bg-blue-100 ml-2 flex-shrink-0"
                     >
-                      <Download className="w-4 h-4 mr-1" />
-                      Download
+                      <Link className="w-4 h-4 mr-1" />
+                      Open
                     </Button>
                   ) : (
-                    <div className="text-xs text-amber-600 px-2 py-1 bg-amber-50 rounded">
+                    <div className="text-xs text-amber-600 px-2 py-1 bg-amber-50 rounded ml-2 flex-shrink-0">
                       {paymentProofRequired ? 'Payment required' : 'Not available'}
                     </div>
                   )}
                 </div>
               </div>
-            </div>
+            ))}
           </div>
-        )}
-
-        {/* Multiple Link Deliverables */}
-        {deliverableLinks.length > 0 && (
-          <div className="space-y-2">
-            <h5 className="text-sm font-medium text-slate-700 flex items-center gap-2">
-              <Link className="w-4 h-4" />
-              Shared Links ({deliverableLinks.length})
-            </h5>
-            <div className="space-y-2">
-              {deliverableLinks.map((link, index) => (
-                <div key={index} className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center space-x-2 text-sm text-blue-800 flex-1 min-w-0">
-                      <Link className="w-4 h-4 flex-shrink-0" />
-                      <div className="min-w-0 flex-1">
-                        <span className="font-medium block truncate">
-                          {link.title || `Link ${index + 1}`}
-                        </span>
-                        <span className="text-xs text-blue-600 block truncate">
-                          {link.url}
-                        </span>
-                      </div>
-                    </div>
-                    {canAccess ? (
-                      <Button
-                        size="sm"
-                        variant="outline"
-                        onClick={() => window.open(link.url, '_blank')}
-                        className="border-blue-200 text-blue-700 hover:bg-blue-100 ml-2 flex-shrink-0"
-                      >
-                        <Link className="w-4 h-4 mr-1" />
-                        Open
-                      </Button>
-                    ) : (
-                      <div className="text-xs text-amber-600 px-2 py-1 bg-amber-50 rounded ml-2 flex-shrink-0">
-                        {paymentProofRequired ? 'Payment required' : 'Not available'}
-                      </div>
-                    )}
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
+        </div>
       </div>
     );
   };

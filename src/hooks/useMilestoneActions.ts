@@ -3,8 +3,6 @@ import { User } from '@supabase/supabase-js';
 import { DatabaseProject } from './projectTypes';
 import { updateMilestoneStatus as updateMilestoneStatusAction } from './milestone-actions/updateStatus';
 import { uploadPaymentProofAction } from './milestone-actions/uploadPaymentProof';
-import { uploadDeliverableAction } from './milestone-actions/uploadDeliverable';
-import { downloadDeliverableAction } from './milestone-actions/downloadDeliverable';
 import { updateDeliverableLinkAction } from './milestone-actions/updateDeliverableLink';
 
 export function useMilestoneActions(
@@ -29,13 +27,6 @@ export function useMilestoneActions(
     }
   };
 
-  const uploadDeliverable = async (milestoneId: string, file: File) => {
-    const success = await uploadDeliverableAction(user, milestoneId, file);
-    if (success) {
-      await fetchProjects();
-    }
-  };
-
   const updateDeliverableLink = async (milestoneId: string, link: string) => {
     const success = await updateDeliverableLinkAction(user, milestoneId, link);
     if (success) {
@@ -43,16 +34,9 @@ export function useMilestoneActions(
     }
   };
 
-  const downloadDeliverable = async (milestoneId: string) => {
-    // For freelancer downloads, always require payment approval (default behavior)
-    await downloadDeliverableAction(projects, milestoneId, true);
-  };
-
   return {
     updateMilestoneStatus,
     uploadPaymentProof,
-    uploadDeliverable,
     updateDeliverableLink,
-    downloadDeliverable,
   };
 }

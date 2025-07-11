@@ -16,9 +16,7 @@ export const useProjectManagement = (slug: string | undefined) => {
   const {
     updateMilestoneStatus,
     uploadPaymentProof,
-    uploadDeliverable,
     updateDeliverableLink,
-    downloadDeliverable,
   } = useMilestoneActions(user, projects, fetchProjects);
 
   useEffect(() => {
@@ -40,8 +38,6 @@ export const useProjectManagement = (slug: string | undefined) => {
     userCurrency,
     updateMilestoneStatus,
     uploadPaymentProof,
-    uploadDeliverable,
     updateDeliverableLink,
-    downloadDeliverable,
   };
 };
