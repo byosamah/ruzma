@@ -54,6 +54,7 @@ export const SubscriptionCard: React.FC<SubscriptionCardProps> = ({
       <SubscriptionCardHeader
         planId={plan.id}
         price={plan.price}
+        originalPrice={plan.originalPrice}
         interval={plan.interval}
         currency={currency}
         language={language}

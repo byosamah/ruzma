@@ -3,6 +3,7 @@ export interface SubscriptionPlan {
   id: string;
   name: string;
   price: number;
+  originalPrice?: number;
   interval: 'month' | 'year';
   features: string[];
   storeId?: string;

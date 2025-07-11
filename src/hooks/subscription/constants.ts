@@ -4,8 +4,8 @@ import { CurrencyCode } from '@/lib/currency';
 // Base prices in USD
 export const BASE_PRICES = {
   free: 0,
-  plus: 10,
-  pro: 50,
+  plus: 19,
+  pro: 349,
 };
 
 // Currency exchange rates (USD as base)

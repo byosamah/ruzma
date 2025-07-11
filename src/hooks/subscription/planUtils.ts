@@ -21,8 +21,9 @@ export const getSubscriptionPlans = (currency: CurrencyCode = 'USD'): Subscripti
     },
     {
       id: 'plus',
-      name: 'Plus',
-      price: Math.round(BASE_PRICES.plus * rate * 100) / 100,
+      name: 'Monthly',
+      price: Math.round(19 * rate * 100) / 100,
+      originalPrice: Math.round(39 * rate * 100) / 100,
       interval: 'month',
       features: [
         'Unlimited projects',
@@ -35,8 +36,9 @@ export const getSubscriptionPlans = (currency: CurrencyCode = 'USD'): Subscripti
     },
     {
       id: 'pro',
-      name: 'Pro',
-      price: Math.round(BASE_PRICES.pro * rate * 100) / 100,
+      name: 'Lifetime',
+      price: Math.round(349 * rate * 100) / 100,
+      originalPrice: Math.round(450 * rate * 100) / 100,
       interval: 'month',
       features: [
         'Unlimited projects',
