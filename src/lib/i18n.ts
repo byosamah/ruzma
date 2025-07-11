@@ -13,22 +13,22 @@ import { plansTranslations } from "./translations/plans";
 // Combine all translations
 const translations = {
   en: {
+    ...commonTranslations.en,
     ...authTranslations.en,
     ...dashboardTranslations.en,
     ...projectTranslations.en,
     ...clientTranslations.en,
-    ...commonTranslations.en,
     ...profileTranslations.en,
     ...clientsTranslations.en,
     ...analyticsTranslations.en,
     ...plansTranslations.en,
   },
   ar: {
+    ...commonTranslations.ar,
     ...authTranslations.ar,
     ...dashboardTranslations.ar,
     ...projectTranslations.ar,
     ...clientTranslations.ar,
-    ...commonTranslations.ar,
     ...profileTranslations.ar,
     ...clientsTranslations.ar,
     ...analyticsTranslations.ar,
