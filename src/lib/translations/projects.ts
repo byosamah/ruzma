@@ -97,6 +97,14 @@ export const projectTranslations = {
     startDate: "Start Date",
     endDate: "End Date",
     
+    // Project details and forms
+    projectDetails: "Project Details",
+    projectNamePlaceholder: "Enter project name",
+    projectBriefPlaceholder: "Describe your project requirements and goals",
+    projectNamePlaceholder_edit: "Enter project name",
+    projectBriefPlaceholder_edit: "Describe your project requirements and goals",
+    client: "Client",
+    
     // Milestones
     milestones: "Milestones",
     milestone: "Milestone",
@@ -106,9 +114,31 @@ export const projectTranslations = {
     milestoneTitle: "Milestone Title",
     milestoneDescription: "Milestone Description",
     milestonePrice: "Milestone Price",
+    projectMilestones: "Project Milestones",
+    milestoneLabel: "Milestone {{index}}",
+    milestoneTitleLabel: "Milestone Title",
+    milestoneTitlePlaceholder: "Enter milestone title",
+    milestoneTitlePlaceholder_edit: "Enter milestone title",
+    milestoneDescriptionPlaceholder: "Describe what will be delivered in this milestone",
+    milestoneDescriptionPlaceholder_edit: "Describe what will be delivered in this milestone",
+    milestonePricePlaceholder_edit: "0.00",
+    priceLabel: "Price ({{currency}})",
+    descriptionLabel: "Description",
+    
+    // Payment and delivery settings
+    paymentDeliverySettings: "Payment & Delivery Settings",
+    requirePaymentProof: "Require Payment Proof",
+    paymentProofDescription: "When enabled, clients must upload payment proof before they can download deliverables. This helps ensure you receive payment before delivery.",
+    
+    // Template settings
+    saveAsTemplateLabel: "Save as Template",
+    
+    // Form actions
+    creating: "Creating...",
     
     // Status and actions
     status: "Status",
+    milestoneStatus: "Milestone Status",
     approve: "Approve",
     reject: "Reject",
     upload: "Upload",
@@ -132,6 +162,8 @@ export const projectTranslations = {
     edit: "Edit",
     delete: "Delete",
     back: "Back",
+    title: "Title",
+    description: "Description",
     
     // Messages
     projectCreated: "Project created successfully",
@@ -140,6 +172,22 @@ export const projectTranslations = {
     milestoneCreated: "Milestone created successfully",
     milestoneUpdated: "Milestone updated successfully",
     milestoneDeleted: "Milestone deleted successfully",
+    
+    // Client selection
+    selectClientOrEnterEmail: "Select client or enter email",
+    
+    // Milestone status messages
+    milestoneAwaitingStart: "This milestone is awaiting to be started",
+    milestoneInProgress: "Work is currently in progress on this milestone",
+    milestoneUnderReview: "This milestone is under client review",
+    milestoneRevisionRequested: "Client has requested revisions",
+    paymentApprovedClientDownload: "Payment approved - client can download deliverables",
+    milestoneCompleted: "This milestone has been completed",
+    milestoneOnHold: "This milestone is temporarily on hold",
+    milestoneCancelled: "This milestone has been cancelled",
+    paymentProofSubmittedByClient: "Payment proof has been submitted by the client",
+    open: "Open",
+    approvePayment: "Approve Payment",
     
     ...milestoneStatusTranslations.en,
   },
@@ -155,6 +203,14 @@ export const projectTranslations = {
     startDate: "تاريخ البداية",
     endDate: "تاريخ النهاية",
     
+    // Project details and forms
+    projectDetails: "تفاصيل المشروع",
+    projectNamePlaceholder: "أدخل اسم المشروع",
+    projectBriefPlaceholder: "اوصف متطلبات وأهداف مشروعك",
+    projectNamePlaceholder_edit: "أدخل اسم المشروع",
+    projectBriefPlaceholder_edit: "اوصف متطلبات وأهداف مشروعك",
+    client: "العميل",
+    
     // Milestones
     milestones: "المعالم",
     milestone: "معلم",
@@ -164,9 +220,31 @@ export const projectTranslations = {
     milestoneTitle: "عنوان المعلم",
     milestoneDescription: "وصف المعلم",
     milestonePrice: "سعر المعلم",
+    projectMilestones: "معالم المشروع",
+    milestoneLabel: "المعلم {{index}}",
+    milestoneTitleLabel: "عنوان المعلم",
+    milestoneTitlePlaceholder: "أدخل عنوان المعلم",
+    milestoneTitlePlaceholder_edit: "أدخل عنوان المعلم",
+    milestoneDescriptionPlaceholder: "اوصف ما سيتم تسليمه في هذا المعلم",
+    milestoneDescriptionPlaceholder_edit: "اوصف ما سيتم تسليمه في هذا المعلم",
+    milestonePricePlaceholder_edit: "0.00",
+    priceLabel: "السعر ({{currency}})",
+    descriptionLabel: "الوصف",
+    
+    // Payment and delivery settings
+    paymentDeliverySettings: "إعدادات الدفع والتسليم",
+    requirePaymentProof: "مطالبة بإثبات الدفع",
+    paymentProofDescription: "عند التفعيل، يجب على العملاء رفع إثبات الدفع قبل أن يتمكنوا من تحميل التسليمات. هذا يساعد في ضمان الحصول على الدفع قبل التسليم.",
+    
+    // Template settings
+    saveAsTemplateLabel: "حفظ كقالب",
+    
+    // Form actions
+    creating: "جاري الإنشاء...",
     
     // Status and actions
     status: "الحالة",
+    milestoneStatus: "حالة المعلم",
     approve: "موافقة",
     reject: "رفض",
     upload: "رفع",
@@ -190,6 +268,8 @@ export const projectTranslations = {
     edit: "تعديل",
     delete: "حذف",
     back: "رجوع",
+    title: "العنوان",
+    description: "الوصف",
     
     // Messages
     projectCreated: "تم إنشاء المشروع بنجاح",
@@ -198,6 +278,22 @@ export const projectTranslations = {
     milestoneCreated: "تم إنشاء المعلم بنجاح",
     milestoneUpdated: "تم تحديث المعلم بنجاح",
     milestoneDeleted: "تم حذف المعلم بنجاح",
+    
+    // Client selection
+    selectClientOrEnterEmail: "اختر عميل أو أدخل البريد الإلكتروني",
+    
+    // Milestone status messages
+    milestoneAwaitingStart: "هذا المعلم في انتظار البدء",
+    milestoneInProgress: "العمل جاري حالياً على هذا المعلم",
+    milestoneUnderReview: "هذا المعلم قيد مراجعة العميل",
+    milestoneRevisionRequested: "طلب العميل تعديلات",
+    paymentApprovedClientDownload: "تم الموافقة على الدفع - يمكن للعميل تحميل التسليمات",
+    milestoneCompleted: "تم إكمال هذا المعلم",
+    milestoneOnHold: "هذا المعلم متوقف مؤقتاً",
+    milestoneCancelled: "تم إلغاء هذا المعلم",
+    paymentProofSubmittedByClient: "تم تقديم إثبات الدفع من قبل العميل",
+    open: "فتح",
+    approvePayment: "الموافقة على الدفع",
     
     ...milestoneStatusTranslations.ar,
   }
