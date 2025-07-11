@@ -115,6 +115,37 @@ export const commonTranslations = {
     // Project management
     viewClientPage: 'View Client Page',
     
+    // Notifications
+    notifications: 'Notifications',
+    loadingNotifications: 'Loading notifications...',
+    markAllRead: 'Mark All Read',
+    noNotificationsYet: 'No notifications yet',
+    
+    // Authentication
+    accountCreatedSuccess: 'Account created successfully!',
+    currencySelectionIssue: 'There was an issue with currency selection',
+    tooManySignupAttempts: 'Too many signup attempts. Please try again later.',
+    accountCreationFailed: 'Account creation failed',
+    
+    // Contact form
+    contactUsTitle: 'Contact Us',
+    contactUsSubtitle: 'We\'d love to hear from you. Send us a message and we\'ll respond as soon as possible.',
+    contactSendMessage: 'Send Message',
+    contactName: 'Name',
+    contactNamePlaceholder: 'Your full name',
+    contactEmail: 'Email',
+    contactEmailPlaceholder: 'your.email@example.com',
+    contactSubject: 'Subject',
+    contactSubjectPlaceholder: 'What is this about?',
+    contactMessage: 'Message',
+    contactMessagePlaceholder: 'Tell us more about your inquiry...',
+    contactSending: 'Sending...',
+    contactSendButton: 'Send Message',
+    contactGetInTouch: 'Get in Touch',
+    contactEmailLabel: 'Email',
+    contactSuccessMessage: 'Message sent successfully!',
+    contactFailedMessage: 'Failed to send message. Please try again.',
+    
     // Tutorial translations
     watchTutorial: 'Watch Tutorial',
     tutorial: 'Tutorial',
@@ -239,6 +270,37 @@ export const commonTranslations = {
     
     // Project management
     viewClientPage: 'عرض صفحة العميل',
+    
+    // Notifications
+    notifications: 'الإشعارات',
+    loadingNotifications: 'جاري تحميل الإشعارات...',
+    markAllRead: 'تحديد الكل كمقروء',
+    noNotificationsYet: 'لا توجد إشعارات بعد',
+    
+    // Authentication
+    accountCreatedSuccess: 'تم إنشاء الحساب بنجاح!',
+    currencySelectionIssue: 'حدثت مشكلة في اختيار العملة',
+    tooManySignupAttempts: 'محاولات تسجيل كثيرة جداً. حاول مرة أخرى لاحقاً.',
+    accountCreationFailed: 'فشل في إنشاء الحساب',
+    
+    // Contact form
+    contactUsTitle: 'اتصل بنا',
+    contactUsSubtitle: 'نود أن نسمع منك. أرسل لنا رسالة وسنرد في أقرب وقت ممكن.',
+    contactSendMessage: 'إرسال رسالة',
+    contactName: 'الاسم',
+    contactNamePlaceholder: 'اسمك الكامل',
+    contactEmail: 'البريد الإلكتروني',
+    contactEmailPlaceholder: 'your.email@example.com',
+    contactSubject: 'الموضوع',
+    contactSubjectPlaceholder: 'عن ماذا تريد التحدث؟',
+    contactMessage: 'الرسالة',
+    contactMessagePlaceholder: 'أخبرنا المزيد عن استفسارك...',
+    contactSending: 'جاري الإرسال...',
+    contactSendButton: 'إرسال الرسالة',
+    contactGetInTouch: 'تواصل معنا',
+    contactEmailLabel: 'البريد الإلكتروني',
+    contactSuccessMessage: 'تم إرسال الرسالة بنجاح!',
+    contactFailedMessage: 'فشل في إرسال الرسالة. حاول مرة أخرى.',
     
     // Tutorial translations
     watchTutorial: 'مشاهدة الدرس التعليمي',
