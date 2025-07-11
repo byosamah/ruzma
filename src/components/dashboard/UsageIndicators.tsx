@@ -3,7 +3,7 @@ import React from 'react';
 import { Progress } from '@/components/ui/progress';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Database, FolderOpen, TrendingUp, MessageCircle, Link } from 'lucide-react';
+import { Database, FolderOpen, TrendingUp, MessageCircle, Link, Infinity } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useUsageTracking } from '@/hooks/useUsageTracking';
 import { DatabaseProject } from '@/hooks/projectTypes';
@@ -68,15 +68,26 @@ export const UsageIndicators: React.FC<UsageIndicatorsProps> = ({
       <Card className="border-0 shadow-none bg-gray-50">
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-3">
           <CardTitle className="text-sm font-medium text-gray-600">{t('projectsUsed')}</CardTitle>
-          <FolderOpen className="h-4 w-4 text-gray-400" />
+          {usage.projects.isUnlimited ? (
+            <Infinity className="h-4 w-4 text-gray-400" />
+          ) : (
+            <FolderOpen className="h-4 w-4 text-gray-400" />
+          )}
         </CardHeader>
         <CardContent className="pb-4">
           <div className="space-y-3">
             <div className="flex items-center justify-between">
               <span className="text-2xl font-semibold text-gray-900">
-                {usage.projects.current} {t('of')} {usage.projects.max}
+                {usage.projects.isUnlimited ? (
+                  <div className="flex items-center gap-2">
+                    {usage.projects.current}
+                    <Infinity className="h-5 w-5 text-gray-600" />
+                  </div>
+                ) : (
+                  `${usage.projects.current} ${t('of')} ${usage.projects.max}`
+                )}
               </span>
-              {usage.projects.percentage >= 100 && (
+              {!usage.projects.isUnlimited && usage.projects.percentage >= 100 && (
                 <Button 
                   size="sm" 
                   onClick={handleUpgradeClick} 
@@ -89,10 +100,19 @@ export const UsageIndicators: React.FC<UsageIndicatorsProps> = ({
                 </Button>
               )}
             </div>
-            <Progress value={usage.projects.percentage} className="h-2 bg-gray-200" />
-            <p className="text-xs text-gray-500">
-              {usage.projects.percentage}% {t('used')}
-            </p>
+            {!usage.projects.isUnlimited && (
+              <>
+                <Progress value={usage.projects.percentage} className="h-2 bg-gray-200" />
+                <p className="text-xs text-gray-500">
+                  {usage.projects.percentage}% {t('used')}
+                </p>
+              </>
+            )}
+            {usage.projects.isUnlimited && (
+              <p className="text-xs text-gray-500">
+                {t('unlimitedProjects')}
+              </p>
+            )}
           </div>
         </CardContent>
       </Card>

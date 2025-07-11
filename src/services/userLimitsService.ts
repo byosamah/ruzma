@@ -35,11 +35,11 @@ export const getUserLimits = async (userType: string = 'free'): Promise<UserLimi
 const getFallbackLimits = (userType: string): UserLimits => {
   switch (userType) {
     case 'plus':
-      return { project_limit: 3, storage_limit_bytes: 10737418240 }; // 10GB
+      return { project_limit: 999999, storage_limit_bytes: 10737418240 }; // Unlimited projects, 10GB
     case 'pro':
-      return { project_limit: 10, storage_limit_bytes: 53687091200 }; // 50GB
+      return { project_limit: 999999, storage_limit_bytes: 53687091200 }; // Unlimited projects, 50GB
     case 'free':
     default:
-      return { project_limit: 1, storage_limit_bytes: 524288000 }; // 500MB
+      return { project_limit: 1, storage_limit_bytes: 524288000 }; // 1 project, 500MB
   }
 };

@@ -25,7 +25,7 @@ export const getSubscriptionPlans = (currency: CurrencyCode = 'USD'): Subscripti
       price: Math.round(BASE_PRICES.plus * rate * 100) / 100,
       interval: 'month',
       features: [
-        '3 projects',
+        'Unlimited projects',
         '10GB storage',
         'Priority support',
         'Advanced analytics',
@@ -39,7 +39,7 @@ export const getSubscriptionPlans = (currency: CurrencyCode = 'USD'): Subscripti
       price: Math.round(BASE_PRICES.pro * rate * 100) / 100,
       interval: 'month',
       features: [
-        '10 projects',
+        'Unlimited projects',
         '50GB storage',
         'Priority support',
         'Advanced analytics',
