@@ -1,7 +1,6 @@
-
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
-import { DatabaseProject } from '@/hooks/projectTypes';
+import { DatabaseProject } from '@/types/shared';
 
 export const downloadDeliverableAction = async (
   projects: DatabaseProject[],

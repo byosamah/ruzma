@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { DatabaseProject } from '@/hooks/projectTypes';
+import { DatabaseProject } from '@/types/shared';
 import { Progress } from '@/components/ui/progress';
 
 interface ProjectProgressBarProps {

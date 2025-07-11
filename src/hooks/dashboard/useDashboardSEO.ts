@@ -1,7 +1,6 @@
-
 import { useMemo } from 'react';
 import { formatCurrency, CurrencyCode } from '@/lib/currency';
-import { DatabaseProject } from '@/hooks/projectTypes';
+import { DatabaseProject } from '@/types/shared';
 
 interface DashboardStats {
   totalProjects: number;

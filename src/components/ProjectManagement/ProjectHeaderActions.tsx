@@ -3,7 +3,7 @@ import React from 'react';
 import { Button } from '@/components/ui/button';
 import { Edit, Trash2, ExternalLink, Send, Copy } from 'lucide-react';
 import { useT } from '@/lib/i18n';
-import { DatabaseProject } from '@/hooks/projectTypes';
+import { DatabaseProject } from '@/types/shared';
 import { toast } from 'sonner';
 import { sendClientLink } from '@/services/clientLinkService';
 import { supabase } from '@/integrations/supabase/client';

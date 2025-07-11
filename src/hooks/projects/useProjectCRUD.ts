@@ -2,7 +2,7 @@
 import { useState } from 'react';
 import { User } from '@supabase/supabase-js';
 import { supabase } from '@/integrations/supabase/client';
-import { DatabaseProject } from '../projectTypes';
+import { DatabaseProject } from '@/types/shared';
 import { generateSlug, ensureUniqueSlug } from '@/lib/slugUtils';
 import { logSecurityEvent } from '@/lib/authSecurity';
 

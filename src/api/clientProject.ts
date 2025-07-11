@@ -1,6 +1,5 @@
-
 import { supabase } from '@/integrations/supabase/client';
-import { DatabaseProject } from '@/hooks/projectTypes';
+import { DatabaseProject } from '@/types/shared';
 
 export const getClientProject = async (token: string, isHybrid?: boolean): Promise<DatabaseProject> => {
   console.log('Fetching project with token:', token, 'isHybrid:', isHybrid);
