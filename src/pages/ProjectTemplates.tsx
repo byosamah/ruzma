@@ -49,7 +49,7 @@ const ProjectTemplates = () => {
       setAuthLoading(false);
     };
     checkAuthAndLoadData();
-  }, [navigate]);
+  }, []); // Remove navigate dependency to prevent infinite loop
 
   const handleSignOut = async () => {
     await supabase.auth.signOut();
