@@ -22,7 +22,7 @@ export { default as MilestonesList } from '../../CreateProject/MilestonesList';
 export { default as PaymentProofSettings } from '../../CreateProject/PaymentProofSettings';
 export { default as ProjectDetailsForm } from '../../CreateProject/ProjectDetailsForm';
 export { default as SaveAsTemplateCheckbox } from '../../CreateProject/SaveAsTemplateCheckbox';
-export { default as TemplateHeader } from '../../CreateProject/TemplateHeader';
+
 
 // Edit Project
 export { MilestoneItemEditor } from '../../EditProject/MilestoneItemEditor';

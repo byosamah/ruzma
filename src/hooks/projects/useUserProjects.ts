@@ -37,7 +37,6 @@ export const useUserProjects = (user: User | null) => {
         milestones: project.milestones.map((milestone: any) => ({
           ...milestone,
           status: milestone.status as 'pending' | 'payment_submitted' | 'approved' | 'rejected',
-          watermark_text: milestone.watermark_text ?? null,
         }))
       })) as DatabaseProject[];
       setProjects(typedProjects);

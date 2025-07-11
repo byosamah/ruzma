@@ -139,7 +139,6 @@ export type Database = {
           status: string
           title: string
           updated_at: string
-          watermark_text: string | null
         }
         Insert: {
           created_at?: string
@@ -157,7 +156,6 @@ export type Database = {
           status?: string
           title: string
           updated_at?: string
-          watermark_text?: string | null
         }
         Update: {
           created_at?: string
@@ -175,7 +173,6 @@ export type Database = {
           status?: string
           title?: string
           updated_at?: string
-          watermark_text?: string | null
         }
         Relationships: [
           {
