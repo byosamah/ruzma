@@ -10,7 +10,6 @@ interface MilestoneListProps {
   userCurrency: import('@/lib/currency').CurrencyCode;
   userType?: 'free' | 'plus' | 'pro';
   onUpdateMilestoneStatus: (milestoneId: string, newStatus: Milestone["status"]) => Promise<void>;
-  onStatusChange: (milestoneId: string, newStatus: Milestone["status"]) => Promise<void>;
   onPaymentUpload: (milestoneId: string, file: File) => Promise<void>;
   onDeliverableUpload: (milestoneId: string, file: File) => Promise<void>;
   onDeliverableLinkUpdate: (milestoneId: string, link: string) => Promise<void>;
@@ -22,7 +21,6 @@ const MilestoneList: React.FC<MilestoneListProps> = ({
   userCurrency,
   userType = 'free',
   onUpdateMilestoneStatus,
-  onStatusChange,
   onPaymentUpload,
   onDeliverableUpload,
   onDeliverableLinkUpdate,
@@ -45,14 +43,6 @@ const MilestoneList: React.FC<MilestoneListProps> = ({
       await onDeliverableLinkUpdate(milestoneId, link);
     } catch (error) {
       console.error('Deliverable link update failed:', error);
-    }
-  };
-
-  const handleStatusChange = async (milestoneId: string, newStatus: Milestone["status"]) => {
-    try {
-      await onStatusChange(milestoneId, newStatus);
-    } catch (error) {
-      console.error('Status change failed:', error);
     }
   };
 
@@ -92,7 +82,6 @@ const MilestoneList: React.FC<MilestoneListProps> = ({
                   ? (mId, status) => onUpdateMilestoneStatus(mId, status)
                   : undefined
               }
-              onStatusChange={handleStatusChange}
               onDeliverableUpload={onDeliverableUpload}
               onDeliverableLinkUpdate={handleDeliverableLinkUpdate}
               onDeliverableDownload={onDeliverableDownload}
