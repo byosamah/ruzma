@@ -1,6 +1,6 @@
 
 import { User } from '@supabase/supabase-js';
-import { DatabaseProject, DatabaseMilestone } from './projectTypes';
+import { DatabaseProject, DatabaseMilestone } from '@/types/shared';
 import { useProjectCRUD } from './projects/useProjectCRUD';
 import { useUserProjects } from './projects/useUserProjects';
 import { useUserProfile } from './projects/useUserProfile';
