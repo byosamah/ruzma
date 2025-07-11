@@ -83,9 +83,9 @@ export const SubscriptionCardButton: React.FC<SubscriptionCardButtonProps> = ({
     
     switch (planId) {
       case 'plus':
-        return 'Free trial for 7 days.';
+        return t('freeTrialSevenDays');
       case 'pro':
-        return 'Free trial for 14 days.';
+        return t('freeTrialFourteenDays');
       default:
         return null;
     }

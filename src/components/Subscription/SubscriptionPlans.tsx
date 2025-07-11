@@ -8,10 +8,13 @@ import { useState, useEffect } from 'react';
 import { User } from '@supabase/supabase-js';
 import { useUserCurrency } from '@/hooks/useUserCurrency';
 import { useT } from '@/lib/i18n';
+import { useLanguage } from '@/contexts/LanguageContext';
+import { getSubscriptionPlans } from '@/hooks/subscription/planUtils';
 
 export const SubscriptionPlans: React.FC = () => {
   const t = useT();
-  const { createCheckout, isLoading, getPlansForCurrency } = useSubscription();
+  const { language } = useLanguage();
+  const { createCheckout, isLoading } = useSubscription();
   const [user, setUser] = useState<User | null>(null);
   const [userProfile, setUserProfile] = useState<any>(null);
   const [profileLoading, setProfileLoading] = useState(true);
@@ -42,8 +45,8 @@ export const SubscriptionPlans: React.FC = () => {
     fetchUserAndProfile();
   }, []);
 
-  // Get plans with user's preferred currency
-  const plans = getPlansForCurrency(currency);
+  // Get plans with user's preferred currency and language
+  const plans = getSubscriptionPlans(currency, language);
 
   const getCurrentPlanId = (userType: string) => {
     switch (userType) {

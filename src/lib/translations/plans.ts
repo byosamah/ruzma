@@ -54,6 +54,21 @@ export const plansTranslations = {
     training: "Training",
     sla: "SLA guarantee",
     loading: "Loading",
+    // Plan benefits
+    oneProject: "1 project",
+    unlimitedProjectsBenefit: "Unlimited projects",
+    aiAssistant: "AI Assistant (Coming soon)",
+    paymentProof: "Asking for Payment Proof",
+    emailReminder: "Client Email Reminder System",
+    brandedPortal: "Branded Client Portal",
+    invoiceGenerator: "Invoice Generator",
+    analyticsDashboard: "Analytics Dashboard",
+    linkSharing: "Link sharing",
+    basicSupportBenefit: "Basic support",
+    accessForever: "Access forever",
+    // Trial notes
+    freeTrialSevenDays: "Free trial for 7 days.",
+    freeTrialFourteenDays: "Free trial for 14 days.",
   },
   ar: {
     choosePlan: "اختر خطتك",
@@ -110,5 +125,20 @@ export const plansTranslations = {
     sla: "ضمان مستوى الخدمة",
     loading: "جاري التحميل",
     pending: "قيد الانتظار",
+    // Plan benefits
+    oneProject: "مشروع واحد",
+    unlimitedProjectsBenefit: "مشاريع غير محدودة",
+    aiAssistant: "المساعد الذكي (قريباً)",
+    paymentProof: "طلب إثبات الدفع",
+    emailReminder: "نظام تذكير العملاء بالبريد الإلكتروني",
+    brandedPortal: "بوابة عملاء مخصصة",
+    invoiceGenerator: "منشئ الفواتير",
+    analyticsDashboard: "لوحة التحليلات",
+    linkSharing: "مشاركة الروابط",
+    basicSupportBenefit: "دعم أساسي",
+    accessForever: "وصول مدى الحياة",
+    // Trial notes
+    freeTrialSevenDays: "تجربة مجانية لمدة 7 أيام.",
+    freeTrialFourteenDays: "تجربة مجانية لمدة 14 يوماً.",
   },
 };

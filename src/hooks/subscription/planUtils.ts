@@ -2,54 +2,55 @@
 import { CurrencyCode } from '@/lib/currency';
 import { SubscriptionPlan } from './types';
 import { BASE_PRICES, EXCHANGE_RATES } from './constants';
+import { translate } from '@/lib/i18n';
 
-export const getSubscriptionPlans = (currency: CurrencyCode = 'USD'): SubscriptionPlan[] => {
+export const getSubscriptionPlans = (currency: CurrencyCode = 'USD', language: 'en' | 'ar' = 'en'): SubscriptionPlan[] => {
   const rate = EXCHANGE_RATES[currency] || 1;
   
   return [
     {
       id: 'free',
-      name: 'Free',
+      name: translate('free', language),
       price: 0,
       interval: 'month',
       features: [
-        '✅ 1 project',
-        '🔗 Link sharing',
-        '🧑‍💻 Basic support',
+        `✅ ${translate('oneProject', language)}`,
+        `🔗 ${translate('linkSharing', language)}`,
+        `🧑‍💻 ${translate('basicSupportBenefit', language)}`,
       ],
     },
     {
       id: 'plus',
-      name: 'Monthly',
+      name: translate('plus', language),
       price: Math.round(19 * rate * 100) / 100,
       originalPrice: Math.round(39 * rate * 100) / 100,
       interval: 'month',
       features: [
-        '✅ Unlimited projects',
-        '💡 AI Assistant (Coming soon)',
-        '💰 Asking for Payment Proof',
-        '📩 Client Email Reminder System',
-        '🖼️ Branded Client Portal',
-        '🧾 Invoice Generator',
-        '📊 Analytics Dashboard',
+        `✅ ${translate('unlimitedProjectsBenefit', language)}`,
+        `💡 ${translate('aiAssistant', language)}`,
+        `💰 ${translate('paymentProof', language)}`,
+        `📩 ${translate('emailReminder', language)}`,
+        `🖼️ ${translate('brandedPortal', language)}`,
+        `🧾 ${translate('invoiceGenerator', language)}`,
+        `📊 ${translate('analyticsDashboard', language)}`,
       ],
       storeId: '148628',
       variantId: '697231',
     },
     {
       id: 'pro',
-      name: 'Lifetime',
+      name: translate('pro', language),
       price: Math.round(349 * rate * 100) / 100,
       originalPrice: Math.round(450 * rate * 100) / 100,
       interval: 'month',
       features: [
-        '🔓 Access forever',
-        '✅ Unlimited projects',
-        '💰 Asking for Payment Proof',
-        '📩 Client Email Reminder System',
-        '🖼️ Branded Client Portal',
-        '🧾 Invoice Generator',
-        '📊 Analytics Dashboard',
+        `🔓 ${translate('accessForever', language)}`,
+        `✅ ${translate('unlimitedProjectsBenefit', language)}`,
+        `💰 ${translate('paymentProof', language)}`,
+        `📩 ${translate('emailReminder', language)}`,
+        `🖼️ ${translate('brandedPortal', language)}`,
+        `🧾 ${translate('invoiceGenerator', language)}`,
+        `📊 ${translate('analyticsDashboard', language)}`,
       ],
       storeId: '148628',
       variantId: '697237',
