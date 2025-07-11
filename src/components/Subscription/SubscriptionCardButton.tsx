@@ -78,8 +78,23 @@ export const SubscriptionCardButton: React.FC<SubscriptionCardButtonProps> = ({
     return isLoading || isCurrentPlan || planId === 'pro';
   };
 
+  const getTrialText = () => {
+    if (isCurrentPlan) return null;
+    
+    switch (planId) {
+      case 'plus':
+        return 'Free trial for 7 days.';
+      case 'pro':
+        return 'Free trial for 14 days.';
+      default:
+        return null;
+    }
+  };
+
+  const trialText = getTrialText();
+
   return (
-    <CardFooter className="pt-0">
+    <CardFooter className="pt-0 flex-col space-y-2">
       <Button
         onClick={() => onSelectPlan(planId)}
         disabled={isButtonDisabled()}
@@ -88,6 +103,9 @@ export const SubscriptionCardButton: React.FC<SubscriptionCardButtonProps> = ({
       >
         {getButtonText()}
       </Button>
+      {trialText && (
+        <p className="text-xs text-gray-500 text-center">{trialText}</p>
+      )}
     </CardFooter>
   );
 };
