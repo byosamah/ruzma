@@ -26,7 +26,7 @@ const YouTubePopup: React.FC<YouTubePopupProps> = ({
   const [isOpen, setIsOpen] = useState(false);
   const t = useT();
 
-  const defaultButtonText = buttonText || t('watchTutorial', 'Watch Tutorial');
+  const defaultButtonText = buttonText || t('watchTutorial');
 
   return (
     <>
@@ -44,7 +44,7 @@ const YouTubePopup: React.FC<YouTubePopupProps> = ({
         <DialogContent className="max-w-4xl w-full p-0">
           <DialogHeader className="p-6 pb-0">
             <DialogTitle className="flex items-center justify-between">
-              {t('tutorial', 'Tutorial')}
+              {t('tutorial')}
               <Button
                 variant="ghost"
                 size="sm"

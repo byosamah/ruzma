@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Layout from '@/components/Layout';
@@ -82,7 +83,7 @@ const Clients: React.FC = () => {
         <div className="flex justify-end">
           <YouTubePopup 
             videoId="9KHLTZaJcR8"
-            buttonText={t('watchClientsTutorial', 'Watch Clients Tutorial')}
+            buttonText={t('watchClientsTutorial')}
           />
         </div>
 

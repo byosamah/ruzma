@@ -1,3 +1,4 @@
+
 import React from 'react';
 import Layout from '@/components/Layout';
 import YouTubePopup from '@/components/YouTubePopup';
@@ -37,7 +38,7 @@ const Analytics = () => {
         <div className="flex justify-end">
           <YouTubePopup 
             videoId="9KHLTZaJcR8"
-            buttonText={t('watchAnalyticsTutorial', 'Watch Analytics Tutorial')}
+            buttonText={t('watchAnalyticsTutorial')}
           />
         </div>
 

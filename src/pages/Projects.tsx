@@ -62,7 +62,7 @@ const Projects = () => {
         <div className="flex justify-end">
           <YouTubePopup 
             videoId="9KHLTZaJcR8"
-            buttonText={t('watchProjectsTutorial', 'Watch Projects Tutorial')}
+            buttonText={t('watchProjectsTutorial')}
           />
         </div>
 
