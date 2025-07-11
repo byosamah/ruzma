@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useLanguageNavigation } from '@/hooks/useLanguageNavigation';
@@ -12,30 +12,42 @@ export const useCreateProjectForm = (templateData?: any) => {
   const { navigate } = useLanguageNavigation();
   const t = useT();
 
+  // Helper function to format template data for form
+  const formatTemplateData = (template: any) => ({
+    name: template?.name || '',
+    brief: template?.brief || '',
+    clientEmail: '',
+    paymentProofRequired: false,
+    milestones: template?.milestones?.map((milestone: any) => ({
+      title: milestone.title || '',
+      description: milestone.description || '',
+      price: milestone.price || 0,
+      start_date: milestone.start_date || '',
+      end_date: milestone.end_date || '',
+    })) || [
+      {
+        title: '',
+        description: '',
+        price: 0,
+        start_date: '',
+        end_date: '',
+      },
+    ],
+  });
+
   const form = useForm<CreateProjectFormData>({
     resolver: zodResolver(createProjectFormSchema),
-    defaultValues: {
-      name: templateData?.name || '',
-      brief: templateData?.brief || '',
-      clientEmail: '',
-      paymentProofRequired: false,
-      milestones: templateData?.milestones?.map((milestone: any) => ({
-        title: milestone.title || '',
-        description: milestone.description || '',
-        price: milestone.price || 0,
-        start_date: milestone.start_date || '',
-        end_date: milestone.end_date || '',
-      })) || [
-        {
-          title: '',
-          description: '',
-          price: 0,
-          start_date: '',
-          end_date: '',
-        },
-      ],
-    },
+    defaultValues: formatTemplateData(templateData),
   });
+
+  // Watch for templateData changes and reset form when template data is available
+  useEffect(() => {
+    if (templateData) {
+      console.log('Template data received, resetting form:', templateData);
+      const formattedData = formatTemplateData(templateData);
+      form.reset(formattedData);
+    }
+  }, [templateData, form]);
 
   const addMilestone = () => {
     const currentMilestones = form.getValues('milestones');
@@ -59,25 +71,9 @@ export const useCreateProjectForm = (templateData?: any) => {
   };
 
   const loadFromTemplate = (template: any) => {
-    form.setValue('name', template.name);
-    form.setValue('brief', template.brief);
-    form.setValue('milestones', template.milestones?.map((milestone: any) => ({
-      title: milestone.title || '',
-      description: milestone.description || '',
-      price: milestone.price || 0,
-      start_date: milestone.start_date || '',
-      end_date: milestone.end_date || '',
-    })) || [
-      {
-        title: '',
-        description: '',
-        price: 0,
-        start_date: '',
-        end_date: '',
-      },
-    ]);
-    // Keep paymentProofRequired as false when loading from template
-    form.setValue('paymentProofRequired', false);
+    console.log('Loading template via loadFromTemplate function:', template);
+    const formattedData = formatTemplateData(template);
+    form.reset(formattedData);
   };
 
   const handleSubmit = async (data: CreateProjectFormData) => {
