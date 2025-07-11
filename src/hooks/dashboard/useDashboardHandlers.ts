@@ -13,6 +13,7 @@ export const useDashboardHandlers = (
     user?.user_metadata?.full_name ||
     user?.email?.split("@")[0] ||
     "User", [profile, user]);
+  
   const { handleSignOut, handleEditProject, handleDeleteProject } = useDashboardActions(
     deleteProject,
     refetchProjects
