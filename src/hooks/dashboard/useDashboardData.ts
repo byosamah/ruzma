@@ -2,7 +2,7 @@
 import { useEffect, useState, useCallback, useMemo } from 'react';
 import { User } from '@supabase/supabase-js';
 import { supabase } from '@/integrations/supabase/client';
-import { DatabaseProject } from '@/types/shared';
+import { DatabaseProject } from '@/hooks/projectTypes';
 import { setUserProperties } from '@/lib/analytics';
 
 export const useDashboardData = (user: User | null) => {

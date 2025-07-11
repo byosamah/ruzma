@@ -1,6 +1,6 @@
 
 import { useMemo, useEffect } from 'react';
-import { DatabaseProject } from '@/types/shared';
+import { DatabaseProject } from './projectTypes';
 import { useUserLimits } from './useUserLimits';
 import { useProjectCountSync } from './useProjectCountSync';
 import { useT } from '@/lib/i18n';

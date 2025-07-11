@@ -1,6 +1,6 @@
 
 import { useMemo } from 'react';
-import { DatabaseProject } from '@/types/shared';
+import { DatabaseProject } from './projectTypes';
 
 interface AnalyticsData {
   revenueData: Array<{ month: string; revenue: number; projects: number }>;
@@ -63,7 +63,7 @@ export const useDashboardAnalytics = (projects: DatabaseProject[]): AnalyticsDat
 
     const milestoneStatusData = Object.entries(statusCounts).map(([status, count]) => ({
       status: status.replace('_', ' ').toUpperCase(),
-      count: count as number,
+      count,
       color: statusColors[status as keyof typeof statusColors] || '#6b7280',
     }));
 

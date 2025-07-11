@@ -6,7 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Calendar, Mail, Hash, FolderOpen } from 'lucide-react';
 import { ClientWithProjectCount } from '@/types/client';
 import { supabase } from '@/integrations/supabase/client';
-import { DatabaseProject } from '@/types/shared';
+import { DatabaseProject } from '@/hooks/projectTypes';
 import { useT } from '@/lib/i18n';
 
 interface ClientDetailsDialogProps {

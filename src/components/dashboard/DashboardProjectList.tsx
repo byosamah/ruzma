@@ -6,7 +6,7 @@ import { Badge } from '@/components/ui/badge';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 import { Plus, Calendar, DollarSign, FileText, Edit, Trash2 } from 'lucide-react';
 import { useT } from '@/lib/i18n';
-import { DatabaseProject } from '@/types/shared';
+import { DatabaseProject } from '@/hooks/projectTypes';
 import { useIsMobile } from '@/hooks/use-mobile';
 
 interface DashboardProjectListProps {

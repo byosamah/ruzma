@@ -1,5 +1,5 @@
 
-import { DatabaseProject } from '@/types/shared';
+import { DatabaseProject } from '@/hooks/projectTypes';
 import { CurrencyCode } from '@/lib/currency';
 
 export interface ProjectStats {

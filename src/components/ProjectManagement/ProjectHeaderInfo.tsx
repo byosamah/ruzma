@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { DatabaseProject } from '@/types/shared';
+import { DatabaseProject } from '@/hooks/projectTypes';
 import ProjectHeaderActions from './ProjectHeaderActions';
 
 interface ProjectHeaderInfoProps {

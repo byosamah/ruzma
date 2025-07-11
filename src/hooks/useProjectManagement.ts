@@ -2,7 +2,7 @@
 import { useState, useEffect } from 'react';
 import { User } from '@supabase/supabase-js';
 import { useProjects } from './useProjects';
-import { DatabaseProject } from '@/types/shared';
+import { DatabaseProject } from './projectTypes';
 import { useDashboard } from './useDashboard';
 import { useUserCurrency } from './useUserCurrency';
 import { updateMilestoneStatus as updateMilestoneStatusAction } from './milestone-actions/updateStatus';

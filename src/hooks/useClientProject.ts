@@ -2,7 +2,7 @@
 import { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { clientProjectService } from '@/services/clientProjectService';
-import { DatabaseProject } from '@/types/shared';
+import { DatabaseProject } from '@/hooks/projectTypes';
 import { trackClientProjectAccess } from '@/lib/analytics';
 import { useUserCurrency } from '@/hooks/useUserCurrency';
 

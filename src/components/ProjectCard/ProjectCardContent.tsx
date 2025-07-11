@@ -4,7 +4,7 @@ import { CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Calendar, Clock, DollarSign } from 'lucide-react';
 import { formatCurrency, CurrencyCode } from '@/lib/currency';
-import { DatabaseProject } from '@/types/shared';
+import { DatabaseProject } from '@/hooks/projectTypes';
 import { ProjectStats } from './types';
 import { useT } from '@/lib/i18n';
 

@@ -1,15 +1,13 @@
 import React from 'react';
 import { DollarSign, Calendar, Users } from 'lucide-react';
-import { DatabaseProject } from '@/types/shared';
+import { DatabaseProject } from '@/hooks/projectTypes';
 import { formatCurrency } from '@/lib/currency';
 import { CurrencyCode } from '@/lib/currency';
-
 interface ProjectStatsProps {
   project: DatabaseProject;
   isMobile: boolean;
   userCurrency: CurrencyCode;
 }
-
 const ProjectStats: React.FC<ProjectStatsProps> = ({
   project,
   isMobile,
@@ -19,7 +17,6 @@ const ProjectStats: React.FC<ProjectStatsProps> = ({
   const totalValue = project.milestones.reduce((sum, m) => sum + m.price, 0);
   const completedMilestones = project.milestones.filter(m => m.status === 'approved').length;
   const totalMilestones = project.milestones.length;
-
   if (isMobile) {
     return <div className="grid grid-cols-3 gap-4">
         <div className="bg-white/60 rounded-xl p-4 text-center border border-white/40">
@@ -45,7 +42,6 @@ const ProjectStats: React.FC<ProjectStatsProps> = ({
         </div>
       </div>;
   }
-
   return <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
       
       
@@ -53,5 +49,4 @@ const ProjectStats: React.FC<ProjectStatsProps> = ({
       
     </div>;
 };
-
 export default ProjectStats;

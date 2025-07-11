@@ -1,6 +1,6 @@
 
 import { useState, useEffect } from 'react';
-import { DatabaseProject } from '@/types/shared';
+import { DatabaseProject } from '@/hooks/projectTypes';
 import { MilestoneFormData } from '@/components/EditProject/types';
 import { isUUID } from '@/lib/slugUtils';
 

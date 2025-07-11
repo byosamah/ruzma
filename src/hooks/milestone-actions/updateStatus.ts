@@ -1,8 +1,7 @@
-
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import { User } from '@supabase/supabase-js';
-import { DatabaseProject } from '@/types/shared';
+import { DatabaseProject } from '../projectTypes';
 import { sendPaymentNotification } from '@/services/emailNotifications';
 import { trackMilestoneApproved } from '@/lib/analytics';
 

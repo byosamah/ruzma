@@ -1,7 +1,7 @@
 
 import React from 'react';
 import MilestoneCard from '@/components/MilestoneCard';
-import { DatabaseMilestone } from '@/types/shared';
+import { DatabaseMilestone } from '@/hooks/projectTypes';
 import { Milestone } from '@/components/MilestoneCard/types';
 import { useT } from '@/lib/i18n';
 

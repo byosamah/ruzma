@@ -1,6 +1,6 @@
 
 import { format, isValid, parseISO } from 'date-fns';
-import { DatabaseProject } from '@/types/shared';
+import { DatabaseProject } from '@/hooks/projectTypes';
 import { ProjectStats } from './types';
 
 export const getStatusColor = (status: string) => {
