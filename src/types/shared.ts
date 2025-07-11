@@ -1,3 +1,4 @@
+
 // Shared types used across the application
 export interface DatabaseMilestone {
   id: string;
@@ -33,27 +34,6 @@ export interface DatabaseProject {
   milestones: DatabaseMilestone[];
   freelancer_currency?: string;
   currency?: string;
-}
-
-export interface NotificationData {
-  id: string;
-  user_id: string;
-  type: string;
-  title: string;
-  message: string;
-  is_read: boolean;
-  related_project_id?: string;
-  created_at: string;
-  updated_at: string;
-}
-
-export interface ClientData {
-  id: string;
-  user_id: string;
-  name: string;
-  email: string;
-  created_at: string;
-  updated_at: string;
 }
 
 export interface UserProfile {

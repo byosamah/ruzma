@@ -1,5 +1,5 @@
+
 // Project domain hooks
-export { useProjectActions } from '../../useProjectActions';
 export { useProjectCRUD } from '../../projects/useProjectCRUD';
 export { useUserProjects } from '../../projects/useUserProjects';
 export { useUserProfile } from '../../projects/useUserProfile';

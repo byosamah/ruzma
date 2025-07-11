@@ -2,10 +2,12 @@
 import { useState, useEffect } from 'react';
 import { User } from '@supabase/supabase-js';
 import { useProjects } from './useProjects';
-import { useMilestoneActions } from './useMilestoneActions';
 import { DatabaseProject } from './projectTypes';
 import { useDashboard } from './useDashboard';
 import { useUserCurrency } from './useUserCurrency';
+import { updateMilestoneStatus as updateMilestoneStatusAction } from './milestone-actions/updateStatus';
+import { uploadPaymentProofAction } from './milestone-actions/uploadPaymentProof';
+import { updateDeliverableLinkAction } from './milestone-actions/updateDeliverableLink';
 
 export const useProjectManagement = (slug: string | undefined) => {
   const { user, profile } = useDashboard();
@@ -13,11 +15,30 @@ export const useProjectManagement = (slug: string | undefined) => {
   const [project, setProject] = useState<DatabaseProject | null>(null);
   const userCurrency = useUserCurrency(profile);
 
-  const {
-    updateMilestoneStatus,
-    uploadPaymentProof,
-    updateDeliverableLink,
-  } = useMilestoneActions(user, projects, fetchProjects);
+  // Milestone actions - directly implemented here
+  const updateMilestoneStatus = async (
+    milestoneId: string,
+    status: 'approved' | 'rejected'
+  ) => {
+    const success = await updateMilestoneStatusAction(user, projects, milestoneId, status);
+    if (success) {
+      await fetchProjects();
+    }
+  };
+
+  const uploadPaymentProof = async (milestoneId: string, file: File) => {
+    const success = await uploadPaymentProofAction(milestoneId, file);
+    if (success) {
+      await fetchProjects();
+    }
+  };
+
+  const updateDeliverableLink = async (milestoneId: string, link: string) => {
+    const success = await updateDeliverableLinkAction(user, milestoneId, link);
+    if (success) {
+      await fetchProjects();
+    }
+  };
 
   useEffect(() => {
     if (projects.length > 0 && slug) {

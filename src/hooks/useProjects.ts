@@ -1,18 +1,44 @@
 
 import { User } from '@supabase/supabase-js';
 import { DatabaseProject, DatabaseMilestone } from './projectTypes';
-import { useProjectActions } from './useProjectActions';
-import { useMilestoneActions } from './useMilestoneActions';
+import { useProjectCRUD } from './projects/useProjectCRUD';
 import { useUserProjects } from './projects/useUserProjects';
 import { useUserProfile } from './projects/useUserProfile';
+import { updateMilestoneStatus as updateMilestoneStatusAction } from './milestone-actions/updateStatus';
+import { uploadPaymentProofAction } from './milestone-actions/uploadPaymentProof';
+import { updateDeliverableLinkAction } from './milestone-actions/updateDeliverableLink';
 
 export const useProjects = (user: User | null) => {
   const { projects, loading, fetchProjects } = useUserProjects(user);
   const { userProfile, fetchUserProfile } = useUserProfile(user, projects.length);
 
-  // Import project and milestone actions
-  const { createProject, updateProject, deleteProject } = useProjectActions(user);
-  const milestoneActions = useMilestoneActions(user, projects, fetchProjects);
+  // Import project CRUD actions directly
+  const { createProject, updateProject, deleteProject } = useProjectCRUD(user);
+
+  // Milestone actions - directly implemented here instead of separate hook
+  const updateMilestoneStatus = async (
+    milestoneId: string,
+    status: 'approved' | 'rejected'
+  ) => {
+    const success = await updateMilestoneStatusAction(user, projects, milestoneId, status);
+    if (success) {
+      await fetchProjects();
+    }
+  };
+
+  const uploadPaymentProof = async (milestoneId: string, file: File) => {
+    const success = await uploadPaymentProofAction(milestoneId, file);
+    if (success) {
+      await fetchProjects();
+    }
+  };
+
+  const updateDeliverableLink = async (milestoneId: string, link: string) => {
+    const success = await updateDeliverableLinkAction(user, milestoneId, link);
+    if (success) {
+      await fetchProjects();
+    }
+  };
 
   return {
     projects,
@@ -23,7 +49,9 @@ export const useProjects = (user: User | null) => {
     createProject,
     updateProject,
     deleteProject,
-    ...milestoneActions
+    updateMilestoneStatus,
+    uploadPaymentProof,
+    updateDeliverableLink,
   };
 };
 
