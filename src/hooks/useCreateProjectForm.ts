@@ -10,7 +10,7 @@ import { createProjectFormSchema, CreateProjectFormData } from '@/lib/validators
 export const useCreateProjectForm = (templateData?: any) => {
   const { navigate } = useLanguageNavigation();
   const t = useT();
-  const submitProject = useCreateProjectSubmission();
+  const { handleSubmit: submitProject } = useCreateProjectSubmission();
 
   // Helper function to format template data for form
   const formatTemplateData = (template: any) => {
@@ -98,7 +98,7 @@ export const useCreateProjectForm = (templateData?: any) => {
 
   const handleSubmit = async (data: CreateProjectFormData) => {
     try {
-      await submitProject(data, navigate, t);
+      await submitProject(data);
     } catch (error) {
       console.error('Error creating project:', error);
     }
