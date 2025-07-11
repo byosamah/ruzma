@@ -43,14 +43,14 @@ export const SubscriptionCardHeader: React.FC<SubscriptionCardHeaderProps> = ({
       </CardTitle>
       <div className="space-y-2">
         <div className="flex items-center justify-center gap-2 flex-wrap">
-          <span className="text-2xl sm:text-3xl font-semibold text-gray-900">
-            {formatCurrency(price, currency, language)}
-          </span>
           {originalPrice && (
             <span className="text-sm text-gray-400 line-through">
               {formatCurrency(originalPrice, currency, language)}
             </span>
           )}
+          <span className="text-2xl sm:text-3xl font-semibold text-gray-900">
+            {formatCurrency(price, currency, language)}
+          </span>
         </div>
         {planId !== 'free' && (
           <p className="text-sm text-gray-500">
