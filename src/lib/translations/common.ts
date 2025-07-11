@@ -1,6 +1,7 @@
 
 export const commonTranslations = {
   en: {
+    // Basic actions and states
     loading: 'Loading...',
     save: 'Save',
     cancel: 'Cancel',
@@ -15,15 +16,24 @@ export const commonTranslations = {
     date: 'Date',
     amount: 'Amount',
     total: 'Total',
+    
+    // User information fields
     name: 'Name',
     email: 'Email',
     phone: 'Phone',
     address: 'Address',
     description: 'Description',
     notes: 'Notes',
+    
+    // Navigation and account
+    main: 'Main',
+    account: 'Account',
+    plans: 'Plans',
     settings: 'Settings',
     profile: 'Profile',
     logout: 'Logout',
+    
+    // Authentication
     login: 'Login',
     signup: 'Sign Up',
     forgotPassword: 'Forgot Password?',
@@ -32,50 +42,67 @@ export const commonTranslations = {
     currentPassword: 'Current Password',
     newPassword: 'New Password',
     confirmPassword: 'Confirm Password',
+    accountCreatedSuccess: 'Account created successfully!',
+    currencySelectionIssue: 'There was an issue with currency selection',
+    tooManySignupAttempts: 'Too many signup attempts. Please try again later.',
+    accountCreationFailed: 'Account creation failed',
     
-    // Navigation and sidebar
-    main: 'Main',
-    account: 'Account',
-    plans: 'Plans',
-    
-    // Invoice related
+    // Invoice core fields
     invoices: 'Invoices',
-    billedTo: 'Billed To',
-    payTo: 'Pay To',
-    yourName: 'Your Name',
-    currency: 'Currency',
-    selectCurrency: 'Select Currency',
+    invoice: 'Invoice',
     createInvoice: 'Create Invoice',
+    newInvoice: 'New Invoice',
     invoiceDetails: 'Invoice Details',
     invoiceId: 'Invoice ID',
     addInvoiceId: 'Add Invoice ID',
-    usingProfileLogo: 'Using Profile Logo',
-    addLogo: 'Add Logo',
-    useDifferentLogo: 'Use Different Logo',
-    usingLogoFromProfile: 'Using logo from profile',
     invoiceDate: 'Invoice Date',
     dueDate: 'Due Date',
-    selectDate: 'Select Date',
-    purchaseOrder: 'Purchase Order',
-    addPurchaseOrderNumber: 'Add Purchase Order Number',
-    paymentTerms: 'Payment Terms',
-    addPaymentTerms: 'Add Payment Terms',
+    invoiceAmount: 'Invoice Amount',
+    dateOfInvoice: 'Date of Invoice',
+    transactionId: 'Transaction ID',
+    
+    // Invoice billing information
+    billedTo: 'Billed To',
+    payTo: 'Pay To',
+    yourName: 'Your Name',
+    clientName: 'Client Name',
     addNewClient: 'Add New Client',
-    invoice: 'Invoice',
+    
+    // Invoice financial details
+    currency: 'Currency',
+    selectCurrency: 'Select Currency',
     setCurrency: 'Set Currency',
     quantity: 'Quantity',
     subtotal: 'Subtotal',
     tax: 'Tax',
     addCustomCharge: 'Add Custom Charge',
     addTax: 'Add Tax',
+    
+    // Invoice branding and customization
+    usingProfileLogo: 'Using Profile Logo',
+    addLogo: 'Add Logo',
+    useDifferentLogo: 'Use Different Logo',
+    usingLogoFromProfile: 'Using logo from profile',
+    selectDate: 'Select Date',
+    purchaseOrder: 'Purchase Order',
+    addPurchaseOrderNumber: 'Add Purchase Order Number',
+    paymentTerms: 'Payment Terms',
+    addPaymentTerms: 'Add Payment Terms',
+    
+    // Invoice project integration
     project: 'Project',
     selectProject: 'Select Project',
     loadingProjects: 'Loading Projects...',
     noActiveProjectsFound: 'No Active Projects Found',
-    viewMore: 'View More',
+    projectName: 'Project Name',
+    
+    // Invoice actions
     downloadPDF: 'Download PDF',
     sendToClient: 'Send to Client',
     deleteInvoice: 'Delete Invoice',
+    viewMore: 'View More',
+    
+    // Invoice status and filtering
     searchInvoices: 'Search Invoices',
     allStatus: 'All Status',
     draft: 'Draft',
@@ -83,23 +110,24 @@ export const commonTranslations = {
     paid: 'Paid',
     overdue: 'Overdue',
     cancelled: 'Cancelled',
-    newInvoice: 'New Invoice',
-    clientName: 'Client Name',
-    createInvoiceDescription: 'Create professional invoices for your clients',
     
-    // Invoice table and stats
+    // Invoice management and overview
+    createInvoiceDescription: 'Create professional invoices for your clients',
     noInvoicesFound: 'No invoices found',
     noInvoicesDescription: 'Create your first invoice to get started',
-    transactionId: 'Transaction ID',
-    invoiceAmount: 'Invoice Amount',
-    projectName: 'Project Name',
-    dateOfInvoice: 'Date of Invoice',
     manageTrackInvoices: 'Manage and track all your invoices in one place',
     allInvoices: 'All Invoices',
     totalInvoices: 'Total Invoices',
     totalAmount: 'Total Amount',
     paidInvoices: 'Paid Invoices',
     pendingInvoices: 'Pending Invoices',
+    
+    // Client management
+    clients: 'Clients',
+    addClient: 'Add Client',
+    allClients: 'All Clients',
+    searchByNameOrEmail: 'Search by name or email...',
+    manageClientRelationships: 'Manage and build strong relationships with your clients',
     
     // Project card actions
     copyLink: 'Copy Link',
@@ -111,8 +139,6 @@ export const commonTranslations = {
     clientLinkSent: 'Client link sent successfully',
     emailDomainVerificationRequired: 'Email domain verification required',
     clientLinkSendFailed: 'Failed to send client link',
-    
-    // Project management
     viewClientPage: 'View Client Page',
     
     // Notifications
@@ -120,12 +146,6 @@ export const commonTranslations = {
     loadingNotifications: 'Loading notifications...',
     markAllRead: 'Mark All Read',
     noNotificationsYet: 'No notifications yet',
-    
-    // Authentication
-    accountCreatedSuccess: 'Account created successfully!',
-    currencySelectionIssue: 'There was an issue with currency selection',
-    tooManySignupAttempts: 'Too many signup attempts. Please try again later.',
-    accountCreationFailed: 'Account creation failed',
     
     // Contact form
     contactUsTitle: 'Contact Us',
@@ -146,7 +166,7 @@ export const commonTranslations = {
     contactSuccessMessage: 'Message sent successfully!',
     contactFailedMessage: 'Failed to send message. Please try again.',
     
-    // Tutorial translations
+    // Tutorials
     watchTutorial: 'Watch Tutorial',
     tutorial: 'Tutorial',
     watchDashboardTutorial: 'Watch Dashboard Tutorial',
@@ -157,6 +177,7 @@ export const commonTranslations = {
     watchProfileTutorial: 'Watch Profile Tutorial',
   },
   ar: {
+    // Basic actions and states
     loading: 'جاري التحميل...',
     save: 'حفظ',
     cancel: 'إلغاء',
@@ -171,15 +192,24 @@ export const commonTranslations = {
     date: 'التاريخ',
     amount: 'المبلغ',
     total: 'الإجمالي',
+    
+    // User information fields
     name: 'الاسم',
     email: 'البريد الإلكتروني',
     phone: 'الهاتف',
     address: 'العنوان',
     description: 'الوصف',
     notes: 'الملاحظات',
+    
+    // Navigation and account
+    main: 'الرئيسية',
+    account: 'الحساب',
+    plans: 'الخطط',
     settings: 'الإعدادات',
     profile: 'الملف الشخصي',
     logout: 'تسجيل الخروج',
+    
+    // Authentication
     login: 'تسجيل الدخول',
     signup: 'إنشاء حساب',
     forgotPassword: 'نسيت كلمة المرور؟',
@@ -188,50 +218,67 @@ export const commonTranslations = {
     currentPassword: 'كلمة المرور الحالية',
     newPassword: 'كلمة المرور الجديدة',
     confirmPassword: 'تأكيد كلمة المرور',
+    accountCreatedSuccess: 'تم إنشاء الحساب بنجاح!',
+    currencySelectionIssue: 'حدثت مشكلة في اختيار العملة',
+    tooManySignupAttempts: 'محاولات تسجيل كثيرة جداً. حاول مرة أخرى لاحقاً.',
+    accountCreationFailed: 'فشل في إنشاء الحساب',
     
-    // Navigation and sidebar
-    main: 'الرئيسية',
-    account: 'الحساب',
-    plans: 'الخطط',
-    
-    // Invoice related
+    // Invoice core fields
     invoices: 'الفواتير',
-    billedTo: 'مرسل إلى',
-    payTo: 'ادفع لـ',
-    yourName: 'اسمك',
-    currency: 'العملة',
-    selectCurrency: 'اختر العملة',
+    invoice: 'فاتورة',
     createInvoice: 'إنشاء فاتورة',
+    newInvoice: 'فاتورة جديدة',
     invoiceDetails: 'تفاصيل الفاتورة',
     invoiceId: 'رقم الفاتورة',
     addInvoiceId: 'أضف رقم الفاتورة',
-    usingProfileLogo: 'استخدام شعار الملف الشخصي',
-    addLogo: 'أضف شعار',
-    useDifferentLogo: 'استخدم شعار مختلف',
-    usingLogoFromProfile: 'استخدام الشعار من الملف الشخصي',
     invoiceDate: 'تاريخ الفاتورة',
     dueDate: 'تاريخ الاستحقاق',
-    selectDate: 'اختر التاريخ',
-    purchaseOrder: 'أمر الشراء',
-    addPurchaseOrderNumber: 'أضف رقم أمر الشراء',
-    paymentTerms: 'شروط الدفع',
-    addPaymentTerms: 'أضف شروط الدفع',
+    invoiceAmount: 'مبلغ الفاتورة',
+    dateOfInvoice: 'تاريخ الفاتورة',
+    transactionId: 'رقم المعاملة',
+    
+    // Invoice billing information
+    billedTo: 'مرسل إلى',
+    payTo: 'ادفع لـ',
+    yourName: 'اسمك',
+    clientName: 'اسم العميل',
     addNewClient: 'أضف عميل جديد',
-    invoice: 'فاتورة',
+    
+    // Invoice financial details
+    currency: 'العملة',
+    selectCurrency: 'اختر العملة',
     setCurrency: 'تعيين العملة',
     quantity: 'الكمية',
     subtotal: 'المجموع الفرعي',
     tax: 'الضريبة',
     addCustomCharge: 'أضف رسوم مخصصة',
     addTax: 'أضف ضريبة',
+    
+    // Invoice branding and customization
+    usingProfileLogo: 'استخدام شعار الملف الشخصي',
+    addLogo: 'أضف شعار',
+    useDifferentLogo: 'استخدم شعار مختلف',
+    usingLogoFromProfile: 'استخدام الشعار من الملف الشخصي',
+    selectDate: 'اختر التاريخ',
+    purchaseOrder: 'أمر الشراء',
+    addPurchaseOrderNumber: 'أضف رقم أمر الشراء',
+    paymentTerms: 'شروط الدفع',
+    addPaymentTerms: 'أضف شروط الدفع',
+    
+    // Invoice project integration
     project: 'المشروع',
     selectProject: 'اختر المشروع',
     loadingProjects: 'جاري تحميل المشاريع...',
     noActiveProjectsFound: 'لا توجد مشاريع نشطة',
-    viewMore: 'عرض المزيد',
+    projectName: 'اسم المشروع',
+    
+    // Invoice actions
     downloadPDF: 'تحميل PDF',
     sendToClient: 'إرسال للعميل',
     deleteInvoice: 'حذف الفاتورة',
+    viewMore: 'عرض المزيد',
+    
+    // Invoice status and filtering
     searchInvoices: 'البحث في الفواتير',
     allStatus: 'جميع الحالات',
     draft: 'مسودة',
@@ -239,23 +286,24 @@ export const commonTranslations = {
     paid: 'مدفوعة',
     overdue: 'متأخرة',
     cancelled: 'ملغية',
-    newInvoice: 'فاتورة جديدة',
-    clientName: 'اسم العميل',
-    createInvoiceDescription: 'إنشاء فواتير احترافية لعملائك',
     
-    // Invoice table and stats
+    // Invoice management and overview
+    createInvoiceDescription: 'إنشاء فواتير احترافية لعملائك',
     noInvoicesFound: 'لا توجد فواتير',
     noInvoicesDescription: 'أنشئ فاتورتك الأولى للبدء',
-    transactionId: 'رقم المعاملة',
-    invoiceAmount: 'مبلغ الفاتورة',
-    projectName: 'اسم المشروع',
-    dateOfInvoice: 'تاريخ الفاتورة',
     manageTrackInvoices: 'إدارة وتتبع جميع فواتيرك في مكان واحد',
     allInvoices: 'جميع الفواتير',
     totalInvoices: 'إجمالي الفواتير',
     totalAmount: 'المبلغ الإجمالي',
     paidInvoices: 'الفواتير المدفوعة',
     pendingInvoices: 'الفواتير المعلقة',
+    
+    // Client management
+    clients: 'العملاء',
+    addClient: 'أضف عميل',
+    allClients: 'جميع العملاء',
+    searchByNameOrEmail: 'البحث بالاسم أو البريد الإلكتروني...',
+    manageClientRelationships: 'إدارة وبناء علاقات قوية مع عملائك',
     
     // Project card actions
     copyLink: 'نسخ الرابط',
@@ -267,8 +315,6 @@ export const commonTranslations = {
     clientLinkSent: 'تم إرسال رابط العميل بنجاح',
     emailDomainVerificationRequired: 'مطلوب التحقق من نطاق البريد الإلكتروني',
     clientLinkSendFailed: 'فشل في إرسال رابط العميل',
-    
-    // Project management
     viewClientPage: 'عرض صفحة العميل',
     
     // Notifications
@@ -276,12 +322,6 @@ export const commonTranslations = {
     loadingNotifications: 'جاري تحميل الإشعارات...',
     markAllRead: 'تحديد الكل كمقروء',
     noNotificationsYet: 'لا توجد إشعارات بعد',
-    
-    // Authentication
-    accountCreatedSuccess: 'تم إنشاء الحساب بنجاح!',
-    currencySelectionIssue: 'حدثت مشكلة في اختيار العملة',
-    tooManySignupAttempts: 'محاولات تسجيل كثيرة جداً. حاول مرة أخرى لاحقاً.',
-    accountCreationFailed: 'فشل في إنشاء الحساب',
     
     // Contact form
     contactUsTitle: 'اتصل بنا',
@@ -302,7 +342,7 @@ export const commonTranslations = {
     contactSuccessMessage: 'تم إرسال الرسالة بنجاح!',
     contactFailedMessage: 'فشل في إرسال الرسالة. حاول مرة أخرى.',
     
-    // Tutorial translations
+    // Tutorials
     watchTutorial: 'مشاهدة الدرس التعليمي',
     tutorial: 'درس تعليمي',
     watchDashboardTutorial: 'مشاهدة درس لوحة التحكم',
