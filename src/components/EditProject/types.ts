@@ -2,10 +2,10 @@ export interface MilestoneFormData {
   title: string;
   description: string;
   price: number;
-  status: 'pending' | 'payment_submitted' | 'approved' | 'rejected';
+  status: 'pending' | 'in_progress' | 'under_review' | 'revision_requested' | 'payment_submitted' | 'approved' | 'rejected' | 'completed' | 'on_hold' | 'cancelled';
   start_date?: string;
   end_date?: string;
-  deliverable_link?: string; // New field for link sharing
+  deliverable_link?: string;
 }
 
 export interface ProjectFormData {

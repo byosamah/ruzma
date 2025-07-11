@@ -5,11 +5,11 @@ export interface DatabaseMilestone {
   title: string;
   description: string;
   price: number;
-  status: 'pending' | 'payment_submitted' | 'approved' | 'rejected';
+  status: 'pending' | 'in_progress' | 'under_review' | 'revision_requested' | 'payment_submitted' | 'approved' | 'rejected' | 'completed' | 'on_hold' | 'cancelled';
   deliverable_name?: string;
   deliverable_url?: string;
   deliverable_size?: number;
-  deliverable_link?: string; // New field for link sharing
+  deliverable_link?: string;
   payment_proof_url?: string;
   watermark_text?: string;
   start_date?: string;

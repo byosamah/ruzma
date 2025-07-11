@@ -21,6 +21,62 @@ const ClientView: React.FC<ClientViewProps> = ({
 }) => {
   const t = useT();
 
+  const getStatusMessage = () => {
+    switch (milestone.status) {
+      case 'pending':
+        return (
+          <div className="bg-gray-50 p-3 rounded-lg">
+            <p className="text-sm font-medium text-gray-800">Work has not started yet</p>
+            <p className="text-xs text-gray-600 mt-1">Your freelancer will begin working on this milestone soon</p>
+          </div>
+        );
+      case 'in_progress':
+        return (
+          <div className="bg-blue-50 p-3 rounded-lg">
+            <p className="text-sm font-medium text-blue-800">Work is in progress</p>
+            <p className="text-xs text-blue-600 mt-1">Your freelancer is actively working on this milestone</p>
+          </div>
+        );
+      case 'under_review':
+        return (
+          <div className="bg-purple-50 p-3 rounded-lg">
+            <p className="text-sm font-medium text-purple-800">Ready for your review</p>
+            <p className="text-xs text-purple-600 mt-1">Work is completed and waiting for your feedback</p>
+          </div>
+        );
+      case 'revision_requested':
+        return (
+          <div className="bg-orange-50 p-3 rounded-lg">
+            <p className="text-sm font-medium text-orange-800">Revisions in progress</p>
+            <p className="text-xs text-orange-600 mt-1">Your freelancer is working on the requested changes</p>
+          </div>
+        );
+      case 'completed':
+        return (
+          <div className="bg-emerald-50 p-3 rounded-lg">
+            <p className="text-sm font-medium text-emerald-800">Milestone completed</p>
+            <p className="text-xs text-emerald-600 mt-1">This milestone has been successfully completed</p>
+          </div>
+        );
+      case 'on_hold':
+        return (
+          <div className="bg-yellow-50 p-3 rounded-lg">
+            <p className="text-sm font-medium text-yellow-800">Work is on hold</p>
+            <p className="text-xs text-yellow-600 mt-1">Work has been temporarily paused</p>
+          </div>
+        );
+      case 'cancelled':
+        return (
+          <div className="bg-slate-50 p-3 rounded-lg">
+            <p className="text-sm font-medium text-slate-800">Milestone cancelled</p>
+            <p className="text-xs text-slate-600 mt-1">This milestone has been cancelled</p>
+          </div>
+        );
+      default:
+        return null;
+    }
+  };
+
   const renderPaymentSection = () => {
     if (!paymentProofRequired) {
       return null;
@@ -66,26 +122,30 @@ const ClientView: React.FC<ClientViewProps> = ({
       );
     }
 
-    // Pending status - show payment upload
-    return (
-      <div className="space-y-3">
-        <div className="bg-amber-50 p-3 rounded-lg border border-amber-200">
-          <p className="text-sm font-medium text-amber-800">Payment proof required</p>
-          <p className="text-xs text-amber-600 mt-1">Please upload proof of payment for this milestone</p>
+    // Show payment upload for milestones that are ready for payment
+    if (['under_review', 'completed'].includes(milestone.status)) {
+      return (
+        <div className="space-y-3">
+          <div className="bg-amber-50 p-3 rounded-lg border border-amber-200">
+            <p className="text-sm font-medium text-amber-800">Payment proof required</p>
+            <p className="text-xs text-amber-600 mt-1">Please upload proof of payment for this milestone</p>
+          </div>
+          
+          <PaymentUploadDialog
+            milestoneId={milestone.id}
+            onPaymentUpload={onPaymentUpload}
+            trigger={
+              <Button size="sm" className="w-full">
+                <Upload className="w-4 h-4 mr-2" />
+                Upload Payment Proof
+              </Button>
+            }
+          />
         </div>
-        
-        <PaymentUploadDialog
-          milestoneId={milestone.id}
-          onPaymentUpload={onPaymentUpload}
-          trigger={
-            <Button size="sm" className="w-full">
-              <Upload className="w-4 h-4 mr-2" />
-              Upload Payment Proof
-            </Button>
-          }
-        />
-      </div>
-    );
+      );
+    }
+
+    return null;
   };
 
   const handleDownload = () => {
@@ -96,7 +156,7 @@ const ClientView: React.FC<ClientViewProps> = ({
 
   const canAccessDeliverables = () => {
     if (!paymentProofRequired) {
-      return true;
+      return ['under_review', 'completed', 'approved'].includes(milestone.status);
     }
     return milestone.status === 'approved';
   };
@@ -153,7 +213,7 @@ const ClientView: React.FC<ClientViewProps> = ({
                     </Button>
                   ) : (
                     <div className="text-xs text-amber-600 px-2 py-1 bg-amber-50 rounded">
-                      {paymentProofRequired ? 'Payment required' : 'Not available'}
+                      {paymentProofRequired ? 'Payment required' : 'Not ready yet'}
                     </div>
                   )}
                 </div>
@@ -187,7 +247,7 @@ const ClientView: React.FC<ClientViewProps> = ({
                   </Button>
                 ) : (
                   <div className="text-xs text-amber-600 px-2 py-1 bg-amber-50 rounded">
-                    {paymentProofRequired ? 'Payment required' : 'Not available'}
+                    {paymentProofRequired ? 'Payment required' : 'Not ready yet'}
                   </div>
                 )}
               </div>
@@ -200,6 +260,12 @@ const ClientView: React.FC<ClientViewProps> = ({
 
   return (
     <div className="space-y-6 pt-4 border-t border-slate-200">
+      {/* Status Message */}
+      <div>
+        <h4 className="text-sm font-medium text-slate-700 mb-3">Milestone Status</h4>
+        {getStatusMessage()}
+      </div>
+
       {/* Payment Section */}
       {paymentProofRequired && (
         <div>

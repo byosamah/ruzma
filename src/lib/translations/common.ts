@@ -1,4 +1,3 @@
-
 export const commonTranslations = {
   en: {
     language: "Language",
@@ -164,6 +163,15 @@ export const commonTranslations = {
     noProjectsYet: "No projects yet",
     createFirstProjectDesc: "Create your first project to get started with managing your freelance work.",
     createFirstProject: "Create First Project",
+    // Milestone status messages
+    milestoneAwaitingStart: "This milestone is awaiting to be started",
+    milestoneInProgress: "Work is currently in progress on this milestone", 
+    milestoneUnderReview: "This milestone is completed and under review",
+    milestoneRevisionRequested: "Revisions have been requested for this milestone",
+    milestoneCompleted: "This milestone has been completed successfully",
+    milestoneOnHold: "Work on this milestone is temporarily on hold",
+    milestoneCancelled: "This milestone has been cancelled",
+    milestoneStatus: "Milestone Status",
   },
   ar: {
     language: "اللغة",
@@ -329,5 +337,14 @@ export const commonTranslations = {
     noProjectsYet: "لا توجد مشاريع بعد",
     createFirstProjectDesc: "أنشئ مشروعك الأول للبدء في إدارة أعمالك الحرة.",
     createFirstProject: "إنشاء أول مشروع",
-  },
+    // Milestone status messages
+    milestoneAwaitingStart: "هذا المعلم في انتظار البدء",
+    milestoneInProgress: "العمل جاري حالياً على هذا المعلم",
+    milestoneUnderReview: "تم إكمال هذا المعلم وهو قيد المراجعة", 
+    milestoneRevisionRequested: "تم طلب تعديلات على هذا المعلم",
+    milestoneCompleted: "تم إكمال هذا المعلم بنجاح",
+    milestoneOnHold: "العمل على هذا المعلم متوقف مؤقتاً",
+    milestoneCancelled: "تم إلغاء هذا المعلم",
+    milestoneStatus: "حالة المعلم",
+  }
 };

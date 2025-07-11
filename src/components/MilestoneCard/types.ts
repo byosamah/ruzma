@@ -4,13 +4,13 @@ export interface Milestone {
   title: string;
   description: string;
   price: number;
-  status: 'pending' | 'payment_submitted' | 'approved' | 'rejected';
+  status: 'pending' | 'in_progress' | 'under_review' | 'revision_requested' | 'payment_submitted' | 'approved' | 'rejected' | 'completed' | 'on_hold' | 'cancelled';
   deliverable?: {
     name: string;
     size: number;
     url?: string;
   };
-  deliverable_link?: string; // New field for link sharing
+  deliverable_link?: string;
   paymentProofUrl?: string;
   start_date?: string;
   end_date?: string;
@@ -22,6 +22,7 @@ export interface MilestoneCardProps {
   milestone: Milestone;
   onApprove?: (milestoneId: string) => void;
   onReject?: (milestoneId: string) => void;
+  onStatusChange?: (milestoneId: string, newStatus: Milestone["status"]) => void;
   isClient?: boolean;
   onPaymentUpload?: (milestoneId: string, file: File) => void;
   onDeliverableUpload?: (milestoneId: string, file: File) => void;

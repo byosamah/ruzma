@@ -3,14 +3,14 @@ import React from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import Layout from "@/components/Layout";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Calendar, DollarSign, CheckCircle2 } from "lucide-react";
-import { useT, TranslationKey } from "@/lib/i18n";
+import { CheckCircle2, DollarSign } from "lucide-react";
+import { useT } from "@/lib/i18n";
 import { useProjectManagement } from "@/hooks/useProjectManagement";
 import { useProjects } from "@/hooks/useProjects";
 import ProjectHeader from "@/components/ProjectManagement/ProjectHeader";
 import MilestoneList from "@/components/ProjectManagement/MilestoneList";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { Milestone } from "@/components/MilestoneCard/types";
 
 const ProjectManagement: React.FC = () => {
   const { slug } = useParams<{ slug: string; }>();
@@ -24,6 +24,7 @@ const ProjectManagement: React.FC = () => {
     loading,
     userCurrency,
     updateMilestoneStatus,
+    updateStatus,
     uploadPaymentProof,
     uploadDeliverable,
     updateDeliverableLink,
@@ -49,6 +50,10 @@ const ProjectManagement: React.FC = () => {
         navigate('/projects');
       }
     }
+  };
+
+  const handleStatusChange = async (milestoneId: string, newStatus: Milestone["status"]) => {
+    await updateStatus(milestoneId, newStatus);
   };
 
   if (loading) {
@@ -84,9 +89,9 @@ const ProjectManagement: React.FC = () => {
     );
   }
 
-  const completedMilestones = project.milestones.filter(m => m.status === 'approved').length;
+  const completedMilestones = project.milestones.filter(m => m.status === 'approved' || m.status === 'completed').length;
   const totalValue = project.milestones.reduce((sum, m) => sum + m.price, 0);
-  const completedValue = project.milestones.filter(m => m.status === 'approved').reduce((sum, m) => sum + m.price, 0);
+  const completedValue = project.milestones.filter(m => m.status === 'approved' || m.status === 'completed').reduce((sum, m) => sum + m.price, 0);
 
   return (
     <Layout user={profile || user}>
@@ -154,7 +159,8 @@ const ProjectManagement: React.FC = () => {
             milestones={project.milestones} 
             userCurrency={userCurrency.currency}
             userType={profile?.user_type as 'free' | 'plus' | 'pro' || 'free'}
-            onUpdateMilestoneStatus={updateMilestoneStatus} 
+            onUpdateMilestoneStatus={updateMilestoneStatus}
+            onStatusChange={handleStatusChange}
             onPaymentUpload={uploadPaymentProof} 
             onDeliverableUpload={uploadDeliverable}
             onDeliverableLinkUpdate={updateDeliverableLink}

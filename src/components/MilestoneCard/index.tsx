@@ -13,6 +13,7 @@ interface MilestoneCardProps {
   isClient?: boolean;
   userType?: 'free' | 'plus' | 'pro';
   onUpdateMilestoneStatus?: (milestoneId: string, status: 'approved' | 'rejected') => void;
+  onStatusChange?: (milestoneId: string, newStatus: Milestone["status"]) => void;
   onPaymentUpload?: (milestoneId: string, file: File) => Promise<boolean>;
   onDeliverableUpload?: (milestoneId: string, file: File) => void;
   onDeliverableLinkUpdate?: (milestoneId: string, link: string) => void;
@@ -28,6 +29,7 @@ const MilestoneCard: React.FC<MilestoneCardProps> = ({
   isClient = false,
   userType = 'free',
   onUpdateMilestoneStatus,
+  onStatusChange,
   onPaymentUpload,
   onDeliverableUpload,
   onDeliverableLinkUpdate,
@@ -67,6 +69,7 @@ const MilestoneCard: React.FC<MilestoneCardProps> = ({
                 ? (mId) => onUpdateMilestoneStatus(mId, "rejected")
                 : undefined
             }
+            onStatusChange={onStatusChange}
             onDeliverableUpload={onDeliverableUpload}
             onDeliverableLinkUpdate={onDeliverableLinkUpdate}
             onShowPaymentProofPreview={() => {}}
