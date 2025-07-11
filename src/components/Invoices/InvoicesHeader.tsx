@@ -1,5 +1,6 @@
 
 import React from 'react';
+import YouTubePopup from '@/components/YouTubePopup';
 import { useT } from '@/lib/i18n';
 
 const InvoicesHeader: React.FC = () => {
@@ -7,7 +8,15 @@ const InvoicesHeader: React.FC = () => {
 
   return (
     <div className="space-y-1">
-      <h1 className="text-2xl font-medium text-gray-900">{t('invoices')}</h1>
+      <div className="flex items-center gap-3 flex-wrap">
+        <h1 className="text-2xl font-medium text-gray-900">{t('invoices')}</h1>
+        <YouTubePopup 
+          videoId="9KHLTZaJcR8"
+          buttonText={t('knowMore')}
+          buttonVariant="ghost"
+          buttonSize="sm"
+        />
+      </div>
       <p className="text-sm text-gray-500">{t('manageTrackInvoices')}</p>
     </div>
   );

@@ -1,3 +1,4 @@
+
 import React from 'react';
 import Layout from '@/components/Layout';
 import YouTubePopup from '@/components/YouTubePopup';
@@ -32,16 +33,16 @@ const Profile = () => {
   return (
     <Layout user={user} onSignOut={handleSignOut}>
       <div className="max-w-4xl mx-auto space-y-6">
-        {/* YouTube Tutorial Button */}
-        <div className="flex justify-end">
-          <YouTubePopup 
-            videoId="9KHLTZaJcR8"
-            buttonText={t('watchProfileTutorial')}
-          />
-        </div>
-
         <div className="space-y-1">
-          <h1 className="text-2xl font-medium text-gray-900">{t('profileSettings')}</h1>
+          <div className="flex items-center gap-3 flex-wrap">
+            <h1 className="text-2xl font-medium text-gray-900">{t('profileSettings')}</h1>
+            <YouTubePopup 
+              videoId="9KHLTZaJcR8"
+              buttonText={t('knowMore')}
+              buttonVariant="ghost"
+              buttonSize="sm"
+            />
+          </div>
           <p className="text-sm text-gray-500">{t('manageAccountInfo')}</p>
         </div>
 

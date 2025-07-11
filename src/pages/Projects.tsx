@@ -58,19 +58,19 @@ const Projects = () => {
   return (
     <Layout user={user} onSignOut={handleSignOut}>
       <div className={`space-y-8 ${isMobile ? 'px-2' : ''}`}>
-        {/* YouTube Tutorial Button */}
-        <div className="flex justify-end">
-          <YouTubePopup 
-            videoId="9KHLTZaJcR8"
-            buttonText={t('watchProjectsTutorial')}
-          />
-        </div>
-
         {/* Header */}
         <div className="space-y-4">
           <div className="flex flex-col space-y-4 sm:flex-row sm:items-center sm:justify-between sm:space-y-0">
             <div className="space-y-1">
-              <h1 className="text-2xl font-medium text-gray-900">{t('yourProjects')}</h1>
+              <div className="flex items-center gap-3 flex-wrap">
+                <h1 className="text-2xl font-medium text-gray-900">{t('yourProjects')}</h1>
+                <YouTubePopup 
+                  videoId="9KHLTZaJcR8"
+                  buttonText={t('knowMore')}
+                  buttonVariant="ghost"
+                  buttonSize="sm"
+                />
+              </div>
               <p className="text-sm text-gray-500">
                 {projects.length === 0 
                   ? t('noProjectsYet') 

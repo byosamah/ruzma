@@ -2,7 +2,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Layout from '@/components/Layout';
-import YouTubePopup from '@/components/YouTubePopup';
 import { useClients } from '@/hooks/useClients';
 import { useAuth } from '@/hooks/dashboard/useAuth';
 import { useUserProfile } from '@/hooks/dashboard/useUserProfile';
@@ -79,14 +78,6 @@ const Clients: React.FC = () => {
   return (
     <Layout user={profile || user}>
       <div className="space-y-8">
-        {/* YouTube Tutorial Button */}
-        <div className="flex justify-end">
-          <YouTubePopup 
-            videoId="9KHLTZaJcR8"
-            buttonText={t('watchClientsTutorial')}
-          />
-        </div>
-
         <ClientsHeader />
         <ClientsStats clients={clients} />
         <ClientsSection
