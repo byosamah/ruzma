@@ -62,10 +62,16 @@ export const useCreateProjectForm = (templateData?: any) => {
 
   // Watch for templateData changes and reset form when template data is available
   useEffect(() => {
+    console.log('useCreateProjectForm effect triggered. templateData:', templateData);
     if (templateData) {
       console.log('Template data received, resetting form:', templateData);
       const formattedData = formatTemplateData(templateData);
+      console.log('Formatted template data for form:', formattedData);
       form.reset(formattedData);
+      // Force trigger form re-render
+      setTimeout(() => {
+        console.log('Form values after reset:', form.getValues());
+      }, 100);
     }
   }, [templateData, form]);
 
@@ -93,6 +99,7 @@ export const useCreateProjectForm = (templateData?: any) => {
   const loadFromTemplate = (template: any) => {
     console.log('Loading template via loadFromTemplate function:', template);
     const formattedData = formatTemplateData(template);
+    console.log('Formatted data in loadFromTemplate:', formattedData);
     form.reset(formattedData);
   };
 

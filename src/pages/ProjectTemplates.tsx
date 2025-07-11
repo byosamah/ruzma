@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import Layout from '@/components/Layout';
@@ -9,10 +8,11 @@ import { User } from '@supabase/supabase-js';
 import { useT } from '@/lib/i18n';
 import { useProjectTemplates } from '@/hooks/useProjectTemplates';
 import { useUserCurrency } from '@/hooks/useUserCurrency';
+import { useLanguageNavigation } from '@/hooks/useLanguageNavigation';
 
 const ProjectTemplates = () => {
   const t = useT();
-  const navigate = useNavigate();
+  const { navigate } = useLanguageNavigation();
   const [user, setUser] = useState<User | null>(null);
   const [profile, setProfile] = useState<any>(null);
   const [authLoading, setAuthLoading] = useState(true);
@@ -57,6 +57,7 @@ const ProjectTemplates = () => {
   };
 
   const handleCreateFromTemplate = (template: any) => {
+    console.log('Creating project from template:', template);
     // Navigate to create project with template data
     navigate('/create-project', {
       state: {
