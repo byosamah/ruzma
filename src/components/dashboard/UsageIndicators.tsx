@@ -3,11 +3,12 @@ import React from 'react';
 import { Progress } from '@/components/ui/progress';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Database, FolderOpen, TrendingUp, MessageCircle, Link, Infinity } from 'lucide-react';
+import { FolderOpen, TrendingUp, MessageCircle, Infinity } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useUsageTracking } from '@/hooks/useUsageTracking';
 import { DatabaseProject } from '@/hooks/projectTypes';
 import { useT } from '@/lib/i18n';
+import { UpcomingDeadlines } from './UpcomingDeadlines';
 
 interface UsageIndicatorsProps {
   userProfile: any;
@@ -117,65 +118,8 @@ export const UsageIndicators: React.FC<UsageIndicatorsProps> = ({
         </CardContent>
       </Card>
 
-      {/* Storage Usage / Links Only */}
-      <Card className="border-0 shadow-none bg-gray-50">
-        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-3">
-          <CardTitle className="text-sm font-medium text-gray-600">
-            {userType === 'free' ? t('linksOnly') : t('storageUsed')}
-          </CardTitle>
-          {userType === 'free' ? (
-            <Link className="h-4 w-4 text-gray-400" />
-          ) : (
-            <Database className="h-4 w-4 text-gray-400" />
-          )}
-        </CardHeader>
-        <CardContent className="pb-4">
-          {userType === 'free' ? (
-            <div className="space-y-3">
-              <div className="flex items-center justify-between">
-                <span className="text-lg font-medium text-gray-600">
-                  {t('shareProjectLinks')}
-                </span>
-                <Button 
-                  size="sm" 
-                  onClick={handleUpgradeClick} 
-                  className="text-xs px-3 py-1 font-medium bg-gray-900 hover:bg-gray-800 text-white border-0 shadow-none"
-                >
-                  <TrendingUp className="h-3 w-3 mr-1" />
-                  {t('upgrade')}
-                </Button>
-              </div>
-              <p className="text-xs text-gray-500">
-                {t('upgradeToUploadFiles')}
-              </p>
-            </div>
-          ) : (
-            <div className="space-y-3">
-              <div className="flex items-center justify-between">
-                <span className="text-2xl font-semibold text-gray-900">
-                  {usage.storage.currentFormatted} {t('of')} {usage.storage.maxFormatted}
-                </span>
-                {usage.storage.percentage >= 100 && (
-                  <Button 
-                    size="sm" 
-                    className="bg-amber-500 hover:bg-amber-600 text-black text-xs px-3 py-1 font-medium border-0 shadow-none" 
-                    onClick={handleUpgradeClick}
-                  >
-                    {React.createElement(getUpgradeButtonIcon(), {
-                      className: "h-3 w-3 mr-1"
-                    })}
-                    {getUpgradeButtonText()}
-                  </Button>
-                )}
-              </div>
-              <Progress value={usage.storage.percentage} className="h-2 bg-gray-200" />
-              <p className="text-xs text-gray-500">
-                {usage.storage.percentage}% {t('used')}
-              </p>
-            </div>
-          )}
-        </CardContent>
-      </Card>
+      {/* Upcoming Deadlines */}
+      <UpcomingDeadlines projects={projects} />
     </div>
   );
 };
