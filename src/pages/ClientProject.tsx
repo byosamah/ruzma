@@ -31,7 +31,6 @@ const ClientProject = () => {
     isLoading,
     error,
     handlePaymentUpload,
-    handleDeliverableDownload,
     userCurrency,
     freelancerCurrency,
   } = useClientProject(parsedToken?.token, parsedToken?.isHybrid);
@@ -92,7 +91,6 @@ const ClientProject = () => {
         <ProjectMilestonesList
           milestones={project.milestones}
           onPaymentUpload={handlePaymentUpload}
-          onDeliverableDownload={handleDeliverableDownload}
           currency={displayCurrency}
           freelancerCurrency={freelancerCurrencyCode}
           branding={branding}
