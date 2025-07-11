@@ -17,10 +17,12 @@ const Plans = () => {
 
   return (
     <Layout user={user} onSignOut={handleSignOut}>
-      <div className="max-w-5xl mx-auto space-y-8">
-        <div className="text-center space-y-3">
-          <h1 className="text-3xl font-semibold text-gray-900">{t('choosePlan')}</h1>
-          <p className="text-base text-gray-600 max-w-2xl mx-auto">
+      <div className="max-w-7xl mx-auto space-y-8 px-4 sm:px-6 lg:px-8">
+        <div className="text-center space-y-3 px-4">
+          <h1 className="text-2xl sm:text-3xl lg:text-4xl font-semibold text-gray-900">
+            {t('choosePlan')}
+          </h1>
+          <p className="text-sm sm:text-base text-gray-600 max-w-2xl mx-auto leading-relaxed">
             {t('upgradeAccount')}
           </p>
         </div>

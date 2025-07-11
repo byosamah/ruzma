@@ -94,17 +94,17 @@ export const SubscriptionCardButton: React.FC<SubscriptionCardButtonProps> = ({
   const trialText = getTrialText();
 
   return (
-    <CardFooter className="pt-0 flex-col space-y-2">
+    <CardFooter className="pt-0 flex-col space-y-2 px-4 sm:px-6 pb-4 sm:pb-6 mt-auto">
       <Button
         onClick={() => onSelectPlan(planId)}
         disabled={isButtonDisabled()}
-        className="w-full"
+        className="w-full min-h-[44px] text-sm sm:text-base"
         variant={getButtonVariant()}
       >
         {getButtonText()}
       </Button>
       {trialText && (
-        <p className="text-xs text-gray-500 text-center">{trialText}</p>
+        <p className="text-xs text-gray-500 text-center px-2">{trialText}</p>
       )}
     </CardFooter>
   );

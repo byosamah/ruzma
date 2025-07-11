@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { CardContent } from '@/components/ui/card';
 import { useT } from '@/lib/i18n';
@@ -22,10 +23,12 @@ export const SubscriptionCardFeatures: React.FC<SubscriptionCardFeaturesProps> =
   };
 
   return (
-    <CardContent className="space-y-3 pb-6">
+    <CardContent className="space-y-3 pb-4 px-4 sm:px-6">
       {displayFeatures(features).map((feature, index) => (
         <div key={index} className="flex items-start gap-3">
-          <span className="text-sm text-gray-700 leading-relaxed">{feature}</span>
+          <span className="text-sm sm:text-base text-gray-700 leading-relaxed break-words">
+            {feature}
+          </span>
         </div>
       ))}
     </CardContent>
