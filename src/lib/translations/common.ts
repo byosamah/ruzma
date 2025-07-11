@@ -1,3 +1,4 @@
+
 export const commonTranslations = {
   en: {
     loading: 'Loading...',
@@ -31,6 +32,35 @@ export const commonTranslations = {
     currentPassword: 'Current Password',
     newPassword: 'New Password',
     confirmPassword: 'Confirm Password',
+    
+    // Navigation and sidebar
+    main: 'Main',
+    account: 'Account',
+    plans: 'Plans',
+    
+    // Invoice related
+    invoices: 'Invoices',
+    billedTo: 'Billed To',
+    payTo: 'Pay To',
+    yourName: 'Your Name',
+    currency: 'Currency',
+    selectCurrency: 'Select Currency',
+    createInvoice: 'Create Invoice',
+    invoiceDetails: 'Invoice Details',
+    invoiceId: 'Invoice ID',
+    addInvoiceId: 'Add Invoice ID',
+    usingProfileLogo: 'Using Profile Logo',
+    addLogo: 'Add Logo',
+    useDifferentLogo: 'Use Different Logo',
+    usingLogoFromProfile: 'Using logo from profile',
+    invoiceDate: 'Invoice Date',
+    dueDate: 'Due Date',
+    selectDate: 'Select Date',
+    purchaseOrder: 'Purchase Order',
+    addPurchaseOrderNumber: 'Add Purchase Order Number',
+    paymentTerms: 'Payment Terms',
+    addPaymentTerms: 'Add Payment Terms',
+    addNewClient: 'Add New Client',
     
     // Tutorial translations
     watchTutorial: 'Watch Tutorial',
@@ -74,6 +104,35 @@ export const commonTranslations = {
     currentPassword: 'كلمة المرور الحالية',
     newPassword: 'كلمة المرور الجديدة',
     confirmPassword: 'تأكيد كلمة المرور',
+    
+    // Navigation and sidebar
+    main: 'الرئيسية',
+    account: 'الحساب',
+    plans: 'الخطط',
+    
+    // Invoice related
+    invoices: 'الفواتير',
+    billedTo: 'مرسل إلى',
+    payTo: 'ادفع لـ',
+    yourName: 'اسمك',
+    currency: 'العملة',
+    selectCurrency: 'اختر العملة',
+    createInvoice: 'إنشاء فاتورة',
+    invoiceDetails: 'تفاصيل الفاتورة',
+    invoiceId: 'رقم الفاتورة',
+    addInvoiceId: 'أضف رقم الفاتورة',
+    usingProfileLogo: 'استخدام شعار الملف الشخصي',
+    addLogo: 'أضف شعار',
+    useDifferentLogo: 'استخدم شعار مختلف',
+    usingLogoFromProfile: 'استخدام الشعار من الملف الشخصي',
+    invoiceDate: 'تاريخ الفاتورة',
+    dueDate: 'تاريخ الاستحقاق',
+    selectDate: 'اختر التاريخ',
+    purchaseOrder: 'أمر الشراء',
+    addPurchaseOrderNumber: 'أضف رقم أمر الشراء',
+    paymentTerms: 'شروط الدفع',
+    addPaymentTerms: 'أضف شروط الدفع',
+    addNewClient: 'أضف عميل جديد',
     
     // Tutorial translations
     watchTutorial: 'مشاهدة الدرس التعليمي',
