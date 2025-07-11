@@ -87,6 +87,34 @@ export const commonTranslations = {
     clientName: 'Client Name',
     createInvoiceDescription: 'Create professional invoices for your clients',
     
+    // Invoice table and stats
+    noInvoicesFound: 'No invoices found',
+    noInvoicesDescription: 'Create your first invoice to get started',
+    transactionId: 'Transaction ID',
+    invoiceAmount: 'Invoice Amount',
+    projectName: 'Project Name',
+    dateOfInvoice: 'Date of Invoice',
+    manageTrackInvoices: 'Manage and track all your invoices in one place',
+    allInvoices: 'All Invoices',
+    totalInvoices: 'Total Invoices',
+    totalAmount: 'Total Amount',
+    paidInvoices: 'Paid Invoices',
+    pendingInvoices: 'Pending Invoices',
+    
+    // Project card actions
+    copyLink: 'Copy Link',
+    viewPage: 'View Page',
+    sendLink: 'Send Link',
+    clientLinkCopied: 'Client link copied to clipboard',
+    noClientEmailFound: 'No client email found for this project',
+    sendingClientLink: 'Sending client link...',
+    clientLinkSent: 'Client link sent successfully',
+    emailDomainVerificationRequired: 'Email domain verification required',
+    clientLinkSendFailed: 'Failed to send client link',
+    
+    // Project management
+    viewClientPage: 'View Client Page',
+    
     // Tutorial translations
     watchTutorial: 'Watch Tutorial',
     tutorial: 'Tutorial',
@@ -183,6 +211,34 @@ export const commonTranslations = {
     newInvoice: 'فاتورة جديدة',
     clientName: 'اسم العميل',
     createInvoiceDescription: 'إنشاء فواتير احترافية لعملائك',
+    
+    // Invoice table and stats
+    noInvoicesFound: 'لا توجد فواتير',
+    noInvoicesDescription: 'أنشئ فاتورتك الأولى للبدء',
+    transactionId: 'رقم المعاملة',
+    invoiceAmount: 'مبلغ الفاتورة',
+    projectName: 'اسم المشروع',
+    dateOfInvoice: 'تاريخ الفاتورة',
+    manageTrackInvoices: 'إدارة وتتبع جميع فواتيرك في مكان واحد',
+    allInvoices: 'جميع الفواتير',
+    totalInvoices: 'إجمالي الفواتير',
+    totalAmount: 'المبلغ الإجمالي',
+    paidInvoices: 'الفواتير المدفوعة',
+    pendingInvoices: 'الفواتير المعلقة',
+    
+    // Project card actions
+    copyLink: 'نسخ الرابط',
+    viewPage: 'عرض الصفحة',
+    sendLink: 'إرسال الرابط',
+    clientLinkCopied: 'تم نسخ رابط العميل إلى الحافظة',
+    noClientEmailFound: 'لم يتم العثور على بريد إلكتروني للعميل في هذا المشروع',
+    sendingClientLink: 'جاري إرسال رابط العميل...',
+    clientLinkSent: 'تم إرسال رابط العميل بنجاح',
+    emailDomainVerificationRequired: 'مطلوب التحقق من نطاق البريد الإلكتروني',
+    clientLinkSendFailed: 'فشل في إرسال رابط العميل',
+    
+    // Project management
+    viewClientPage: 'عرض صفحة العميل',
     
     // Tutorial translations
     watchTutorial: 'مشاهدة الدرس التعليمي',
