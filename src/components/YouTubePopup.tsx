@@ -1,12 +1,10 @@
 
 import React, { useState } from 'react';
-import { Play, X } from 'lucide-react';
+import { Play } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
   Dialog,
   DialogContent,
-  DialogHeader,
-  DialogTitle,
 } from '@/components/ui/dialog';
 import { useT } from '@/lib/i18n';
 
@@ -42,21 +40,7 @@ const YouTubePopup: React.FC<YouTubePopupProps> = ({
 
       <Dialog open={isOpen} onOpenChange={setIsOpen}>
         <DialogContent className="max-w-4xl w-full p-0">
-          <DialogHeader className="p-6 pb-0">
-            <DialogTitle className="flex items-center justify-between">
-              {t('tutorial')}
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => setIsOpen(false)}
-                className="h-8 w-8 p-0"
-              >
-                <X className="w-4 h-4" />
-              </Button>
-            </DialogTitle>
-          </DialogHeader>
-          
-          <div className="aspect-video w-full p-6 pt-0">
+          <div className="aspect-video w-full p-6">
             <iframe
               width="100%"
               height="100%"
