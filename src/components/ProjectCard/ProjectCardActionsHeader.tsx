@@ -35,7 +35,6 @@ const ProjectCardActionsHeader: React.FC<ProjectCardActionsHeaderProps> = ({
         className="flex items-center gap-1 min-w-[44px] min-h-[44px] touch-manipulation"
       >
         <Edit className="w-4 h-4" />
-        {!isMobile && <span className="hidden sm:inline">{t('edit')}</span>}
       </Button>
       
       {onDeleteClick && (
@@ -46,7 +45,6 @@ const ProjectCardActionsHeader: React.FC<ProjectCardActionsHeaderProps> = ({
           className="flex items-center gap-1 text-red-500 hover:text-red-700 hover:bg-red-50 min-w-[44px] min-h-[44px] touch-manipulation"
         >
           <Trash2 className="w-4 h-4" />
-          {!isMobile && <span className="hidden sm:inline">{t('delete')}</span>}
         </Button>
       )}
     </div>
