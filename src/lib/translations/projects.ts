@@ -114,6 +114,16 @@ export const projectTranslations = {
     paymentApprovedClientDownload: "Payment approved - Client can download",
     saving: "Saving...",
     save: "Save",
+    // New translations for shared links feature
+    sharedLinks: "Shared Links",
+    clearAll: "Clear All",
+    pending: "Pending",
+    linkNumber: "Link {number}",
+    linkTitleOptional: "Link title (optional)",
+    addLink: "Add Link",
+    saveLinks: "Save Links",
+    noLinksAddedYet: "No links added yet",
+    addUpToThreeLinks: "Add up to 3 links to share with your client",
   },
   ar: {
     loadingProject: "جاري تحميل المشروع...",
@@ -230,5 +240,14 @@ export const projectTranslations = {
     saving: "جاري الحفظ...",
     save: "حفظ",
     pending: "قيد الانتظار",
+    // New Arabic translations for shared links feature
+    sharedLinks: "الروابط المشتركة",
+    clearAll: "مسح الكل",
+    linkNumber: "الرابط {number}",
+    linkTitleOptional: "عنوان الرابط (اختياري)",
+    addLink: "إضافة رابط",
+    saveLinks: "حفظ الروابط",
+    noLinksAddedYet: "لم يتم إضافة روابط بعد",
+    addUpToThreeLinks: "أضف حتى 3 روابط لمشاركتها مع عميلك",
   },
 };

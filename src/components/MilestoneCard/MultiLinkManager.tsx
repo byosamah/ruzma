@@ -95,7 +95,7 @@ const MultiLinkManager: React.FC<MultiLinkManagerProps> = ({
       <div className="flex items-center justify-between">
         <h4 className="text-sm font-medium text-gray-700 flex items-center gap-2">
           <Link className="w-4 h-4" />
-          Shared Links ({links.length}/3)
+          {t('sharedLinks')} ({links.length}/3)
         </h4>
         {links.length > 0 && (
           <Button
@@ -105,7 +105,7 @@ const MultiLinkManager: React.FC<MultiLinkManagerProps> = ({
             disabled={isUpdating}
             className="text-red-600 hover:bg-red-50 text-xs"
           >
-            Clear All
+            {t('clearAll')}
           </Button>
         )}
       </div>
@@ -115,7 +115,7 @@ const MultiLinkManager: React.FC<MultiLinkManagerProps> = ({
           <div key={index} className="space-y-2 p-3 bg-gray-50 rounded-lg border">
             <div className="flex items-center justify-between">
               <Label className="text-xs font-medium text-gray-600">
-                Link {index + 1}
+                {t('linkNumber', { number: (index + 1).toString() })}
               </Label>
               <Button
                 variant="ghost"
@@ -128,7 +128,7 @@ const MultiLinkManager: React.FC<MultiLinkManagerProps> = ({
             </div>
             
             <Input
-              placeholder="Link title (optional)"
+              placeholder={t('linkTitleOptional')}
               value={link.title}
               onChange={(e) => updateLink(index, 'title', e.target.value)}
               className="text-sm"
@@ -163,7 +163,7 @@ const MultiLinkManager: React.FC<MultiLinkManagerProps> = ({
             className="w-full text-gray-600 border-dashed"
           >
             <Plus className="w-4 h-4 mr-2" />
-            Add Link ({links.length}/3)
+            {t('addLink')} ({links.length}/3)
           </Button>
         )}
       </div>
@@ -176,7 +176,7 @@ const MultiLinkManager: React.FC<MultiLinkManagerProps> = ({
             size="sm"
             className="flex-1"
           >
-            {isUpdating ? 'Saving...' : 'Save Links'}
+            {isUpdating ? t('saving') : t('saveLinks')}
           </Button>
         </div>
       )}
@@ -184,8 +184,8 @@ const MultiLinkManager: React.FC<MultiLinkManagerProps> = ({
       {links.length === 0 && (
         <div className="text-center py-6 text-gray-500">
           <Link className="w-8 h-8 mx-auto mb-2 text-gray-400" />
-          <p className="text-sm">No links added yet</p>
-          <p className="text-xs text-gray-400">Add up to 3 links to share with your client</p>
+          <p className="text-sm">{t('noLinksAddedYet')}</p>
+          <p className="text-xs text-gray-400">{t('addUpToThreeLinks')}</p>
         </div>
       )}
     </div>
