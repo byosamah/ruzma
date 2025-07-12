@@ -37,7 +37,7 @@ const Profile = () => {
           <div className="flex items-center gap-3 flex-wrap">
             <h1 className="text-2xl font-medium text-gray-900">{t('profileSettings')}</h1>
             <YouTubePopup 
-              videoId="9KHLTZaJcR8"
+              videoId="xlT8TSyGO10"
               buttonText={t('knowMore')}
               buttonVariant="ghost"
               buttonSize="sm"

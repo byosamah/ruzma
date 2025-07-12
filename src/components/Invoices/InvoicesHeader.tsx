@@ -11,7 +11,7 @@ const InvoicesHeader: React.FC = () => {
       <div className="flex items-center gap-3 flex-wrap">
         <h1 className="text-2xl font-medium text-gray-900">{t('invoices')}</h1>
         <YouTubePopup 
-          videoId="9KHLTZaJcR8"
+          videoId="lh-u0aR7wXI"
           buttonText={t('knowMore')}
           buttonVariant="ghost"
           buttonSize="sm"

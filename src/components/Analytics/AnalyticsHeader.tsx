@@ -11,7 +11,7 @@ const AnalyticsHeader: React.FC = () => {
       <div className="flex items-center gap-3 flex-wrap">
         <h1 className="text-2xl font-medium text-gray-900">{t('analytics')}</h1>
         <YouTubePopup 
-          videoId="9KHLTZaJcR8"
+          videoId="a5pv1YmqaeE"
           buttonText={t('knowMore')}
           buttonVariant="ghost"
           buttonSize="sm"

@@ -65,7 +65,7 @@ const Projects = () => {
               <div className="flex items-center gap-3 flex-wrap">
                 <h1 className="text-2xl font-medium text-gray-900">{t('yourProjects')}</h1>
                 <YouTubePopup 
-                  videoId="9KHLTZaJcR8"
+                  videoId="j5LEQveezuI"
                   buttonText={t('knowMore')}
                   buttonVariant="ghost"
                   buttonSize="sm"

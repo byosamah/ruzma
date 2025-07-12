@@ -28,7 +28,7 @@ const DashboardHeader: React.FC<DashboardHeaderProps> = ({
               {t('welcomeComma')} {displayName}
             </h1>
             <YouTubePopup 
-              videoId="9KHLTZaJcR8"
+              videoId="I4amluTB1BE"
               buttonText={t('knowMore')}
               buttonVariant="ghost"
               buttonSize="sm"
@@ -54,7 +54,7 @@ const DashboardHeader: React.FC<DashboardHeaderProps> = ({
             {t('welcomeComma')} {displayName}
           </h1>
           <YouTubePopup 
-            videoId="9KHLTZaJcR8"
+            videoId="I4amluTB1BE"
             buttonText={t('knowMore')}
             buttonVariant="ghost"
             buttonSize="sm"
