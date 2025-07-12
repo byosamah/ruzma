@@ -34,12 +34,12 @@ export const SubscriptionCard: React.FC<SubscriptionCardProps> = ({
   
   const getCardClassName = () => {
     if (isCurrentPlan) {
-      return 'relative border-2 border-gray-900 bg-gray-50/30 h-full flex flex-col';
+      return 'relative border-2 border-gray-500 bg-gray-50/30 h-full flex flex-col';
     }
     if (isPopular) {
-      return 'relative border-2 border-gray-900 bg-white shadow-sm h-full flex flex-col';
+      return 'relative border-2 border-gray-500 bg-white shadow-sm h-full flex flex-col';
     }
-    return 'relative border border-gray-200 bg-white hover:border-gray-300 transition-colors h-full flex flex-col';
+    return 'relative border border-gray-300 bg-white hover:border-gray-400 transition-colors h-full flex flex-col';
   };
 
   return (

@@ -31,7 +31,11 @@ export const SubscriptionCardBadge: React.FC<SubscriptionCardBadgeProps> = ({
     const shouldShowComingSoon = (currentUserType === 'free' || currentUserType === 'plus') && planId === 'pro';
     
     return (
-      <Badge className="absolute -top-3 left-1/2 transform -translate-x-1/2 bg-gray-900 text-white hover:bg-gray-800 px-3 py-1">
+      <Badge className={`absolute -top-3 left-1/2 transform -translate-x-1/2 px-3 py-1 ${
+        shouldShowComingSoon 
+          ? 'bg-gray-500 text-white hover:bg-gray-600' 
+          : 'bg-gray-900 text-white hover:bg-gray-800'
+      }`}>
         {shouldShowComingSoon ? t('comingSoon') : t('recommended')}
       </Badge>
     );
