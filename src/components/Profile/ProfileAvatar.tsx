@@ -22,16 +22,16 @@ export const ProfileAvatar = ({
   size = 'md' 
 }: ProfileAvatarProps) => {
   return (
-    <div className={`${sizeClasses[size]} mx-auto`}>
-      <Avatar className="w-full h-full">
+    <div className={`${sizeClasses[size]} mx-auto aspect-square`}>
+      <Avatar className="w-full h-full rounded-full">
         {src && (
           <AvatarImage 
             src={src}
             alt={alt}
-            className="object-cover"
+            className="object-cover object-center rounded-full"
           />
         )}
-        <AvatarFallback className="bg-gray-100 text-gray-600 text-xl font-medium">
+        <AvatarFallback className="bg-gray-100 text-gray-600 text-xl font-medium rounded-full">
           {fallbackText}
         </AvatarFallback>
       </Avatar>
