@@ -9,9 +9,9 @@ interface ProfileAvatarProps {
 }
 
 const sizePixels = {
-  sm: 48,
-  md: 96,
-  lg: 128
+  sm: 64,
+  md: 120,
+  lg: 160
 };
 
 export const ProfileAvatar = ({ 
@@ -27,13 +27,13 @@ export const ProfileAvatar = ({
   return (
     <div className="mx-auto" style={{ width: sizeInPx, height: sizeInPx }}>
       <div 
-        className="relative bg-gray-100 flex items-center justify-center text-gray-600 font-medium border-2 border-gray-200"
+        className="relative bg-gray-100 flex items-center justify-center text-gray-600 font-medium"
         style={{
           width: `${sizeInPx}px`,
           height: `${sizeInPx}px`,
           borderRadius: `${sizeInPx / 2}px`,
           overflow: 'hidden',
-          fontSize: size === 'sm' ? '16px' : size === 'md' ? '24px' : '32px'
+          fontSize: size === 'sm' ? '20px' : size === 'md' ? '32px' : '40px'
         }}
       >
         {src ? (
