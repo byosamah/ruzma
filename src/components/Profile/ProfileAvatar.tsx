@@ -10,8 +10,8 @@ interface ProfileAvatarProps {
 
 const sizePixels = {
   sm: 64,
-  md: 120,
-  lg: 160
+  md: 100,
+  lg: 140
 };
 
 export const ProfileAvatar = ({ 
@@ -25,7 +25,7 @@ export const ProfileAvatar = ({
   const sizeInPx = sizePixels[size];
   
   return (
-    <div className="mx-auto" style={{ width: sizeInPx, height: sizeInPx }}>
+    <div className="mx-auto flex justify-center" style={{ width: 'fit-content' }}>
       <div 
         className="relative bg-gray-100 flex items-center justify-center text-gray-600 font-medium"
         style={{
