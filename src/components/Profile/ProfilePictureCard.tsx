@@ -44,22 +44,18 @@ export const ProfilePictureCard = ({
             {t('profilePicture')}
           </CardTitle>
         </CardHeader>
-        <CardContent className="pt-0">
-          <div className="flex items-center gap-4">
-            <ProfileAvatar
-              src={profilePicture}
-              alt={userName}
-              fallbackText={userName?.charAt(0).toUpperCase() || 'U'}
-              size="md"
-            />
-            
-            <div className="flex flex-col items-start">
-              <ProfilePictureUpload
-                onFileSelect={handleFileSelect}
-                isUploading={isUploading}
-              />
-            </div>
-          </div>
+        <CardContent className="text-center space-y-4 pt-0">
+          <ProfileAvatar
+            src={profilePicture}
+            alt={userName}
+            fallbackText={userName?.charAt(0).toUpperCase() || 'U'}
+            size="md"
+          />
+          
+          <ProfilePictureUpload
+            onFileSelect={handleFileSelect}
+            isUploading={isUploading}
+          />
         </CardContent>
       </Card>
 
