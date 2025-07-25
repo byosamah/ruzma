@@ -25,21 +25,19 @@ export const ProfileAvatar = ({
   
   return (
     <div className={`${sizeClasses[size]} mx-auto`}>
-      <div className="w-full h-full aspect-square rounded-full overflow-hidden bg-gray-100 flex items-center justify-center">
-        <Avatar className="w-full h-full">
-          {src && (
-            <AvatarImage 
-              src={src}
-              alt={alt}
-              onLoad={() => console.log('Avatar image loaded successfully')}
-              onError={() => console.log('Avatar image failed to load')}
-            />
-          )}
-          <AvatarFallback className="bg-gray-100 text-gray-600 text-xl font-medium w-full h-full flex items-center justify-center">
-            {fallbackText}
-          </AvatarFallback>
-        </Avatar>
-      </div>
+      <Avatar className="w-full h-full bg-gray-100">
+        {src && (
+          <AvatarImage 
+            src={src}
+            alt={alt}
+            onLoad={() => console.log('Avatar image loaded successfully')}
+            onError={() => console.log('Avatar image failed to load')}
+          />
+        )}
+        <AvatarFallback className="bg-gray-100 text-gray-600 text-xl font-medium">
+          {fallbackText}
+        </AvatarFallback>
+      </Avatar>
     </div>
   );
 };

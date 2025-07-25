@@ -10,7 +10,7 @@ export async function getCroppedImg(imageSrc: string, pixelCrop: Area): Promise<
     img.src = imageSrc;
   });
 
-  // Force square dimensions - use the smaller dimension to ensure perfect square
+  // Use the crop dimensions directly (should be square from the cropper)
   const size = Math.min(pixelCrop.width, pixelCrop.height);
   
   const canvas = document.createElement('canvas');
@@ -22,12 +22,20 @@ export async function getCroppedImg(imageSrc: string, pixelCrop: Area): Promise<
     throw new Error('Could not get canvas context');
   }
 
-  // Calculate center crop coordinates to ensure we get a perfect square
+  // Clear the canvas with transparent background
+  ctx.clearRect(0, 0, size, size);
+  
+  // Create circular clipping path
+  ctx.beginPath();
+  ctx.arc(size / 2, size / 2, size / 2, 0, Math.PI * 2);
+  ctx.clip();
+
+  // Calculate center crop coordinates
   const centerX = pixelCrop.x + (pixelCrop.width / 2);
   const centerY = pixelCrop.y + (pixelCrop.height / 2);
   const halfSize = size / 2;
 
-  // Draw the image centered and square
+  // Draw the image within the circular clip
   ctx.drawImage(
     image,
     centerX - halfSize,
@@ -40,6 +48,6 @@ export async function getCroppedImg(imageSrc: string, pixelCrop: Area): Promise<
     size
   );
   
-  console.log('Cropped image dimensions:', size, 'x', size);
+  console.log('Created circular image with dimensions:', size, 'x', size);
   return canvas.toDataURL('image/png');
 }
