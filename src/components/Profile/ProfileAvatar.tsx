@@ -8,10 +8,10 @@ interface ProfileAvatarProps {
   size?: 'sm' | 'md' | 'lg';
 }
 
-const sizeClasses = {
-  sm: 'w-12 h-12',
-  md: 'w-24 h-24',
-  lg: 'w-32 h-32'
+const sizePixels = {
+  sm: 48,
+  md: 96,
+  lg: 128
 };
 
 export const ProfileAvatar = ({ 
@@ -22,25 +22,34 @@ export const ProfileAvatar = ({
 }: ProfileAvatarProps) => {
   console.log('ProfileAvatar rendering with src:', src);
   
+  const sizeInPx = sizePixels[size];
+  
   return (
-    <div className={`${sizeClasses[size]} mx-auto`}>
+    <div className="mx-auto" style={{ width: sizeInPx, height: sizeInPx }}>
       <div 
-        className="w-full h-full bg-gray-100 flex items-center justify-center text-gray-600 text-xl font-medium overflow-hidden"
+        className="relative bg-gray-100 flex items-center justify-center text-gray-600 font-medium border-2 border-gray-200"
         style={{
-          borderRadius: '50%',
-          aspectRatio: '1/1'
+          width: `${sizeInPx}px`,
+          height: `${sizeInPx}px`,
+          borderRadius: `${sizeInPx / 2}px`,
+          overflow: 'hidden',
+          fontSize: size === 'sm' ? '16px' : size === 'md' ? '24px' : '32px'
         }}
       >
         {src ? (
           <img 
             src={src}
             alt={alt}
-            className="w-full h-full object-cover"
+            className="absolute inset-0 w-full h-full object-cover"
             onLoad={() => console.log('Avatar image loaded successfully')}
             onError={() => console.log('Avatar image failed to load')}
+            style={{
+              width: `${sizeInPx}px`,
+              height: `${sizeInPx}px`
+            }}
           />
         ) : (
-          fallbackText
+          <span className="relative z-10">{fallbackText}</span>
         )}
       </div>
     </div>
