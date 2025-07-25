@@ -25,7 +25,7 @@ export const ProfileAvatar = ({
   
   return (
     <div className={`${sizeClasses[size]} mx-auto`}>
-      <Avatar className="w-full h-full bg-gray-100">
+      <Avatar className="w-full h-full">
         {src && (
           <AvatarImage 
             src={src}
@@ -34,7 +34,7 @@ export const ProfileAvatar = ({
             onError={() => console.log('Avatar image failed to load')}
           />
         )}
-        <AvatarFallback className="bg-gray-100 text-gray-600 text-xl font-medium">
+        <AvatarFallback className="text-xl font-medium">
           {fallbackText}
         </AvatarFallback>
       </Avatar>

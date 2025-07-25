@@ -10,9 +10,14 @@ const Avatar = React.forwardRef<
   <AvatarPrimitive.Root
     ref={ref}
     className={cn(
-      "relative flex h-10 w-10 shrink-0 overflow-hidden rounded-full aspect-square",
+      "relative flex shrink-0 overflow-hidden aspect-square",
+      "rounded-full border-2 border-gray-100",
       className
     )}
+    style={{ 
+      clipPath: 'circle(50% at 50% 50%)',
+      WebkitClipPath: 'circle(50% at 50% 50%)'
+    }}
     {...props}
   />
 ))
@@ -24,8 +29,10 @@ const AvatarImage = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <AvatarPrimitive.Image
     ref={ref}
-    className={cn("aspect-square h-full w-full object-cover", className)}
-    style={{ clipPath: 'circle(50% at 50% 50%)' }}
+    className={cn(
+      "aspect-square h-full w-full object-cover object-center",
+      className
+    )}
     {...props}
   />
 ))
@@ -38,10 +45,9 @@ const AvatarFallback = React.forwardRef<
   <AvatarPrimitive.Fallback
     ref={ref}
     className={cn(
-      "flex h-full w-full items-center justify-center bg-muted",
+      "flex h-full w-full items-center justify-center bg-gray-100 text-gray-600",
       className
     )}
-    style={{ clipPath: 'circle(50% at 50% 50%)' }}
     {...props}
   />
 ))
