@@ -78,8 +78,8 @@ export const BrandingSection = ({
           {/* Brand Logo */}
           <div className="space-y-2">
             <Label className="text-sm text-gray-700">{t('brandLogo')}</Label>
-            <div className="flex items-center gap-3">
-              <div className="w-12 h-12 border border-gray-200 rounded-lg flex items-center justify-center bg-gray-50">
+            <div className="flex items-start gap-3">
+              <div className="w-16 h-16 border border-gray-200 rounded-lg flex items-center justify-center bg-gray-50 flex-shrink-0">
                 {formData.logoUrl ? (
                   <img
                     src={formData.logoUrl}
@@ -87,10 +87,10 @@ export const BrandingSection = ({
                     className="w-full h-full object-contain rounded-lg"
                   />
                 ) : (
-                  <Upload className="w-4 h-4 text-gray-400" />
+                  <Upload className="w-5 h-5 text-gray-400" />
                 )}
               </div>
-              <div>
+              <div className="flex-1">
                 <input
                   ref={logoInputRef}
                   type="file"
@@ -103,12 +103,12 @@ export const BrandingSection = ({
                   variant="outline"
                   size="sm"
                   onClick={() => logoInputRef.current?.click()}
-                  className="border-gray-200 text-gray-600 hover:bg-gray-50"
+                  className="border-gray-200 text-gray-600 hover:bg-gray-50 mb-1"
                 >
                   <Upload className="w-3 h-3 mr-1" />
                   {t('upload')}
                 </Button>
-                <p className="text-xs text-gray-500 mt-1">PNG, JPG {t('upTo')} 2{t('mb')}</p>
+                <p className="text-xs text-gray-500">PNG, JPG {t('upTo')} 2{t('mb')}</p>
               </div>
             </div>
           </div>
