@@ -4,7 +4,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { User, Mail, Briefcase } from 'lucide-react';
-import { CURRENCIES, getCurrencyByCountry } from '@/lib/currency';
+import { EnhancedCurrencySelect } from '@/components/ui/enhanced-currency-select';
 import { CountrySelect } from '@/components/ui/country-select';
 import { useT } from '@/lib/i18n';
 import { useLanguage } from '@/contexts/LanguageContext';
@@ -120,18 +120,15 @@ export const PersonalInfoSection = ({
 
       <div className="space-y-2">
         <Label htmlFor="currency" className="text-sm text-gray-700">{t('preferredCurrency')}</Label>
-        <Select value={formData.currency || 'USD'} onValueChange={onCurrencyChange}>
-          <SelectTrigger className="border-gray-200 focus:border-gray-300 focus:ring-0">
-            <SelectValue placeholder={t('selectCurrency')} />
-          </SelectTrigger>
-          <SelectContent>
-            {Object.entries(CURRENCIES).map(([code, { symbol, name }]) => (
-              <SelectItem key={code} value={code}>
-                {symbol[language]} {name} ({code})
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
+        <EnhancedCurrencySelect
+          value={formData.currency || 'USD'}
+          onChange={onCurrencyChange}
+          placeholder={t('selectCurrencyPlaceholder')}
+          showSearch={true}
+          showCategories={true}
+          showCountryFlags={true}
+          className="border-gray-200 focus:border-gray-300 focus:ring-0"
+        />
       </div>
 
       <div className="space-y-2">

@@ -3,7 +3,8 @@ import React from 'react';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Label } from '@/components/ui/label';
 import { DollarSign } from 'lucide-react';
-import { CURRENCIES } from '@/lib/currency';
+import { CURRENCIES, getPopularCurrencies } from '@/lib/currency';
+import { useLanguage } from '@/contexts/LanguageContext';
 import { useT } from '@/lib/i18n';
 
 interface CurrencySelectProps {
@@ -20,6 +21,11 @@ export const CurrencySelect: React.FC<CurrencySelectProps> = ({
   required = false
 }) => {
   const t = useT();
+  const { language } = useLanguage();
+  
+  // Show popular currencies first, then all others
+  const popularCurrencies = getPopularCurrencies();
+  const otherCurrencies = Object.keys(CURRENCIES).filter(code => !popularCurrencies.includes(code as any));
 
   return (
     <div className="space-y-2">
@@ -31,11 +37,42 @@ export const CurrencySelect: React.FC<CurrencySelectProps> = ({
             <SelectValue placeholder={t('selectCurrencyPlaceholder')} />
           </SelectTrigger>
           <SelectContent className="bg-white border border-gray-200 shadow-lg z-50">
-            {Object.entries(CURRENCIES).map(([code, { symbol, name }]) => (
-              <SelectItem key={code} value={code} className="hover:bg-gray-50">
-                {symbol.en} {name} ({code})
-              </SelectItem>
-            ))}
+            {/* Popular currencies first */}
+            <div className="p-2 text-xs font-medium text-gray-500 uppercase tracking-wide">
+              {t('popular')}
+            </div>
+            {popularCurrencies.map((code) => {
+              const { symbol, name } = CURRENCIES[code];
+              return (
+                <SelectItem key={code} value={code} className="hover:bg-gray-50">
+                  <div className="flex items-center gap-2">
+                    <span className="font-medium">{symbol[language]}</span>
+                    <span>{name}</span>
+                    <span className="text-xs text-gray-500">({code})</span>
+                  </div>
+                </SelectItem>
+              );
+            })}
+            
+            {otherCurrencies.length > 0 && (
+              <>
+                <div className="p-2 text-xs font-medium text-gray-500 uppercase tracking-wide border-t mt-1 pt-3">
+                  {t('all')}
+                </div>
+                {otherCurrencies.map((code) => {
+                  const { symbol, name } = CURRENCIES[code];
+                  return (
+                    <SelectItem key={code} value={code} className="hover:bg-gray-50">
+                      <div className="flex items-center gap-2">
+                        <span className="font-medium">{symbol[language]}</span>
+                        <span>{name}</span>
+                        <span className="text-xs text-gray-500">({code})</span>
+                      </div>
+                    </SelectItem>
+                  );
+                })}
+              </>
+            )}
           </SelectContent>
         </Select>
       </div>

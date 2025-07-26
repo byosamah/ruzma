@@ -53,85 +53,99 @@ export const COUNTRIES: Record<string, Country> = {
     code: 'CA',
     name: { en: 'Canada', ar: 'كندا' },
     flag: '🇨🇦',
-    currency: 'USD', // Using USD as fallback
+    currency: 'CAD',
     phoneCode: '+1'
   },
   AU: {
     code: 'AU',
     name: { en: 'Australia', ar: 'أستراليا' },
     flag: '🇦🇺',
-    currency: 'USD', // Using USD as fallback
+    currency: 'AUD',
     phoneCode: '+61'
   },
   DE: {
     code: 'DE',
     name: { en: 'Germany', ar: 'ألمانيا' },
     flag: '🇩🇪',
-    currency: 'USD', // Using USD as fallback
+    currency: 'EUR',
     phoneCode: '+49'
   },
   FR: {
     code: 'FR',
     name: { en: 'France', ar: 'فرنسا' },
     flag: '🇫🇷',
-    currency: 'USD', // Using USD as fallback
+    currency: 'EUR',
     phoneCode: '+33'
   },
   KW: {
     code: 'KW',
     name: { en: 'Kuwait', ar: 'الكويت' },
     flag: '🇰🇼',
-    currency: 'USD', // Using USD as fallback
+    currency: 'KWD',
     phoneCode: '+965'
   },
   QA: {
     code: 'QA',
     name: { en: 'Qatar', ar: 'قطر' },
     flag: '🇶🇦',
-    currency: 'USD', // Using USD as fallback
+    currency: 'QAR',
     phoneCode: '+974'
   },
   BH: {
     code: 'BH',
     name: { en: 'Bahrain', ar: 'البحرين' },
     flag: '🇧🇭',
-    currency: 'USD', // Using USD as fallback
+    currency: 'BHD',
     phoneCode: '+973'
   },
   OM: {
     code: 'OM',
     name: { en: 'Oman', ar: 'عُمان' },
     flag: '🇴🇲',
-    currency: 'USD', // Using USD as fallback
+    currency: 'OMR',
     phoneCode: '+968'
   },
   LB: {
     code: 'LB',
     name: { en: 'Lebanon', ar: 'لبنان' },
     flag: '🇱🇧',
-    currency: 'USD', // Using USD as fallback
+    currency: 'LBP',
     phoneCode: '+961'
   },
   MA: {
     code: 'MA',
     name: { en: 'Morocco', ar: 'المغرب' },
     flag: '🇲🇦',
-    currency: 'USD', // Using USD as fallback
+    currency: 'MAD',
     phoneCode: '+212'
   },
   TN: {
     code: 'TN',
     name: { en: 'Tunisia', ar: 'تونس' },
     flag: '🇹🇳',
-    currency: 'USD', // Using USD as fallback
+    currency: 'TND',
     phoneCode: '+216'
   },
   DZ: {
     code: 'DZ',
     name: { en: 'Algeria', ar: 'الجزائر' },
     flag: '🇩🇿',
-    currency: 'USD', // Using USD as fallback
+    currency: 'DZD',
     phoneCode: '+213'
+  },
+  CH: {
+    code: 'CH',
+    name: { en: 'Switzerland', ar: 'سويسرا' },
+    flag: '🇨🇭',
+    currency: 'CHF',
+    phoneCode: '+41'
+  },
+  JP: {
+    code: 'JP',
+    name: { en: 'Japan', ar: 'اليابان' },
+    flag: '🇯🇵',
+    currency: 'JPY',
+    phoneCode: '+81'
   }
 };
 

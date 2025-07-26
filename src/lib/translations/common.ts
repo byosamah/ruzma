@@ -180,6 +180,17 @@ export const commonTranslations = {
     watchAnalyticsTutorial: 'Watch Analytics Tutorial',
     watchProfileTutorial: 'Watch Profile Tutorial',
     knowMore: 'Know more',
+    
+    // Currency specific translations
+    selectCurrencyPlaceholder: 'Choose your currency',
+    preferredCurrencyLabel: 'Preferred Currency',
+    searchCurrencies: 'Search currencies...',
+    popular: 'Popular',
+    major: 'Major',
+    regional: 'Regional',
+    all: 'All',
+    noCurrenciesFound: 'No currencies found',
+    currencySuggestion: 'Currency suggestion based on country',
   },
   ar: {
     // Basic actions and states
@@ -361,5 +372,16 @@ export const commonTranslations = {
     watchAnalyticsTutorial: 'مشاهدة درس التحليلات',
     watchProfileTutorial: 'مشاهدة درس الملف الشخصي',
     knowMore: 'إعرف أكثر',
+    
+    // Currency specific translations
+    selectCurrencyPlaceholder: 'اختر عملتك',
+    preferredCurrencyLabel: 'العملة المفضلة',
+    searchCurrencies: 'البحث عن العملات...',
+    popular: 'شائع',
+    major: 'رئيسي',
+    regional: 'إقليمي',
+    all: 'الكل',
+    noCurrenciesFound: 'لم يتم العثور على عملات',
+    currencySuggestion: 'اقتراح العملة بناءً على البلد',
   },
 };
