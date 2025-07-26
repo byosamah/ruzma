@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { FormField } from './FormField';
 import { PasswordField } from './PasswordField';
-import { CurrencySelect } from './CurrencySelect';
+import { CountrySelect } from '@/components/ui/country-select';
 import { User, Mail } from 'lucide-react';
 import { useSignUpForm } from '@/hooks/auth/useSignUpForm';
 import { useT } from '@/lib/i18n';
@@ -19,7 +19,7 @@ const SignUpContainer: React.FC = () => {
     showConfirmPassword,
     isLoading,
     handleFormDataChange,
-    handleCurrencyChange,
+    handleCountryChange,
     handleSubmit,
     handleTogglePassword,
     handleToggleConfirmPassword,
@@ -72,10 +72,11 @@ const SignUpContainer: React.FC = () => {
               required
             />
 
-            <CurrencySelect
-              value={formData.currency}
-              onChange={handleCurrencyChange}
-              error={errors.currency}
+            <CountrySelect
+              value={formData.country || ''}
+              onChange={handleCountryChange}
+              error={errors.country}
+              required
             />
             
             <PasswordField

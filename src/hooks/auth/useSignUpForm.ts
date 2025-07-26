@@ -1,9 +1,9 @@
-
 import { useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { toast } from 'sonner';
 import { supabase } from '@/integrations/supabase/client';
 import { useSignUpValidation } from './useSignUpValidation';
+import { getCurrencyByCountry } from '@/lib/currency';
 import { useT } from '@/lib/i18n';
 
 interface FormData {
@@ -42,28 +42,17 @@ export const useSignUpForm = () => {
     }));
   };
 
-  const handleCurrencyChange = (currency: string) => {
-    console.log('Currency selected:', currency);
-    
-    // Ensure currency is one of the allowed values
-    const allowedCurrencies = ['SAR', 'JOD', 'USD', 'AED', 'GBP', 'EGP'];
-    const validCurrency = allowedCurrencies.includes(currency) ? currency : 'USD';
-    
-    if (currency !== validCurrency) {
-      console.warn('Invalid currency selected, defaulting to USD:', currency);
-    }
-    
-    setFormData(prev => ({
-      ...prev,
-      currency: validCurrency
-    }));
-  };
-
   const handleCountryChange = (countryCode: string) => {
     console.log('Country selected:', countryCode);
+    
+    // Automatically set currency based on country
+    const currency = getCurrencyByCountry(countryCode);
+    console.log('Auto-setting currency to:', currency);
+    
     setFormData(prev => ({
       ...prev,
-      country: countryCode
+      country: countryCode,
+      currency: currency
     }));
   };
 
@@ -81,15 +70,12 @@ export const useSignUpForm = () => {
     try {
       const redirectUrl = `${window.location.origin}/dashboard`;
 
-      // Ensure currency is valid before sending to server
-      const allowedCurrencies = ['SAR', 'JOD', 'USD', 'AED', 'GBP', 'EGP'];
-      const safeCurrency = allowedCurrencies.includes(formData.currency) ? formData.currency : 'USD';
-
-      console.log('Signup attempt with currency:', safeCurrency);
+      console.log('Signup attempt with currency:', formData.currency);
       console.log('Full signup data:', { 
         email: formData.email, 
         name: formData.name, 
-        currency: safeCurrency 
+        currency: formData.currency,
+        country: formData.country
       });
 
       const { data, error } = await supabase.auth.signUp({
@@ -99,7 +85,7 @@ export const useSignUpForm = () => {
           emailRedirectTo: redirectUrl,
           data: {
             full_name: formData.name,
-            currency: safeCurrency,
+            currency: formData.currency,
             country: formData.country,
           }
         }
@@ -145,7 +131,6 @@ export const useSignUpForm = () => {
     showConfirmPassword,
     isLoading,
     handleFormDataChange,
-    handleCurrencyChange,
     handleCountryChange,
     handleSubmit,
     handleTogglePassword,

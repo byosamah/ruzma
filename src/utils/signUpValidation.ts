@@ -31,12 +31,9 @@ export const validateSignUpForm = (formData: FormData): Record<string, string> =
     newErrors.confirmPassword = 'Passwords do not match';
   }
 
-  // Validate currency is required and from allowed list
-  const allowedCurrencies = ['SAR', 'JOD', 'USD', 'AED', 'GBP', 'EGP'];
-  if (!formData.currency) {
-    newErrors.currency = 'Currency is required';
-  } else if (!allowedCurrencies.includes(formData.currency)) {
-    newErrors.currency = 'Please select a valid currency';
+  // Validate country is required
+  if (!formData.country) {
+    newErrors.country = 'Country is required';
   }
   
   return newErrors;
