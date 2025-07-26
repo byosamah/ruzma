@@ -16,6 +16,7 @@ interface PersonalInformationFormProps {
   onFormSubmit: (e: React.FormEvent) => void;
   onCancel: () => void;
   onCurrencyChange?: (currency: string) => void;
+  onCountryChange?: (countryCode: string) => void;
   onLogoUpload?: (file: File) => void;
 }
 
@@ -27,6 +28,7 @@ export const PersonalInformationForm = ({
   onFormSubmit,
   onCancel,
   onCurrencyChange,
+  onCountryChange,
   onLogoUpload
 }: PersonalInformationFormProps) => {
   const t = useT();
@@ -34,6 +36,12 @@ export const PersonalInformationForm = ({
   const handleCurrencyChange = (value: string) => {
     if (onCurrencyChange) {
       onCurrencyChange(value);
+    }
+  };
+
+  const handleCountryChange = (countryCode: string) => {
+    if (onCountryChange) {
+      onCountryChange(countryCode);
     }
   };
 
@@ -54,6 +62,7 @@ export const PersonalInformationForm = ({
             formData={formData}
             onFormChange={onFormChange}
             onCurrencyChange={handleCurrencyChange}
+            onCountryChange={handleCountryChange}
           />
 
           <BrandingSection

@@ -5,6 +5,7 @@ interface FormData {
   password: string;
   confirmPassword: string;
   currency: string;
+  country?: string;
 }
 
 export const validateSignUpForm = (formData: FormData): Record<string, string> => {

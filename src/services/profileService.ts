@@ -39,6 +39,7 @@ export const profileService = {
         website: formData.website,
         bio: formData.bio,
         currency: formData.currency,
+        country: formData.country,
       })
       .eq('id', userId);
 

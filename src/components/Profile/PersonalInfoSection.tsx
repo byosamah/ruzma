@@ -4,7 +4,8 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { User, Mail, Briefcase } from 'lucide-react';
-import { CURRENCIES } from '@/lib/currency';
+import { CURRENCIES, getCurrencyByCountry } from '@/lib/currency';
+import { CountrySelect } from '@/components/ui/country-select';
 import { useT } from '@/lib/i18n';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { ProfileFormData } from '@/hooks/profile/types';
@@ -14,12 +15,14 @@ interface PersonalInfoSectionProps {
   formData: ProfileFormData;
   onFormChange: (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => void;
   onCurrencyChange: (currency: string) => void;
+  onCountryChange: (countryCode: string) => void;
 }
 
 export const PersonalInfoSection = ({
   formData,
   onFormChange,
-  onCurrencyChange
+  onCurrencyChange,
+  onCountryChange
 }: PersonalInfoSectionProps) => {
   const t = useT();
   const { language } = useLanguage();
@@ -103,6 +106,16 @@ export const PersonalInfoSection = ({
             className="pl-10 border-gray-200 focus:border-gray-300 focus:ring-0"
           />
         </div>
+      </div>
+
+      {/* Country Selection */}
+      <div className="space-y-2">
+        <CountrySelect
+          value={formData.country}
+          onChange={onCountryChange}
+          onCurrencyChange={onCurrencyChange}
+          className="w-full"
+        />
       </div>
 
       <div className="space-y-2">

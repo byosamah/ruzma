@@ -12,6 +12,7 @@ interface FormData {
   password: string;
   confirmPassword: string;
   currency: string;
+  country?: string;
 }
 
 export const useSignUpForm = () => {
@@ -23,7 +24,8 @@ export const useSignUpForm = () => {
     email: '',
     password: '',
     confirmPassword: '',
-    currency: 'USD' // Ensure default is one of the allowed values
+    currency: 'USD', // Ensure default is one of the allowed values
+    country: ''
   });
 
   const [showPassword, setShowPassword] = useState(false);
@@ -54,6 +56,14 @@ export const useSignUpForm = () => {
     setFormData(prev => ({
       ...prev,
       currency: validCurrency
+    }));
+  };
+
+  const handleCountryChange = (countryCode: string) => {
+    console.log('Country selected:', countryCode);
+    setFormData(prev => ({
+      ...prev,
+      country: countryCode
     }));
   };
 
@@ -90,6 +100,7 @@ export const useSignUpForm = () => {
           data: {
             full_name: formData.name,
             currency: safeCurrency,
+            country: formData.country,
           }
         }
       });
@@ -135,6 +146,7 @@ export const useSignUpForm = () => {
     isLoading,
     handleFormDataChange,
     handleCurrencyChange,
+    handleCountryChange,
     handleSubmit,
     handleTogglePassword,
     handleToggleConfirmPassword,

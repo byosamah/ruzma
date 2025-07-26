@@ -54,6 +54,7 @@ export const setProfileFormData = (
     website: profile?.website || '',
     bio: profile?.bio || '',
     currency: profile?.currency || userCurrency || 'USD',
+    country: profile?.country || user.user_metadata?.country || '',
     professionalTitle: branding?.freelancer_title || '',
     shortBio: branding?.freelancer_bio || '',
     primaryColor: branding?.primary_color || '#050c1e',

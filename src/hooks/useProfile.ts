@@ -25,6 +25,10 @@ export const useProfile = (user?: User | null) => {
     handleCurrencyChange(currency, setFormData);
   };
 
+  const wrappedHandleCountryChange = (countryCode: string) => {
+    setFormData(prev => ({ ...prev, country: countryCode }));
+  };
+
   const wrappedHandleLogoUpload = (file: File) => {
     handleLogoUpload(file, setFormData);
   };
@@ -47,6 +51,7 @@ export const useProfile = (user?: User | null) => {
     navigate,
     handleChange: wrappedHandleChange,
     handleCurrencyChange: wrappedHandleCurrencyChange,
+    handleCountryChange: wrappedHandleCountryChange,
     handleLogoUpload: wrappedHandleLogoUpload,
     handleSubmit: wrappedHandleSubmit,
     updateProfilePicture,

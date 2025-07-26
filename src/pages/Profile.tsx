@@ -20,6 +20,7 @@ const Profile = () => {
     navigate,
     handleChange,
     handleCurrencyChange,
+    handleCountryChange,
     handleLogoUpload,
     handleSubmit,
     updateProfilePicture,
@@ -61,6 +62,7 @@ const Profile = () => {
             onFormSubmit={handleSubmit}
             onCancel={() => navigate('/dashboard')}
             onCurrencyChange={handleCurrencyChange}
+            onCountryChange={handleCountryChange}
             onLogoUpload={handleLogoUpload}
           />
         </div>
