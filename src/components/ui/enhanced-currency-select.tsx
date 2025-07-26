@@ -49,10 +49,16 @@ export const EnhancedCurrencySelect: React.FC<EnhancedCurrencySelectProps> = ({
     const countries = getPossibleCountriesByCurrency(currencyCode);
     const country = countries.length === 1 ? getCountryByCode(countries[0]) : null;
     
+    // Special case for EUR to show EU flag
+    let flag = country?.flag;
+    if (currencyCode === 'EUR') {
+      flag = '🇪🇺';
+    }
+    
     return {
       symbol: currency.symbol[language],
       name: currency.name,
-      flag: country?.flag
+      flag: flag
     };
   };
 
