@@ -6,7 +6,7 @@ import { Search, DollarSign } from 'lucide-react';
 import { 
   CURRENCIES, 
   CurrencyCode, 
-  getCurrenciesByCategory, 
+  getAllCurrencies, 
   getPopularCurrencies, 
   searchCurrencies,
   getPossibleCountriesByCurrency 
@@ -20,7 +20,6 @@ interface EnhancedCurrencySelectProps {
   onChange: (currency: string) => void;
   placeholder?: string;
   showSearch?: boolean;
-  showCategories?: boolean;
   showCountryFlags?: boolean;
   className?: string;
 }
@@ -30,38 +29,20 @@ export const EnhancedCurrencySelect: React.FC<EnhancedCurrencySelectProps> = ({
   onChange,
   placeholder,
   showSearch = true,
-  showCategories = true,
   showCountryFlags = true,
   className = ""
 }) => {
   const { language } = useLanguage();
   const t = useT();
   const [searchQuery, setSearchQuery] = useState('');
-  const [selectedCategory, setSelectedCategory] = useState<'popular' | 'major' | 'regional' | 'all'>('popular');
 
   const filteredCurrencies = useMemo(() => {
-    let currencies: CurrencyCode[];
-    
     if (searchQuery) {
-      currencies = searchCurrencies(searchQuery, language);
+      return searchCurrencies(searchQuery, language);
     } else {
-      switch (selectedCategory) {
-        case 'popular':
-          currencies = getPopularCurrencies();
-          break;
-        case 'major':
-          currencies = getCurrenciesByCategory('major');
-          break;
-        case 'regional':
-          currencies = getCurrenciesByCategory('regional');
-          break;
-        default:
-          currencies = getCurrenciesByCategory('all');
-      }
+      return getAllCurrencies();
     }
-    
-    return currencies;
-  }, [searchQuery, selectedCategory, language]);
+  }, [searchQuery, language]);
 
   const getCurrencyDisplayInfo = (currencyCode: CurrencyCode) => {
     const currency = CURRENCIES[currencyCode];
@@ -71,8 +52,7 @@ export const EnhancedCurrencySelect: React.FC<EnhancedCurrencySelectProps> = ({
     return {
       symbol: currency.symbol[language],
       name: currency.name,
-      flag: country?.flag,
-      category: currency.category
+      flag: country?.flag
     };
   };
 
@@ -111,25 +91,6 @@ export const EnhancedCurrencySelect: React.FC<EnhancedCurrencySelectProps> = ({
               </div>
             )}
             
-            {showCategories && !searchQuery && (
-              <div className="flex flex-wrap gap-1">
-                {[
-                  { key: 'popular', label: t('popular') },
-                  { key: 'major', label: t('major') },
-                  { key: 'regional', label: t('regional') },
-                  { key: 'all', label: t('all') }
-                ].map(({ key, label }) => (
-                  <Badge
-                    key={key}
-                    variant={selectedCategory === key ? "default" : "outline"}
-                    className="cursor-pointer text-xs"
-                    onClick={() => setSelectedCategory(key as any)}
-                  >
-                    {label}
-                  </Badge>
-                ))}
-              </div>
-            )}
           </div>
           
           <div className="max-h-60 overflow-y-auto">
@@ -145,11 +106,6 @@ export const EnhancedCurrencySelect: React.FC<EnhancedCurrencySelectProps> = ({
                     <span className="text-muted-foreground">{info.name}</span>
                     <span className="text-xs text-muted-foreground">({currencyCode})</span>
                   </div>
-                  {info.category === 'major' && (
-                    <Badge variant="secondary" className="text-xs">
-                      {t('major')}
-                    </Badge>
-                  )}
                 </SelectItem>
               );
             })}
