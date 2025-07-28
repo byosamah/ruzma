@@ -1,6 +1,6 @@
 
 import React, { createContext, useContext, useState, ReactNode, useEffect } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate, useInRouterContext } from "react-router-dom";
 import { 
   getLanguageFromPath, 
   getStoredLanguage, 
@@ -20,9 +20,12 @@ interface LanguageContextProps {
 const LanguageContext = createContext<LanguageContextProps | undefined>(undefined);
 
 export const LanguageProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-  // Initialize from URL or localStorage, default to English as requested
-  const location = useLocation();
-  const navigate = useNavigate();
+  // Check if we're inside a Router context
+  const isInRouter = useInRouterContext();
+  
+  // Conditionally use router hooks
+  const location = isInRouter ? useLocation() : { pathname: window.location.pathname };
+  const navigate = isInRouter ? useNavigate() : () => {};
   
   const initialLanguage = (() => {
     const urlLanguage = getLanguageFromPath(location.pathname);
@@ -37,19 +40,24 @@ export const LanguageProvider: React.FC<{ children: ReactNode }> = ({ children }
     setLanguage(newLanguage);
     storeLanguage(newLanguage);
     
-    // If we're on a route that should have language prefix, navigate to new language
-    const currentPath = location.pathname;
-    const urlLanguage = getLanguageFromPath(currentPath);
-    
-    if (urlLanguage && urlLanguage !== newLanguage) {
-      const pathWithoutLang = currentPath.replace(`/${urlLanguage}`, '');
-      const newPath = addLanguageToPath(pathWithoutLang, newLanguage);
-      navigate(newPath, { replace: true });
+    // If we're on a route that should have language prefix and we're in a router, navigate to new language
+    if (isInRouter) {
+      const currentPath = location.pathname;
+      const urlLanguage = getLanguageFromPath(currentPath);
+      
+      if (urlLanguage && urlLanguage !== newLanguage) {
+        const pathWithoutLang = currentPath.replace(`/${urlLanguage}`, '');
+        const newPath = addLanguageToPath(pathWithoutLang, newLanguage);
+        navigate(newPath, { replace: true });
+      }
     }
   };
 
   // Handle initial redirect if needed
   useEffect(() => {
+    // Only handle redirects if we're in a router context
+    if (!isInRouter) return;
+    
     const currentPath = location.pathname;
     
     // Redirect root to default language dashboard
@@ -63,7 +71,7 @@ export const LanguageProvider: React.FC<{ children: ReactNode }> = ({ children }
       const newPath = addLanguageToPath(currentPath, language);
       navigate(newPath, { replace: true });
     }
-  }, [location.pathname, navigate, language]);
+  }, [location.pathname, navigate, language, isInRouter]);
 
   useEffect(() => {
     if (language === "ar") {
