@@ -11,6 +11,7 @@ import { FreelancerBranding } from '@/types/branding';
 interface ProjectMilestonesListProps {
   milestones: any[]; // Using any[] to match the database structure
   onPaymentUpload: (milestoneId: string, file: File) => Promise<boolean>;
+  onRevisionRequest?: (milestoneId: string, feedback: string, images: string[]) => Promise<void>;
   currency: CurrencyCode;
   freelancerCurrency?: CurrencyCode | null;
   branding?: FreelancerBranding | null;
@@ -20,6 +21,7 @@ interface ProjectMilestonesListProps {
 const ProjectMilestonesList: React.FC<ProjectMilestonesListProps> = ({
   milestones,
   onPaymentUpload,
+  onRevisionRequest,
   currency,
   freelancerCurrency,
   branding,
@@ -64,6 +66,7 @@ const ProjectMilestonesList: React.FC<ProjectMilestonesListProps> = ({
                 milestone={milestone}
                 isClient={true}
                 onPaymentUpload={onPaymentUpload}
+                onRevisionRequest={onRevisionRequest}
                 currency={currency}
                 freelancerCurrency={freelancerCurrency}
                 branding={branding}

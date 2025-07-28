@@ -5,6 +5,9 @@ import { clientProjectService } from '@/services/clientProjectService';
 import { DatabaseProject } from '@/hooks/projectTypes';
 import { trackClientProjectAccess } from '@/lib/analytics';
 import { useUserCurrency } from '@/hooks/useUserCurrency';
+import { toast } from 'sonner';
+import { parseRevisionData, addRevisionRequest, stringifyRevisionData } from '@/lib/revisionUtils';
+import { addRevisionRequestAction } from '@/hooks/milestone-actions/updateRevisionData';
 
 export const useClientProject = (token?: string | null, isHybrid?: boolean) => {
   const { projectId } = useParams<{ projectId: string }>();
@@ -14,35 +17,35 @@ export const useClientProject = (token?: string | null, isHybrid?: boolean) => {
   
   const userCurrency = useUserCurrency(null);
 
+  const loadProject = async () => {
+    if (!token) {
+      setError('Missing access token');
+      setLoading(false);
+      return;
+    }
+
+    setLoading(true);
+    setError(null);
+
+    try {
+      const data = await clientProjectService.getProject(token, isHybrid);
+      setProject(data);
+      
+      // Track client project access
+      if (data.id) {
+        trackClientProjectAccess(data.id, 'client_link');
+      }
+      
+    } catch (err) {
+      console.error('Error fetching client project:', err);
+      setError(err instanceof Error ? err.message : 'Failed to load project');
+    } finally {
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
-    const fetchProject = async () => {
-      if (!token) {
-        setError('Missing access token');
-        setLoading(false);
-        return;
-      }
-
-      setLoading(true);
-      setError(null);
-
-      try {
-        const data = await clientProjectService.getProject(token, isHybrid);
-        setProject(data);
-        
-        // Track client project access
-        if (data.id) {
-          trackClientProjectAccess(data.id, 'client_link');
-        }
-        
-      } catch (err) {
-        console.error('Error fetching client project:', err);
-        setError(err instanceof Error ? err.message : 'Failed to load project');
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchProject();
+    loadProject();
   }, [token, isHybrid]);
 
   const uploadPaymentProof = async (milestoneId: string, file: File) => {
@@ -76,6 +79,39 @@ export const useClientProject = (token?: string | null, isHybrid?: boolean) => {
     }
   };
 
+  const handleRevisionRequest = async (milestoneId: string, feedback: string, images: string[]) => {
+    if (!project || !token) {
+      toast.error('Project not available');
+      return;
+    }
+
+    try {
+      // Find the milestone
+      const milestone = project.milestones.find(m => m.id === milestoneId);
+      if (!milestone) {
+        toast.error('Milestone not found');
+        return;
+      }
+
+      // Update revision data
+      const currentRevisionData = parseRevisionData(milestone);
+      const updatedRevisionData = addRevisionRequest(currentRevisionData, feedback, images);
+      const newDeliverableLink = stringifyRevisionData(milestone.deliverable_link, updatedRevisionData);
+      
+      // Since this is client-side, we'll use a simulated user object
+      const success = await addRevisionRequestAction(null, milestoneId, newDeliverableLink);
+      
+      if (success) {
+        // Reload project data
+        await loadProject();
+        toast.success('Revision request submitted successfully');
+      }
+    } catch (error) {
+      console.error('Error submitting revision request:', error);
+      toast.error('Failed to submit revision request');
+    }
+  };
+
   return {
     project,
     loading,
@@ -83,6 +119,7 @@ export const useClientProject = (token?: string | null, isHybrid?: boolean) => {
     error,
     uploadPaymentProof,
     handlePaymentUpload,
+    handleRevisionRequest,
     userCurrency,
     freelancerCurrency: project?.freelancer_currency || null,
   };
