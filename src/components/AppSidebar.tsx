@@ -27,20 +27,20 @@ export function AppSidebar({ user, onSignOut }: AppSidebarProps) {
 
   return (
     <Sidebar 
-      className={`bg-white ${language === 'ar' ? 'border-l border-gray-200' : 'border-r border-gray-200'}`} 
+      className={`bg-sidebar-background ${language === 'ar' ? 'border-l border-sidebar-border' : 'border-r border-sidebar-border'}`} 
       collapsible="icon"
       side={sidebarSide}
     >
-      <SidebarHeader>
+      <SidebarHeader className="p-6">
         <SidebarLogo />
       </SidebarHeader>
       
-      <SidebarContent className="px-4 py-6 space-y-8">
+      <SidebarContent className="px-4 py-2 space-y-6">
         <SidebarNavigation />
         <SidebarAccount />
       </SidebarContent>
 
-      <SidebarFooter>
+      <SidebarFooter className="p-4">
         <SidebarFooterComponent onSignOut={handleSignOut} />
       </SidebarFooter>
     </Sidebar>

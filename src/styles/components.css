@@ -1,55 +1,77 @@
 
-/* Component-specific utility classes */
+/* Marc Lou inspired component utilities */
 @layer components {
-  .saas-card {
-    @apply bg-white border border-gray-100 rounded-lg shadow-sm;
+  .marc-card {
+    @apply bg-card border border-border rounded-md shadow-sm transition-all duration-150 hover:shadow-md hover:scale-[1.01];
   }
   
-  .saas-sidebar-item {
-    @apply flex items-center gap-3 px-3 py-2 text-sm text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-md transition-colors;
+  .marc-sidebar-item {
+    @apply flex items-center gap-3 px-4 py-3 text-sm text-sidebar-foreground hover:text-sidebar-primary hover:bg-sidebar-accent rounded-md transition-all duration-150 font-medium;
   }
   
-  .saas-sidebar-item.active {
-    @apply text-gray-900 bg-gray-100;
+  .marc-sidebar-item.active {
+    @apply text-sidebar-primary bg-sidebar-accent font-semibold;
   }
   
-  .saas-button-primary {
-    @apply bg-black text-white hover:bg-gray-800 px-4 py-2 rounded-md font-medium transition-colors min-h-[44px] touch-manipulation;
+  .marc-button-primary {
+    @apply bg-primary text-primary-foreground hover:bg-primary/90 px-6 py-3 rounded-md font-semibold transition-all duration-150 min-h-[48px] touch-manipulation active:scale-95 border-0;
   }
   
-  .saas-button-secondary {
-    @apply bg-white text-gray-700 hover:bg-gray-50 border border-gray-300 px-4 py-2 rounded-md font-medium transition-colors min-h-[44px] touch-manipulation;
+  .marc-button-secondary {
+    @apply bg-background text-foreground hover:bg-secondary border-2 border-primary px-6 py-3 rounded-md font-semibold transition-all duration-150 min-h-[48px] touch-manipulation active:scale-95;
   }
   
-  .saas-accent {
-    @apply text-yellow-500;
+  .marc-accent {
+    @apply text-accent;
   }
   
-  .saas-accent-bg {
-    @apply bg-yellow-500 text-black;
+  .marc-accent-bg {
+    @apply bg-accent text-accent-foreground;
   }
 
-  /* Dropdown improvements */
+  /* Stats and metrics styling */
+  .marc-stat-card {
+    @apply bg-card border border-border rounded-md p-6 transition-all duration-150 hover:shadow-md;
+  }
+
+  .marc-stat-number {
+    @apply text-3xl font-bold text-foreground leading-none;
+  }
+
+  .marc-stat-label {
+    @apply text-sm font-medium text-muted-foreground;
+  }
+
+  /* Modern dropdown improvements */
   .mobile-dropdown-content {
-    @apply bg-white border border-gray-200 shadow-lg rounded-lg z-50;
+    @apply bg-popover border border-border shadow-lg rounded-md z-50;
     max-height: 80vh;
     overflow-y: auto;
   }
   
   .mobile-dropdown-item {
-    @apply flex items-center gap-3 px-4 py-3 hover:bg-gray-50 transition-colors min-h-[44px];
+    @apply flex items-center gap-3 px-4 py-3 hover:bg-accent/50 transition-all duration-150 min-h-[48px] font-medium;
   }
 
-  /* Interactive elements */
+  /* Marc Lou interactive elements */
   .story-link {
-    @apply relative inline-block after:content-[''] after:absolute after:w-full after:scale-x-0 after:h-0.5 after:bottom-0 after:left-0 after:bg-primary after:origin-bottom-right after:transition-transform after:duration-300 hover:after:scale-x-100 hover:after:origin-bottom-left;
+    @apply relative inline-block after:content-[''] after:absolute after:w-full after:scale-x-0 after:h-0.5 after:bottom-0 after:left-0 after:bg-primary after:origin-bottom-right after:transition-transform after:duration-150 hover:after:scale-x-100 hover:after:origin-bottom-left;
   }
   
   .hover-scale {
-    @apply transition-transform duration-200 hover:scale-105;
+    @apply transition-all duration-150 hover:scale-[1.02];
   }
   
   .pulse {
     @apply animate-[pulse_2s_cubic-bezier(0.4,0,0.6,1)_infinite];
+  }
+
+  /* Micro-interactions */
+  .marc-press {
+    @apply active:scale-95 transition-transform duration-75;
+  }
+
+  .marc-fade-in {
+    @apply animate-[fadeIn_300ms_ease-out];
   }
 }

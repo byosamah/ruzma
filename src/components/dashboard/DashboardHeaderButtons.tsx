@@ -24,7 +24,7 @@ const DashboardHeaderButtons: React.FC<DashboardHeaderButtonsProps> = ({
         onClick={onNewProject} 
         disabled={!canCreateProject} 
         size={isMobile ? "default" : "default"} 
-        className={`${!canCreateProject ? 'opacity-50 cursor-not-allowed' : ''} ${isMobile ? 'w-full' : ''} bg-gray-900 hover:bg-gray-800 text-white font-medium border-0 shadow-none`}
+        className={`${!canCreateProject ? 'opacity-50 cursor-not-allowed' : ''} ${isMobile ? 'w-full' : ''}`}
       >
         <Plus className="w-4 h-4 mr-2" />
         {t('newProject')}

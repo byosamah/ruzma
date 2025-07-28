@@ -1,22 +1,29 @@
 
-/* Mobile-first responsive styles */
+/* Marc Lou mobile-first responsive styles */
 @layer components {
   /* Mobile responsive grid and flex utilities */
   .mobile-responsive-grid {
-    @apply grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4;
+    @apply grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6;
   }
   
   .mobile-responsive-flex {
-    @apply flex flex-col sm:flex-row gap-4 sm:gap-6;
+    @apply flex flex-col sm:flex-row gap-6 sm:gap-8;
   }
   
   .mobile-button-group {
-    @apply flex flex-col sm:flex-row gap-2 sm:gap-3;
+    @apply flex flex-col sm:flex-row gap-3 sm:gap-4;
   }
   
   .mobile-touch-target {
-    @apply min-h-[44px] min-w-[44px] touch-manipulation;
+    @apply min-h-[48px] min-w-[48px] touch-manipulation;
   }
+
+  /* Marc Lou spacing system */
+  .marc-spacing-xs { @apply space-y-2; }
+  .marc-spacing-sm { @apply space-y-4; }
+  .marc-spacing-md { @apply space-y-6; }
+  .marc-spacing-lg { @apply space-y-8; }
+  .marc-spacing-xl { @apply space-y-12; }
 }
 
 /* Mobile-specific media queries */
@@ -25,19 +32,24 @@
     @apply text-base leading-relaxed;
   }
   
-  /* Improve readability on mobile */
+  /* Marc Lou mobile typography */
   p, span, div {
     @apply text-sm leading-relaxed;
   }
   
-  /* Better mobile spacing */
+  /* Better mobile spacing with Marc Lou system */
   .mobile-container {
-    @apply px-4 py-2;
+    @apply px-6 py-4;
   }
   
-  /* Mobile-friendly cards */
+  /* Marc Lou mobile cards */
   .mobile-card {
-    @apply rounded-lg shadow-sm border border-gray-100 p-4 mb-4;
+    @apply rounded-md shadow-sm border border-border p-6 mb-6 transition-all duration-150;
+  }
+
+  /* Mobile-optimized buttons */
+  .mobile-button {
+    @apply w-full h-12 text-base font-semibold;
   }
 }
 
@@ -50,17 +62,17 @@
     @apply block;
   }
   
-  /* Improve mobile card layouts */
+  /* Marc Lou mobile card layouts */
   .project-card-mobile {
-    @apply p-4 space-y-3;
+    @apply p-6 space-y-4;
   }
   
   .project-card-mobile .button-group {
-    @apply flex flex-col gap-2;
+    @apply flex flex-col gap-3;
   }
   
   .project-card-mobile button {
-    @apply w-full justify-start text-left;
+    @apply w-full justify-start text-left h-12 font-medium;
   }
 }
 
