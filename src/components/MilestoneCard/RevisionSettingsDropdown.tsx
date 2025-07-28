@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Settings, Check, Infinity } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
@@ -19,6 +19,11 @@ const RevisionSettingsDropdown: React.FC<RevisionSettingsDropdownProps> = ({
   const [selectedValue, setSelectedValue] = useState(
     revisionData.maxRevisions?.toString() ?? 'unlimited'
   );
+
+  // Update selectedValue when revisionData changes
+  useEffect(() => {
+    setSelectedValue(revisionData.maxRevisions?.toString() ?? 'unlimited');
+  }, [revisionData.maxRevisions]);
 
   const handleSave = () => {
     const newMaxRevisions = selectedValue === 'unlimited' ? null : parseInt(selectedValue);
