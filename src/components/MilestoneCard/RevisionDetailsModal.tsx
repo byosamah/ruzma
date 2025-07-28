@@ -13,6 +13,7 @@ interface RevisionDetailsModalProps {
   revisionData: RevisionData;
   onMarkAddressed: (requestId: string) => void;
   milestoneTitle: string;
+  isClientView?: boolean;
 }
 
 const RevisionDetailsModal: React.FC<RevisionDetailsModalProps> = ({
@@ -20,7 +21,8 @@ const RevisionDetailsModal: React.FC<RevisionDetailsModalProps> = ({
   onClose,
   revisionData,
   onMarkAddressed,
-  milestoneTitle
+  milestoneTitle,
+  isClientView = false,
 }) => {
   const pendingRequests = revisionData.requests.filter(req => req.status === 'pending');
   const addressedRequests = revisionData.requests.filter(req => req.status === 'addressed');
@@ -91,15 +93,17 @@ const RevisionDetailsModal: React.FC<RevisionDetailsModalProps> = ({
                                    ? formatDistanceToNow(new Date(request.requestedAt), { addSuffix: true })
                                    : 'Recently'}
                                </span>
-                            </div>
-                            <Button
-                              size="sm"
-                              onClick={() => onMarkAddressed(request.id)}
-                              className="gap-1.5"
-                            >
-                              <Check className="w-3 h-3" />
-                              Mark as Addressed
-                            </Button>
+                             </div>
+                             {!isClientView && (
+                               <Button
+                                 size="sm"
+                                 onClick={() => onMarkAddressed(request.id)}
+                                 className="gap-1.5"
+                               >
+                                 <Check className="w-3 h-3" />
+                                 Mark as Addressed
+                               </Button>
+                             )}
                           </div>
                           <p className="text-sm whitespace-pre-wrap">{request.feedback}</p>
                           {request.images.length > 0 && (

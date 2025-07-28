@@ -182,6 +182,7 @@ const ClientView: React.FC<ClientViewProps> = ({
       revisionData={revisionData}
       onMarkAddressed={() => {}} // Client view is read-only
       milestoneTitle={milestone.title}
+      isClientView={true}
     />
   </div>
 );
