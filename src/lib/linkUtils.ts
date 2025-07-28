@@ -8,12 +8,20 @@ export function parseDeliverableLinks(deliverableLink: string | null | undefined
   if (!deliverableLink) return [];
   
   try {
-    // Try to parse as JSON array (new format)
+    // Try to parse as JSON
     const parsed = JSON.parse(deliverableLink);
+    
+    // New format: object with links and revisionData
+    if (parsed && typeof parsed === 'object' && parsed.links && Array.isArray(parsed.links)) {
+      return parsed.links.filter(link => link.url && typeof link.url === 'string');
+    }
+    
+    // Legacy format: direct array of links
     if (Array.isArray(parsed)) {
       return parsed.filter(link => link.url && typeof link.url === 'string');
     }
-    // If it's a single object, wrap it in an array
+    
+    // Legacy format: single link object
     if (parsed.url && typeof parsed.url === 'string') {
       return [parsed];
     }
