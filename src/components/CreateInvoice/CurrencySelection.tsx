@@ -2,11 +2,13 @@
 import React, { useEffect } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Button } from '@/components/ui/button';
 import { CURRENCIES } from '@/lib/currency';
 import { InvoiceFormData } from './types';
 import { useAuth } from '@/hooks/dashboard/useAuth';
 import { useUserCurrency } from '@/hooks/useUserCurrency';
 import { useT } from '@/lib/i18n';
+import { RotateCcw } from 'lucide-react';
 
 interface CurrencySelectionProps {
   invoiceData: InvoiceFormData;
@@ -28,11 +30,32 @@ const CurrencySelection: React.FC<CurrencySelectionProps> = ({
     }
   }, [userCurrency, invoiceData.currency, updateField]);
 
+  const resetToDefault = () => {
+    if (userCurrency) {
+      updateField('currency', userCurrency);
+    }
+  };
+
+  const isUsingDefault = invoiceData.currency === userCurrency;
+
   return (
     <Card className="card-hover">
       <CardContent className="pt-6">
         <div className="space-y-3">
-          <label className="text-sm font-semibold">{t('currency')}</label>
+          <div className="flex items-center justify-between">
+            <label className="text-sm font-semibold">{t('currency')}</label>
+            {userCurrency && !isUsingDefault && (
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={resetToDefault}
+                className="h-6 px-2 text-xs text-muted-foreground hover:text-foreground"
+              >
+                <RotateCcw className="w-3 h-3 mr-1" />
+                Reset to default ({userCurrency})
+              </Button>
+            )}
+          </div>
           <Select
             value={invoiceData.currency}
             onValueChange={(value) => updateField('currency', value)}
