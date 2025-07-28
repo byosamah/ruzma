@@ -22,7 +22,8 @@ const ProjectManagement: React.FC = () => {
     userCurrency,
     updateMilestoneStatus,
     uploadPaymentProof,
-    updateDeliverableLink
+    updateDeliverableLink,
+    updateMilestoneStatusGeneric
   } = useProjectManagement(slug);
   const { deleteProject } = useProjects(user);
 
@@ -151,6 +152,7 @@ const ProjectManagement: React.FC = () => {
             onUpdateMilestoneStatus={updateMilestoneStatus} 
             onPaymentUpload={uploadPaymentProof} 
             onDeliverableLinkUpdate={updateDeliverableLink}
+            onStatusChange={updateMilestoneStatusGeneric}
           />
         </div>
       </div>

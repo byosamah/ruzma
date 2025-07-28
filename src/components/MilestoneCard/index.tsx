@@ -14,6 +14,7 @@ interface MilestoneCardProps {
   onUpdateMilestoneStatus?: (milestoneId: string, status: 'approved' | 'rejected') => void;
   onPaymentUpload?: (milestoneId: string, file: File) => Promise<boolean>;
   onDeliverableLinkUpdate?: (milestoneId: string, link: string) => void;
+  onStatusChange?: (milestoneId: string, status: Milestone['status']) => void;
   currency?: CurrencyCode;
   freelancerCurrency?: CurrencyCode | null;
   branding?: FreelancerBranding | null;
@@ -26,6 +27,7 @@ const MilestoneCard: React.FC<MilestoneCardProps> = ({
   onUpdateMilestoneStatus,
   onPaymentUpload,
   onDeliverableLinkUpdate,
+  onStatusChange,
   currency = 'USD',
   freelancerCurrency,
   branding,
@@ -38,6 +40,8 @@ const MilestoneCard: React.FC<MilestoneCardProps> = ({
           milestone={milestone} 
           currency={currency}
           branding={branding}
+          onStatusChange={onStatusChange ? (status) => onStatusChange(milestone.id, status) : undefined}
+          isClient={isClient}
         />
         
         {isClient ? (

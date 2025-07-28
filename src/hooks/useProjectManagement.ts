@@ -8,6 +8,7 @@ import { useUserCurrency } from './useUserCurrency';
 import { updateMilestoneStatus as updateMilestoneStatusAction } from './milestone-actions/updateStatus';
 import { uploadPaymentProofAction } from './milestone-actions/uploadPaymentProof';
 import { updateDeliverableLinkAction } from './milestone-actions/updateDeliverableLink';
+import { updateMilestoneStatusGeneral } from './milestone-actions/updateMilestoneStatus';
 
 export const useProjectManagement = (slug: string | undefined) => {
   const { user, profile } = useDashboard();
@@ -40,6 +41,16 @@ export const useProjectManagement = (slug: string | undefined) => {
     }
   };
 
+  const updateMilestoneStatusGeneric = async (
+    milestoneId: string,
+    status: 'pending' | 'payment_submitted' | 'approved' | 'rejected'
+  ) => {
+    const success = await updateMilestoneStatusGeneral(user, milestoneId, status);
+    if (success) {
+      await fetchProjects();
+    }
+  };
+
   useEffect(() => {
     if (projects.length > 0 && slug) {
       const found = projects.find((p) => p.slug === slug);
@@ -60,5 +71,6 @@ export const useProjectManagement = (slug: string | undefined) => {
     updateMilestoneStatus,
     uploadPaymentProof,
     updateDeliverableLink,
+    updateMilestoneStatusGeneric,
   };
 };

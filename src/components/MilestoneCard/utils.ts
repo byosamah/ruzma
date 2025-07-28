@@ -51,3 +51,55 @@ export const isPdfFile = (url: string) => {
 export const copyToClipboard = (text: string) => {
   navigator.clipboard.writeText(text);
 };
+
+// Smart status detection functions
+export const getSmartStatus = (milestone: any): string => {
+  // Keep existing status logic for backward compatibility
+  const currentStatus = milestone.status;
+  
+  // Auto-detect based on milestone state
+  if (milestone.paymentProofUrl && currentStatus === 'pending') {
+    return 'payment_submitted';
+  }
+  
+  if (milestone.deliverable_link && currentStatus === 'pending') {
+    return 'ready_for_review';
+  }
+  
+  return currentStatus;
+};
+
+export const shouldAutoUpdateStatus = (
+  milestone: any, 
+  action: 'deliverable_added' | 'payment_proof_uploaded' | 'payment_approved' | 'payment_rejected'
+): string | null => {
+  const currentStatus = milestone.status;
+  
+  switch (action) {
+    case 'deliverable_added':
+      if (currentStatus === 'pending') return 'ready_for_review';
+      break;
+    case 'payment_proof_uploaded':
+      if (currentStatus === 'pending' || currentStatus === 'ready_for_review') {
+        return 'payment_submitted';
+      }
+      break;
+    case 'payment_approved':
+      return 'approved';
+    case 'payment_rejected':
+      return 'rejected';
+  }
+  
+  return null;
+};
+
+export const getStatusProgress = (status: string): number => {
+  switch (status) {
+    case 'pending': return 25;
+    case 'ready_for_review': return 50;
+    case 'payment_submitted': return 75;
+    case 'approved': return 100;
+    case 'rejected': return 0;
+    default: return 0;
+  }
+};

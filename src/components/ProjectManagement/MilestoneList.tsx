@@ -11,6 +11,7 @@ interface MilestoneListProps {
   onUpdateMilestoneStatus: (milestoneId: string, newStatus: Milestone["status"]) => Promise<void>;
   onPaymentUpload: (milestoneId: string, file: File) => Promise<void>;
   onDeliverableLinkUpdate: (milestoneId: string, link: string) => Promise<void>;
+  onStatusChange?: (milestoneId: string, status: Milestone['status']) => Promise<void>;
 }
 
 const MilestoneList: React.FC<MilestoneListProps> = ({
@@ -19,6 +20,7 @@ const MilestoneList: React.FC<MilestoneListProps> = ({
   onUpdateMilestoneStatus,
   onPaymentUpload,
   onDeliverableLinkUpdate,
+  onStatusChange,
 }) => {
   const t = useT();
 
@@ -72,6 +74,7 @@ const MilestoneList: React.FC<MilestoneListProps> = ({
               }
               onDeliverableLinkUpdate={handleDeliverableLinkUpdate}
               onPaymentUpload={handlePaymentUpload}
+              onStatusChange={onStatusChange}
               currency={userCurrency}
             />
           ))}

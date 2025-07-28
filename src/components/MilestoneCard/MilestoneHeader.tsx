@@ -1,24 +1,28 @@
 
-import React from 'react';
-import { Badge } from '@/components/ui/badge';
+import React, { useState } from 'react';
 import { formatCurrency, CurrencyCode } from '@/lib/currency';
-import { getStatusColor, getStatusIcon, formatDateRange } from './utils';
+import { formatDateRange } from './utils';
 import { Milestone } from './types';
 import { FreelancerBranding } from '@/types/branding';
+import StatusPill from './StatusPill';
+import StatusDropdown from './StatusDropdown';
 
 interface MilestoneHeaderProps {
   milestone: Milestone;
   currency: CurrencyCode;
   branding?: FreelancerBranding | null;
+  onStatusChange?: (status: Milestone['status']) => void;
+  isClient?: boolean;
 }
 
 const MilestoneHeader: React.FC<MilestoneHeaderProps> = ({ 
   milestone, 
   currency,
-  branding 
+  branding,
+  onStatusChange,
+  isClient = false
 }) => {
-  const StatusIcon = getStatusIcon(milestone.status);
-  const statusColor = getStatusColor(milestone.status);
+  const [showStatusDropdown, setShowStatusDropdown] = useState(false);
   const primaryColor = branding?.primary_color || '#4B72E5';
   
   return (
@@ -34,18 +38,24 @@ const MilestoneHeader: React.FC<MilestoneHeaderProps> = ({
         </div>
         <div className="ml-4 text-right">
           <div 
-            className="text-xl font-bold"
+            className="text-xl font-bold mb-2"
             style={{ color: primaryColor }}
           >
             {formatCurrency(milestone.price, currency)}
           </div>
-          <Badge 
-            variant={statusColor as any} 
-            className="mt-1 text-xs"
-          >
-            <StatusIcon className="w-3 h-3 mr-1" />
-            {milestone.status.charAt(0).toUpperCase() + milestone.status.slice(1).replace('_', ' ')}
-          </Badge>
+          
+          {!isClient && onStatusChange ? (
+            <StatusDropdown
+              milestone={milestone}
+              onStatusChange={onStatusChange}
+              className="ml-auto"
+            />
+          ) : (
+            <StatusPill 
+              status={milestone.status}
+              className="ml-auto"
+            />
+          )}
         </div>
       </div>
       
