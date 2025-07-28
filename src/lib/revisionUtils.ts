@@ -27,10 +27,18 @@ export function parseRevisionData(milestone: any): RevisionData {
     // Handle object format with revision data
     if (parsed.revisionData) {
       console.log('parseRevisionData - Found revision data:', parsed.revisionData);
+      
+      // Normalize the requests to ensure consistent field names
+      const normalizedRequests = parsed.revisionData.requests?.map((request: any) => ({
+        ...request,
+        // Use requestedAt field, falling back to timestamp for backward compatibility
+        requestedAt: request.requestedAt || request.timestamp || new Date().toISOString()
+      })) || [];
+      
       return {
         maxRevisions: parsed.revisionData.maxRevisions ?? null,
         usedRevisions: parsed.revisionData.usedRevisions ?? 0,
-        requests: parsed.revisionData.requests ?? []
+        requests: normalizedRequests
       };
     }
     

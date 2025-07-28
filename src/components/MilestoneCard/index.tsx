@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Milestone } from './types';
@@ -21,6 +20,7 @@ interface MilestoneCardProps {
   freelancerCurrency?: CurrencyCode | null;
   branding?: FreelancerBranding | null;
   paymentProofRequired?: boolean;
+  token?: string; // Client access token
 }
 
 const MilestoneCard: React.FC<MilestoneCardProps> = ({
@@ -36,6 +36,7 @@ const MilestoneCard: React.FC<MilestoneCardProps> = ({
   freelancerCurrency,
   branding,
   paymentProofRequired = false,
+  token,
 }) => {
   return (
     <Card className="bg-white border border-gray-100 hover:border-gray-200 transition-colors">
@@ -53,6 +54,7 @@ const MilestoneCard: React.FC<MilestoneCardProps> = ({
             milestone={milestone}
             onPaymentUpload={onPaymentUpload}
             onRevisionRequest={onRevisionRequest}
+            token={token}
           />
         ) : (
           <FreelancerView

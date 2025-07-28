@@ -6,6 +6,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/u
 import { Textarea } from '@/components/ui/textarea';
 import { toast } from 'sonner';
 import { RevisionData, canRequestRevision, getRemainingRevisions } from '@/lib/revisionUtils';
+import { supabase } from '@/integrations/supabase/client';
 
 interface RevisionRequestDialogProps {
   isOpen: boolean;
@@ -13,6 +14,8 @@ interface RevisionRequestDialogProps {
   onSubmit: (feedback: string, images: string[]) => void;
   revisionData: RevisionData;
   milestoneTitle: string;
+  token?: string; // Client access token
+  milestoneId?: string; // Milestone ID for uploads
 }
 
 const RevisionRequestDialog: React.FC<RevisionRequestDialogProps> = ({
@@ -20,7 +23,9 @@ const RevisionRequestDialog: React.FC<RevisionRequestDialogProps> = ({
   onClose,
   onSubmit,
   revisionData,
-  milestoneTitle
+  milestoneTitle,
+  token,
+  milestoneId
 }) => {
   const t = useT();
   const [feedback, setFeedback] = useState('');
@@ -51,6 +56,32 @@ const RevisionRequestDialog: React.FC<RevisionRequestDialogProps> = ({
     setImages(prev => prev.filter((_, i) => i !== index));
   };
 
+  const uploadImages = async (files: File[]): Promise<string[]> => {
+    if (!token || !milestoneId) {
+      throw new Error('Missing token or milestone ID for image upload');
+    }
+
+    const uploadPromises = files.map(async (file) => {
+      const formData = new FormData();
+      formData.append('token', token);
+      formData.append('milestoneId', milestoneId);
+      formData.append('file', file);
+
+      const { data, error } = await supabase.functions.invoke('upload-revision-image', {
+        body: formData
+      });
+
+      if (error) {
+        console.error('Error uploading image:', error);
+        throw error;
+      }
+
+      return data.url;
+    });
+
+    return Promise.all(uploadPromises);
+  };
+
   const handleSubmit = async () => {
     if (!feedback.trim()) {
       toast.error('Please provide feedback for the revision');
@@ -64,9 +95,11 @@ const RevisionRequestDialog: React.FC<RevisionRequestDialogProps> = ({
 
     setUploading(true);
     try {
-      // For now, we'll just pass empty array for images URLs
-      // In a real implementation, you'd upload the images first
-      const imageUrls: string[] = [];
+      // Upload images first
+      let imageUrls: string[] = [];
+      if (images.length > 0) {
+        imageUrls = await uploadImages(images);
+      }
       
       await onSubmit(feedback.trim(), imageUrls);
       
@@ -165,7 +198,11 @@ const RevisionRequestDialog: React.FC<RevisionRequestDialogProps> = ({
                 {images.map((image, index) => (
                   <div key={index} className="relative group">
                     <div className="aspect-square bg-muted rounded-lg flex items-center justify-center overflow-hidden">
-                      <Image className="w-8 h-8 text-muted-foreground" />
+                      <img
+                        src={URL.createObjectURL(image)}
+                        alt={`Preview ${index + 1}`}
+                        className="w-full h-full object-cover"
+                      />
                     </div>
                     <Button
                       type="button"

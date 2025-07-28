@@ -11,12 +11,14 @@ interface ClientViewProps {
   milestone: Milestone;
   onPaymentUpload?: (milestoneId: string, file: File) => void;
   onRevisionRequest?: (milestoneId: string, feedback: string, images: string[]) => void;
+  token?: string; // Client access token
 }
 
 const ClientView: React.FC<ClientViewProps> = ({
   milestone,
   onPaymentUpload,
   onRevisionRequest,
+  token
 }) => {
   const t = useT();
   const [showRevisionDialog, setShowRevisionDialog] = useState(false);
@@ -154,6 +156,8 @@ const ClientView: React.FC<ClientViewProps> = ({
       onSubmit={handleRevisionRequest}
       revisionData={revisionData}
       milestoneTitle={milestone.title}
+      token={token}
+      milestoneId={milestone.id}
     />
   </div>
 );

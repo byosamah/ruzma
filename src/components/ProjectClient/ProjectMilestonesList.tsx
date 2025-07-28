@@ -16,6 +16,7 @@ interface ProjectMilestonesListProps {
   freelancerCurrency?: CurrencyCode | null;
   branding?: FreelancerBranding | null;
   paymentProofRequired?: boolean;
+  token?: string; // Client access token
 }
 
 const ProjectMilestonesList: React.FC<ProjectMilestonesListProps> = ({
@@ -26,6 +27,7 @@ const ProjectMilestonesList: React.FC<ProjectMilestonesListProps> = ({
   freelancerCurrency,
   branding,
   paymentProofRequired = false,
+  token,
 }) => {
   const t = useT();
 
@@ -71,6 +73,7 @@ const ProjectMilestonesList: React.FC<ProjectMilestonesListProps> = ({
                 freelancerCurrency={freelancerCurrency}
                 branding={branding}
                 paymentProofRequired={paymentProofRequired}
+                token={token}
               />
             </div>
           </div>

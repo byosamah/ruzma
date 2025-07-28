@@ -97,6 +97,7 @@ const ClientProject = () => {
           freelancerCurrency={freelancerCurrencyCode}
           branding={branding}
           paymentProofRequired={project.payment_proof_required || false}
+          token={parsedToken?.token}
         />
       </main>
       

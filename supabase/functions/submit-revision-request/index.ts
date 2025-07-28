@@ -5,7 +5,7 @@ interface RevisionRequestData {
   token: string;
   milestoneId: string;
   feedback: string;
-  images: string[];
+  images: string[]; // Now these will be the uploaded image URLs
 }
 
 Deno.serve(async (req) => {
