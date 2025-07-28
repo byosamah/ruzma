@@ -6,8 +6,6 @@ import { DatabaseProject } from '@/hooks/projectTypes';
 import { trackClientProjectAccess } from '@/lib/analytics';
 import { useUserCurrency } from '@/hooks/useUserCurrency';
 import { toast } from 'sonner';
-import { parseRevisionData, addRevisionRequest, stringifyRevisionData } from '@/lib/revisionUtils';
-import { addRevisionRequestAction } from '@/hooks/milestone-actions/updateRevisionData';
 
 export const useClientProject = (token?: string | null, isHybrid?: boolean) => {
   const { projectId } = useParams<{ projectId: string }>();
@@ -80,32 +78,16 @@ export const useClientProject = (token?: string | null, isHybrid?: boolean) => {
   };
 
   const handleRevisionRequest = async (milestoneId: string, feedback: string, images: string[]) => {
-    if (!project || !token) {
-      toast.error('Project not available');
+    if (!token) {
+      toast.error('Access token not available');
       return;
     }
 
     try {
-      // Find the milestone
-      const milestone = project.milestones.find(m => m.id === milestoneId);
-      if (!milestone) {
-        toast.error('Milestone not found');
-        return;
-      }
-
-      // Update revision data
-      const currentRevisionData = parseRevisionData(milestone);
-      const updatedRevisionData = addRevisionRequest(currentRevisionData, feedback, images);
-      const newDeliverableLink = stringifyRevisionData(milestone.deliverable_link, updatedRevisionData);
-      
-      // Since this is client-side, we'll use a simulated user object
-      const success = await addRevisionRequestAction(null, milestoneId, newDeliverableLink);
-      
-      if (success) {
-        // Reload project data
-        await loadProject();
-        toast.success('Revision request submitted successfully');
-      }
+      await clientProjectService.submitRevisionRequest(token, milestoneId, feedback, images);
+      // Reload project data to show updated revision count
+      await loadProject();
+      toast.success('Revision request submitted successfully');
     } catch (error) {
       console.error('Error submitting revision request:', error);
       toast.error('Failed to submit revision request');

@@ -13,6 +13,9 @@ verify_jwt = false
 [functions.submit-payment-proof]
 verify_jwt = false
 
+[functions.submit-revision-request]
+verify_jwt = false
+
 [functions.send-payment-notification]
 verify_jwt = false
 
