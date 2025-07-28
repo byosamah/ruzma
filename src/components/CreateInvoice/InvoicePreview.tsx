@@ -3,8 +3,9 @@ import React from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { format } from 'date-fns';
 import { InvoiceFormData } from './types';
-import { getCurrencySymbol, CurrencyCode } from '@/lib/currency';
+import { getCurrencySymbol, formatCurrency, CurrencyCode } from '@/lib/currency';
 import { useT } from '@/lib/i18n';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 interface InvoicePreviewProps {
   invoiceData: InvoiceFormData;
@@ -12,7 +13,12 @@ interface InvoicePreviewProps {
 
 const InvoicePreview: React.FC<InvoicePreviewProps> = ({ invoiceData }) => {
   const t = useT();
-  const currencySymbol = getCurrencySymbol(invoiceData.currency as CurrencyCode);
+  const { language } = useLanguage();
+  const currencySymbol = getCurrencySymbol(invoiceData.currency as CurrencyCode, language);
+  
+  const formatAmount = (amount: number) => {
+    return formatCurrency(amount, invoiceData.currency as CurrencyCode, language);
+  };
 
   return (
     <div className="sticky top-6">
@@ -101,7 +107,7 @@ const InvoicePreview: React.FC<InvoicePreviewProps> = ({ invoiceData }) => {
                   {item.quantity}
                 </div>
                 <div className="col-span-3 text-right">
-                  {(item.quantity * item.amount).toFixed(2)}
+                  {formatAmount(item.quantity * item.amount)}
                 </div>
               </div>
             ))}
@@ -111,20 +117,20 @@ const InvoicePreview: React.FC<InvoicePreviewProps> = ({ invoiceData }) => {
           <div className="space-y-3">
             <div className="flex justify-between text-sm">
               <span className="text-gray-400">{t('subtotal').toUpperCase()}</span>
-              <span>{invoiceData.subtotal.toFixed(2)} {invoiceData.currency}</span>
+              <span>{formatAmount(invoiceData.subtotal)}</span>
             </div>
             
             {invoiceData.tax > 0 && (
               <div className="flex justify-between text-sm">
                 <span className="text-gray-400">{t('tax').toUpperCase()}</span>
-                <span>{invoiceData.tax.toFixed(2)} {invoiceData.currency}</span>
+                <span>{formatAmount(invoiceData.tax)}</span>
               </div>
             )}
 
             <div className="border-t border-gray-700 pt-3">
               <div className="flex justify-between items-center">
                 <span className="font-medium">{t('total').toUpperCase()}</span>
-                <span className="text-xl font-bold">{invoiceData.total.toFixed(2)} {invoiceData.currency}</span>
+                <span className="text-xl font-bold">{formatAmount(invoiceData.total)}</span>
               </div>
             </div>
           </div>

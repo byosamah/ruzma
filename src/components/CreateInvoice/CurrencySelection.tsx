@@ -29,10 +29,10 @@ const CurrencySelection: React.FC<CurrencySelectionProps> = ({
   }, [userCurrency, invoiceData.currency, updateField]);
 
   return (
-    <Card>
+    <Card className="card-hover">
       <CardContent className="pt-6">
-        <div className="space-y-2">
-          <label className="text-sm font-medium">{t('currency')}</label>
+        <div className="space-y-3">
+          <label className="text-sm font-semibold">{t('currency')}</label>
           <Select
             value={invoiceData.currency}
             onValueChange={(value) => updateField('currency', value)}

@@ -3,6 +3,7 @@ import React, { useEffect } from 'react';
 import { InvoiceFormData } from './types';
 import InvoiceHeader from './InvoiceHeader';
 import BillingInformation from './BillingInformation';
+import CurrencySelection from './CurrencySelection';
 import ProjectSelection from './ProjectSelection';
 import LineItemsSection from './LineItemsSection';
 import InvoiceActions from './InvoiceActions';
@@ -79,6 +80,11 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({ invoiceData, setInvoiceData }
       <BillingInformation 
         invoiceData={invoiceData}
         updateAddressField={updateAddressField}
+      />
+
+      <CurrencySelection 
+        invoiceData={invoiceData}
+        updateField={updateField}
       />
 
       <ProjectSelection 

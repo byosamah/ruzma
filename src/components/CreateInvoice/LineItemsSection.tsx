@@ -8,6 +8,8 @@ import { InvoiceFormData } from './types';
 import { useAuth } from '@/hooks/dashboard/useAuth';
 import { useProjects } from '@/hooks/useProjects';
 import { useT } from '@/lib/i18n';
+import { getCurrencySymbol } from '@/lib/currency';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 interface LineItemsSectionProps {
   invoiceData: InvoiceFormData;
@@ -31,6 +33,8 @@ const LineItemsSection: React.FC<LineItemsSectionProps> = ({
   const t = useT();
   const { user } = useAuth();
   const { projects } = useProjects(user);
+  const { language } = useLanguage();
+  const currencySymbol = getCurrencySymbol(invoiceData.currency as any, language);
 
   // Populate line items with project milestones when project is selected
   useEffect(() => {
@@ -59,7 +63,7 @@ const LineItemsSection: React.FC<LineItemsSectionProps> = ({
           <div className="grid grid-cols-12 gap-4 text-sm font-medium text-gray-600 border-b pb-2">
             <div className="col-span-6">{t('description').toUpperCase()}</div>
             <div className="col-span-2 text-center">{t('quantity').toUpperCase()}</div>
-            <div className="col-span-3 text-right">{t('amount').toUpperCase()}</div>
+            <div className="col-span-3 text-right">{t('amount').toUpperCase()} ({currencySymbol})</div>
             <div className="col-span-1"></div>
           </div>
 
@@ -88,6 +92,7 @@ const LineItemsSection: React.FC<LineItemsSectionProps> = ({
                   onChange={(e) => updateLineItem(item.id, 'amount', parseFloat(e.target.value) || 0)}
                   min="0"
                   step="0.01"
+                  placeholder={`0.00 ${currencySymbol}`}
                 />
               </div>
               <div className="col-span-1">
@@ -117,7 +122,7 @@ const LineItemsSection: React.FC<LineItemsSectionProps> = ({
         <div className="mt-6 space-y-4">
           <div className="flex justify-between items-center text-sm">
             <span className="text-gray-600">{t('subtotal').toUpperCase()}</span>
-            <span className="font-medium">{invoiceData.subtotal.toFixed(2)} {invoiceData.currency}</span>
+            <span className="font-medium">{currencySymbol}{invoiceData.subtotal.toFixed(2)}</span>
           </div>
 
           {!showTaxInput ? (
@@ -140,8 +145,9 @@ const LineItemsSection: React.FC<LineItemsSectionProps> = ({
                   min="0"
                   step="0.01"
                   className="w-24 h-8"
+                  placeholder={`0.00`}
                 />
-                <span className="text-gray-600">{invoiceData.currency}</span>
+                <span className="text-gray-600">{currencySymbol}</span>
               </div>
             </div>
           )}
@@ -149,7 +155,7 @@ const LineItemsSection: React.FC<LineItemsSectionProps> = ({
           <div className="border-t pt-4">
             <div className="flex justify-between items-center">
               <span className="font-medium">{t('total').toUpperCase()}</span>
-              <span className="text-xl font-bold">{invoiceData.total.toFixed(2)} {invoiceData.currency}</span>
+              <span className="text-xl font-bold">{currencySymbol}{invoiceData.total.toFixed(2)}</span>
             </div>
           </div>
         </div>
