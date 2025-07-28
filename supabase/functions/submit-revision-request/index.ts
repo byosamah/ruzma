@@ -86,7 +86,7 @@ Deno.serve(async (req) => {
       id: crypto.randomUUID(),
       feedback,
       images,
-      timestamp: new Date().toISOString(),
+      requestedAt: new Date().toISOString(),
       status: 'pending'
     };
 

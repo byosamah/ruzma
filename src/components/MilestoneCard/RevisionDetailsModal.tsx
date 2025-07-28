@@ -85,10 +85,12 @@ const RevisionDetailsModal: React.FC<RevisionDetailsModalProps> = ({
                               <Badge variant="secondary" className="bg-amber-100 text-amber-800">
                                 Pending
                               </Badge>
-                              <span className="text-sm text-muted-foreground">
-                                <Calendar className="w-3 h-3 inline mr-1" />
-                                {formatDistanceToNow(new Date(request.requestedAt), { addSuffix: true })}
-                              </span>
+                               <span className="text-sm text-muted-foreground">
+                                 <Calendar className="w-3 h-3 inline mr-1" />
+                                 {request.requestedAt && !isNaN(Date.parse(request.requestedAt)) 
+                                   ? formatDistanceToNow(new Date(request.requestedAt), { addSuffix: true })
+                                   : 'Recently'}
+                               </span>
                             </div>
                             <Button
                               size="sm"
@@ -141,10 +143,12 @@ const RevisionDetailsModal: React.FC<RevisionDetailsModalProps> = ({
                               <Check className="w-3 h-3 mr-1" />
                               Addressed
                             </Badge>
-                            <span className="text-sm text-muted-foreground">
-                              <Calendar className="w-3 h-3 inline mr-1" />
-                              {formatDistanceToNow(new Date(request.requestedAt), { addSuffix: true })}
-                            </span>
+                             <span className="text-sm text-muted-foreground">
+                               <Calendar className="w-3 h-3 inline mr-1" />
+                               {request.requestedAt && !isNaN(Date.parse(request.requestedAt)) 
+                                 ? formatDistanceToNow(new Date(request.requestedAt), { addSuffix: true })
+                                 : 'Recently'}
+                             </span>
                           </div>
                           <p className="text-sm whitespace-pre-wrap">{request.feedback}</p>
                           {request.images.length > 0 && (
