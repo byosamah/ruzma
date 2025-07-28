@@ -9,6 +9,8 @@ import { updateMilestoneStatus as updateMilestoneStatusAction } from './mileston
 import { uploadPaymentProofAction } from './milestone-actions/uploadPaymentProof';
 import { updateDeliverableLinkAction } from './milestone-actions/updateDeliverableLink';
 import { updateMilestoneStatusGeneral } from './milestone-actions/updateMilestoneStatus';
+import { updateRevisionDataAction, addRevisionRequestAction } from './milestone-actions/updateRevisionData';
+import { parseRevisionData, addRevisionRequest, stringifyRevisionData } from '@/lib/revisionUtils';
 
 export const useProjectManagement = (slug: string | undefined) => {
   const { user, profile } = useDashboard();
@@ -51,6 +53,34 @@ export const useProjectManagement = (slug: string | undefined) => {
     }
   };
 
+  const updateRevisionData = async (milestoneId: string, newDeliverableLink: string) => {
+    const success = await updateRevisionDataAction(user, milestoneId, newDeliverableLink);
+    if (success) {
+      await fetchProjects();
+    }
+  };
+
+  const addRevisionRequestClient = async (milestoneId: string, feedback: string, images: string[]) => {
+    // Find the milestone to get current deliverable_link
+    const milestone = projects
+      .flatMap(p => p.milestones)
+      .find(m => m.id === milestoneId);
+    
+    if (!milestone) {
+      console.error('Milestone not found');
+      return;
+    }
+
+    const currentRevisionData = parseRevisionData(milestone);
+    const updatedRevisionData = addRevisionRequest(currentRevisionData, feedback, images);
+    const newDeliverableLink = stringifyRevisionData(milestone.deliverable_link, updatedRevisionData);
+    
+    const success = await addRevisionRequestAction(user, milestoneId, newDeliverableLink);
+    if (success) {
+      await fetchProjects();
+    }
+  };
+
   useEffect(() => {
     if (projects.length > 0 && slug) {
       const found = projects.find((p) => p.slug === slug);
@@ -72,5 +102,7 @@ export const useProjectManagement = (slug: string | undefined) => {
     uploadPaymentProof,
     updateDeliverableLink,
     updateMilestoneStatusGeneric,
+    updateRevisionData,
+    addRevisionRequestClient,
   };
 };

@@ -150,9 +150,10 @@ const ProjectManagement: React.FC = () => {
             milestones={project.milestones} 
             userCurrency={userCurrency.currency}
             onUpdateMilestoneStatus={updateMilestoneStatus} 
-            onPaymentUpload={uploadPaymentProof} 
+            onPaymentUpload={uploadPaymentProof}
             onDeliverableLinkUpdate={updateDeliverableLink}
             onStatusChange={updateMilestoneStatusGeneric}
+            onRevisionUpdate={updateRevisionData}
           />
         </div>
       </div>
