@@ -23,12 +23,12 @@ const CurrencySelection: React.FC<CurrencySelectionProps> = ({
   const { user } = useAuth();
   const { currency: userCurrency } = useUserCurrency(user);
 
-  // Set the user's preferred currency when component mounts or user currency changes
+  // Set the user's preferred currency when component mounts only
   useEffect(() => {
-    if (userCurrency && userCurrency !== invoiceData.currency) {
+    if (userCurrency && !invoiceData.currency) {
       updateField('currency', userCurrency);
     }
-  }, [userCurrency, invoiceData.currency, updateField]);
+  }, [userCurrency, updateField]);
 
   const resetToDefault = () => {
     if (userCurrency) {
