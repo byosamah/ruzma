@@ -108,16 +108,26 @@ const RevisionDetailsModal: React.FC<RevisionDetailsModalProps> = ({
                                 <Image className="w-4 h-4" />
                                 {request.images.length} attached image{request.images.length > 1 ? 's' : ''}
                               </div>
-                              <div className="grid grid-cols-3 gap-2">
-                                {request.images.map((imageUrl, index) => (
-                                  <div
-                                    key={index}
-                                    className="aspect-square bg-muted rounded border flex items-center justify-center"
-                                  >
-                                    <Image className="w-6 h-6 text-muted-foreground" />
-                                  </div>
-                                ))}
-                              </div>
+                               <div className="grid grid-cols-3 gap-2">
+                                 {request.images.map((imageUrl, index) => (
+                                   <div
+                                     key={index}
+                                     className="aspect-square bg-muted rounded border overflow-hidden cursor-pointer hover:opacity-80 transition-opacity"
+                                     onClick={() => window.open(imageUrl, '_blank')}
+                                   >
+                                     <img
+                                       src={imageUrl}
+                                       alt={`Revision image ${index + 1}`}
+                                       className="w-full h-full object-cover"
+                                       onError={(e) => {
+                                         // Fallback to icon if image fails to load
+                                         e.currentTarget.style.display = 'none';
+                                         e.currentTarget.parentElement!.innerHTML = '<div class="w-full h-full flex items-center justify-center"><svg class="w-6 h-6 text-muted-foreground" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="18" height="18" x="3" y="3" rx="2" ry="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/></svg></div>';
+                                       }}
+                                     />
+                                   </div>
+                                 ))}
+                               </div>
                             </div>
                           )}
                         </div>
@@ -151,14 +161,34 @@ const RevisionDetailsModal: React.FC<RevisionDetailsModalProps> = ({
                              </span>
                           </div>
                           <p className="text-sm whitespace-pre-wrap">{request.feedback}</p>
-                          {request.images.length > 0 && (
-                            <div className="mt-3">
-                              <div className="flex items-center gap-2 text-sm text-muted-foreground mb-2">
-                                <Image className="w-4 h-4" />
-                                {request.images.length} attached image{request.images.length > 1 ? 's' : ''}
-                              </div>
-                            </div>
-                          )}
+                           {request.images.length > 0 && (
+                             <div className="mt-3">
+                               <div className="flex items-center gap-2 text-sm text-muted-foreground mb-2">
+                                 <Image className="w-4 h-4" />
+                                 {request.images.length} attached image{request.images.length > 1 ? 's' : ''}
+                               </div>
+                               <div className="grid grid-cols-3 gap-2">
+                                 {request.images.map((imageUrl, index) => (
+                                   <div
+                                     key={index}
+                                     className="aspect-square bg-muted rounded border overflow-hidden cursor-pointer hover:opacity-80 transition-opacity"
+                                     onClick={() => window.open(imageUrl, '_blank')}
+                                   >
+                                     <img
+                                       src={imageUrl}
+                                       alt={`Revision image ${index + 1}`}
+                                       className="w-full h-full object-cover"
+                                       onError={(e) => {
+                                         // Fallback to icon if image fails to load
+                                         e.currentTarget.style.display = 'none';
+                                         e.currentTarget.parentElement!.innerHTML = '<div class="w-full h-full flex items-center justify-center"><svg class="w-6 h-6 text-muted-foreground" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="18" height="18" x="3" y="3" rx="2" ry="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/></svg></div>';
+                                       }}
+                                     />
+                                   </div>
+                                 ))}
+                               </div>
+                             </div>
+                           )}
                         </div>
                       ))}
                     </div>
