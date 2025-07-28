@@ -23,7 +23,9 @@ const ProjectManagement: React.FC = () => {
     updateMilestoneStatus,
     uploadPaymentProof,
     updateDeliverableLink,
-    updateMilestoneStatusGeneric
+    updateMilestoneStatusGeneric,
+    updateRevisionData,
+    addRevisionRequestClient,
   } = useProjectManagement(slug);
   const { deleteProject } = useProjects(user);
 
