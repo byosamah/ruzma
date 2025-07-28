@@ -13,22 +13,36 @@ export interface RevisionData {
 }
 
 export function parseRevisionData(milestone: any): RevisionData {
-  try {
-    // Try to parse from deliverable_link if it contains revision data
-    if (milestone.deliverable_link) {
-      const data = JSON.parse(milestone.deliverable_link);
-      if (data.revisionData) {
-        return {
-          maxRevisions: data.revisionData.maxRevisions ?? null,
-          usedRevisions: data.revisionData.usedRevisions ?? 0,
-          requests: data.revisionData.requests ?? []
-        };
-      }
-    }
-  } catch {
-    // If parsing fails, return default
-  }
+  if (!milestone.deliverable_link) return defaultRevisionData();
   
+  try {
+    const parsed = JSON.parse(milestone.deliverable_link);
+    
+    // Handle array format (old format) - no revision data
+    if (Array.isArray(parsed)) {
+      console.log('parseRevisionData - Array format detected, no revision data');
+      return defaultRevisionData();
+    }
+    
+    // Handle object format with revision data
+    if (parsed.revisionData) {
+      console.log('parseRevisionData - Found revision data:', parsed.revisionData);
+      return {
+        maxRevisions: parsed.revisionData.maxRevisions ?? null,
+        usedRevisions: parsed.revisionData.usedRevisions ?? 0,
+        requests: parsed.revisionData.requests ?? []
+      };
+    }
+    
+    console.log('parseRevisionData - Object format but no revision data');
+    return defaultRevisionData();
+  } catch (error) {
+    console.log('parseRevisionData - Parse error:', error);
+    return defaultRevisionData();
+  }
+}
+
+function defaultRevisionData(): RevisionData {
   return {
     maxRevisions: null,
     usedRevisions: 0,
@@ -46,7 +60,20 @@ export function stringifyRevisionData(
     // Try to preserve existing deliverable link data
     if (originalDeliverableLink) {
       try {
-        baseData = JSON.parse(originalDeliverableLink);
+        const parsed = JSON.parse(originalDeliverableLink);
+        
+        // Handle array format (current link format)
+        if (Array.isArray(parsed)) {
+          baseData = { links: parsed };
+        }
+        // Handle object format
+        else if (typeof parsed === 'object') {
+          baseData = parsed;
+        }
+        // Handle simple string
+        else {
+          baseData = { links: [{ url: originalDeliverableLink, title: 'Shared Link' }] };
+        }
       } catch {
         // If it's not JSON, treat as simple string link
         if (originalDeliverableLink.trim()) {
@@ -58,8 +85,13 @@ export function stringifyRevisionData(
     // Add revision data
     baseData.revisionData = revisionData;
     
+    console.log('stringifyRevisionData - Original:', originalDeliverableLink);
+    console.log('stringifyRevisionData - BaseData:', baseData);
+    console.log('stringifyRevisionData - Final result:', JSON.stringify(baseData));
+    
     return JSON.stringify(baseData);
-  } catch {
+  } catch (error) {
+    console.error('stringifyRevisionData - Error:', error);
     return JSON.stringify({ revisionData });
   }
 }
