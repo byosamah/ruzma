@@ -6,6 +6,7 @@ import { parseDeliverableLinks } from '@/lib/linkUtils';
 import { parseRevisionData, canRequestRevision, getRemainingRevisions } from '@/lib/revisionUtils';
 import { Milestone } from './types';
 import RevisionRequestDialog from './RevisionRequestDialog';
+import RevisionDetailsModal from './RevisionDetailsModal';
 
 interface ClientViewProps {
   milestone: Milestone;
@@ -22,6 +23,7 @@ const ClientView: React.FC<ClientViewProps> = ({
 }) => {
   const t = useT();
   const [showRevisionDialog, setShowRevisionDialog] = useState(false);
+  const [showRevisionDetails, setShowRevisionDetails] = useState(false);
   const links = parseDeliverableLinks(milestone.deliverable_link);
   const revisionData = parseRevisionData(milestone);
   const canRequest = canRequestRevision(revisionData);
@@ -102,18 +104,31 @@ const ClientView: React.FC<ClientViewProps> = ({
         <div className="space-y-3">
           <div className="flex items-center justify-between">
             <h4 className="text-sm font-medium text-gray-700">Deliverables:</h4>
-            {onRevisionRequest && (
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => setShowRevisionDialog(true)}
-                disabled={!canRequest}
-                className="gap-2 text-xs"
-              >
-                <MessageSquare className="w-3 h-3" />
-                {canRequest ? 'Request Revision' : 'Revision Limit Reached'}
-              </Button>
-            )}
+            <div className="flex gap-2">
+              {revisionData.requests.length > 0 && (
+                <Button
+                  variant="outline" 
+                  size="sm"
+                  onClick={() => setShowRevisionDetails(true)}
+                  className="gap-2 text-xs"
+                >
+                  <Eye className="w-3 h-3" />
+                  View Revision History ({revisionData.requests.length})
+                </Button>
+              )}
+              {onRevisionRequest && (
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setShowRevisionDialog(true)}
+                  disabled={!canRequest}
+                  className="gap-2 text-xs"
+                >
+                  <MessageSquare className="w-3 h-3" />
+                  {canRequest ? 'Request Revision' : 'Revision Limit Reached'}
+                </Button>
+              )}
+            </div>
           </div>
           
           {/* Revision Counter */}
@@ -158,6 +173,15 @@ const ClientView: React.FC<ClientViewProps> = ({
       milestoneTitle={milestone.title}
       token={token}
       milestoneId={milestone.id}
+    />
+
+    {/* Revision Details Modal */}
+    <RevisionDetailsModal
+      isOpen={showRevisionDetails}
+      onClose={() => setShowRevisionDetails(false)}
+      revisionData={revisionData}
+      onMarkAddressed={() => {}} // Client view is read-only
+      milestoneTitle={milestone.title}
     />
   </div>
 );
