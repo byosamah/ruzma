@@ -71,7 +71,7 @@ const handler = async (req: Request): Promise<Response> => {
 
     // Create client project URL using the custom domain
     const baseUrl = 'https://hub.ruzma.co';
-    const approvalUrl = `${baseUrl}/client/${project.client_access_token}`;
+    const approvalUrl = `${baseUrl}/client/project/${project.client_access_token}`;
 
     // Format contract terms for email
     const formatTermsForEmail = (terms: string | null) => {
