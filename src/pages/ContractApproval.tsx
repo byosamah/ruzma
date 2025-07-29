@@ -26,6 +26,10 @@ interface ProjectData {
   end_date?: string;
   contract_status: string;
   contract_approval_token: string;
+  contract_terms?: string;
+  payment_terms?: string;
+  project_scope?: string;
+  revision_policy?: string;
   milestones: Milestone[];
   profiles?: {
     full_name: string;
@@ -87,6 +91,10 @@ const ContractApproval: React.FC = () => {
         end_date: data.end_date,
         contract_status: data.contract_status,
         contract_approval_token: data.contract_approval_token,
+        contract_terms: data.contract_terms,
+        payment_terms: data.payment_terms,
+        project_scope: data.project_scope,
+        revision_policy: data.revision_policy,
         milestones: data.milestones,
         profiles: Array.isArray(data.profiles) && data.profiles.length > 0 ? data.profiles[0] : null,
       });
@@ -294,6 +302,54 @@ const ContractApproval: React.FC = () => {
             </div>
           </CardContent>
         </Card>
+
+        {(project.contract_terms || project.payment_terms || project.project_scope || project.revision_policy) && (
+          <Card>
+            <CardHeader>
+              <CardTitle>Contract Terms & Conditions</CardTitle>
+              <CardDescription>
+                Review the detailed terms and conditions for this project
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-6">
+              {project.contract_terms && (
+                <div>
+                  <h4 className="font-semibold mb-2">General Terms</h4>
+                  <div className="bg-muted/50 p-4 rounded-lg">
+                    <pre className="whitespace-pre-wrap text-sm">{project.contract_terms}</pre>
+                  </div>
+                </div>
+              )}
+              
+              {project.payment_terms && (
+                <div>
+                  <h4 className="font-semibold mb-2">Payment Terms</h4>
+                  <div className="bg-muted/50 p-4 rounded-lg">
+                    <pre className="whitespace-pre-wrap text-sm">{project.payment_terms}</pre>
+                  </div>
+                </div>
+              )}
+              
+              {project.project_scope && (
+                <div>
+                  <h4 className="font-semibold mb-2">Project Scope</h4>
+                  <div className="bg-muted/50 p-4 rounded-lg">
+                    <pre className="whitespace-pre-wrap text-sm">{project.project_scope}</pre>
+                  </div>
+                </div>
+              )}
+              
+              {project.revision_policy && (
+                <div>
+                  <h4 className="font-semibold mb-2">Revision Policy</h4>
+                  <div className="bg-muted/50 p-4 rounded-lg">
+                    <pre className="whitespace-pre-wrap text-sm">{project.revision_policy}</pre>
+                  </div>
+                </div>
+              )}
+            </CardContent>
+          </Card>
+        )}
 
         {!showRejectionForm ? (
           <Card>

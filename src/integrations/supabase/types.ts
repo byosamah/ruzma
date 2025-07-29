@@ -332,11 +332,15 @@ export type Database = {
           contract_rejection_reason: string | null
           contract_sent_at: string | null
           contract_status: string | null
+          contract_terms: string | null
           created_at: string
           end_date: string | null
           id: string
           name: string
           payment_proof_required: boolean
+          payment_terms: string | null
+          project_scope: string | null
+          revision_policy: string | null
           slug: string
           start_date: string | null
           updated_at: string
@@ -352,11 +356,15 @@ export type Database = {
           contract_rejection_reason?: string | null
           contract_sent_at?: string | null
           contract_status?: string | null
+          contract_terms?: string | null
           created_at?: string
           end_date?: string | null
           id?: string
           name: string
           payment_proof_required?: boolean
+          payment_terms?: string | null
+          project_scope?: string | null
+          revision_policy?: string | null
           slug: string
           start_date?: string | null
           updated_at?: string
@@ -372,11 +380,15 @@ export type Database = {
           contract_rejection_reason?: string | null
           contract_sent_at?: string | null
           contract_status?: string | null
+          contract_terms?: string | null
           created_at?: string
           end_date?: string | null
           id?: string
           name?: string
           payment_proof_required?: boolean
+          payment_terms?: string | null
+          project_scope?: string | null
+          revision_policy?: string | null
           slug?: string
           start_date?: string | null
           updated_at?: string

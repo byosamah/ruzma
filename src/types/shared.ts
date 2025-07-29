@@ -29,6 +29,15 @@ export interface DatabaseProject {
   end_date?: string;
   client_access_token: string;
   payment_proof_required?: boolean;
+  contract_status?: 'pending' | 'approved' | 'rejected';
+  contract_sent_at?: string;
+  contract_approved_at?: string;
+  contract_rejection_reason?: string;
+  contract_approval_token?: string;
+  contract_terms?: string;
+  payment_terms?: string;
+  project_scope?: string;
+  revision_policy?: string;
   created_at: string;
   updated_at: string;
   milestones: DatabaseMilestone[];

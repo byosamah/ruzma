@@ -33,6 +33,10 @@ export interface DatabaseProject {
   contract_approved_at?: string;
   contract_rejection_reason?: string;
   contract_approval_token?: string;
+  contract_terms?: string;
+  payment_terms?: string;
+  project_scope?: string;
+  revision_policy?: string;
   created_at: string;
   updated_at: string;
   milestones: DatabaseMilestone[];

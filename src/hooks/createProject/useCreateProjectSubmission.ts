@@ -210,6 +210,12 @@ export const useCreateProjectSubmission = () => {
           start_date,
           end_date,
           payment_proof_required: data.paymentProofRequired,
+          contract_terms: data.contractTerms || null,
+          payment_terms: data.paymentTerms || null,
+          project_scope: data.projectScope || null,
+          revision_policy: data.revisionPolicy || null,
+          contract_approval_token: crypto.randomUUID(),
+          contract_status: clientEmail ? 'pending' : null,
           slug: '', // Temporary value, will be overwritten by trigger
         })
         .select()

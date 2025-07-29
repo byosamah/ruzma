@@ -11,6 +11,11 @@ export const useCreateProjectFormData = (templateData?: any) => {
       name: templateData?.name || '',
       brief: templateData?.brief || '',
       clientEmail: templateData?.clientEmail || '',
+      paymentProofRequired: templateData?.paymentProofRequired || false,
+      contractTerms: templateData?.contractTerms || '',
+      paymentTerms: templateData?.paymentTerms || '',
+      projectScope: templateData?.projectScope || '',
+      revisionPolicy: templateData?.revisionPolicy || '',
       milestones: templateData?.milestones?.map((milestone: any) => ({
         title: milestone.title || '',
         description: milestone.description || '',

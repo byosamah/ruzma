@@ -13,6 +13,7 @@ import MilestonesList from '@/components/CreateProject/MilestonesList';
 import SaveAsTemplateCheckbox from '@/components/CreateProject/SaveAsTemplateCheckbox';
 import PaymentProofSettings from '@/components/CreateProject/PaymentProofSettings';
 import FormActions from '@/components/CreateProject/FormActions';
+import { ContractTermsSection } from '@/components/CreateProject/ContractTermsSection';
 import { useCreateProjectForm } from '@/hooks/useCreateProjectForm';
 import { useProjectTemplates } from '@/hooks/useProjectTemplates';
 
@@ -96,6 +97,7 @@ const CreateProject: React.FC<CreateProjectProps> = ({ user, profile }) => {
               <ProjectDetailsForm user={user} />
               <PaymentProofSettings />
               <MilestonesList user={user} />
+              <ContractTermsSection form={form} />
               <SaveAsTemplateCheckbox checked={saveAsTemplate} onCheckedChange={handleSaveAsTemplateChange} />
               <FormActions isSubmitting={isSubmitting} onCancel={() => navigate('/dashboard')} />
             </form>

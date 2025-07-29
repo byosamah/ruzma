@@ -70,65 +70,160 @@ const handler = async (req: Request): Promise<Response> => {
     const totalValue = project.milestones.reduce((sum: number, milestone: any) => sum + Number(milestone.price), 0);
 
     // Create approval URL
-    const approvalUrl = `${Deno.env.get('SUPABASE_URL')?.replace('//', '//').replace('supabase.co', 'lovable.app')}/contract/approve/${project.contract_approval_token}`;
+    const approvalUrl = `https://***REMOVED***.lovable.app/contract/approve/${project.contract_approval_token}`;
+
+    // Format contract terms for email
+    const formatTermsForEmail = (terms: string | null) => {
+      if (!terms) return '';
+      return terms.split('\n').map(line => `<p style="margin: 5px 0; color: #333;">${line}</p>`).join('');
+    };
 
     // Send contract approval email
     const emailResponse = await resend.emails.send({
-      from: 'Ruzma <noreply@ruzma.app>',
-      to: [clientEmail],
+      from: 'Ruzma <notifications@ruzma.co>',
+      to: clientEmail,
       subject: `Contract Approval Required: ${project.name}`,
       html: `
-        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
-          <h1 style="color: #333; border-bottom: 2px solid #4B72E5; padding-bottom: 10px;">
-            Project Contract Approval
-          </h1>
+        <div style="font-family: Arial, sans-serif; max-width: 700px; margin: 0 auto; padding: 20px; background: #ffffff;">
+          <div style="text-align: center; margin-bottom: 30px;">
+            <h1 style="color: #4B72E5; margin: 0; font-size: 28px; font-weight: bold;">
+              Contract Approval Required
+            </h1>
+            <p style="color: #666; margin: 10px 0 0 0; font-size: 16px;">
+              Project: ${project.name}
+            </p>
+          </div>
           
-          <p>Hello,</p>
-          
-          <p><strong>${freelancerName}</strong> has created a project proposal for you and is requesting your approval to proceed.</p>
-          
-          <div style="background: #f8f9fa; padding: 20px; border-radius: 8px; margin: 20px 0;">
-            <h2 style="color: #333; margin-top: 0;">Project Details</h2>
-            <p><strong>Project Name:</strong> ${project.name}</p>
-            <p><strong>Description:</strong> ${project.brief}</p>
-            <p><strong>Total Value:</strong> $${totalValue.toLocaleString()}</p>
-            <p><strong>Start Date:</strong> ${project.start_date ? new Date(project.start_date).toLocaleDateString() : 'To be determined'}</p>
-            <p><strong>End Date:</strong> ${project.end_date ? new Date(project.end_date).toLocaleDateString() : 'To be determined'}</p>
+          <div style="background: #f8f9fa; padding: 20px; border-radius: 8px; margin: 20px 0; border-left: 4px solid #4B72E5;">
+            <p style="margin: 0; font-size: 16px; color: #333;">
+              Hello! <strong>${freelancerName}</strong> has prepared a project contract for your review and is requesting your approval to proceed.
+            </p>
           </div>
 
-          <div style="background: #fff; border: 1px solid #e9ecef; padding: 20px; border-radius: 8px; margin: 20px 0;">
-            <h3 style="color: #333; margin-top: 0;">Project Milestones</h3>
+          <div style="background: #fff; border: 1px solid #e9ecef; padding: 25px; border-radius: 8px; margin: 25px 0;">
+            <h2 style="color: #333; margin-top: 0; border-bottom: 2px solid #f1f3f4; padding-bottom: 10px;">
+              📋 Project Overview
+            </h2>
+            <div style="display: grid; gap: 15px;">
+              <div>
+                <strong style="color: #495057;">Project Name:</strong>
+                <span style="color: #333; margin-left: 10px;">${project.name}</span>
+              </div>
+              <div>
+                <strong style="color: #495057;">Description:</strong>
+                <div style="margin-top: 5px; color: #333; line-height: 1.6;">${project.brief}</div>
+              </div>
+              <div>
+                <strong style="color: #495057;">Total Value:</strong>
+                <span style="color: #28a745; font-size: 18px; font-weight: bold; margin-left: 10px;">$${totalValue.toLocaleString()}</span>
+              </div>
+              ${project.start_date ? `
+              <div>
+                <strong style="color: #495057;">Timeline:</strong>
+                <span style="color: #333; margin-left: 10px;">
+                  ${new Date(project.start_date).toLocaleDateString()} - ${project.end_date ? new Date(project.end_date).toLocaleDateString() : 'Ongoing'}
+                </span>
+              </div>
+              ` : ''}
+            </div>
+          </div>
+
+          <div style="background: #fff; border: 1px solid #e9ecef; padding: 25px; border-radius: 8px; margin: 25px 0;">
+            <h3 style="color: #333; margin-top: 0; border-bottom: 2px solid #f1f3f4; padding-bottom: 10px;">
+              🎯 Project Milestones & Payment Schedule
+            </h3>
             ${project.milestones.map((milestone: any, index: number) => `
-              <div style="border-bottom: 1px solid #f1f3f4; padding: 15px 0; ${index === project.milestones.length - 1 ? 'border-bottom: none;' : ''}">
-                <h4 style="margin: 0 0 10px 0; color: #495057;">${milestone.title}</h4>
-                <p style="margin: 5px 0; color: #6c757d;">${milestone.description}</p>
-                <p style="margin: 5px 0;"><strong>Price:</strong> $${Number(milestone.price).toLocaleString()}</p>
-                ${milestone.start_date ? `<p style="margin: 5px 0;"><strong>Timeline:</strong> ${new Date(milestone.start_date).toLocaleDateString()} - ${milestone.end_date ? new Date(milestone.end_date).toLocaleDateString() : 'Ongoing'}</p>` : ''}
+              <div style="border: 1px solid #f1f3f4; padding: 20px; margin: 15px 0; border-radius: 6px; background: #fafafa;">
+                <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 10px;">
+                  <h4 style="margin: 0; color: #495057; font-size: 16px;">Milestone ${index + 1}: ${milestone.title}</h4>
+                  <span style="background: #4B72E5; color: white; padding: 4px 12px; border-radius: 15px; font-size: 14px; font-weight: bold;">
+                    $${Number(milestone.price).toLocaleString()}
+                  </span>
+                </div>
+                <p style="margin: 10px 0; color: #6c757d; line-height: 1.5;">${milestone.description}</p>
+                ${milestone.start_date ? `
+                <p style="margin: 5px 0; color: #666; font-size: 14px;">
+                  <strong>Timeline:</strong> ${new Date(milestone.start_date).toLocaleDateString()} - ${milestone.end_date ? new Date(milestone.end_date).toLocaleDateString() : 'Ongoing'}
+                </p>
+                ` : ''}
               </div>
             `).join('')}
           </div>
 
-          <div style="text-align: center; margin: 30px 0;">
-            <p style="font-size: 16px; margin-bottom: 20px;">
-              Please review the project details and milestones above. Click the button below to approve or provide feedback.
+          ${project.contract_terms ? `
+          <div style="background: #fff; border: 1px solid #e9ecef; padding: 25px; border-radius: 8px; margin: 25px 0;">
+            <h3 style="color: #333; margin-top: 0; border-bottom: 2px solid #f1f3f4; padding-bottom: 10px;">
+              📄 Contract Terms & Conditions
+            </h3>
+            <div style="background: #f8f9fa; padding: 15px; border-radius: 5px;">
+              ${formatTermsForEmail(project.contract_terms)}
+            </div>
+          </div>
+          ` : ''}
+
+          ${project.payment_terms ? `
+          <div style="background: #fff; border: 1px solid #e9ecef; padding: 25px; border-radius: 8px; margin: 25px 0;">
+            <h3 style="color: #333; margin-top: 0; border-bottom: 2px solid #f1f3f4; padding-bottom: 10px;">
+              💳 Payment Terms
+            </h3>
+            <div style="background: #f8f9fa; padding: 15px; border-radius: 5px;">
+              ${formatTermsForEmail(project.payment_terms)}
+            </div>
+          </div>
+          ` : ''}
+
+          ${project.project_scope ? `
+          <div style="background: #fff; border: 1px solid #e9ecef; padding: 25px; border-radius: 8px; margin: 25px 0;">
+            <h3 style="color: #333; margin-top: 0; border-bottom: 2px solid #f1f3f4; padding-bottom: 10px;">
+              🎯 Project Scope
+            </h3>
+            <div style="background: #f8f9fa; padding: 15px; border-radius: 5px;">
+              ${formatTermsForEmail(project.project_scope)}
+            </div>
+          </div>
+          ` : ''}
+
+          ${project.revision_policy ? `
+          <div style="background: #fff; border: 1px solid #e9ecef; padding: 25px; border-radius: 8px; margin: 25px 0;">
+            <h3 style="color: #333; margin-top: 0; border-bottom: 2px solid #f1f3f4; padding-bottom: 10px;">
+              🔄 Revision Policy
+            </h3>
+            <div style="background: #f8f9fa; padding: 15px; border-radius: 5px;">
+              ${formatTermsForEmail(project.revision_policy)}
+            </div>
+          </div>
+          ` : ''}
+
+          <div style="text-align: center; margin: 40px 0; padding: 30px; background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%); border-radius: 10px;">
+            <p style="font-size: 18px; margin-bottom: 25px; color: #333; font-weight: 500;">
+              Ready to approve this contract and get started?
             </p>
             
             <a href="${approvalUrl}" 
-               style="background-color: #4B72E5; color: white; padding: 15px 30px; text-decoration: none; border-radius: 5px; font-weight: bold; display: inline-block;">
-              Review & Approve Contract
+               style="background: linear-gradient(135deg, #4B72E5 0%, #3B5BDB 100%); color: white; padding: 15px 35px; text-decoration: none; border-radius: 8px; font-weight: bold; font-size: 16px; display: inline-block; box-shadow: 0 4px 15px rgba(75, 114, 229, 0.3); transition: all 0.3s ease;">
+              📝 Review & Approve Contract
             </a>
-          </div>
-
-          <div style="background: #f8f9fa; padding: 15px; border-radius: 5px; margin-top: 30px;">
-            <p style="margin: 0; font-size: 14px; color: #6c757d;">
-              <strong>Note:</strong> This contract approval is required before work can begin on your project. 
-              Once approved, you'll receive access to track project progress and milestones.
+            
+            <p style="margin-top: 15px; font-size: 14px; color: #666;">
+              Click the button above to review all details and provide your approval or feedback
             </p>
           </div>
 
-          <div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid #e9ecef; font-size: 12px; color: #6c757d;">
-            <p>Best regards,<br>The Ruzma Team</p>
-            <p>If you have any questions, please contact ${freelancerName} directly or reply to this email.</p>
+          <div style="background: #fff3cd; border: 1px solid #ffeaa7; padding: 20px; border-radius: 8px; margin: 25px 0;">
+            <p style="margin: 0; font-size: 14px; color: #856404;">
+              <strong>⚠️ Important:</strong> This contract approval is required before work can begin on your project. 
+              Once approved, you'll receive access to track project progress, milestones, and communicate directly with ${freelancerName}.
+            </p>
+          </div>
+
+          <div style="margin-top: 40px; padding-top: 25px; border-top: 2px solid #e9ecef; text-align: center;">
+            <p style="margin: 0; font-size: 14px; color: #6c757d;">
+              Best regards,<br>
+              <strong style="color: #4B72E5;">The Ruzma Team</strong>
+            </p>
+            <p style="margin: 15px 0 0 0; font-size: 12px; color: #adb5bd;">
+              If you have any questions about this contract, please contact <strong>${freelancerName}</strong> directly or reply to this email.
+            </p>
           </div>
         </div>
       `,
