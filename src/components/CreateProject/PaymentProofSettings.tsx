@@ -24,7 +24,7 @@ const PaymentProofSettings = () => {
           control={form.control}
           name="paymentProofRequired"
           render={({ field }) => (
-            <FormItem className="flex flex-row items-start justify-between space-y-0 gap-4">
+            <FormItem className="flex flex-row items-center justify-between space-y-0 gap-4">
               <div className="space-y-1 flex-1">
                 <FormLabel className="text-sm font-medium text-gray-900">
                   {t('requirePaymentProof')}
