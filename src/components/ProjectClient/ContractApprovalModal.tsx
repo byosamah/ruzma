@@ -76,8 +76,8 @@ const ContractApprovalModal: React.FC<ContractApprovalModalProps> = ({
   };
 
   return (
-    <Dialog open={isOpen} onOpenChange={handleClose}>
-      <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+    <Dialog open={isOpen}>
+      <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto" hideCloseButton={true}>
         <DialogHeader>
           <div className="flex items-center gap-2 mb-2">
             <Clock className="w-5 h-5 text-orange-500" />
