@@ -74,8 +74,10 @@ export function storeLanguage(language: Language): void {
  * Check if a path should be redirected to include language
  */
 export function shouldRedirectToLanguage(pathname: string): boolean {
-  // Don't redirect client project routes or API routes
-  if (pathname.startsWith('/client/') || pathname.startsWith('/api/')) {
+  // Don't redirect client project routes, contract approval routes, or API routes
+  if (pathname.startsWith('/client/') || 
+      pathname.startsWith('/contract/') || 
+      pathname.startsWith('/api/')) {
     return false;
   }
   

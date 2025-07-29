@@ -59,13 +59,6 @@ function App() {
                   <Route path="/client/project/:token" element={<ClientProject />} />
                   <Route path="/contract/approve/:token" element={<ContractApproval />} />
                   
-                  {/* Language-specific contract approval route */}
-                  <Route path="/:lang/contract/approve/:token" element={
-                    <LanguageLayout>
-                      <ContractApproval />
-                    </LanguageLayout>
-                  } />
-                  
                   {/* Language-specific auth routes */}
                   <Route path="/:lang/login" element={
                     <LanguageLayout>
