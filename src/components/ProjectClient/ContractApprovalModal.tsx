@@ -173,53 +173,51 @@ const ContractApprovalModal: React.FC<ContractApprovalModalProps> = ({
           </Card>
 
           {/* Contract Terms */}
-          {(project.contract_terms || project.payment_terms || project.project_scope || project.revision_policy) && (
-            <Card>
-              <CardHeader>
-                <CardTitle>Contract Terms & Conditions</CardTitle>
-                <CardDescription>
-                  Review the detailed terms and conditions for this project
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-6">
-                {project.contract_terms && (
-                  <div>
-                    <h4 className="font-semibold mb-2">General Terms</h4>
-                    <div className="bg-muted/50 p-4 rounded-lg">
-                      <pre className="whitespace-pre-wrap text-sm">{project.contract_terms}</pre>
-                    </div>
-                  </div>
-                )}
-                
-                {project.payment_terms && (
-                  <div>
-                    <h4 className="font-semibold mb-2">Payment Terms</h4>
-                    <div className="bg-muted/50 p-4 rounded-lg">
-                      <pre className="whitespace-pre-wrap text-sm">{project.payment_terms}</pre>
-                    </div>
-                  </div>
-                )}
-                
-                {project.project_scope && (
-                  <div>
-                    <h4 className="font-semibold mb-2">Project Scope</h4>
-                    <div className="bg-muted/50 p-4 rounded-lg">
-                      <pre className="whitespace-pre-wrap text-sm">{project.project_scope}</pre>
-                    </div>
-                  </div>
-                )}
-                
-                {project.revision_policy && (
-                  <div>
-                    <h4 className="font-semibold mb-2">Revision Policy</h4>
-                    <div className="bg-muted/50 p-4 rounded-lg">
-                      <pre className="whitespace-pre-wrap text-sm">{project.revision_policy}</pre>
-                    </div>
-                  </div>
-                )}
-              </CardContent>
-            </Card>
-          )}
+          <Card>
+            <CardHeader>
+              <CardTitle>Contract Terms & Conditions</CardTitle>
+              <CardDescription>
+                Review the detailed terms and conditions for this project
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-6">
+              <div>
+                <h4 className="font-semibold mb-2">General Terms</h4>
+                <div className="bg-muted/50 p-4 rounded-lg">
+                  <pre className="whitespace-pre-wrap text-sm">
+                    {project.contract_terms || "Not specified"}
+                  </pre>
+                </div>
+              </div>
+              
+              <div>
+                <h4 className="font-semibold mb-2">Payment Terms</h4>
+                <div className="bg-muted/50 p-4 rounded-lg">
+                  <pre className="whitespace-pre-wrap text-sm">
+                    {project.payment_terms || "Not specified"}
+                  </pre>
+                </div>
+              </div>
+              
+              <div>
+                <h4 className="font-semibold mb-2">Project Scope</h4>
+                <div className="bg-muted/50 p-4 rounded-lg">
+                  <pre className="whitespace-pre-wrap text-sm">
+                    {project.project_scope || "Not specified"}
+                  </pre>
+                </div>
+              </div>
+              
+              <div>
+                <h4 className="font-semibold mb-2">Revision Policy</h4>
+                <div className="bg-muted/50 p-4 rounded-lg">
+                  <pre className="whitespace-pre-wrap text-sm">
+                    {project.revision_policy || "Not specified"}
+                  </pre>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
 
           {/* Decision Section */}
           {!showRejectionForm ? (
