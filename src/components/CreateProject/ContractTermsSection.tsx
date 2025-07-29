@@ -5,19 +5,20 @@ import { FormField, FormItem, FormLabel, FormControl, FormMessage } from '@/comp
 import { Textarea } from '@/components/ui/textarea';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Button } from '@/components/ui/button';
-import { FileText, DollarSign, Target, RotateCcw, FileCheck, Edit3 } from 'lucide-react';
+import { Switch } from '@/components/ui/switch';
+import { FileText, DollarSign, Target, RotateCcw } from 'lucide-react';
 
 interface ContractTermsSectionProps {
   form: UseFormReturn<CreateProjectFormData>;
 }
 
 export const ContractTermsSection: React.FC<ContractTermsSectionProps> = ({ form }) => {
+  const [useTemplates, setUseTemplates] = useState(false);
   const [useDefaults, setUseDefaults] = useState({
-    contractTerms: true,
-    paymentTerms: true,
-    projectScope: true,
-    revisionPolicy: true,
+    contractTerms: false,
+    paymentTerms: false,
+    projectScope: false,
+    revisionPolicy: false,
   });
   const defaultContractTerms = `Terms and Conditions:
 
@@ -65,16 +66,44 @@ Not Included:
 - Major scope changes require separate agreement
 - Revisions must be specific and actionable`;
 
+  const handleMasterToggle = (enabled: boolean) => {
+    setUseTemplates(enabled);
+    setUseDefaults({
+      contractTerms: enabled,
+      paymentTerms: enabled,
+      projectScope: enabled,
+      revisionPolicy: enabled,
+    });
+    
+    if (enabled) {
+      form.setValue('contractTerms', defaultContractTerms);
+      form.setValue('paymentTerms', defaultPaymentTerms);
+      form.setValue('projectScope', defaultProjectScope);
+      form.setValue('revisionPolicy', defaultRevisionPolicy);
+    } else {
+      form.setValue('contractTerms', '');
+      form.setValue('paymentTerms', '');
+      form.setValue('projectScope', '');
+      form.setValue('revisionPolicy', '');
+    }
+  };
+
   const handleToggleDefault = (field: keyof typeof useDefaults, defaultText: string) => {
     const newState = !useDefaults[field];
     setUseDefaults(prev => ({ ...prev, [field]: newState }));
     
     if (newState) {
-      // Use default text
       form.setValue(field, defaultText);
     } else {
-      // Clear for custom input
       form.setValue(field, '');
+    }
+    
+    // Update master toggle based on individual states
+    const updatedDefaults = { ...useDefaults, [field]: newState };
+    const allEnabled = Object.values(updatedDefaults).every(Boolean);
+    const allDisabled = Object.values(updatedDefaults).every(v => !v);
+    if (allEnabled || allDisabled) {
+      setUseTemplates(allEnabled);
     }
   };
 
@@ -91,29 +120,19 @@ Not Included:
         <FormItem>
           <div className="flex items-center justify-between mb-2">
             <FormLabel>{label}</FormLabel>
-            <Button
-              type="button"
-              variant={useDefaults[fieldName] ? "default" : "outline"}
-              size="sm"
-              onClick={() => handleToggleDefault(fieldName, defaultText)}
-              className="flex items-center gap-2"
-            >
-              {useDefaults[fieldName] ? (
-                <>
-                  <FileCheck className="h-4 w-4" />
-                  Using Template
-                </>
-              ) : (
-                <>
-                  <Edit3 className="h-4 w-4" />
-                  Custom Terms
-                </>
-              )}
-            </Button>
+            <div className="flex items-center gap-2">
+              <span className="text-sm text-muted-foreground">
+                {useDefaults[fieldName] ? 'Template' : 'Custom'}
+              </span>
+              <Switch
+                checked={useDefaults[fieldName]}
+                onCheckedChange={(checked) => handleToggleDefault(fieldName, defaultText)}
+              />
+            </div>
           </div>
           <FormControl>
             <Textarea
-              placeholder={useDefaults[fieldName] ? "Using default template text..." : placeholder}
+              placeholder={useDefaults[fieldName] ? "Using template text..." : placeholder}
               className="min-h-[200px] resize-y"
               {...field}
               disabled={useDefaults[fieldName]}
@@ -141,6 +160,16 @@ Not Included:
         <CardDescription>
           Define the contract terms and conditions for this project. These will be sent to your client for approval.
         </CardDescription>
+        <div className="flex items-center justify-between mt-4 p-4 bg-muted/50 rounded-lg">
+          <div>
+            <h4 className="font-medium">Use Contract Templates</h4>
+            <p className="text-sm text-muted-foreground">Fill all sections with standard template text</p>
+          </div>
+          <Switch
+            checked={useTemplates}
+            onCheckedChange={handleMasterToggle}
+          />
+        </div>
       </CardHeader>
       <CardContent>
         <Tabs defaultValue="contract" className="w-full">
