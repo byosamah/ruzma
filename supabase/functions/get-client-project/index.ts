@@ -81,10 +81,7 @@ const handler = async (req: Request): Promise<Response> => {
         .from('projects')
         .select(`
           *,
-          milestones (*),
-          profiles!projects_user_id_fkey (
-            full_name
-          )
+          milestones (*)
         `)
         .like('client_access_token', `${parsedToken.shortToken}%`);
     } else {
@@ -95,10 +92,7 @@ const handler = async (req: Request): Promise<Response> => {
         .from('projects')
         .select(`
           *,
-          milestones (*),
-          profiles!projects_user_id_fkey (
-            full_name
-          )
+          milestones (*)
         `)
         .eq('client_access_token', parsedToken.shortToken);
     }
