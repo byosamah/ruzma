@@ -66,7 +66,7 @@ export const LanguageProvider: React.FC<{ children: ReactNode }> = ({ children }
       return;
     }
     
-    // Redirect old routes to language-prefixed routes
+    // Redirect old routes to language-prefixed routes (excluding contract approval routes)
     if (shouldRedirectToLanguage(currentPath)) {
       const newPath = addLanguageToPath(currentPath, language);
       navigate(newPath, { replace: true });
