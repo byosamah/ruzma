@@ -105,6 +105,7 @@ const EditProject: React.FC = () => {
                   contractApprovedAt={project.contract_approved_at}
                   rejectionReason={project.contract_rejection_reason}
                   onResendContract={handleResendContract}
+                  onEditContract={() => {}} // Will be implemented if needed
                   isResending={isResendingContract}
                 />
               </div>

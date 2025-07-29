@@ -2,7 +2,7 @@ import React from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Clock, CheckCircle, XCircle, Mail, RotateCcw } from 'lucide-react';
+import { Clock, CheckCircle, XCircle, Mail, RotateCcw, Edit } from 'lucide-react';
 
 interface ContractStatusCardProps {
   contractStatus: 'pending' | 'approved' | 'rejected';
@@ -10,6 +10,7 @@ interface ContractStatusCardProps {
   contractApprovedAt?: string;
   rejectionReason?: string;
   onResendContract: () => void;
+  onEditContract: () => void;
   isResending?: boolean;
 }
 
@@ -19,6 +20,7 @@ const ContractStatusCard: React.FC<ContractStatusCardProps> = ({
   contractApprovedAt,
   rejectionReason,
   onResendContract,
+  onEditContract,
   isResending = false,
 }) => {
   const getStatusConfig = () => {
@@ -69,20 +71,35 @@ const ContractStatusCard: React.FC<ContractStatusCardProps> = ({
             {statusConfig.badge}
           </div>
           {statusConfig.showResend && (
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={onResendContract}
-              disabled={isResending}
-              className="gap-2"
-            >
-              {isResending ? (
-                <RotateCcw className="w-4 h-4 animate-spin" />
+            <div className="flex gap-2">
+              {contractStatus === 'rejected' ? (
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={onEditContract}
+                  disabled={isResending}
+                  className="gap-2"
+                >
+                  <Edit className="w-4 h-4" />
+                  Update & Resend
+                </Button>
               ) : (
-                <Mail className="w-4 h-4" />
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={onResendContract}
+                  disabled={isResending}
+                  className="gap-2"
+                >
+                  {isResending ? (
+                    <RotateCcw className="w-4 h-4 animate-spin" />
+                  ) : (
+                    <Mail className="w-4 h-4" />
+                  )}
+                  Resend Contract
+                </Button>
               )}
-              {contractStatus === 'rejected' ? 'Update & Resend' : 'Resend Contract'}
-            </Button>
+            </div>
           )}
         </div>
         <CardTitle>{statusConfig.title}</CardTitle>

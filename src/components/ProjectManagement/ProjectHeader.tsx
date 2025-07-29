@@ -12,6 +12,7 @@ interface ProjectHeaderProps {
   onDeleteClick?: () => void;
   userCurrency: CurrencyCode;
   onResendContract?: () => void;
+  onEditContract?: () => void;
   isResendingContract?: boolean;
 }
 
@@ -22,6 +23,7 @@ const ProjectHeader: React.FC<ProjectHeaderProps> = ({
   onDeleteClick,
   userCurrency,
   onResendContract,
+  onEditContract,
   isResendingContract
 }) => {
   return (
@@ -46,6 +48,7 @@ const ProjectHeader: React.FC<ProjectHeaderProps> = ({
           contractApprovedAt={project.contract_approved_at}
           rejectionReason={project.contract_rejection_reason}
           onResendContract={onResendContract || (() => {})}
+          onEditContract={onEditContract || (() => {})}
           isResending={isResendingContract}
         />
       )}

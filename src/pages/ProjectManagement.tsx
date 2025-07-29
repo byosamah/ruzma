@@ -9,6 +9,7 @@ import { useProjectManagement } from "@/hooks/useProjectManagement";
 import { useProjects } from "@/hooks/useProjects";
 import ProjectHeader from "@/components/ProjectManagement/ProjectHeader";
 import MilestoneList from "@/components/ProjectManagement/MilestoneList";
+import EditContractDialog from "@/components/CreateProject/EditContractDialog";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 
@@ -31,6 +32,7 @@ const ProjectManagement: React.FC = () => {
   } = useProjectManagement(slug);
   const { deleteProject } = useProjects(user);
   const [isResendingContract, setIsResendingContract] = useState(false);
+  const [isEditContractDialogOpen, setIsEditContractDialogOpen] = useState(false);
 
   const handleBackClick = () => {
     navigate("/projects");
@@ -70,6 +72,15 @@ const ProjectManagement: React.FC = () => {
     } finally {
       setIsResendingContract(false);
     }
+  };
+
+  const handleEditContract = () => {
+    setIsEditContractDialogOpen(true);
+  };
+
+  const handleContractUpdated = () => {
+    // Trigger a re-fetch of project data or handle state updates as needed
+    window.location.reload(); // Simple solution for now
   };
 
   if (loading) {
@@ -121,6 +132,7 @@ const ProjectManagement: React.FC = () => {
             onDeleteClick={handleDeleteClick} 
             userCurrency={userCurrency.currency}
             onResendContract={handleResendContract}
+            onEditContract={handleEditContract}
             isResendingContract={isResendingContract}
           />
         </div>
@@ -183,6 +195,16 @@ const ProjectManagement: React.FC = () => {
             onRevisionUpdate={updateRevisionData}
           />
         </div>
+
+        {/* Edit Contract Dialog */}
+        {project && (
+          <EditContractDialog
+            isOpen={isEditContractDialogOpen}
+            onClose={() => setIsEditContractDialogOpen(false)}
+            project={project}
+            onContractUpdated={handleContractUpdated}
+          />
+        )}
       </div>
     </Layout>
   );
