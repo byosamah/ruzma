@@ -11,7 +11,7 @@ import ProjectPaymentDeliveryCard from "@/components/ProjectClient/ProjectPaymen
 import ProjectInstructionsCard from "@/components/ProjectClient/ProjectInstructionsCard";
 import ProjectMilestonesList from "@/components/ProjectClient/ProjectMilestonesList";
 import ProjectFooter from "@/components/ProjectClient/ProjectFooter";
-import PendingContractNotice from "@/components/ProjectClient/PendingContractNotice";
+import ContractApprovalModal from "@/components/ProjectClient/ContractApprovalModal";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { parseClientToken } from "@/lib/clientUrlUtils";
 import { CurrencyCode } from "@/lib/currency";
@@ -31,10 +31,12 @@ const ClientProject = () => {
     project,
     isLoading,
     error,
+    needsContractApproval,
     handlePaymentUpload,
     handleRevisionRequest,
     userCurrency,
     freelancerCurrency,
+    refetchProject,
   } = useClientProject(parsedToken?.token, parsedToken?.isHybrid);
 
   const {
@@ -66,41 +68,54 @@ const ClientProject = () => {
     <div className="min-h-screen bg-white">
       <BrandedClientHeader branding={branding} />
       
-      <main className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-6">
-        <ProjectOverviewCard
-          projectName={project.name}
-          projectBrief={project.brief}
-          totalValue={totalValue}
-          totalMilestones={totalMilestones}
-          completedMilestones={completedMilestones}
-          currency={displayCurrency}
-          freelancerCurrency={freelancerCurrencyCode}
-          startDate={project.start_date ?? undefined}
-          endDate={project.end_date ?? undefined}
-          branding={branding}
+      {/* Contract Approval Modal */}
+      {needsContractApproval && project && (
+        <ContractApprovalModal
+          isOpen={needsContractApproval}
+          onClose={() => {}} // Cannot close until approved/rejected
+          project={project}
+          onApprovalComplete={refetchProject}
         />
-        
-        <ProjectPaymentDeliveryCard
-          paymentProofRequired={project.payment_proof_required || false}
-          branding={branding}
-        />
-        
-        <ProjectInstructionsCard 
-          branding={branding} 
-          paymentProofRequired={project.payment_proof_required || false}
-        />
-        
-        <ProjectMilestonesList
-          milestones={project.milestones}
-          onPaymentUpload={handlePaymentUpload}
-          onRevisionRequest={handleRevisionRequest}
-          currency={displayCurrency}
-          freelancerCurrency={freelancerCurrencyCode}
-          branding={branding}
-          paymentProofRequired={project.payment_proof_required || false}
-          token={parsedToken?.token}
-        />
-      </main>
+      )}
+      
+      {/* Main Content - Only show if contract is approved or doesn't require approval */}
+      {!needsContractApproval && (
+        <main className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-6">
+          <ProjectOverviewCard
+            projectName={project.name}
+            projectBrief={project.brief}
+            totalValue={totalValue}
+            totalMilestones={totalMilestones}
+            completedMilestones={completedMilestones}
+            currency={displayCurrency}
+            freelancerCurrency={freelancerCurrencyCode}
+            startDate={project.start_date ?? undefined}
+            endDate={project.end_date ?? undefined}
+            branding={branding}
+          />
+          
+          <ProjectPaymentDeliveryCard
+            paymentProofRequired={project.payment_proof_required || false}
+            branding={branding}
+          />
+          
+          <ProjectInstructionsCard 
+            branding={branding} 
+            paymentProofRequired={project.payment_proof_required || false}
+          />
+          
+          <ProjectMilestonesList
+            milestones={project.milestones}
+            onPaymentUpload={handlePaymentUpload}
+            onRevisionRequest={handleRevisionRequest}
+            currency={displayCurrency}
+            freelancerCurrency={freelancerCurrencyCode}
+            branding={branding}
+            paymentProofRequired={project.payment_proof_required || false}
+            token={parsedToken?.token}
+          />
+        </main>
+      )}
       
       <ProjectFooter />
     </div>

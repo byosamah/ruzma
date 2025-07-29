@@ -12,6 +12,7 @@ export const useClientProject = (token?: string | null, isHybrid?: boolean) => {
   const [project, setProject] = useState<DatabaseProject | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [needsContractApproval, setNeedsContractApproval] = useState(false);
   
   const userCurrency = useUserCurrency(null);
 
@@ -28,6 +29,9 @@ export const useClientProject = (token?: string | null, isHybrid?: boolean) => {
     try {
       const data = await clientProjectService.getProject(token, isHybrid);
       setProject(data);
+      
+      // Check if contract approval is needed
+      setNeedsContractApproval(data.contract_status === 'pending');
       
       // Track client project access
       if (data.id) {
@@ -94,15 +98,23 @@ export const useClientProject = (token?: string | null, isHybrid?: boolean) => {
     }
   };
 
+  const refetchProject = async () => {
+    if (token) {
+      await loadProject();
+    }
+  };
+
   return {
     project,
     loading,
     isLoading: loading,
     error,
+    needsContractApproval,
     uploadPaymentProof,
     handlePaymentUpload,
     handleRevisionRequest,
     userCurrency,
     freelancerCurrency: project?.freelancer_currency || null,
+    refetchProject,
   };
 };
