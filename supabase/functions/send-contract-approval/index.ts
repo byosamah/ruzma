@@ -69,8 +69,9 @@ const handler = async (req: Request): Promise<Response> => {
     // Calculate total project value
     const totalValue = project.milestones.reduce((sum: number, milestone: any) => sum + Number(milestone.price), 0);
 
-    // Create approval URL
-    const approvalUrl = `https://***REMOVED***.lovable.app/contract/approve/${project.contract_approval_token}`;
+    // Create approval URL (use production domain or environment variable)
+    const baseUrl = Deno.env.get('PRODUCTION_URL') || 'https://ruzma.co';
+    const approvalUrl = `${baseUrl}/contract/approve/${project.contract_approval_token}`;
 
     // Format contract terms for email
     const formatTermsForEmail = (terms: string | null) => {
@@ -78,9 +79,9 @@ const handler = async (req: Request): Promise<Response> => {
       return terms.split('\n').map(line => `<p style="margin: 5px 0; color: #333;">${line}</p>`).join('');
     };
 
-    // Send contract approval email
+    // Send contract approval email with freelancer name as sender
     const emailResponse = await resend.emails.send({
-      from: 'Ruzma <notifications@ruzma.co>',
+      from: `${freelancerName} <notifications@ruzma.co>`,
       to: clientEmail,
       subject: `Contract Approval Required: ${project.name}`,
       html: `

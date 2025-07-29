@@ -37,17 +37,42 @@ serve(async (req) => {
       throw new Error('Project ID is required');
     }
 
-    // Get project details
+    // Get project details with client information
     const { data: project, error: projectError } = await supabase
       .from('projects')
-      .select('*')
+      .select('*, clients(email)')
       .eq('id', projectId)
       .eq('user_id', user.id)
       .single();
 
     if (projectError || !project) {
+      console.error('Project fetch error:', projectError);
       throw new Error('Project not found or access denied');
     }
+
+    // Get freelancer profile
+    const { data: profile, error: profileError } = await supabase
+      .from('profiles')
+      .select('full_name')
+      .eq('id', user.id)
+      .single();
+
+    if (profileError || !profile) {
+      console.error('Profile fetch error:', profileError);
+      throw new Error('Freelancer profile not found');
+    }
+
+    // Determine client email (from project directly or from linked client)
+    let clientEmail = project.client_email;
+    if (!clientEmail && project.clients?.email) {
+      clientEmail = project.clients.email;
+    }
+
+    if (!clientEmail) {
+      throw new Error('Client email not found for this project');
+    }
+
+    console.log('Resending contract for project:', projectId, 'to client:', clientEmail, 'from freelancer:', profile.full_name);
 
     // Update contract_sent_at timestamp
     const { error: updateError } = await supabase
@@ -56,16 +81,22 @@ serve(async (req) => {
       .eq('id', projectId);
 
     if (updateError) {
+      console.error('Update error:', updateError);
       throw new Error('Failed to update contract timestamp');
     }
 
-    // Call the send-contract-approval function
+    // Call the send-contract-approval function with all required parameters
     const { error: sendError } = await supabase.functions.invoke('send-contract-approval', {
-      body: { projectId }
+      body: { 
+        projectId,
+        clientEmail,
+        freelancerName: profile.full_name
+      }
     });
 
     if (sendError) {
-      throw new Error('Failed to send contract approval email');
+      console.error('Send contract error:', sendError);
+      throw new Error('Failed to send contract approval email: ' + sendError.message);
     }
 
     return new Response(
