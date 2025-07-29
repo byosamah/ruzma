@@ -70,7 +70,7 @@ const handler = async (req: Request): Promise<Response> => {
     const totalValue = project.milestones.reduce((sum: number, milestone: any) => sum + Number(milestone.price), 0);
 
     // Create approval URL using the custom domain
-    const baseUrl = 'https://ruzma.co';
+    const baseUrl = 'https://hub.ruzma.co';
     const approvalUrl = `${baseUrl}/contract/approve/${project.contract_approval_token}`;
 
     // Format contract terms for email
