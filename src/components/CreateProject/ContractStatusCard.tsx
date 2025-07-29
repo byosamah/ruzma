@@ -1,0 +1,125 @@
+import React from 'react';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
+import { Clock, CheckCircle, XCircle, Mail, RotateCcw } from 'lucide-react';
+
+interface ContractStatusCardProps {
+  contractStatus: 'pending' | 'approved' | 'rejected';
+  contractSentAt?: string;
+  contractApprovedAt?: string;
+  rejectionReason?: string;
+  onResendContract: () => void;
+  isResending?: boolean;
+}
+
+const ContractStatusCard: React.FC<ContractStatusCardProps> = ({
+  contractStatus,
+  contractSentAt,
+  contractApprovedAt,
+  rejectionReason,
+  onResendContract,
+  isResending = false,
+}) => {
+  const getStatusConfig = () => {
+    switch (contractStatus) {
+      case 'pending':
+        return {
+          icon: <Clock className="w-5 h-5 text-orange-500" />,
+          badge: <Badge variant="outline" className="text-orange-600">Pending Approval</Badge>,
+          title: 'Contract Awaiting Approval',
+          description: 'Your contract has been sent to the client for review and approval.',
+          showResend: true,
+        };
+      case 'approved':
+        return {
+          icon: <CheckCircle className="w-5 h-5 text-green-500" />,
+          badge: <Badge variant="default" className="bg-green-500 hover:bg-green-600">Approved</Badge>,
+          title: 'Contract Approved',
+          description: 'Great! Your client has approved the contract. You can now begin work on the project.',
+          showResend: false,
+        };
+      case 'rejected':
+        return {
+          icon: <XCircle className="w-5 h-5 text-red-500" />,
+          badge: <Badge variant="destructive">Changes Requested</Badge>,
+          title: 'Contract Requires Changes',
+          description: 'Your client has requested changes to the project proposal.',
+          showResend: true,
+        };
+      default:
+        return {
+          icon: <Clock className="w-5 h-5" />,
+          badge: <Badge variant="outline">Unknown</Badge>,
+          title: 'Contract Status',
+          description: 'Contract status information',
+          showResend: false,
+        };
+    }
+  };
+
+  const statusConfig = getStatusConfig();
+
+  return (
+    <Card>
+      <CardHeader>
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            {statusConfig.icon}
+            {statusConfig.badge}
+          </div>
+          {statusConfig.showResend && (
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={onResendContract}
+              disabled={isResending}
+              className="gap-2"
+            >
+              {isResending ? (
+                <RotateCcw className="w-4 h-4 animate-spin" />
+              ) : (
+                <Mail className="w-4 h-4" />
+              )}
+              {contractStatus === 'rejected' ? 'Update & Resend' : 'Resend Contract'}
+            </Button>
+          )}
+        </div>
+        <CardTitle>{statusConfig.title}</CardTitle>
+        <CardDescription>{statusConfig.description}</CardDescription>
+      </CardHeader>
+      
+      <CardContent className="space-y-4">
+        {contractSentAt && (
+          <div className="text-sm text-muted-foreground">
+            <strong>Sent:</strong> {new Date(contractSentAt).toLocaleString()}
+          </div>
+        )}
+        
+        {contractStatus === 'approved' && contractApprovedAt && (
+          <div className="text-sm text-green-600">
+            <strong>Approved:</strong> {new Date(contractApprovedAt).toLocaleString()}
+          </div>
+        )}
+        
+        {contractStatus === 'rejected' && rejectionReason && (
+          <div className="bg-red-50 border border-red-200 rounded-lg p-3">
+            <h4 className="text-sm font-semibold text-red-800 mb-2">Client Feedback:</h4>
+            <p className="text-sm text-red-700 whitespace-pre-wrap">{rejectionReason}</p>
+          </div>
+        )}
+        
+        {contractStatus === 'pending' && (
+          <div className="bg-orange-50 border border-orange-200 rounded-lg p-3">
+            <p className="text-sm text-orange-700">
+              The client will receive an email with the contract details and approval options. 
+              Once approved, work can begin on the project.
+            </p>
+          </div>
+        )}
+      </CardContent>
+    </Card>
+  );
+};
+
+export default ContractStatusCard;

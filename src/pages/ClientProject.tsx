@@ -11,6 +11,7 @@ import ProjectPaymentDeliveryCard from "@/components/ProjectClient/ProjectPaymen
 import ProjectInstructionsCard from "@/components/ProjectClient/ProjectInstructionsCard";
 import ProjectMilestonesList from "@/components/ProjectClient/ProjectMilestonesList";
 import ProjectFooter from "@/components/ProjectClient/ProjectFooter";
+import PendingContractNotice from "@/components/ProjectClient/PendingContractNotice";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { parseClientToken } from "@/lib/clientUrlUtils";
 import { CurrencyCode } from "@/lib/currency";

@@ -26,6 +26,7 @@ const ProjectManagement = lazy(() => import("./pages/ProjectManagement"));
 const ProjectTemplates = lazy(() => import("./pages/ProjectTemplates"));
 const ClientProject = lazy(() => import("./pages/ClientProject"));
 const ContactUs = lazy(() => import("./pages/ContactUs"));
+const ContractApproval = lazy(() => import("./pages/ContractApproval"));
 const NotFound = lazy(() => import("./pages/NotFound"));
 const Invoices = lazy(() => import("./pages/Invoices"));
 const CreateInvoice = lazy(() => import("./pages/CreateInvoice"));
@@ -53,9 +54,10 @@ function App() {
                   {/* Root redirect - handled by LanguageProvider */}
                   <Route path="/" element={<Navigate to="/en/dashboard" replace />} />
                   
-                  {/* Language-agnostic routes */}
+                   {/* Language-agnostic routes */}
                   <Route path="/client/:token" element={<ClientProject />} />
                   <Route path="/client/project/:token" element={<ClientProject />} />
+                  <Route path="/contract/approve/:token" element={<ContractApproval />} />
                   
                   {/* Language-specific auth routes */}
                   <Route path="/:lang/login" element={

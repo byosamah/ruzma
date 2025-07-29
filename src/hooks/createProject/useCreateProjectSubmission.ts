@@ -255,6 +255,33 @@ export const useCreateProjectSubmission = () => {
         console.log('Project count updated successfully');
       }
 
+      // Send contract approval email if client email is provided
+      if (clientEmail && profile.full_name) {
+        try {
+          console.log('Sending contract approval email...');
+          const { error: contractError } = await supabase.functions.invoke('send-contract-approval', {
+            body: {
+              projectId: project.id,
+              clientEmail: clientEmail,
+              freelancerName: profile.full_name,
+            },
+          });
+
+          if (contractError) {
+            console.error('Error sending contract approval:', contractError);
+            toast.error('Project created but failed to send contract approval email');
+          } else {
+            console.log('Contract approval email sent successfully');
+            toast.success('Project created and contract sent for approval!');
+          }
+        } catch (contractError) {
+          console.error('Error sending contract approval:', contractError);
+          toast.error('Project created but failed to send contract approval email');
+        }
+      } else {
+        toast.success('Project created successfully!');
+      }
+
       // Log successful project creation
       securityMonitor.logEvent('data_modification', {
         resource: 'project',
@@ -263,7 +290,6 @@ export const useCreateProjectSubmission = () => {
         userId: user.id
       });
 
-      toast.success('Project created successfully!');
       navigate('/dashboard');
     } catch (error) {
       console.error('Error creating project:', error);

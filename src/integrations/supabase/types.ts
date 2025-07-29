@@ -327,6 +327,11 @@ export type Database = {
           client_access_token: string
           client_email: string | null
           client_id: string | null
+          contract_approval_token: string | null
+          contract_approved_at: string | null
+          contract_rejection_reason: string | null
+          contract_sent_at: string | null
+          contract_status: string | null
           created_at: string
           end_date: string | null
           id: string
@@ -342,6 +347,11 @@ export type Database = {
           client_access_token?: string
           client_email?: string | null
           client_id?: string | null
+          contract_approval_token?: string | null
+          contract_approved_at?: string | null
+          contract_rejection_reason?: string | null
+          contract_sent_at?: string | null
+          contract_status?: string | null
           created_at?: string
           end_date?: string | null
           id?: string
@@ -357,6 +367,11 @@ export type Database = {
           client_access_token?: string
           client_email?: string | null
           client_id?: string | null
+          contract_approval_token?: string | null
+          contract_approved_at?: string | null
+          contract_rejection_reason?: string | null
+          contract_sent_at?: string | null
+          contract_status?: string | null
           created_at?: string
           end_date?: string | null
           id?: string
