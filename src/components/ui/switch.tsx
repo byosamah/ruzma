@@ -18,7 +18,7 @@ const Switch = React.forwardRef<HTMLButtonElement, SwitchProps>(
         onClick={() => onCheckedChange?.(!checked)}
         disabled={disabled}
         className={cn(
-          "relative inline-flex h-5 w-10 items-center rounded-full bg-black transition-colors duration-200 focus:outline-none disabled:cursor-not-allowed disabled:opacity-50",
+          "relative inline-flex h-6 w-11 items-center rounded-full bg-black transition-colors duration-200 focus:outline-none disabled:cursor-not-allowed disabled:opacity-50",
           "transform-none min-h-0", // Override global button styles
           className
         )}
@@ -28,10 +28,10 @@ const Switch = React.forwardRef<HTMLButtonElement, SwitchProps>(
       >
         <span
           className={cn(
-            "inline-block h-4 w-4 transform rounded-full bg-white transition-transform duration-200",
+            "inline-block h-5 w-5 transform rounded-full bg-white transition-transform duration-200",
             checked 
               ? "translate-x-5 rtl:-translate-x-5" 
-              : "translate-x-1 rtl:-translate-x-1"
+              : "translate-x-0.5 rtl:-translate-x-0.5"
           )}
         />
       </button>
