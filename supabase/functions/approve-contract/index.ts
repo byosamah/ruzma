@@ -33,13 +33,7 @@ const handler = async (req: Request): Promise<Response> => {
     // Find project by approval token
     const { data: project, error: projectError } = await supabaseClient
       .from('projects')
-      .select(`
-        *,
-        profiles!projects_user_id_fkey (
-          full_name,
-          email
-        )
-      `)
+      .select('*')
       .eq('contract_approval_token', approvalToken)
       .single();
 
@@ -47,6 +41,14 @@ const handler = async (req: Request): Promise<Response> => {
       console.error('Error fetching project:', projectError);
       throw new Error('Invalid approval token');
     }
+
+    // Get freelancer details separately
+    const { data: freelancerProfile } = await supabaseClient
+      .from('profiles')
+      .select('full_name, email')
+      .eq('id', project.user_id)
+      .single();
+
 
     if (project.contract_status !== 'pending') {
       throw new Error('Contract has already been processed');
@@ -75,8 +77,8 @@ const handler = async (req: Request): Promise<Response> => {
     }
 
     // Send notification email to freelancer
-    const freelancerEmail = project.profiles?.email;
-    const freelancerName = project.profiles?.full_name || 'Freelancer';
+    const freelancerEmail = freelancerProfile?.email;
+    const freelancerName = freelancerProfile?.full_name || 'Freelancer';
 
     if (freelancerEmail) {
       const subject = action === 'approve' 
