@@ -1,5 +1,5 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import Layout from '@/components/Layout';
 import { Button } from '@/components/ui/button';
@@ -9,6 +9,9 @@ import { ProjectForm } from '@/components/EditProject/ProjectForm';
 import { useEditProject } from '@/hooks/useEditProject';
 import { useT } from '@/lib/i18n';
 import { useIsMobile } from '@/hooks/use-mobile';
+import ContractStatusCard from '@/components/CreateProject/ContractStatusCard';
+import { supabase } from '@/integrations/supabase/client';
+import { toast } from 'sonner';
 
 const EditProject: React.FC = () => {
   const { slug } = useParams<{ slug: string }>();
@@ -37,6 +40,27 @@ const EditProject: React.FC = () => {
     setClientEmail,
     setPaymentProofRequired,
   } = useEditProject(slug);
+  const [isResendingContract, setIsResendingContract] = useState(false);
+
+  const handleResendContract = async () => {
+    if (!project?.id) return;
+    
+    setIsResendingContract(true);
+    try {
+      const { error } = await supabase.functions.invoke('send-contract-approval', {
+        body: { projectId: project.id }
+      });
+
+      if (error) throw error;
+      
+      toast.success('Contract resent successfully');
+    } catch (error) {
+      console.error('Error resending contract:', error);
+      toast.error('Failed to resend contract');
+    } finally {
+      setIsResendingContract(false);
+    }
+  };
 
   if (loading) {
     return (
@@ -72,7 +96,21 @@ const EditProject: React.FC = () => {
             <CardTitle className={`${isMobile ? 'text-xl' : 'text-2xl'}`}>{t('editProject')}</CardTitle>
           </CardHeader>
           <CardContent className={isMobile ? 'px-4' : ''}>
-            <ProjectForm 
+            {/* Contract Status */}
+            {project.contract_status && project.contract_status !== 'approved' && (
+              <div className="mb-6">
+                <ContractStatusCard
+                  contractStatus={project.contract_status as 'pending' | 'approved' | 'rejected'}
+                  contractSentAt={project.contract_sent_at}
+                  contractApprovedAt={project.contract_approved_at}
+                  rejectionReason={project.contract_rejection_reason}
+                  onResendContract={handleResendContract}
+                  isResending={isResendingContract}
+                />
+              </div>
+            )}
+            
+            <ProjectForm
               name={name}
               brief={brief}
               clientEmail={clientEmail}

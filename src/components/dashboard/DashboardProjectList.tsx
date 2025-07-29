@@ -44,6 +44,36 @@ const DashboardProjectList: React.FC<DashboardProjectListProps> = ({
     }
   };
 
+  const getContractStatusColor = (status: string) => {
+    switch (status) {
+      case 'approved':
+        return 'bg-green-100 text-green-800';
+      case 'pending':
+        return 'bg-orange-100 text-orange-800';
+      case 'rejected':
+        return 'bg-red-100 text-red-800';
+      default:
+        return 'bg-gray-100 text-gray-800';
+    }
+  };
+
+  const getProjectDisplayStatus = (project: DatabaseProject) => {
+    // If contract is not approved, show contract status
+    if (project.contract_status && project.contract_status !== 'approved') {
+      return {
+        status: `Contract ${project.contract_status}`,
+        color: getContractStatusColor(project.contract_status)
+      };
+    }
+    
+    // Otherwise show milestone status
+    const milestoneStatus = project.milestones[0]?.status || 'pending';
+    return {
+      status: milestoneStatus,
+      color: getStatusColor(milestoneStatus)
+    };
+  };
+
   const EmptyProjectsButton = () => {
     const button = (
       <Button 
@@ -158,13 +188,16 @@ const DashboardProjectList: React.FC<DashboardProjectListProps> = ({
                       </div>
                     </div>
                     <div className={`${isMobile ? 'flex justify-between items-center pt-3 border-t border-slate-100' : 'flex items-center space-x-2 ml-4 flex-shrink-0'}`}>
-                      <Badge
-                        className={`${getStatusColor(
-                          project.milestones[0]?.status || 'pending'
-                        )} text-xs flex-shrink-0`}
-                      >
-                        {project.milestones[0]?.status || 'pending'}
-                      </Badge>
+                      {(() => {
+                        const displayStatus = getProjectDisplayStatus(project);
+                        return (
+                          <Badge
+                            className={`${displayStatus.color} text-xs flex-shrink-0`}
+                          >
+                            {displayStatus.status}
+                          </Badge>
+                        );
+                      })()}
                       <div className="flex items-center space-x-2">
                         <Button
                           variant="ghost"

@@ -3,6 +3,7 @@ import React from 'react';
 import { DatabaseProject } from '@/hooks/projectTypes';
 import { CurrencyCode } from '@/lib/currency';
 import ProjectHeaderActions from './ProjectHeaderActions';
+import ContractStatusCard from '@/components/CreateProject/ContractStatusCard';
 
 interface ProjectHeaderProps {
   project: DatabaseProject;
@@ -10,6 +11,8 @@ interface ProjectHeaderProps {
   onEditClick: () => void;
   onDeleteClick?: () => void;
   userCurrency: CurrencyCode;
+  onResendContract?: () => void;
+  isResendingContract?: boolean;
 }
 
 const ProjectHeader: React.FC<ProjectHeaderProps> = ({
@@ -17,7 +20,9 @@ const ProjectHeader: React.FC<ProjectHeaderProps> = ({
   onBackClick,
   onEditClick,
   onDeleteClick,
-  userCurrency
+  userCurrency,
+  onResendContract,
+  isResendingContract
 }) => {
   return (
     <div className="space-y-4">
@@ -32,6 +37,18 @@ const ProjectHeader: React.FC<ProjectHeaderProps> = ({
           </p>
         )}
       </div>
+
+      {/* Contract Status */}
+      {project.contract_status && project.contract_status !== 'approved' && (
+        <ContractStatusCard
+          contractStatus={project.contract_status as 'pending' | 'approved' | 'rejected'}
+          contractSentAt={project.contract_sent_at}
+          contractApprovedAt={project.contract_approved_at}
+          rejectionReason={project.contract_rejection_reason}
+          onResendContract={onResendContract || (() => {})}
+          isResending={isResendingContract}
+        />
+      )}
 
       {/* Action Buttons */}
       <ProjectHeaderActions

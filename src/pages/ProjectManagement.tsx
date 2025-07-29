@@ -1,5 +1,5 @@
 
-import React from "react";
+import React, { useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import Layout from "@/components/Layout";
 import { Button } from "@/components/ui/button";
@@ -9,6 +9,8 @@ import { useProjectManagement } from "@/hooks/useProjectManagement";
 import { useProjects } from "@/hooks/useProjects";
 import ProjectHeader from "@/components/ProjectManagement/ProjectHeader";
 import MilestoneList from "@/components/ProjectManagement/MilestoneList";
+import { supabase } from "@/integrations/supabase/client";
+import { toast } from "sonner";
 
 const ProjectManagement: React.FC = () => {
   const { slug } = useParams<{ slug: string; }>();
@@ -28,6 +30,7 @@ const ProjectManagement: React.FC = () => {
     addRevisionRequestClient,
   } = useProjectManagement(slug);
   const { deleteProject } = useProjects(user);
+  const [isResendingContract, setIsResendingContract] = useState(false);
 
   const handleBackClick = () => {
     navigate("/projects");
@@ -46,6 +49,26 @@ const ProjectManagement: React.FC = () => {
       if (success) {
         navigate('/projects');
       }
+    }
+  };
+
+  const handleResendContract = async () => {
+    if (!project?.id) return;
+    
+    setIsResendingContract(true);
+    try {
+      const { error } = await supabase.functions.invoke('send-contract-approval', {
+        body: { projectId: project.id }
+      });
+
+      if (error) throw error;
+      
+      toast.success('Contract resent successfully');
+    } catch (error) {
+      console.error('Error resending contract:', error);
+      toast.error('Failed to resend contract');
+    } finally {
+      setIsResendingContract(false);
     }
   };
 
@@ -96,7 +119,9 @@ const ProjectManagement: React.FC = () => {
             onBackClick={handleBackClick} 
             onEditClick={handleEditClick} 
             onDeleteClick={handleDeleteClick} 
-            userCurrency={userCurrency.currency} 
+            userCurrency={userCurrency.currency}
+            onResendContract={handleResendContract}
+            isResendingContract={isResendingContract}
           />
         </div>
 

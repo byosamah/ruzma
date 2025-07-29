@@ -36,3 +36,6 @@ verify_jwt = true
 
 [functions.approve-contract]
 verify_jwt = false
+
+[functions.resend-contract]
+verify_jwt = true
