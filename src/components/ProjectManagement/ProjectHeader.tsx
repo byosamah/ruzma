@@ -41,7 +41,7 @@ const ProjectHeader: React.FC<ProjectHeaderProps> = ({
       </div>
 
       {/* Contract Status */}
-      {project.contract_status && project.contract_status !== 'approved' && (
+      {project.contract_status && (
         <ContractStatusCard
           contractStatus={project.contract_status as 'pending' | 'approved' | 'rejected'}
           contractSentAt={project.contract_sent_at}

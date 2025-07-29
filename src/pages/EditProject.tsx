@@ -97,7 +97,7 @@ const EditProject: React.FC = () => {
           </CardHeader>
           <CardContent className={isMobile ? 'px-4' : ''}>
             {/* Contract Status */}
-            {project.contract_status && project.contract_status !== 'approved' && (
+            {project.contract_status && (
               <div className="mb-6">
                 <ContractStatusCard
                   contractStatus={project.contract_status as 'pending' | 'approved' | 'rejected'}

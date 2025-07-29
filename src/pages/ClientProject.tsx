@@ -12,6 +12,7 @@ import ProjectInstructionsCard from "@/components/ProjectClient/ProjectInstructi
 import ProjectMilestonesList from "@/components/ProjectClient/ProjectMilestonesList";
 import ProjectFooter from "@/components/ProjectClient/ProjectFooter";
 import ContractApprovalModal from "@/components/ProjectClient/ContractApprovalModal";
+import ClientContractStatus from "@/components/ProjectClient/ClientContractStatus";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { parseClientToken } from "@/lib/clientUrlUtils";
 import { CurrencyCode } from "@/lib/currency";
@@ -103,6 +104,19 @@ const ClientProject = () => {
       {/* Main Content - Only show if contract is approved or doesn't require approval */}
       {!needsContractApproval && !contractRejected && (
         <main className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-6">
+          {/* Contract Status - Show for all approved contracts */}
+          {project.contract_status && (
+            <ClientContractStatus
+              contractStatus={project.contract_status as 'pending' | 'approved' | 'rejected'}
+              contractSentAt={project.contract_sent_at}
+              contractApprovedAt={project.contract_approved_at}
+              contractTerms={project.contract_terms}
+              paymentTerms={project.payment_terms}
+              projectScope={project.project_scope}
+              revisionPolicy={project.revision_policy}
+            />
+          )}
+
           <ProjectOverviewCard
             projectName={project.name}
             projectBrief={project.brief}
