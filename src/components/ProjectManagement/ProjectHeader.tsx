@@ -50,6 +50,10 @@ const ProjectHeader: React.FC<ProjectHeaderProps> = ({
           onResendContract={onResendContract || (() => {})}
           onEditContract={onEditContract || (() => {})}
           isResending={isResendingContract}
+          contractTerms={project.contract_terms}
+          paymentTerms={project.payment_terms}
+          projectScope={project.project_scope}
+          revisionPolicy={project.revision_policy}
         />
       )}
 

@@ -12,6 +12,10 @@ interface ContractStatusCardProps {
   onResendContract: () => void;
   onEditContract: () => void;
   isResending?: boolean;
+  contractTerms?: string;
+  paymentTerms?: string;
+  projectScope?: string;
+  revisionPolicy?: string;
 }
 
 const ContractStatusCard: React.FC<ContractStatusCardProps> = ({
@@ -22,6 +26,10 @@ const ContractStatusCard: React.FC<ContractStatusCardProps> = ({
   onResendContract,
   onEditContract,
   isResending = false,
+  contractTerms,
+  paymentTerms,
+  projectScope,
+  revisionPolicy,
 }) => {
   const getStatusConfig = () => {
     switch (contractStatus) {
@@ -132,6 +140,41 @@ const ContractStatusCard: React.FC<ContractStatusCardProps> = ({
               The client will receive an email with the contract details and approval options. 
               Once approved, work can begin on the project.
             </p>
+          </div>
+        )}
+
+        {/* Contract Terms Details */}
+        {(contractTerms || paymentTerms || projectScope || revisionPolicy) && (
+          <div className="space-y-4">
+            <h4 className="font-semibold text-gray-900 border-t pt-4">Contract Details</h4>
+            
+            {contractTerms && (
+              <div className="bg-gray-50 rounded-lg p-4">
+                <h5 className="font-medium text-gray-900 mb-2">Terms & Conditions</h5>
+                <div className="text-sm text-gray-700 whitespace-pre-wrap">{contractTerms}</div>
+              </div>
+            )}
+            
+            {paymentTerms && (
+              <div className="bg-gray-50 rounded-lg p-4">
+                <h5 className="font-medium text-gray-900 mb-2">Payment Terms</h5>
+                <div className="text-sm text-gray-700 whitespace-pre-wrap">{paymentTerms}</div>
+              </div>
+            )}
+            
+            {projectScope && (
+              <div className="bg-gray-50 rounded-lg p-4">
+                <h5 className="font-medium text-gray-900 mb-2">Project Scope</h5>
+                <div className="text-sm text-gray-700 whitespace-pre-wrap">{projectScope}</div>
+              </div>
+            )}
+            
+            {revisionPolicy && (
+              <div className="bg-gray-50 rounded-lg p-4">
+                <h5 className="font-medium text-gray-900 mb-2">Revision Policy</h5>
+                <div className="text-sm text-gray-700 whitespace-pre-wrap">{revisionPolicy}</div>
+              </div>
+            )}
           </div>
         )}
       </CardContent>
