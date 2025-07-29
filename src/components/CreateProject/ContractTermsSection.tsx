@@ -1,17 +1,24 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { UseFormReturn } from 'react-hook-form';
 import { CreateProjectFormData } from '@/lib/validators/project';
 import { FormField, FormItem, FormLabel, FormControl, FormMessage } from '@/components/ui/form';
 import { Textarea } from '@/components/ui/textarea';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { FileText, DollarSign, Target, RotateCcw } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { FileText, DollarSign, Target, RotateCcw, FileCheck, Edit3 } from 'lucide-react';
 
 interface ContractTermsSectionProps {
   form: UseFormReturn<CreateProjectFormData>;
 }
 
 export const ContractTermsSection: React.FC<ContractTermsSectionProps> = ({ form }) => {
+  const [useDefaults, setUseDefaults] = useState({
+    contractTerms: true,
+    paymentTerms: true,
+    projectScope: true,
+    revisionPolicy: true,
+  });
   const defaultContractTerms = `Terms and Conditions:
 
 1. SCOPE OF WORK
@@ -58,6 +65,72 @@ Not Included:
 - Major scope changes require separate agreement
 - Revisions must be specific and actionable`;
 
+  const handleToggleDefault = (field: keyof typeof useDefaults, defaultText: string) => {
+    const newState = !useDefaults[field];
+    setUseDefaults(prev => ({ ...prev, [field]: newState }));
+    
+    if (newState) {
+      // Use default text
+      form.setValue(field, defaultText);
+    } else {
+      // Clear for custom input
+      form.setValue(field, '');
+    }
+  };
+
+  const renderContractField = (
+    fieldName: keyof typeof useDefaults,
+    label: string,
+    placeholder: string,
+    defaultText: string
+  ) => (
+    <FormField
+      control={form.control}
+      name={fieldName}
+      render={({ field }) => (
+        <FormItem>
+          <div className="flex items-center justify-between mb-2">
+            <FormLabel>{label}</FormLabel>
+            <Button
+              type="button"
+              variant={useDefaults[fieldName] ? "default" : "outline"}
+              size="sm"
+              onClick={() => handleToggleDefault(fieldName, defaultText)}
+              className="flex items-center gap-2"
+            >
+              {useDefaults[fieldName] ? (
+                <>
+                  <FileCheck className="h-4 w-4" />
+                  Using Template
+                </>
+              ) : (
+                <>
+                  <Edit3 className="h-4 w-4" />
+                  Custom Terms
+                </>
+              )}
+            </Button>
+          </div>
+          <FormControl>
+            <Textarea
+              placeholder={useDefaults[fieldName] ? "Using default template text..." : placeholder}
+              className="min-h-[200px] resize-y"
+              {...field}
+              disabled={useDefaults[fieldName]}
+              value={useDefaults[fieldName] ? defaultText : field.value}
+              onChange={(e) => {
+                if (!useDefaults[fieldName]) {
+                  field.onChange(e.target.value);
+                }
+              }}
+            />
+          </FormControl>
+          <FormMessage />
+        </FormItem>
+      )}
+    />
+  );
+
   return (
     <Card>
       <CardHeader>
@@ -91,91 +164,39 @@ Not Included:
           </TabsList>
 
           <TabsContent value="contract" className="space-y-4 mt-4">
-            <FormField
-              control={form.control}
-              name="contractTerms"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>General Contract Terms</FormLabel>
-                  <FormControl>
-                    <Textarea
-                      placeholder="Enter contract terms and conditions..."
-                      className="min-h-[200px] resize-y"
-                      {...field}
-                      value={field.value || defaultContractTerms}
-                      onChange={(e) => field.onChange(e.target.value)}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+            {renderContractField(
+              'contractTerms',
+              'General Contract Terms',
+              'Enter contract terms and conditions...',
+              defaultContractTerms
+            )}
           </TabsContent>
 
           <TabsContent value="payment" className="space-y-4 mt-4">
-            <FormField
-              control={form.control}
-              name="paymentTerms"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Payment Terms and Schedule</FormLabel>
-                  <FormControl>
-                    <Textarea
-                      placeholder="Enter payment terms..."
-                      className="min-h-[200px] resize-y"
-                      {...field}
-                      value={field.value || defaultPaymentTerms}
-                      onChange={(e) => field.onChange(e.target.value)}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+            {renderContractField(
+              'paymentTerms',
+              'Payment Terms and Schedule',
+              'Enter payment terms...',
+              defaultPaymentTerms
+            )}
           </TabsContent>
 
           <TabsContent value="scope" className="space-y-4 mt-4">
-            <FormField
-              control={form.control}
-              name="projectScope"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Project Scope and Deliverables</FormLabel>
-                  <FormControl>
-                    <Textarea
-                      placeholder="Define project scope..."
-                      className="min-h-[200px] resize-y"
-                      {...field}
-                      value={field.value || defaultProjectScope}
-                      onChange={(e) => field.onChange(e.target.value)}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+            {renderContractField(
+              'projectScope',
+              'Project Scope and Deliverables',
+              'Define project scope...',
+              defaultProjectScope
+            )}
           </TabsContent>
 
           <TabsContent value="revisions" className="space-y-4 mt-4">
-            <FormField
-              control={form.control}
-              name="revisionPolicy"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Revision Policy</FormLabel>
-                  <FormControl>
-                    <Textarea
-                      placeholder="Enter revision policy..."
-                      className="min-h-[200px] resize-y"
-                      {...field}
-                      value={field.value || defaultRevisionPolicy}
-                      onChange={(e) => field.onChange(e.target.value)}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+            {renderContractField(
+              'revisionPolicy',
+              'Revision Policy',
+              'Enter revision policy...',
+              defaultRevisionPolicy
+            )}
           </TabsContent>
         </Tabs>
       </CardContent>
