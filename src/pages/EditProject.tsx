@@ -47,7 +47,7 @@ const EditProject: React.FC = () => {
     
     setIsResendingContract(true);
     try {
-      const { error } = await supabase.functions.invoke('send-contract-approval', {
+      const { error } = await supabase.functions.invoke('resend-contract', {
         body: { projectId: project.id }
       });
 
