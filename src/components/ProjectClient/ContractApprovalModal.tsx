@@ -14,13 +14,15 @@ interface ContractApprovalModalProps {
   onClose: () => void;
   project: DatabaseProject;
   onApprovalComplete: () => void;
+  onRejectionComplete: () => void;
 }
 
 const ContractApprovalModal: React.FC<ContractApprovalModalProps> = ({
   isOpen,
   onClose,
   project,
-  onApprovalComplete
+  onApprovalComplete,
+  onRejectionComplete
 }) => {
   const [submitting, setSubmitting] = useState(false);
   const [rejectionReason, setRejectionReason] = useState('');
@@ -52,12 +54,12 @@ const ContractApprovalModal: React.FC<ContractApprovalModalProps> = ({
 
       if (action === 'approve') {
         toast.success('Contract approved successfully! You now have access to the project.');
+        onApprovalComplete();
+        onClose();
       } else {
         toast.success('Feedback sent to freelancer successfully');
+        onRejectionComplete();
       }
-
-      onApprovalComplete();
-      onClose();
       
     } catch (error: any) {
       console.error('Error processing contract:', error);

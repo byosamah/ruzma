@@ -19,6 +19,7 @@ import { CurrencyCode } from "@/lib/currency";
 const ClientProject = () => {
   const { token } = useParams<{ token: string }>();
   const isMobile = useIsMobile();
+  const [contractRejected, setContractRejected] = React.useState(false);
   
   console.log('ClientProject: token from params:', token);
   console.log('ClientProject: current pathname:', window.location.pathname);
@@ -68,18 +69,39 @@ const ClientProject = () => {
     <div className="min-h-screen bg-white">
       <BrandedClientHeader branding={branding} />
       
+      {/* Show waiting message if contract was rejected */}
+      {contractRejected && (
+        <div className="min-h-[80vh] flex items-center justify-center">
+          <div className="max-w-md mx-auto text-center p-8">
+            <div className="w-16 h-16 mx-auto mb-4 bg-orange-100 rounded-full flex items-center justify-center">
+              <svg className="w-8 h-8 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+            </div>
+            <h2 className="text-2xl font-bold text-gray-900 mb-2">Feedback Sent Successfully</h2>
+            <p className="text-gray-600 mb-4">
+              Your feedback has been sent to the freelancer. Please wait while they review and update the contract based on your comments.
+            </p>
+            <p className="text-sm text-gray-500">
+              You will receive a new email once the updated contract is ready for your review.
+            </p>
+          </div>
+        </div>
+      )}
+      
       {/* Contract Approval Modal */}
-      {needsContractApproval && project && (
+      {needsContractApproval && project && !contractRejected && (
         <ContractApprovalModal
           isOpen={needsContractApproval}
           onClose={() => {}} // Cannot close until approved/rejected
           project={project}
           onApprovalComplete={refetchProject}
+          onRejectionComplete={() => setContractRejected(true)}
         />
       )}
       
       {/* Main Content - Only show if contract is approved or doesn't require approval */}
-      {!needsContractApproval && (
+      {!needsContractApproval && !contractRejected && (
         <main className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-6">
           <ProjectOverviewCard
             projectName={project.name}
