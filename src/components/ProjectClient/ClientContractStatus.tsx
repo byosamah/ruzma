@@ -1,7 +1,8 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { CheckCircle, FileText, Clock } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { CheckCircle, FileText, Clock, ChevronDown, ChevronUp } from 'lucide-react';
 
 interface ClientContractStatusProps {
   contractStatus: 'pending' | 'approved' | 'rejected';
@@ -22,6 +23,17 @@ const ClientContractStatus: React.FC<ClientContractStatusProps> = ({
   projectScope,
   revisionPolicy
 }) => {
+  const [isExpanded, setIsExpanded] = useState(contractStatus !== 'approved');
+
+  // Auto-collapse when contract is approved
+  useEffect(() => {
+    if (contractStatus === 'approved') {
+      setIsExpanded(false);
+    }
+  }, [contractStatus]);
+
+  const hasContractDetails = contractTerms || paymentTerms || projectScope || revisionPolicy;
+
   const getStatusConfig = () => {
     switch (contractStatus) {
       case 'pending':
@@ -65,6 +77,17 @@ const ClientContractStatus: React.FC<ClientContractStatusProps> = ({
             {statusConfig.icon}
             {statusConfig.badge}
           </div>
+          {hasContractDetails && (
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => setIsExpanded(!isExpanded)}
+              className="gap-2"
+            >
+              {isExpanded ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
+              {isExpanded ? 'Hide Details' : 'Show Details'}
+            </Button>
+          )}
         </div>
         <CardTitle className="flex items-center gap-2">
           <FileText className="w-5 h-5" />
@@ -87,7 +110,7 @@ const ClientContractStatus: React.FC<ClientContractStatusProps> = ({
         )}
 
         {/* Contract Terms Sections */}
-        {(contractTerms || paymentTerms || projectScope || revisionPolicy) && (
+        {isExpanded && (contractTerms || paymentTerms || projectScope || revisionPolicy) && (
           <div className="space-y-4">
             <h4 className="font-semibold text-gray-900">Contract Details</h4>
             

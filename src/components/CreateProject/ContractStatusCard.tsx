@@ -1,8 +1,8 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Clock, CheckCircle, XCircle, Mail, RotateCcw, Edit } from 'lucide-react';
+import { Clock, CheckCircle, XCircle, Mail, RotateCcw, Edit, ChevronDown, ChevronUp } from 'lucide-react';
 
 interface ContractStatusCardProps {
   contractStatus: 'pending' | 'approved' | 'rejected';
@@ -31,6 +31,17 @@ const ContractStatusCard: React.FC<ContractStatusCardProps> = ({
   projectScope,
   revisionPolicy,
 }) => {
+  const [isExpanded, setIsExpanded] = useState(contractStatus !== 'approved');
+
+  // Auto-collapse when contract is approved
+  useEffect(() => {
+    if (contractStatus === 'approved') {
+      setIsExpanded(false);
+    }
+  }, [contractStatus]);
+
+  const hasContractDetails = contractTerms || paymentTerms || projectScope || revisionPolicy;
+
   const getStatusConfig = () => {
     switch (contractStatus) {
       case 'pending':
@@ -78,37 +89,50 @@ const ContractStatusCard: React.FC<ContractStatusCardProps> = ({
             {statusConfig.icon}
             {statusConfig.badge}
           </div>
-          {statusConfig.showResend && (
-            <div className="flex gap-2">
-              {contractStatus === 'rejected' ? (
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={onEditContract}
-                  disabled={isResending}
-                  className="gap-2"
-                >
-                  <Edit className="w-4 h-4" />
-                  Update & Resend
-                </Button>
-              ) : (
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={onResendContract}
-                  disabled={isResending}
-                  className="gap-2"
-                >
-                  {isResending ? (
-                    <RotateCcw className="w-4 h-4 animate-spin" />
-                  ) : (
-                    <Mail className="w-4 h-4" />
-                  )}
-                  Resend Contract
-                </Button>
-              )}
-            </div>
-          )}
+          <div className="flex items-center gap-2">
+            {hasContractDetails && (
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => setIsExpanded(!isExpanded)}
+                className="gap-2"
+              >
+                {isExpanded ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
+                {isExpanded ? 'Hide Details' : 'Show Details'}
+              </Button>
+            )}
+            {statusConfig.showResend && (
+              <div className="flex gap-2">
+                {contractStatus === 'rejected' ? (
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={onEditContract}
+                    disabled={isResending}
+                    className="gap-2"
+                  >
+                    <Edit className="w-4 h-4" />
+                    Update & Resend
+                  </Button>
+                ) : (
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={onResendContract}
+                    disabled={isResending}
+                    className="gap-2"
+                  >
+                    {isResending ? (
+                      <RotateCcw className="w-4 h-4 animate-spin" />
+                    ) : (
+                      <Mail className="w-4 h-4" />
+                    )}
+                    Resend Contract
+                  </Button>
+                )}
+              </div>
+            )}
+          </div>
         </div>
         <CardTitle>{statusConfig.title}</CardTitle>
         <CardDescription>{statusConfig.description}</CardDescription>
@@ -144,7 +168,7 @@ const ContractStatusCard: React.FC<ContractStatusCardProps> = ({
         )}
 
         {/* Contract Terms Details */}
-        {(contractTerms || paymentTerms || projectScope || revisionPolicy) && (
+        {isExpanded && (contractTerms || paymentTerms || projectScope || revisionPolicy) && (
           <div className="space-y-4">
             <h4 className="font-semibold text-gray-900 border-t pt-4">Contract Details</h4>
             
