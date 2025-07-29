@@ -19,8 +19,10 @@ const Switch = React.forwardRef<HTMLButtonElement, SwitchProps>(
         disabled={disabled}
         className={cn(
           "relative inline-flex h-5 w-10 items-center rounded-full bg-black transition-colors duration-200 focus:outline-none disabled:cursor-not-allowed disabled:opacity-50",
+          "transform-none min-h-0", // Override global button styles
           className
         )}
+        style={{ transform: 'none', minHeight: 'unset' }}
         ref={ref}
         {...props}
       >
