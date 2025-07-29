@@ -69,8 +69,8 @@ const handler = async (req: Request): Promise<Response> => {
     // Calculate total project value
     const totalValue = project.milestones.reduce((sum: number, milestone: any) => sum + Number(milestone.price), 0);
 
-    // Create approval URL (use environment variable or fallback to current preview domain)
-    const baseUrl = Deno.env.get('PRODUCTION_URL') || 'https://f60a1915-b5a8-429d-bf2a-ffca2468a2f7.lovableproject.com';
+    // Create approval URL using the custom domain
+    const baseUrl = 'https://ruzma.co';
     const approvalUrl = `${baseUrl}/contract/approve/${project.contract_approval_token}`;
 
     // Format contract terms for email
