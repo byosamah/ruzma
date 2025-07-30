@@ -54,6 +54,7 @@ const InvoiceHeader: React.FC<InvoiceHeaderProps> = ({ invoiceData, updateField 
               placeholder={t('addInvoiceId')}
               value={invoiceData.invoiceId}
               onChange={(e) => updateField('invoiceId', e.target.value)}
+              className="border-gray-300 border"
             />
           </div>
           <div className="flex flex-col items-end">
@@ -147,6 +148,7 @@ const InvoiceHeader: React.FC<InvoiceHeaderProps> = ({ invoiceData, updateField 
             placeholder={t('addPurchaseOrderNumber')}
             value={invoiceData.purchaseOrder}
             onChange={(e) => updateField('purchaseOrder', e.target.value)}
+            className="border-gray-300 border"
           />
         </div>
 
@@ -156,6 +158,7 @@ const InvoiceHeader: React.FC<InvoiceHeaderProps> = ({ invoiceData, updateField 
             placeholder={t('addPaymentTerms')}
             value={invoiceData.paymentTerms}
             onChange={(e) => updateField('paymentTerms', e.target.value)}
+            className="border-gray-300 border"
           />
         </div>
       </CardContent>

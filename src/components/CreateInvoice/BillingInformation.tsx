@@ -96,6 +96,7 @@ const BillingInformation: React.FC<BillingInformationProps> = ({
                 placeholder={t('yourName')} 
                 value={invoiceData.payTo.name} 
                 onChange={(e) => updateAddressField('payTo', 'name', e.target.value)} 
+                className="border-gray-300 border"
               />
             </div>
             <div>

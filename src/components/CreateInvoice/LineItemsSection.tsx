@@ -74,6 +74,7 @@ const LineItemsSection: React.FC<LineItemsSectionProps> = ({
                   placeholder={t('description')}
                   value={item.description}
                   onChange={(e) => updateLineItem(item.id, 'description', e.target.value)}
+                  className="border-gray-300 border"
                 />
               </div>
               <div className="col-span-2">
@@ -83,6 +84,7 @@ const LineItemsSection: React.FC<LineItemsSectionProps> = ({
                   onChange={(e) => updateLineItem(item.id, 'quantity', parseFloat(e.target.value) || 0)}
                   min="0"
                   step="0.01"
+                  className="border-gray-300 border"
                 />
               </div>
               <div className="col-span-3">
@@ -93,6 +95,7 @@ const LineItemsSection: React.FC<LineItemsSectionProps> = ({
                   min="0"
                   step="0.01"
                   placeholder={`0.00 ${currencySymbol}`}
+                  className="border-gray-300 border"
                 />
               </div>
               <div className="col-span-1">
