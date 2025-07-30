@@ -24,7 +24,7 @@ const Analytics = () => {
     return (
       <Layout user={user} onSignOut={handleSignOut}>
         <div className="flex items-center justify-center min-h-[50vh] sm:min-h-[60vh]">
-          <div className="animate-spin rounded-full h-16 w-16 sm:h-32 sm:w-32 border-b-2 border-slate-900"></div>
+          <div className="animate-spin rounded-full h-16 w-16 sm:h-32 sm:w-32 border-b-2 border-primary"></div>
         </div>
       </Layout>
     );
