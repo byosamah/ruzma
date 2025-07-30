@@ -26,12 +26,12 @@ const BillingInformation: React.FC<BillingInformationProps> = ({
   const { clients, createClient } = useClients(user);
   const [showAddClientDialog, setShowAddClientDialog] = useState(false);
 
-  const handleClientSelect = (clientId: string) => {
-    if (clientId === 'add-new') {
+  const handleClientSelect = (clientEmail: string) => {
+    if (clientEmail === 'add-new') {
       setShowAddClientDialog(true);
       return;
     }
-    const selectedClient = clients.find(client => client.id === clientId);
+    const selectedClient = clients.find(client => client.email === clientEmail);
     if (selectedClient) {
       updateAddressField('billedTo', 'name', selectedClient.name);
     }
@@ -61,8 +61,11 @@ const BillingInformation: React.FC<BillingInformationProps> = ({
                 </SelectTrigger>
                 <SelectContent>
                   {clients.map(client => (
-                    <SelectItem key={client.id} value={client.id}>
-                      {client.name}
+                    <SelectItem key={client.id} value={client.email}>
+                      <div className="flex flex-col">
+                        <span className="font-medium">{client.name}</span>
+                        <span className="text-sm text-muted-foreground">{client.email}</span>
+                      </div>
                     </SelectItem>
                   ))}
                   <SelectItem value="add-new">
