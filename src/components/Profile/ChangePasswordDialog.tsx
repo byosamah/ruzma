@@ -78,6 +78,7 @@ export const ChangePasswordDialog = ({ open, onOpenChange }: ChangePasswordDialo
               type="password"
               value={newPassword}
               onChange={(e) => setNewPassword(e.target.value)}
+              className="border-gray-300 border"
               required
               minLength={6}
             />
@@ -89,6 +90,7 @@ export const ChangePasswordDialog = ({ open, onOpenChange }: ChangePasswordDialo
               type="password"
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
+              className="border-gray-300 border"
               required
               minLength={6}
             />

@@ -98,7 +98,7 @@ export const DeleteAccountDialog = ({ open, onOpenChange }: DeleteAccountDialogP
                 value={confirmText}
                 onChange={(e) => setConfirmText(e.target.value)}
                 placeholder="DELETE"
-                className="mt-2"
+                className="mt-2 border-gray-300 border"
               />
             </div>
           </AlertDialogDescription>

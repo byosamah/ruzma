@@ -44,7 +44,7 @@ export const PersonalInfoSection = ({
               placeholder={t('enterFullName')}
               value={displayName}
               onChange={onFormChange}
-              className="pl-10 border-gray-200 focus:border-gray-300 focus:ring-0"
+              className="pl-10 border-gray-300 border"
             />
           </div>
         </div>
@@ -60,7 +60,7 @@ export const PersonalInfoSection = ({
               placeholder={t('enterEmail')}
               value={formData.email}
               onChange={onFormChange}
-              className="pl-10 border-gray-200 focus:border-gray-300 focus:ring-0"
+              className="pl-10 border-gray-300 border"
             />
           </div>
         </div>
@@ -75,7 +75,7 @@ export const PersonalInfoSection = ({
             placeholder={t('companyName')}
             value={formData.company}
             onChange={onFormChange}
-            className="border-gray-200 focus:border-gray-300 focus:ring-0"
+            className="border-gray-300 border"
           />
         </div>
 
@@ -88,7 +88,7 @@ export const PersonalInfoSection = ({
             placeholder={t('websiteUrl')}
             value={formData.website}
             onChange={onFormChange}
-            className="border-gray-200 focus:border-gray-300 focus:ring-0"
+            className="border-gray-300 border"
           />
         </div>
       </div>
@@ -103,7 +103,7 @@ export const PersonalInfoSection = ({
             placeholder={t('professionalTitlePlaceholder')}
             value={formData.professionalTitle || ''}
             onChange={onFormChange}
-            className="pl-10 border-gray-200 focus:border-gray-300 focus:ring-0"
+            className="pl-10 border-gray-300 border"
           />
         </div>
       </div>
@@ -126,7 +126,7 @@ export const PersonalInfoSection = ({
           placeholder={t('selectCurrencyPlaceholder')}
           showSearch={true}
           showCountryFlags={true}
-          className="border-gray-200 focus:border-gray-300 focus:ring-0"
+          className="border-gray-300 border"
         />
       </div>
 
@@ -136,7 +136,7 @@ export const PersonalInfoSection = ({
           id="shortBio"
           name="shortBio"
           rows={2}
-          className="w-full px-3 py-2 border border-gray-200 rounded-md focus:outline-none focus:ring-1 focus:ring-gray-300 focus:border-gray-300 resize-none text-sm"
+          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none text-sm"
           placeholder={t('shortBioPlaceholder')}
           value={formData.shortBio || ''}
           onChange={onFormChange}

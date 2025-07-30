@@ -130,7 +130,7 @@ export const BrandingSection = ({
                 onChange={onFormChange}
                 name="primaryColor"
                 placeholder="#050c1e"
-                className="flex-1 border-gray-200 focus:border-gray-300 focus:ring-0"
+                className="flex-1 border-gray-300 border"
               />
             </div>
           </div>
