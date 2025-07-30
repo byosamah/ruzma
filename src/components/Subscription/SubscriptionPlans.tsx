@@ -86,7 +86,7 @@ export const SubscriptionPlans: React.FC = () => {
     return (
       <div className="flex items-center justify-center py-12">
         <div className="text-center space-y-3">
-          <div className="w-6 h-6 border-2 border-gray-300 border-t-gray-600 rounded-full animate-spin mx-auto"></div>
+          <div className="w-6 h-6 border-2 border-muted border-t-primary rounded-full animate-spin mx-auto"></div>
           <p className="text-sm text-gray-500">{t('loading')}...</p>
         </div>
       </div>
