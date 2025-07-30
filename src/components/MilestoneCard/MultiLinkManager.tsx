@@ -6,7 +6,7 @@ import { Label } from '@/components/ui/label';
 import { Link, ExternalLink, X, Plus } from 'lucide-react';
 import { useT } from '@/lib/i18n';
 import { toast } from 'sonner';
-import { DeliverableLink, parseDeliverableLinks, stringifyDeliverableLinks, validateDeliverableLink } from '@/lib/linkUtils';
+import { DeliverableLink, parseDeliverableLinks, stringifyDeliverableLinks, validateDeliverableLink, normalizeDeliverableLink } from '@/lib/linkUtils';
 
 interface MultiLinkManagerProps {
   milestone: {
@@ -46,26 +46,29 @@ const MultiLinkManager: React.FC<MultiLinkManagerProps> = ({
   };
 
   const saveLinks = async () => {
-    // Validate all URLs
-    const validLinks = links.filter(link => {
-      if (!link.url.trim()) return false;
+    // Validate and normalize all URLs
+    const processedLinks = [];
+    for (const link of links) {
+      if (!link.url.trim()) continue;
+      
       if (!validateDeliverableLink(link.url)) {
         toast.error(`Invalid URL: ${link.url}`);
-        return false;
+        return;
       }
-      return true;
-    });
-
-    if (validLinks.length !== links.filter(link => link.url.trim()).length) {
-      return; // Don't save if there are invalid URLs
+      
+      // Normalize the URL (add https:// if missing)
+      processedLinks.push({
+        ...link,
+        url: normalizeDeliverableLink(link.url)
+      });
     }
 
     setIsUpdating(true);
     try {
       if (onDeliverableLinkUpdate) {
-        const linkString = stringifyDeliverableLinks(validLinks);
+        const linkString = stringifyDeliverableLinks(processedLinks);
         await onDeliverableLinkUpdate(milestone.id, linkString);
-        setLinks(validLinks);
+        setLinks(processedLinks);
         toast.success('Links updated successfully');
       }
     } catch (error) {
@@ -136,7 +139,7 @@ const MultiLinkManager: React.FC<MultiLinkManagerProps> = ({
             
             <div className="flex space-x-2">
               <Input
-                placeholder="https://example.com"
+                placeholder="example.com or https://example.com"
                 value={link.url}
                 onChange={(e) => updateLink(index, 'url', e.target.value)}
                 className="text-sm flex-1"

@@ -49,9 +49,21 @@ export function stringifyDeliverableLinks(links: DeliverableLink[]): string {
 
 export function validateDeliverableLink(url: string): boolean {
   try {
-    new URL(url);
+    // If URL doesn't start with protocol, prepend https://
+    const urlToValidate = url.startsWith('http://') || url.startsWith('https://') 
+      ? url 
+      : `https://${url}`;
+    new URL(urlToValidate);
     return true;
   } catch {
     return false;
   }
+}
+
+export function normalizeDeliverableLink(url: string): string {
+  // Add https:// if no protocol is present
+  if (!url.startsWith('http://') && !url.startsWith('https://')) {
+    return `https://${url}`;
+  }
+  return url;
 }
