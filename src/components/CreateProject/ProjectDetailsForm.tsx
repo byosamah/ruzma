@@ -30,7 +30,7 @@ const ProjectDetailsForm = ({ user }: { user?: any }) => {
               <FormControl>
                 <Input 
                   placeholder={t('projectNamePlaceholder')} 
-                  className="border-gray-200 focus:border-gray-400 focus:ring-0 text-sm"
+                  className="border-gray-300 border"
                   {...field} 
                 />
               </FormControl>
@@ -51,7 +51,7 @@ const ProjectDetailsForm = ({ user }: { user?: any }) => {
                 <Textarea 
                   placeholder={t('projectBriefPlaceholder')} 
                   rows={3} 
-                  className="border-gray-200 focus:border-gray-400 focus:ring-0 text-sm resize-none"
+                  className="border-gray-300 border"
                   {...field} 
                 />
               </FormControl>
