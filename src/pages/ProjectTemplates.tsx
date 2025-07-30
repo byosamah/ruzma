@@ -80,7 +80,7 @@ const ProjectTemplates = () => {
         <div className="flex items-center justify-center min-h-[400px]">
           <div className="text-center">
             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
-            <p className="text-slate-600">{t('loading')}</p>
+            <p className="text-muted-foreground">{t('loading')}</p>
           </div>
         </div>
       </Layout>;
@@ -92,22 +92,22 @@ const ProjectTemplates = () => {
           <div className="flex items-center space-x-4">
             
             <div>
-              <h1 className="text-3xl font-bold text-slate-800">{t('projectTemplatesTitle')}</h1>
-              <p className="text-slate-600 mt-2">{t('projectTemplatesSubtitle')}</p>
+              <h1 className="text-3xl font-bold text-foreground">{t('projectTemplatesTitle')}</h1>
+              <p className="text-muted-foreground mt-2">{t('projectTemplatesSubtitle')}</p>
             </div>
           </div>
         </div>
 
         {templates.length === 0 ? <Card className="text-center py-12 bg-white/80 backdrop-blur-sm">
             <CardContent>
-              <FileText className="w-16 h-16 text-slate-400 mx-auto mb-4" />
-              <h3 className="text-xl font-semibold text-slate-700 mb-2">
+              <FileText className="w-16 h-16 text-muted-foreground mx-auto mb-4" />
+              <h3 className="text-xl font-semibold text-foreground mb-2">
                 {t('noTemplatesYet')}
               </h3>
-              <p className="text-slate-600 mb-6">
+              <p className="text-muted-foreground mb-6">
                 {t('noTemplatesDesc')}
               </p>
-              <p className="text-sm text-slate-500 mb-4">
+              <p className="text-sm text-muted-foreground mb-4">
                 {t('noTemplatesHint')}
               </p>
             </CardContent>
@@ -116,10 +116,10 @@ const ProjectTemplates = () => {
                 <CardHeader>
                   <div className="flex justify-between items-start">
                     <div className="flex-1">
-                      <CardTitle className="text-lg font-semibold text-slate-800">
+                      <CardTitle className="text-lg font-semibold text-foreground">
                         {template.name}
                       </CardTitle>
-                      <p className="text-sm text-slate-600 mt-1 line-clamp-2">
+                      <p className="text-sm text-muted-foreground mt-1 line-clamp-2">
                         {template.brief}
                       </p>
                     </div>
@@ -132,12 +132,12 @@ const ProjectTemplates = () => {
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-3">
-                    <div className="text-sm text-slate-600">
+                    <div className="text-sm text-muted-foreground">
                       {t('milestoneCount', {
                   count: String(template.milestones.length)
                 })}
                     </div>
-                    <div className="text-sm text-slate-600">
+                    <div className="text-sm text-muted-foreground">
                       {t('total')}: {formatCurrency(template.milestones.reduce((sum: number, m: any) => sum + m.price, 0))}
                     </div>
                     <Button onClick={() => handleCreateFromTemplate(template)} className="w-full">
