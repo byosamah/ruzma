@@ -1,8 +1,8 @@
 
-// Project domain hooks
+// Project domain hooks - unified with core
+export { useUserProfile } from '../../core/useUserProfile';
 export { useProjectCRUD } from '../../projects/useProjectCRUD';
 export { useUserProjects } from '../../projects/useUserProjects';
-export { useUserProfile } from '../../projects/useUserProfile';
 export { useProjects } from '../../useProjects';
 export { useProjectManagement } from '../../useProjectManagement';
 export { useCreateProjectForm } from '../../useCreateProjectForm';

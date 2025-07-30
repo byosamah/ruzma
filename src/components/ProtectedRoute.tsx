@@ -1,7 +1,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { Navigate } from 'react-router-dom';
-import { useAuth } from '@/hooks/dashboard/useAuth';
+import { useAuth } from '@/hooks/core/useAuth';
 import { useLanguageNavigation } from '@/hooks/useLanguageNavigation';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { supabase } from '@/integrations/supabase/client';

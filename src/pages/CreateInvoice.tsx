@@ -2,8 +2,8 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import Layout from '@/components/Layout';
-import { useAuth } from '@/hooks/dashboard/useAuth';
-import { useUserProfile } from '@/hooks/dashboard/useUserProfile';
+import { useAuth } from '@/hooks/core/useAuth';
+import { useUserProfile } from '@/hooks/core/useUserProfile';
 import { useInvoiceContext } from '@/contexts/InvoiceContext';
 import InvoiceForm from '@/components/CreateInvoice/InvoiceForm';
 import InvoicePreview from '@/components/CreateInvoice/InvoicePreview';
@@ -56,7 +56,7 @@ const CreateInvoice: React.FC = () => {
         invoiceId: prev.invoiceId || generateInvoiceId(),
         payTo: {
           name: profile?.full_name || user?.user_metadata?.full_name || '',
-          address: profile?.business_address || ''
+          address: ''
         },
         currency: profile?.currency || 'USD'
       }));

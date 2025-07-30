@@ -1,7 +1,7 @@
 
 import React, { useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { useAuth } from '@/hooks/dashboard/useAuth';
+import { useAuth } from '@/hooks/core/useAuth';
 import SignUpContainer from '@/components/auth/SignUpContainer';
 import LanguageSelector from '@/components/LanguageSelector';
 

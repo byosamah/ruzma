@@ -5,7 +5,7 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Plus, Trash2 } from 'lucide-react';
 import { InvoiceFormData } from './types';
-import { useAuth } from '@/hooks/dashboard/useAuth';
+import { useAuth } from '@/hooks/core/useAuth';
 import { useProjects } from '@/hooks/useProjects';
 import { useT } from '@/lib/i18n';
 import { getCurrencySymbol } from '@/lib/currency';

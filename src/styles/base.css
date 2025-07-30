@@ -8,7 +8,7 @@
 /* CSS Variables and Base Styles */
 @layer base {
   :root {
-    /* Marc Lou inspired color system - high contrast */
+    /* High contrast color system */
     --background: 0 0% 100%;
     --foreground: 0 0% 0%;
 
@@ -118,7 +118,7 @@
     line-height: 1.5;
   }
 
-  /* Marc Lou typography system */
+  /* Typography system */
   h1, h2, h3, h4, h5, h6 {
     @apply font-bold;
     line-height: 1.2;
@@ -151,7 +151,7 @@
     scroll-behavior: smooth;
   }
 
-  /* Marc Lou touch targets - 48px minimum */
+  /* Touch targets - 48px minimum for accessibility */
   button, 
   input[type="button"], 
   input[type="submit"],

@@ -1,7 +1,7 @@
 
 import { useNavigate } from 'react-router-dom';
 import { User } from '@supabase/supabase-js';
-import { useAuth } from '@/hooks/dashboard/useAuth';
+import { useAuth } from '@/hooks/core/useAuth';
 import { useDashboardActions } from '@/hooks/dashboard/useDashboardActions';
 import { useProfileInfo } from './profile/useProfileInfo';
 import { useProfileActions } from './profile/useProfileActions';

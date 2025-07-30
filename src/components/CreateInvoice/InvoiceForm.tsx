@@ -9,7 +9,7 @@ import LineItemsSection from './LineItemsSection';
 import InvoiceActions from './InvoiceActions';
 import { useInvoiceCalculations } from './hooks/useInvoiceCalculations';
 import { useInvoiceValidation } from './hooks/useInvoiceValidation';
-import { useAuth } from '@/hooks/dashboard/useAuth';
+import { useAuth } from '@/hooks/core/useAuth';
 import { useProjects } from '@/hooks/useProjects';
 import { calculateProjectDates } from '@/lib/projectDateUtils';
 

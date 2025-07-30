@@ -9,7 +9,7 @@ import { CountrySelect } from '@/components/ui/country-select';
 import { useT } from '@/lib/i18n';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { ProfileFormData } from '@/hooks/profile/types';
-import { useAuth } from '@/hooks/dashboard/useAuth';
+import { useAuth } from '@/hooks/core/useAuth';
 
 interface PersonalInfoSectionProps {
   formData: ProfileFormData;

@@ -8,7 +8,7 @@ import { Upload, Palette } from 'lucide-react';
 import { ProfileFormData } from '@/hooks/profile/types';
 import { useT } from '@/lib/i18n';
 import { brandingService } from '@/services/brandingService';
-import { useAuth } from '@/hooks/dashboard/useAuth';
+import { useAuth } from '@/hooks/core/useAuth';
 import { toast } from 'sonner';
 
 interface BrandingSectionProps {

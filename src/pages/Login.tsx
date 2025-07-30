@@ -1,7 +1,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { useAuth } from '@/hooks/dashboard/useAuth';
+import { useAuth } from '@/hooks/core/useAuth';
 import LoginHeader from '@/components/auth/LoginHeader';
 import AuthToggle from '@/components/auth/AuthToggle';
 import LoginForm from '@/components/auth/LoginForm';

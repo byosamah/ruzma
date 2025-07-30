@@ -10,7 +10,7 @@ import { format } from 'date-fns';
 import { cn } from '@/lib/utils';
 import { InvoiceFormData } from './types';
 import { useBranding } from '@/hooks/useBranding';
-import { useAuth } from '@/hooks/dashboard/useAuth';
+import { useAuth } from '@/hooks/core/useAuth';
 import { useT } from '@/lib/i18n';
 
 interface InvoiceHeaderProps {

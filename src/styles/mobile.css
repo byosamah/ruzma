@@ -1,5 +1,5 @@
 
-/* Marc Lou mobile-first responsive styles */
+/* Mobile-first responsive styles */
 @layer components {
   /* Mobile responsive grid and flex utilities */
   .mobile-responsive-grid {
@@ -18,12 +18,12 @@
     @apply min-h-[48px] min-w-[48px] touch-manipulation;
   }
 
-  /* Marc Lou spacing system */
-  .marc-spacing-xs { @apply space-y-2; }
-  .marc-spacing-sm { @apply space-y-4; }
-  .marc-spacing-md { @apply space-y-6; }
-  .marc-spacing-lg { @apply space-y-8; }
-  .marc-spacing-xl { @apply space-y-12; }
+  /* Spacing system */
+  .spacing-xs { @apply space-y-2; }
+  .spacing-sm { @apply space-y-4; }
+  .spacing-md { @apply space-y-6; }
+  .spacing-lg { @apply space-y-8; }
+  .spacing-xl { @apply space-y-12; }
 }
 
 /* Mobile-specific media queries */
@@ -32,17 +32,17 @@
     @apply text-base leading-relaxed;
   }
   
-  /* Marc Lou mobile typography */
+  /* Mobile typography */
   p, span, div {
     @apply text-sm leading-relaxed;
   }
   
-  /* Better mobile spacing with Marc Lou system */
+  /* Better mobile spacing */
   .mobile-container {
     @apply px-6 py-4;
   }
   
-  /* Marc Lou mobile cards */
+  /* Mobile cards */
   .mobile-card {
     @apply rounded-md shadow-sm border border-border p-6 mb-6 transition-all duration-150;
   }
@@ -62,7 +62,7 @@
     @apply block;
   }
   
-  /* Marc Lou mobile card layouts */
+  /* Mobile card layouts */
   .project-card-mobile {
     @apply p-6 space-y-4;
   }

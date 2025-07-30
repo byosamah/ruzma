@@ -1,4 +1,5 @@
 // Centralized API services
+export * from './authService';
 export * from '../brandingService';
 export * from '../clientLinkService';
 export * from '../clientProjectService';

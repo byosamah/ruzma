@@ -3,14 +3,14 @@ import { User } from '@supabase/supabase-js';
 import { DatabaseProject, DatabaseMilestone } from './projectTypes';
 import { useProjectCRUD } from './projects/useProjectCRUD';
 import { useUserProjects } from './projects/useUserProjects';
-import { useUserProfile } from './projects/useUserProfile';
+import { useUserProfile } from './core/useUserProfile';
 import { updateMilestoneStatus as updateMilestoneStatusAction } from './milestone-actions/updateStatus';
 import { uploadPaymentProofAction } from './milestone-actions/uploadPaymentProof';
 import { updateDeliverableLinkAction } from './milestone-actions/updateDeliverableLink';
 
 export const useProjects = (user: User | null) => {
   const { projects, loading, fetchProjects } = useUserProjects(user);
-  const { userProfile, fetchUserProfile } = useUserProfile(user, projects.length);
+  const { profile: userProfile, fetchUserProfile } = useUserProfile(user, [projects.length]);
 
   // Import project CRUD actions directly
   const { createProject, updateProject, deleteProject } = useProjectCRUD(user);

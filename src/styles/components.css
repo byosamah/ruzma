@@ -1,44 +1,44 @@
 
-/* Marc Lou inspired component utilities */
+/* Component utilities */
 @layer components {
-  .marc-card {
+  .app-card {
     @apply bg-card border border-border rounded-md shadow-sm transition-all duration-150 hover:shadow-md hover:scale-[1.01];
   }
   
-  .marc-sidebar-item {
+  .sidebar-item {
     @apply flex items-center gap-3 px-4 py-3 text-sm text-sidebar-foreground hover:text-sidebar-primary hover:bg-sidebar-accent rounded-md transition-all duration-150 font-medium;
   }
   
-  .marc-sidebar-item.active {
+  .sidebar-item.active {
     @apply text-sidebar-primary bg-sidebar-accent font-semibold;
   }
   
-  .marc-button-primary {
+  .btn-primary {
     @apply bg-primary text-primary-foreground hover:bg-primary/90 px-6 py-3 rounded-md font-semibold transition-all duration-150 min-h-[48px] touch-manipulation active:scale-95 border-0;
   }
   
-  .marc-button-secondary {
+  .btn-secondary {
     @apply bg-background text-foreground hover:bg-secondary border-2 border-primary px-6 py-3 rounded-md font-semibold transition-all duration-150 min-h-[48px] touch-manipulation active:scale-95;
   }
   
-  .marc-accent {
+  .accent-text {
     @apply text-accent;
   }
   
-  .marc-accent-bg {
+  .accent-bg {
     @apply bg-accent text-accent-foreground;
   }
 
   /* Stats and metrics styling */
-  .marc-stat-card {
+  .stat-card {
     @apply bg-card border border-border rounded-md p-6 transition-all duration-150 hover:shadow-md;
   }
 
-  .marc-stat-number {
+  .stat-number {
     @apply text-3xl font-bold text-foreground leading-none;
   }
 
-  .marc-stat-label {
+  .stat-label {
     @apply text-sm font-medium text-muted-foreground;
   }
 
@@ -53,7 +53,7 @@
     @apply flex items-center gap-3 px-4 py-3 hover:bg-accent/50 transition-all duration-150 min-h-[48px] font-medium;
   }
 
-  /* Marc Lou interactive elements */
+  /* Interactive elements */
   .story-link {
     @apply relative inline-block after:content-[''] after:absolute after:w-full after:scale-x-0 after:h-0.5 after:bottom-0 after:left-0 after:bg-primary after:origin-bottom-right after:transition-transform after:duration-150 hover:after:scale-x-100 hover:after:origin-bottom-left;
   }
@@ -67,11 +67,11 @@
   }
 
   /* Micro-interactions */
-  .marc-press {
+  .press-effect {
     @apply active:scale-95 transition-transform duration-75;
   }
 
-  .marc-fade-in {
+  .fade-in {
     @apply animate-[fadeIn_300ms_ease-out];
   }
 }

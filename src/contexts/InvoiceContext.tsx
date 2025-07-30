@@ -3,7 +3,7 @@ import React, { createContext, useContext, useState, useEffect, ReactNode } from
 import { Invoice, InvoiceStatus } from '@/hooks/useInvoices';
 import { InvoiceFormData } from '@/components/CreateInvoice/types';
 import { invoiceService } from '@/services/invoiceService';
-import { useAuth } from '@/hooks/dashboard/useAuth';
+import { useAuth } from '@/hooks/core/useAuth';
 import { toast } from 'sonner';
 
 interface InvoiceContextType {

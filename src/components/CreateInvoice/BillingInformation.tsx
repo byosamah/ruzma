@@ -8,7 +8,7 @@ import { Button } from '@/components/ui/button';
 import { Plus } from 'lucide-react';
 import { InvoiceFormData } from './types';
 import { useClients } from '@/hooks/useClients';
-import { useAuth } from '@/hooks/dashboard/useAuth';
+import { useAuth } from '@/hooks/core/useAuth';
 import AddClientDialog from '@/components/Clients/AddClientDialog';
 import { useT } from '@/lib/i18n';
 

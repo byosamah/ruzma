@@ -1,5 +1,5 @@
 
-import { useAuth } from '@/hooks/dashboard/useAuth';
+import { useAuth } from '@/hooks/core/useAuth';
 import { useDashboardData } from '@/hooks/dashboard/useDashboardData';
 import { useDashboardHandlers } from '@/hooks/dashboard/useDashboardHandlers';
 import { useDashboardStats } from '@/hooks/dashboard/useDashboardStats';

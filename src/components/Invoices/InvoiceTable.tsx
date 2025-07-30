@@ -11,7 +11,7 @@ import {
 } from "@/components/ui/table";
 import { Invoice } from '@/hooks/invoices/types';
 import { useUserCurrency } from '@/hooks/useUserCurrency';
-import { useAuth } from '@/hooks/dashboard/useAuth';
+import { useAuth } from '@/hooks/core/useAuth';
 import { useT } from '@/lib/i18n';
 import { useLanguage } from '@/contexts/LanguageContext';
 import InvoiceStatusBadge from './InvoiceStatusBadge';

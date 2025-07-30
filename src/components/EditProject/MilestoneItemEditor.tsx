@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Trash2 } from 'lucide-react';
 import { MilestoneFormData } from './types';
 import { useT } from '@/lib/i18n';
-import { useAuth } from '@/hooks/dashboard/useAuth';
+import { useAuth } from '@/hooks/core/useAuth';
 import { useUserCurrency } from '@/hooks/useUserCurrency';
 
 interface MilestoneItemEditorProps {

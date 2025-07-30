@@ -2,7 +2,7 @@
 import React from 'react';
 import Layout from '@/components/Layout';
 import { SubscriptionPlans } from '@/components/Subscription/SubscriptionPlans';
-import { useAuth } from '@/hooks/dashboard/useAuth';
+import { useAuth } from '@/hooks/core/useAuth';
 import { useDashboardActions } from '@/hooks/dashboard/useDashboardActions';
 import { useT } from '@/lib/i18n';
 
