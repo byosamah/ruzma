@@ -37,10 +37,10 @@ const ClientsSection: React.FC<ClientsSectionProps> = ({
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
-        <h2 className="text-lg font-medium text-gray-900">{t('allClients')}</h2>
+        <h2 className="text-lg font-medium text-primary">{t('allClients')}</h2>
       </div>
       
-      <div className="bg-white rounded-lg border border-gray-200/60">
+      <div className="card-flat">
         <div className="p-4 border-b border-gray-100">
           <ClientFilters
             searchTerm={searchTerm}

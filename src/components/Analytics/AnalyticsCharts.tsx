@@ -46,9 +46,9 @@ const AnalyticsCharts: React.FC<AnalyticsChartsProps> = ({ data, userCurrency })
   return (
     <div className="space-y-6">
       {/* Revenue Trend Chart */}
-      <Card className="border-0 shadow-none bg-white">
+      <Card className="card-flat">
         <CardHeader className="pb-4">
-          <CardTitle className="text-lg font-medium text-gray-900">
+          <CardTitle className="text-lg font-medium text-primary">
             {t('revenueOverTime')}
           </CardTitle>
         </CardHeader>
@@ -92,9 +92,9 @@ const AnalyticsCharts: React.FC<AnalyticsChartsProps> = ({ data, userCurrency })
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Milestone Status Distribution */}
-        <Card className="border-0 shadow-none bg-white">
+        <Card className="card-flat">
           <CardHeader className="pb-4">
-            <CardTitle className="text-lg font-medium text-gray-900">
+            <CardTitle className="text-lg font-medium text-primary">
               {t('milestonesStatus')}
             </CardTitle>
           </CardHeader>
@@ -124,9 +124,9 @@ const AnalyticsCharts: React.FC<AnalyticsChartsProps> = ({ data, userCurrency })
         </Card>
 
         {/* Monthly Progress */}
-        <Card className="border-0 shadow-none bg-white">
+        <Card className="card-flat">
           <CardHeader className="pb-4">
-            <CardTitle className="text-lg font-medium text-gray-900">
+            <CardTitle className="text-lg font-medium text-primary">
               {t('projectsOverTime')}
             </CardTitle>
           </CardHeader>

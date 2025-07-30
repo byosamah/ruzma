@@ -1,8 +1,8 @@
 
-/* Component utilities */
+/* Component utilities using semantic tokens */
 @layer components {
   .app-card {
-    @apply bg-card border border-border rounded-md shadow-sm transition-all duration-150 hover:shadow-md hover:scale-[1.01];
+    @apply card-elevated transition-all duration-150 hover:shadow-md hover:scale-[1.01];
   }
   
   .sidebar-item {
@@ -14,11 +14,15 @@
   }
   
   .btn-primary {
-    @apply bg-primary text-primary-foreground hover:bg-primary/90 px-6 py-3 rounded-md font-semibold transition-all duration-150 min-h-[48px] touch-manipulation active:scale-95 border-0;
+    @apply surface-active px-6 py-3 rounded-md font-semibold transition-all duration-150 min-h-[48px] touch-manipulation interactive-press border-0;
   }
   
   .btn-secondary {
-    @apply bg-background text-foreground hover:bg-secondary border-2 border-primary px-6 py-3 rounded-md font-semibold transition-all duration-150 min-h-[48px] touch-manipulation active:scale-95;
+    @apply surface-primary hover:bg-secondary border-2 border-primary px-6 py-3 rounded-md font-semibold transition-all duration-150 min-h-[48px] touch-manipulation interactive-press;
+  }
+  
+  .btn-ghost {
+    @apply surface-hover px-4 py-2 rounded-md font-medium transition-all duration-150 min-h-[44px] touch-manipulation interactive-press border-0;
   }
   
   .accent-text {
@@ -29,28 +33,46 @@
     @apply bg-accent text-accent-foreground;
   }
 
-  /* Stats and metrics styling */
+  /* Stats and metrics styling using semantic tokens */
   .stat-card {
-    @apply bg-card border border-border rounded-md p-6 transition-all duration-150 hover:shadow-md;
+    @apply card-elevated p-6 transition-all duration-150 hover:shadow-md;
   }
 
   .stat-number {
-    @apply text-3xl font-bold text-foreground leading-none;
+    @apply text-3xl font-bold text-primary leading-none;
   }
 
   .stat-label {
-    @apply text-sm font-medium text-muted-foreground;
+    @apply text-sm font-medium text-secondary;
   }
 
-  /* Modern dropdown improvements */
+  /* Icon containers using design tokens */
+  .metric-icon {
+    @apply icon-container surface-muted;
+  }
+
+  .client-avatar {
+    @apply icon-container surface-secondary;
+  }
+
+  /* Modern dropdown improvements using semantic tokens */
   .mobile-dropdown-content {
-    @apply bg-popover border border-border shadow-lg rounded-md z-50;
+    @apply surface-primary shadow-lg rounded-md z-50;
     max-height: 80vh;
     overflow-y: auto;
   }
   
   .mobile-dropdown-item {
-    @apply flex items-center gap-3 px-4 py-3 hover:bg-accent/50 transition-all duration-150 min-h-[48px] font-medium;
+    @apply flex items-center gap-3 px-4 py-3 interactive-hover transition-all duration-150 min-h-[48px] font-medium;
+  }
+
+  /* Form field styling */
+  .form-field {
+    @apply surface-primary border border-border rounded-md px-3 py-2 min-h-[44px] transition-colors duration-150 focus:border-primary focus:ring-2 focus:ring-primary/20;
+  }
+
+  .form-label {
+    @apply text-sm font-medium text-primary mb-1.5 block;
   }
 
   /* Interactive elements */

@@ -1,6 +1,7 @@
 
 /* Import organized CSS modules */
 @import './styles/base.css';
+@import './styles/design-tokens.css';
 @import './styles/components.css';
 @import './styles/mobile.css';
 @import './styles/accessibility.css';

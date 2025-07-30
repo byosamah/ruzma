@@ -3,6 +3,7 @@ import React from 'react';
 import { Users, Mail, FolderOpen } from 'lucide-react';
 import { ClientWithProjectCount } from '@/types/client';
 import { useT } from '@/lib/i18n';
+import { StatCard } from '@/components/shared';
 
 interface ClientsStatsProps {
   clients: ClientWithProjectCount[];
@@ -17,41 +18,23 @@ const ClientsStats: React.FC<ClientsStatsProps> = ({ clients }) => {
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-      <div className="bg-gray-50/50 rounded-lg p-4 border border-gray-100/50">
-        <div className="flex items-center space-x-3">
-          <div className="w-8 h-8 bg-gray-100 rounded-md flex items-center justify-center">
-            <Users className="w-4 h-4 text-gray-600" />
-          </div>
-          <div>
-            <p className="text-xs text-gray-500 uppercase tracking-wide">{t('totalClients')}</p>
-            <p className="text-xl font-medium text-gray-900">{totalClients}</p>
-          </div>
-        </div>
-      </div>
+      <StatCard
+        icon={Users}
+        title={t('totalClients')}
+        value={totalClients}
+      />
 
-      <div className="bg-gray-50/50 rounded-lg p-4 border border-gray-100/50">
-        <div className="flex items-center space-x-3">
-          <div className="w-8 h-8 bg-gray-100 rounded-md flex items-center justify-center">
-            <FolderOpen className="w-4 h-4 text-gray-600" />
-          </div>
-          <div>
-            <p className="text-xs text-gray-500 uppercase tracking-wide">{t('totalProjects')}</p>
-            <p className="text-xl font-medium text-gray-900">{totalProjects}</p>
-          </div>
-        </div>
-      </div>
+      <StatCard
+        icon={FolderOpen}
+        title={t('totalProjects')}
+        value={totalProjects}
+      />
 
-      <div className="bg-gray-50/50 rounded-lg p-4 border border-gray-100/50">
-        <div className="flex items-center space-x-3">
-          <div className="w-8 h-8 bg-gray-100 rounded-md flex items-center justify-center">
-            <Mail className="w-4 h-4 text-gray-600" />
-          </div>
-          <div>
-            <p className="text-xs text-gray-500 uppercase tracking-wide">{t('avgProjectsPerClient')}</p>
-            <p className="text-xl font-medium text-gray-900">{averageProjectsPerClient}</p>
-          </div>
-        </div>
-      </div>
+      <StatCard
+        icon={Mail}
+        title={t('avgProjectsPerClient')}
+        value={averageProjectsPerClient}
+      />
     </div>
   );
 };

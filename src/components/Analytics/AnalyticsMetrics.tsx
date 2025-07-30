@@ -27,7 +27,7 @@ const AnalyticsMetrics: React.FC<AnalyticsMetricsProps> = ({
       subtitle: t('compareToLastPeriod'),
       icon: revenueGrowth >= 0 ? TrendingUp : TrendingDown,
       iconColor: revenueGrowth >= 0 ? 'text-green-600' : 'text-red-600',
-      bgColor: 'bg-gray-50',
+      variant: 'muted' as const,
     },
     {
       title: t('averageProjectValue'),
@@ -35,7 +35,7 @@ const AnalyticsMetrics: React.FC<AnalyticsMetricsProps> = ({
       subtitle: t('projects'),
       icon: Target,
       iconColor: 'text-blue-600',
-      bgColor: 'bg-gray-50',
+      variant: 'muted' as const,
     },
     {
       title: t('completionRate'),
@@ -43,31 +43,26 @@ const AnalyticsMetrics: React.FC<AnalyticsMetricsProps> = ({
       subtitle: t('completedMilestones'),
       icon: Calendar,
       iconColor: 'text-purple-600',
-      bgColor: 'bg-gray-50',
+      variant: 'muted' as const,
     },
   ];
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-      {metrics.map((metric, index) => {
-        const Icon = metric.icon;
-        return (
-          <Card key={index} className="border-0 shadow-none bg-gray-50">
-            <CardContent className="p-4">
-              <div className="flex items-center space-x-3">
-                <div className={`p-2 rounded-lg ${metric.bgColor}`}>
-                  <Icon className={`w-4 h-4 ${metric.iconColor}`} />
-                </div>
-                <div className="min-w-0 flex-1">
-                  <p className="text-xs text-gray-500 truncate">{metric.title}</p>
-                  <p className="text-lg font-medium text-gray-900 truncate">{metric.value}</p>
-                  <p className="text-xs text-gray-400 truncate">{metric.subtitle}</p>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-        );
-      })}
+      {metrics.map((metric, index) => (
+        <div key={index} className="stat-card">
+          <div className="flex items-center space-x-3">
+            <div className="metric-icon">
+              <metric.icon className={`w-4 h-4 ${metric.iconColor}`} />
+            </div>
+            <div className="min-w-0 flex-1">
+              <p className="stat-label truncate">{metric.title}</p>
+              <p className="stat-number text-lg truncate">{metric.value}</p>
+              <p className="text-xs text-secondary truncate">{metric.subtitle}</p>
+            </div>
+          </div>
+        </div>
+      ))}
     </div>
   );
 };

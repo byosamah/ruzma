@@ -1,0 +1,141 @@
+/* Design System Tokens - Semantic Colors */
+@layer utilities {
+  /* Surface backgrounds */
+  .surface-primary {
+    @apply bg-card text-card-foreground;
+  }
+  
+  .surface-secondary {
+    @apply bg-secondary text-secondary-foreground;
+  }
+  
+  .surface-muted {
+    @apply bg-muted text-muted-foreground;
+  }
+
+  /* Interactive surfaces */
+  .surface-hover {
+    @apply hover:bg-accent hover:text-accent-foreground transition-colors duration-150;
+  }
+
+  .surface-active {
+    @apply bg-primary text-primary-foreground;
+  }
+
+  /* Status surfaces */
+  .surface-success {
+    @apply bg-green-50 text-green-700 border border-green-200;
+  }
+
+  .surface-warning {
+    @apply bg-amber-50 text-amber-700 border border-amber-200;
+  }
+
+  .surface-error {
+    @apply bg-red-50 text-red-700 border border-red-200;
+  }
+
+  .surface-info {
+    @apply bg-blue-50 text-blue-700 border border-blue-200;
+  }
+
+  /* Text semantic classes */
+  .text-primary {
+    @apply text-foreground;
+  }
+
+  .text-secondary {
+    @apply text-muted-foreground;
+  }
+
+  .text-accent {
+    @apply text-accent-foreground;
+  }
+
+  /* Icon containers */
+  .icon-container {
+    @apply w-8 h-8 rounded-md flex items-center justify-center;
+  }
+
+  .icon-container-sm {
+    @apply w-6 h-6 rounded flex items-center justify-center;
+  }
+
+  .icon-container-lg {
+    @apply w-10 h-10 rounded-lg flex items-center justify-center;
+  }
+
+  /* Status indicators */
+  .status-success {
+    @apply text-green-600 bg-green-100;
+  }
+
+  .status-warning {
+    @apply text-amber-600 bg-amber-100;
+  }
+
+  .status-error {
+    @apply text-red-600 bg-red-100;
+  }
+
+  .status-info {
+    @apply text-blue-600 bg-blue-100;
+  }
+
+  /* Interactive states */
+  .interactive-hover {
+    @apply hover:bg-accent/50 transition-colors duration-150 cursor-pointer;
+  }
+
+  .interactive-press {
+    @apply active:scale-95 transition-transform duration-75;
+  }
+
+  /* Card patterns */
+  .card-elevated {
+    @apply bg-card border border-border rounded-lg shadow-sm;
+  }
+
+  .card-flat {
+    @apply bg-card border border-border rounded-lg;
+  }
+
+  .card-ghost {
+    @apply bg-transparent rounded-lg;
+  }
+}
+
+/* Dark mode adjustments */
+.dark {
+  .surface-success {
+    @apply bg-green-950 text-green-300 border-green-800;
+  }
+
+  .surface-warning {
+    @apply bg-amber-950 text-amber-300 border-amber-800;
+  }
+
+  .surface-error {
+    @apply bg-red-950 text-red-300 border-red-800;
+  }
+
+  .surface-info {
+    @apply bg-blue-950 text-blue-300 border-blue-800;
+  }
+
+  .status-success {
+    @apply text-green-400 bg-green-950;
+  }
+
+  .status-warning {
+    @apply text-amber-400 bg-amber-950;
+  }
+
+  .status-error {
+    @apply text-red-400 bg-red-950;
+  }
+
+  .status-info {
+    @apply text-blue-400 bg-blue-950;
+  }
+}

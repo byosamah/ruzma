@@ -3,11 +3,12 @@ import React from 'react';
 import { Button } from '@/components/ui/button';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
-import { Edit, Trash2, Eye, MoreHorizontal } from 'lucide-react';
+import { Edit, Trash2, Eye, MoreHorizontal, Users } from 'lucide-react';
 import { ClientWithProjectCount } from '@/types/client';
 import { useT } from '@/lib/i18n';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
+import { EmptyState } from '@/components/shared';
 
 interface ClientTableProps {
   clients: ClientWithProjectCount[];
@@ -29,11 +30,11 @@ const ClientTable: React.FC<ClientTableProps> = ({
   if (clients.length === 0) {
     return (
       <div className="text-center py-16">
-        <div className="w-16 h-16 bg-gray-50 rounded-lg flex items-center justify-center mx-auto mb-4">
-          <div className="w-6 h-6 bg-gray-300 rounded"></div>
-        </div>
-        <h3 className="text-base font-medium text-gray-900 mb-2">{t('noClientsFound')}</h3>
-        <p className="text-sm text-gray-500">{t('getStartedByAdding')}</p>
+        <EmptyState
+          icon={Users}
+          title={t('noClientsFound')}
+          description={t('getStartedByAdding')}
+        />
       </div>
     );
   }
@@ -62,8 +63,8 @@ const ClientTable: React.FC<ClientTableProps> = ({
             <TableRow key={client.id} className="border-gray-50 hover:bg-gray-50/50">
               <TableCell className={isRTL ? 'text-right' : 'text-left'}>
                 <div className="flex items-center gap-3">
-                  <div className="w-8 h-8 bg-gray-100 rounded-full flex items-center justify-center">
-                    <span className="text-xs font-medium text-gray-600">
+                  <div className="client-avatar">
+                    <span className="text-xs font-medium text-secondary">
                       {client.name.charAt(0).toUpperCase()}
                     </span>
                   </div>

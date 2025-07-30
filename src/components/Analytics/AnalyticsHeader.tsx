@@ -9,7 +9,7 @@ const AnalyticsHeader: React.FC = () => {
   return (
     <div className="space-y-1">
       <div className="flex items-center gap-3 flex-wrap">
-        <h1 className="text-2xl font-medium text-gray-900">{t('analytics')}</h1>
+        <h1 className="text-2xl font-medium text-primary">{t('analytics')}</h1>
         <YouTubePopup 
           videoId="a5pv1YmqaeE"
           buttonText={t('knowMore')}
@@ -17,7 +17,7 @@ const AnalyticsHeader: React.FC = () => {
           buttonSize="sm"
         />
       </div>
-      <p className="text-sm text-gray-500">{t('trackBusinessPerformance')}</p>
+      <p className="text-sm text-secondary">{t('trackBusinessPerformance')}</p>
     </div>
   );
 };
