@@ -45,36 +45,54 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({ invoiceData, setInvoiceData }
 
   // Single effect to handle all project auto-population
   useEffect(() => {
-    console.log('Invoice auto-population check:', {
-      projectIdFromUrl,
-      currentProjectId: invoiceData.projectId,
-      projectsCount: projects.length,
-      hasProjects: projects.length > 0
-    });
-
+    console.log('=== INVOICE AUTO-POPULATION DEBUG ===');
+    console.log('URL:', window.location.href);
+    console.log('URL Search:', window.location.search);
+    console.log('projectIdFromUrl:', projectIdFromUrl);
+    console.log('invoiceData.projectId:', invoiceData.projectId);
+    console.log('projects.length:', projects.length);
+    console.log('invoiceData.lineItems.length:', invoiceData.lineItems.length);
+    
     // Determine which project to populate from
     const targetProjectId = projectIdFromUrl || invoiceData.projectId;
+    console.log('targetProjectId:', targetProjectId);
     
-    if (!targetProjectId || projects.length === 0) {
+    if (!targetProjectId) {
+      console.log('❌ No target project ID found');
+      return;
+    }
+    
+    if (projects.length === 0) {
+      console.log('❌ No projects loaded yet, waiting...');
       return;
     }
 
-    // Only populate if we haven't already populated this project
-    if (invoiceData.projectId === targetProjectId && invoiceData.lineItems.length > 0) {
-      console.log('Project already populated, skipping');
+    // Only populate if we haven't already populated this project OR if coming from URL
+    if (invoiceData.projectId === targetProjectId && invoiceData.lineItems.length > 0 && !projectIdFromUrl) {
+      console.log('❌ Project already populated, skipping');
       return;
     }
 
     const selectedProject = projects.find(p => p.id === targetProjectId);
     if (!selectedProject) {
-      console.log('Project not found:', targetProjectId);
+      console.log('❌ Project not found:', targetProjectId);
+      console.log('Available projects:', projects.map(p => ({ id: p.id, name: p.name })));
       return;
     }
 
-    console.log('Populating invoice from project:', selectedProject.name);
+    console.log('✅ Found project:', selectedProject.name);
+    console.log('Project data:', {
+      id: selectedProject.id,
+      name: selectedProject.name,
+      client_email: selectedProject.client_email,
+      start_date: selectedProject.start_date,
+      end_date: selectedProject.end_date,
+      milestones: selectedProject.milestones?.length || 0
+    });
 
     // Calculate project dates from milestones
     const projectDates = calculateProjectDates(selectedProject.milestones || []);
+    console.log('Calculated project dates:', projectDates);
     
     // Enhanced client name extraction
     let clientName = '';
@@ -85,6 +103,7 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({ invoiceData, setInvoiceData }
         .replace(/\b\w/g, l => l.toUpperCase())
         .trim();
     }
+    console.log('Extracted client name:', clientName);
     
     // Create milestone line items
     const milestoneLineItems = selectedProject.milestones?.map((milestone) => ({
@@ -94,45 +113,57 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({ invoiceData, setInvoiceData }
       amount: Number(milestone.price) || 0
     })) || [];
     
-    console.log('Project milestones loaded:', milestoneLineItems);
+    console.log('✅ Creating milestone line items:', milestoneLineItems);
     
     // Calculate totals
     const subtotal = milestoneLineItems.reduce((sum, item) => sum + (item.quantity * item.amount), 0);
+    console.log('Calculated subtotal:', subtotal);
     
     // Enhanced date logic with fallbacks
     let invoiceDate = new Date();
-    let dueDate = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000); // 30 days default
+    let dueDate = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000);
     
-    // Try milestone dates first
     if (projectDates.start_date) {
       invoiceDate = new Date(projectDates.start_date);
+      console.log('✅ Using milestone start date:', projectDates.start_date);
     } else if (selectedProject.start_date) {
-      // Fallback to project-level start date
       invoiceDate = new Date(selectedProject.start_date);
+      console.log('✅ Using project start date:', selectedProject.start_date);
+    } else {
+      console.log('⚠️ Using default invoice date (today)');
     }
     
     if (projectDates.end_date) {
       dueDate = new Date(projectDates.end_date);
+      console.log('✅ Using milestone end date:', projectDates.end_date);
     } else if (selectedProject.end_date) {
-      // Fallback to project-level end date
       dueDate = new Date(selectedProject.end_date);
+      console.log('✅ Using project end date:', selectedProject.end_date);
+    } else {
+      console.log('⚠️ Using default due date (+30 days)');
     }
     
+    console.log('Final dates:', { invoiceDate, dueDate });
+    
     // Update invoice data
-    setInvoiceData(prev => ({
-      ...prev,
+    const newInvoiceData = {
+      ...invoiceData,
       projectId: targetProjectId,
       invoiceDate,
       dueDate,
-      currency: selectedProject.currency || selectedProject.freelancer_currency || prev.currency,
+      currency: selectedProject.currency || selectedProject.freelancer_currency || invoiceData.currency,
       billedTo: {
-        ...prev.billedTo,
+        ...invoiceData.billedTo,
         name: clientName || selectedProject.client_email || ''
       },
       lineItems: milestoneLineItems,
       subtotal,
-      total: subtotal + prev.tax
-    }));
+      total: subtotal + invoiceData.tax
+    };
+    
+    console.log('🚀 UPDATING INVOICE DATA:', newInvoiceData);
+    setInvoiceData(newInvoiceData);
+    console.log('=== END AUTO-POPULATION DEBUG ===');
   }, [projectIdFromUrl, invoiceData.projectId, projects]);
 
   const {

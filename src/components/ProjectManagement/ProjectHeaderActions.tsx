@@ -77,7 +77,7 @@ const ProjectHeaderActions: React.FC<ProjectHeaderActionsProps> = ({
   };
 
   const handleCreateInvoice = () => {
-    navigate(`/create-invoice?projectId=${project.id}`);
+    navigate(`/en/create-invoice?projectId=${project.id}`);
   };
 
   return (
