@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -25,6 +25,11 @@ const MultiLinkManager: React.FC<MultiLinkManagerProps> = ({
     parseDeliverableLinks(milestone.deliverable_link)
   );
   const [isUpdating, setIsUpdating] = useState(false);
+
+  // Sync local state when milestone.deliverable_link changes
+  useEffect(() => {
+    setLinks(parseDeliverableLinks(milestone.deliverable_link));
+  }, [milestone.deliverable_link]);
 
   const addNewLink = () => {
     if (links.length >= 3) {
