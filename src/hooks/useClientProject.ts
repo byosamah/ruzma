@@ -31,7 +31,7 @@ export const useClientProject = (token?: string | null, isHybrid?: boolean) => {
       setProject(data);
       
       // Check if contract approval is needed
-      setNeedsContractApproval(data.contract_status === 'pending');
+      setNeedsContractApproval(data.contract_required && data.contract_status === 'pending');
       
       // Track client project access
       if (data.id) {

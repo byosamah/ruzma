@@ -59,6 +59,7 @@ export const useCreateProjectFormData = (templateData?: any) => {
       brief: templateData?.brief || '',
       clientEmail: templateData?.clientEmail || '',
       paymentProofRequired: templateData?.paymentProofRequired || false,
+      contractRequired: templateData?.contractRequired ?? true,
       contractTerms: templateData?.contractTerms || '',
       paymentTerms: templateData?.paymentTerms || '',
       projectScope: templateData?.projectScope || '',

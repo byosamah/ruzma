@@ -5,13 +5,17 @@ import { FormField, FormItem, FormLabel, FormControl, FormMessage } from '@/comp
 import { Textarea } from '@/components/ui/textarea';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Switch } from '@/components/ui/switch';
-import { FileText, DollarSign, Target, RotateCcw } from 'lucide-react';
+import { Alert, AlertDescription } from '@/components/ui/alert';
+import { FileText, DollarSign, Target, RotateCcw, AlertCircle } from 'lucide-react';
+
 interface ContractTermsSectionProps {
   form: UseFormReturn<CreateProjectFormData>;
 }
+
 export const ContractTermsSection: React.FC<ContractTermsSectionProps> = ({
   form
 }) => {
+  const contractRequired = form.watch("contractRequired");
   const [useTemplates, setUseTemplates] = useState(false);
   const [useDefaults, setUseDefaults] = useState({
     contractTerms: false,
@@ -19,6 +23,7 @@ export const ContractTermsSection: React.FC<ContractTermsSectionProps> = ({
     projectScope: false,
     revisionPolicy: false
   });
+
   const defaultContractTerms = `Terms and Conditions:
 
 1. SCOPE OF WORK
@@ -38,12 +43,14 @@ Revisions are included as outlined in the revision policy. Additional revisions 
 
 6. TERMINATION
 Either party may terminate this agreement with 7 days written notice. Client will pay for all completed work up to the termination date.`;
+
   const defaultPaymentTerms = `Payment Schedule:
 - Payments due within 7 days of milestone completion
 - Late payments may incur a 1.5% monthly fee
 - All payments in the agreed project currency
 - Payment methods: Bank transfer, PayPal, or as agreed
 - Partial refunds available for incomplete milestones only`;
+
   const defaultProjectScope = `Project Deliverables:
 [Outline specific deliverables, features, and requirements]
 
@@ -55,12 +62,14 @@ Included Services:
 
 Not Included:
 [Specify what is not included to avoid scope creep]`;
+
   const defaultRevisionPolicy = `Revision Policy:
 - Up to 2 rounds of revisions included per milestone
 - Revisions must be requested within 7 days of delivery
 - Additional revisions: $50 per hour
 - Major scope changes require separate agreement
 - Revisions must be specific and actionable`;
+
   const handleMasterToggle = (enabled: boolean) => {
     setUseTemplates(enabled);
     setUseDefaults({
@@ -69,6 +78,7 @@ Not Included:
       projectScope: enabled,
       revisionPolicy: enabled
     });
+
     if (enabled) {
       form.setValue('contractTerms', defaultContractTerms);
       form.setValue('paymentTerms', defaultPaymentTerms);
@@ -81,12 +91,14 @@ Not Included:
       form.setValue('revisionPolicy', '');
     }
   };
+
   const handleToggleDefault = (field: keyof typeof useDefaults, defaultText: string) => {
     const newState = !useDefaults[field];
     setUseDefaults(prev => ({
       ...prev,
       [field]: newState
     }));
+
     if (newState) {
       form.setValue(field, defaultText);
     } else {
@@ -100,85 +112,148 @@ Not Included:
     };
     const allEnabled = Object.values(updatedDefaults).every(Boolean);
     const allDisabled = Object.values(updatedDefaults).every(v => !v);
+    
     if (allEnabled || allDisabled) {
       setUseTemplates(allEnabled);
     }
   };
-  const renderContractField = (fieldName: keyof typeof useDefaults, label: string, placeholder: string, defaultText: string) => <FormField control={form.control} name={fieldName} render={({
-    field
-  }) => <FormItem>
+
+  const renderContractField = (
+    fieldName: keyof typeof useDefaults,
+    label: string,
+    placeholder: string,
+    defaultText: string
+  ) => (
+    <FormField
+      control={form.control}
+      name={fieldName}
+      render={({ field }) => (
+        <FormItem>
           <div className="flex items-center justify-between mb-2">
             <FormLabel className="text-sm font-medium text-gray-700">{label}</FormLabel>
             <div className="flex items-center gap-2">
               <span className="text-sm text-gray-500">
-                {useDefaults[fieldName] ? 'Use a Template' : 'Use a Template'}
+                Use a Template
               </span>
-              <Switch checked={useDefaults[fieldName]} onCheckedChange={checked => handleToggleDefault(fieldName, defaultText)} />
+              <Switch
+                checked={useDefaults[fieldName]}
+                onCheckedChange={(checked) => handleToggleDefault(fieldName, defaultText)}
+              />
             </div>
           </div>
           <FormControl>
-            <Textarea placeholder={useDefaults[fieldName] ? "Using template text..." : placeholder} className="min-h-[200px] resize-y border-gray-200 focus:border-gray-400 focus:ring-0 text-sm" {...field} disabled={useDefaults[fieldName]} value={useDefaults[fieldName] ? defaultText : field.value} onChange={e => {
-        if (!useDefaults[fieldName]) {
-          field.onChange(e.target.value);
-        }
-      }} />
+            <Textarea
+              placeholder={useDefaults[fieldName] ? "Using template text..." : placeholder}
+              className="min-h-[200px] resize-y border-gray-200 focus:border-gray-400 focus:ring-0 text-sm"
+              {...field}
+              disabled={useDefaults[fieldName]}
+              value={useDefaults[fieldName] ? defaultText : field.value}
+              onChange={(e) => {
+                if (!useDefaults[fieldName]) {
+                  field.onChange(e.target.value);
+                }
+              }}
+            />
           </FormControl>
           <FormMessage />
-        </FormItem>} />;
-  return <div className="bg-white rounded-lg border border-gray-200 overflow-hidden">
+        </FormItem>
+      )}
+    />
+  );
+
+  return (
+    <div className="bg-white rounded-lg border border-gray-200 overflow-hidden">
       <div className="px-6 py-4 border-b border-gray-100">
         <div className="flex items-center gap-2 mb-2">
           <FileText className="h-5 w-5 text-gray-600" />
           <h3 className="text-sm font-medium text-gray-900">Contract Terms</h3>
         </div>
         <p className="text-sm text-gray-500 mb-4">
-          Define the contract terms and conditions for this project. These will be sent to your client for approval.
+          Configure contract requirements and terms for this project.
         </p>
-        <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+
+        {/* Contract Required Toggle */}
+        <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg mb-4">
           <div>
-            <h4 className="text-sm font-medium text-gray-900">Use a template for all sections</h4>
-            <p className="text-sm text-gray-500">Fill all sections with standard template text</p>
+            <h4 className="text-sm font-medium text-gray-900">Require Contract Approval</h4>
+            <p className="text-sm text-gray-500">Client must approve contract terms before accessing the project</p>
           </div>
-          <Switch checked={useTemplates} onCheckedChange={handleMasterToggle} />
+          <FormField
+            control={form.control}
+            name="contractRequired"
+            render={({ field }) => (
+              <FormItem>
+                <FormControl>
+                  <Switch
+                    checked={field.value}
+                    onCheckedChange={field.onChange}
+                  />
+                </FormControl>
+              </FormItem>
+            )}
+          />
         </div>
+
+        {!contractRequired && (
+          <Alert className="mb-4">
+            <AlertCircle className="h-4 w-4" />
+            <AlertDescription>
+              Contract approval disabled - clients can access project immediately without signing any contract.
+            </AlertDescription>
+          </Alert>
+        )}
+
+        {contractRequired && (
+          <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+            <div>
+              <h4 className="text-sm font-medium text-gray-900">Use a template for all sections</h4>
+              <p className="text-sm text-gray-500">Fill all sections with standard template text</p>
+            </div>
+            <Switch checked={useTemplates} onCheckedChange={handleMasterToggle} />
+          </div>
+        )}
       </div>
-      <div className="p-6 space-y-6">
-        <Tabs defaultValue="contract" className="w-full">
-          <TabsList className="grid w-full grid-cols-4">
-            <TabsTrigger value="contract" className="flex items-center gap-1">
-              <FileText className="h-4 w-4" />
-              Contract
-            </TabsTrigger>
-            <TabsTrigger value="payment" className="flex items-center gap-1">
-              <DollarSign className="h-4 w-4" />
-              Payment
-            </TabsTrigger>
-            <TabsTrigger value="scope" className="flex items-center gap-1">
-              <Target className="h-4 w-4" />
-              Scope
-            </TabsTrigger>
-            <TabsTrigger value="revisions" className="flex items-center gap-1">
-              <RotateCcw className="h-4 w-4" />
-              Revisions
-            </TabsTrigger>
-          </TabsList>
 
-          <TabsContent value="contract" className="space-y-4 mt-4">
-            {renderContractField('contractTerms', 'General Contract Terms', 'Enter contract terms and conditions...', defaultContractTerms)}
-          </TabsContent>
+      {contractRequired && (
+        <div className="p-6 space-y-6">
+          <Tabs defaultValue="contract" className="w-full">
+            <TabsList className="grid w-full grid-cols-4">
+              <TabsTrigger value="contract" className="flex items-center gap-1">
+                <FileText className="h-4 w-4" />
+                Contract
+              </TabsTrigger>
+              <TabsTrigger value="payment" className="flex items-center gap-1">
+                <DollarSign className="h-4 w-4" />
+                Payment
+              </TabsTrigger>
+              <TabsTrigger value="scope" className="flex items-center gap-1">
+                <Target className="h-4 w-4" />
+                Scope
+              </TabsTrigger>
+              <TabsTrigger value="revisions" className="flex items-center gap-1">
+                <RotateCcw className="h-4 w-4" />
+                Revisions
+              </TabsTrigger>
+            </TabsList>
 
-          <TabsContent value="payment" className="space-y-4 mt-4">
-            {renderContractField('paymentTerms', 'Payment Terms and Schedule', 'Enter payment terms...', defaultPaymentTerms)}
-          </TabsContent>
+            <TabsContent value="contract" className="space-y-4 mt-4">
+              {renderContractField('contractTerms', 'General Contract Terms', 'Enter contract terms and conditions...', defaultContractTerms)}
+            </TabsContent>
 
-          <TabsContent value="scope" className="space-y-4 mt-4">
-            {renderContractField('projectScope', 'Project Scope and Deliverables', 'Define project scope...', defaultProjectScope)}
-          </TabsContent>
+            <TabsContent value="payment" className="space-y-4 mt-4">
+              {renderContractField('paymentTerms', 'Payment Terms and Schedule', 'Enter payment terms...', defaultPaymentTerms)}
+            </TabsContent>
 
-          <TabsContent value="revisions" className="space-y-4 mt-4">
-            {renderContractField('revisionPolicy', 'Revision Policy', 'Enter revision policy...', defaultRevisionPolicy)}
-          </TabsContent>
-        </Tabs>
-      </div>
-    </div>;
+            <TabsContent value="scope" className="space-y-4 mt-4">
+              {renderContractField('projectScope', 'Project Scope and Deliverables', 'Define project scope...', defaultProjectScope)}
+            </TabsContent>
+
+            <TabsContent value="revisions" className="space-y-4 mt-4">
+              {renderContractField('revisionPolicy', 'Revision Policy', 'Enter revision policy...', defaultRevisionPolicy)}
+            </TabsContent>
+          </Tabs>
+        </div>
+      )}
+    </div>
+  );
 };

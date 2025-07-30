@@ -28,6 +28,7 @@ export interface DatabaseProject {
   end_date?: string;
   client_access_token: string;
   payment_proof_required?: boolean;
+  contract_required?: boolean;
   contract_status?: 'pending' | 'approved' | 'rejected';
   contract_sent_at?: string;
   contract_approved_at?: string;

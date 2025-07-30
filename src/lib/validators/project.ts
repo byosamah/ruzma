@@ -6,6 +6,7 @@ export const createProjectFormSchema = z.object({
   brief: z.string().min(10, 'Project brief must be at least 10 characters'),
   clientEmail: z.string().email('Please enter a valid email address').optional().or(z.literal('')),
   paymentProofRequired: z.boolean().default(false),
+  contractRequired: z.boolean().default(true),
   contractTerms: z.string().optional(),
   paymentTerms: z.string().optional(),
   projectScope: z.string().optional(),

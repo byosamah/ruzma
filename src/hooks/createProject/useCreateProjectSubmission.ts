@@ -210,12 +210,13 @@ export const useCreateProjectSubmission = () => {
           start_date,
           end_date,
           payment_proof_required: data.paymentProofRequired,
+          contract_required: data.contractRequired,
           contract_terms: data.contractTerms || null,
           payment_terms: data.paymentTerms || null,
           project_scope: data.projectScope || null,
           revision_policy: data.revisionPolicy || null,
           contract_approval_token: crypto.randomUUID(),
-          contract_status: clientEmail ? 'pending' : null,
+          contract_status: (clientEmail && data.contractRequired) ? 'pending' : null,
           slug: '', // Temporary value, will be overwritten by trigger
         })
         .select()
@@ -261,8 +262,8 @@ export const useCreateProjectSubmission = () => {
         console.log('Project count updated successfully');
       }
 
-      // Send contract approval email if client email is provided
-      if (clientEmail && profile.full_name) {
+      // Send contract approval email if client email is provided and contract is required
+      if (clientEmail && profile.full_name && data.contractRequired) {
         try {
           console.log('Sending contract approval email...');
           const { error: contractError } = await supabase.functions.invoke('send-contract-approval', {

@@ -330,6 +330,7 @@ export type Database = {
           contract_approval_token: string | null
           contract_approved_at: string | null
           contract_rejection_reason: string | null
+          contract_required: boolean
           contract_sent_at: string | null
           contract_status: string | null
           contract_terms: string | null
@@ -354,6 +355,7 @@ export type Database = {
           contract_approval_token?: string | null
           contract_approved_at?: string | null
           contract_rejection_reason?: string | null
+          contract_required?: boolean
           contract_sent_at?: string | null
           contract_status?: string | null
           contract_terms?: string | null
@@ -378,6 +380,7 @@ export type Database = {
           contract_approval_token?: string | null
           contract_approved_at?: string | null
           contract_rejection_reason?: string | null
+          contract_required?: boolean
           contract_sent_at?: string | null
           contract_status?: string | null
           contract_terms?: string | null
