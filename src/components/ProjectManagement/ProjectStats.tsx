@@ -1,5 +1,5 @@
 import React from 'react';
-import { DollarSign, Calendar, Users } from 'lucide-react';
+import { Coins, Calendar, Users } from 'lucide-react';
 import { DatabaseProject } from '@/hooks/projectTypes';
 import { formatCurrency } from '@/lib/currency';
 import { CurrencyCode } from '@/lib/currency';
@@ -21,7 +21,7 @@ const ProjectStats: React.FC<ProjectStatsProps> = ({
     return <div className="grid grid-cols-3 gap-4">
         <div className="bg-white/60 rounded-xl p-4 text-center border border-white/40">
           <div className="w-8 h-8 bg-green-100 rounded-lg flex items-center justify-center mx-auto mb-2">
-            <DollarSign className="w-4 h-4 text-green-600" />
+            <Coins className="w-4 h-4 text-green-600" />
           </div>
           <div className="text-lg font-bold text-slate-800">{formatCurrency(totalValue, userCurrency)}</div>
           <div className="text-xs text-slate-600">Total Value</div>
