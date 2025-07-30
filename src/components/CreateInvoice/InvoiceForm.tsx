@@ -52,10 +52,15 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({ invoiceData, setInvoiceData }
       // Calculate project dates from milestones
       const projectDates = calculateProjectDates(selectedProject.milestones || []);
       
-      // Extract client name from email or use email as fallback
-      const clientName = selectedProject.client_email 
-        ? selectedProject.client_email.split('@')[0].replace(/[._]/g, ' ').replace(/\b\w/g, l => l.toUpperCase())
-        : '';
+      // Enhanced client name extraction
+      let clientName = '';
+      if (selectedProject.client_email) {
+        const emailPrefix = selectedProject.client_email.split('@')[0];
+        clientName = emailPrefix
+          .replace(/[._-]/g, ' ')
+          .replace(/\b\w/g, l => l.toUpperCase())
+          .trim();
+      }
       
       // Create milestone line items
       const milestoneLineItems = selectedProject.milestones?.map((milestone) => ({
@@ -68,19 +73,31 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({ invoiceData, setInvoiceData }
       // Calculate totals
       const subtotal = milestoneLineItems.reduce((sum, item) => sum + (item.quantity * item.amount), 0);
       
-      // Set invoice date and due date (only for URL-based population to avoid overriding user input)
-      const invoiceDate = isFromUrl && projectDates.start_date 
-        ? new Date(projectDates.start_date) 
-        : invoiceData.invoiceDate;
-      const dueDate = isFromUrl && projectDates.end_date 
-        ? new Date(projectDates.end_date) 
-        : invoiceData.dueDate;
+      // Enhanced date logic with fallbacks
+      let invoiceDate = new Date();
+      let dueDate = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000); // 30 days default
+      
+      // Try milestone dates first
+      if (projectDates.start_date) {
+        invoiceDate = new Date(projectDates.start_date);
+      } else if (selectedProject.start_date) {
+        // Fallback to project-level start date
+        invoiceDate = new Date(selectedProject.start_date);
+      }
+      
+      if (projectDates.end_date) {
+        dueDate = new Date(projectDates.end_date);
+      } else if (selectedProject.end_date) {
+        // Fallback to project-level end date
+        dueDate = new Date(selectedProject.end_date);
+      }
       
       // Update invoice data
       setInvoiceData(prev => ({
         ...prev,
         projectId,
-        ...(isFromUrl && { invoiceDate, dueDate }),
+        invoiceDate,
+        dueDate,
         currency: selectedProject.currency || selectedProject.freelancer_currency || prev.currency,
         billedTo: {
           ...prev.billedTo,
