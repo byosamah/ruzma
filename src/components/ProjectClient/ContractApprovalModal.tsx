@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Textarea } from '@/components/ui/textarea';
 import { Badge } from '@/components/ui/badge';
-import { CheckCircle, XCircle, Clock, DollarSign, Calendar } from 'lucide-react';
+import { CheckCircle, XCircle, Clock, Coins, Calendar } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import { DatabaseProject } from '@/hooks/projectTypes';
@@ -105,7 +105,7 @@ const ContractApprovalModal: React.FC<ContractApprovalModalProps> = ({
               
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div className="flex items-center gap-2">
-                  <DollarSign className="w-4 h-4 text-green-600" />
+                  <Coins className="w-4 h-4 text-green-600" />
                   <div>
                     <p className="text-sm text-muted-foreground">Total Value</p>
                     <p className="font-semibold">${totalValue.toLocaleString()}</p>

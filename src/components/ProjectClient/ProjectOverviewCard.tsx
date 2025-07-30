@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { Card, CardContent } from '@/components/ui/card';
-import { Calendar, Target, DollarSign } from 'lucide-react';
+import { Calendar, Target, Coins } from 'lucide-react';
 import { useT } from '@/lib/i18n';
 import { formatCurrency, CurrencyCode } from '@/lib/currency';
 import { format } from 'date-fns';
@@ -53,7 +53,7 @@ const ProjectOverviewCard: React.FC<ProjectOverviewCardProps> = ({
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             <div className="flex items-center space-x-3">
               <div className="w-8 h-8 bg-gray-50 rounded-lg flex items-center justify-center">
-                <DollarSign className="w-4 h-4 text-gray-600" />
+                <Coins className="w-4 h-4 text-gray-600" />
               </div>
               <div>
                 <p className="text-xs text-gray-500 uppercase tracking-wide">{t('totalValue')}</p>

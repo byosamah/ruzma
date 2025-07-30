@@ -4,7 +4,7 @@ import {
   Card,
   CardContent,
 } from "@/components/ui/card";
-import { Briefcase, DollarSign, Clock, CheckCircle } from "lucide-react";
+import { Briefcase, Coins, Clock, CheckCircle } from "lucide-react";
 import { formatCurrency, CurrencyCode } from "@/lib/currency";
 import { useT } from "@/lib/i18n";
 
@@ -39,7 +39,7 @@ const DashboardStats: React.FC<DashboardStatsProps> = ({
       title: t("totalEarnings"),
       value: formatCurrency(totalEarnings, userCurrency),
       subtitle: t("fromCompletedMilestones"),
-      icon: DollarSign,
+      icon: Coins,
       iconColor: 'text-green-600',
     },
     {

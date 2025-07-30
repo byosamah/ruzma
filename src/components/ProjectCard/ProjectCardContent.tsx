@@ -2,7 +2,7 @@
 import React from 'react';
 import { CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Calendar, Clock, DollarSign } from 'lucide-react';
+import { Calendar, Clock, Coins } from 'lucide-react';
 import { formatCurrency, CurrencyCode } from '@/lib/currency';
 import { DatabaseProject } from '@/hooks/projectTypes';
 import { ProjectStats } from './types';
@@ -53,7 +53,7 @@ const ProjectCardContent: React.FC<ProjectCardContentProps> = ({
         </div>
         
         <div className="flex items-center gap-1 text-slate-600">
-          <DollarSign className="w-3 h-3 flex-shrink-0" />
+          <Coins className="w-3 h-3 flex-shrink-0" />
           <span className="whitespace-nowrap">{formatCurrency(stats.totalValue, currency)}</span>
         </div>
       </div>

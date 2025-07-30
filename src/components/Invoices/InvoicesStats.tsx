@@ -2,7 +2,7 @@
 import React from 'react';
 import { User } from '@supabase/supabase-js';
 import { Card, CardContent } from '@/components/ui/card';
-import { FileText, DollarSign, Clock, CheckCircle } from 'lucide-react';
+import { FileText, Coins, Clock, CheckCircle } from 'lucide-react';
 import { Invoice } from '@/hooks/useInvoices';
 import { useUserCurrency } from '@/hooks/useUserCurrency';
 import { useT } from '@/lib/i18n';
@@ -30,7 +30,7 @@ const InvoicesStats: React.FC<InvoicesStatsProps> = ({ invoices, user }) => {
       iconColor: 'text-gray-600'
     },
     {
-      icon: DollarSign,
+      icon: Coins,
       label: t('totalAmount'),
       value: formatCurrency(totalAmount),
       bgColor: 'bg-green-50',

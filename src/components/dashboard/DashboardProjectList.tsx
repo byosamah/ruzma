@@ -4,7 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
-import { Plus, Calendar, DollarSign, FileText, Edit, Trash2 } from 'lucide-react';
+import { Plus, Calendar, Coins, FileText, Edit, Trash2 } from 'lucide-react';
 import { useT } from '@/lib/i18n';
 import { DatabaseProject } from '@/hooks/projectTypes';
 import { useIsMobile } from '@/hooks/use-mobile';
@@ -180,7 +180,7 @@ const DashboardProjectList: React.FC<DashboardProjectListProps> = ({
                           </span>
                         </div>
                         <div className="flex items-center min-w-0">
-                          <DollarSign className="w-4 h-4 mr-1 flex-shrink-0" />
+                          <Coins className="w-4 h-4 mr-1 flex-shrink-0" />
                           <span className="text-xs sm:text-sm truncate">
                             {totalValue.toFixed(2)} {currency}
                           </span>
