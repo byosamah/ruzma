@@ -96,14 +96,17 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({ invoiceData, setInvoiceData }
     
     // Enhanced client name extraction
     let clientName = '';
+    console.log('Raw client_email from project:', selectedProject.client_email);
     if (selectedProject.client_email) {
       const emailPrefix = selectedProject.client_email.split('@')[0];
       clientName = emailPrefix
         .replace(/[._-]/g, ' ')
         .replace(/\b\w/g, l => l.toUpperCase())
         .trim();
+      console.log('Processed client name:', clientName);
+    } else {
+      console.log('❌ No client email found in project');
     }
-    console.log('Extracted client name:', clientName);
     
     // Create milestone line items
     const milestoneLineItems = selectedProject.milestones?.map((milestone) => ({
@@ -161,7 +164,13 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({ invoiceData, setInvoiceData }
       total: subtotal + invoiceData.tax
     };
     
-    console.log('🚀 UPDATING INVOICE DATA:', newInvoiceData);
+    console.log('🚀 UPDATING INVOICE DATA:');
+    console.log('  - projectId:', newInvoiceData.projectId);
+    console.log('  - invoiceDate:', newInvoiceData.invoiceDate);
+    console.log('  - dueDate:', newInvoiceData.dueDate);
+    console.log('  - billedTo name:', newInvoiceData.billedTo.name);
+    console.log('  - lineItems count:', newInvoiceData.lineItems.length);
+    console.log('  - currency:', newInvoiceData.currency);
     setInvoiceData(newInvoiceData);
     console.log('=== END AUTO-POPULATION DEBUG ===');
   }, [projectIdFromUrl, invoiceData.projectId, projects]);
