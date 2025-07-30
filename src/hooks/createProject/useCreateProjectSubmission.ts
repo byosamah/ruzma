@@ -296,7 +296,8 @@ export const useCreateProjectSubmission = () => {
         userId: user.id
       });
 
-      navigate('/dashboard');
+      // Navigate to the created project instead of dashboard
+      navigate(`/project/${project.slug}`);
     } catch (error) {
       console.error('Error creating project:', error);
       
