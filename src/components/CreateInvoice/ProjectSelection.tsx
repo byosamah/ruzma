@@ -34,7 +34,7 @@ const ProjectSelection: React.FC<ProjectSelectionProps> = ({
             value={invoiceData.projectId || ''}
             onValueChange={(value) => updateField('projectId', value)}
           >
-            <SelectTrigger>
+            <SelectTrigger className="border-gray-300 border">
               <SelectValue placeholder={t('selectProject')} />
             </SelectTrigger>
             <SelectContent>

@@ -60,7 +60,7 @@ const CurrencySelection: React.FC<CurrencySelectionProps> = ({
             value={invoiceData.currency}
             onValueChange={(value) => updateField('currency', value)}
           >
-            <SelectTrigger className="border-input">
+            <SelectTrigger className="border-gray-300 border">
               <SelectValue placeholder={t('selectCurrency')} />
             </SelectTrigger>
             <SelectContent>
