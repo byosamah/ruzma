@@ -2,7 +2,7 @@ import React, { useState, useMemo } from 'react';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
-import { Search, DollarSign } from 'lucide-react';
+import { Search, Coins } from 'lucide-react';
 import { 
   CURRENCIES, 
   CurrencyCode, 
@@ -69,7 +69,7 @@ export const EnhancedCurrencySelect: React.FC<EnhancedCurrencySelectProps> = ({
       <Select value={value} onValueChange={onChange}>
         <SelectTrigger className={`h-11 ${className}`}>
           <div className="flex items-center gap-2">
-            <DollarSign className="h-4 w-4 text-muted-foreground" />
+            <Coins className="h-4 w-4 text-muted-foreground" />
             <SelectValue placeholder={placeholder || t('selectCurrency')}>
               {selectedCurrencyInfo && (
                 <div className="flex items-center gap-2">

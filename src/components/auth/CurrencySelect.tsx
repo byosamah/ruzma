@@ -2,7 +2,7 @@
 import React from 'react';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Label } from '@/components/ui/label';
-import { DollarSign } from 'lucide-react';
+import { Coins } from 'lucide-react';
 import { CURRENCIES, getPopularCurrencies } from '@/lib/currency';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useT } from '@/lib/i18n';
@@ -31,7 +31,7 @@ export const CurrencySelect: React.FC<CurrencySelectProps> = ({
     <div className="space-y-2">
       <Label htmlFor="currency" className="text-sm font-medium">{t('preferredCurrencyLabel')}{required && ' *'}</Label>
       <div className="relative">
-        <DollarSign className="absolute left-3 rtl:left-auto rtl:right-3 top-3 h-4 w-4 text-slate-400 z-10 pointer-events-none" />
+        <Coins className="absolute left-3 rtl:left-auto rtl:right-3 top-3 h-4 w-4 text-slate-400 z-10 pointer-events-none" />
         <Select value={value} onValueChange={onChange}>
           <SelectTrigger className="pl-10 rtl:pl-3 rtl:pr-10 h-10 sm:h-11 text-sm">
             <SelectValue placeholder={t('selectCurrencyPlaceholder')} />
