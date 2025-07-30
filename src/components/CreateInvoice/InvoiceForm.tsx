@@ -24,12 +24,10 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({ invoiceData, setInvoiceData }
   const { projects } = useProjects(user);
   
   // Get projectId from URL params if present
-  const [searchParams] = React.useMemo(() => {
+  const projectIdFromUrl = React.useMemo(() => {
     const urlParams = new URLSearchParams(window.location.search);
-    return [urlParams];
+    return urlParams.get('projectId');
   }, []);
-  
-  const projectIdFromUrl = searchParams.get('projectId');
 
   const updateField = (field: keyof InvoiceFormData, value: any) => {
     setInvoiceData(prev => ({ ...prev, [field]: value }));
@@ -45,84 +43,97 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({ invoiceData, setInvoiceData }
     }));
   };
 
-  // Helper function to populate invoice data from project
-  const populateInvoiceFromProject = (projectId: string, isFromUrl = false) => {
-    const selectedProject = projects.find(p => p.id === projectId);
-    if (selectedProject) {
-      // Calculate project dates from milestones
-      const projectDates = calculateProjectDates(selectedProject.milestones || []);
-      
-      // Enhanced client name extraction
-      let clientName = '';
-      if (selectedProject.client_email) {
-        const emailPrefix = selectedProject.client_email.split('@')[0];
-        clientName = emailPrefix
-          .replace(/[._-]/g, ' ')
-          .replace(/\b\w/g, l => l.toUpperCase())
-          .trim();
-      }
-      
-      // Create milestone line items
-      const milestoneLineItems = selectedProject.milestones?.map((milestone) => ({
-        id: milestone.id,
-        description: milestone.title,
-        quantity: 1,
-        amount: Number(milestone.price) || 0
-      })) || [];
-      
-      // Calculate totals
-      const subtotal = milestoneLineItems.reduce((sum, item) => sum + (item.quantity * item.amount), 0);
-      
-      // Enhanced date logic with fallbacks
-      let invoiceDate = new Date();
-      let dueDate = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000); // 30 days default
-      
-      // Try milestone dates first
-      if (projectDates.start_date) {
-        invoiceDate = new Date(projectDates.start_date);
-      } else if (selectedProject.start_date) {
-        // Fallback to project-level start date
-        invoiceDate = new Date(selectedProject.start_date);
-      }
-      
-      if (projectDates.end_date) {
-        dueDate = new Date(projectDates.end_date);
-      } else if (selectedProject.end_date) {
-        // Fallback to project-level end date
-        dueDate = new Date(selectedProject.end_date);
-      }
-      
-      // Update invoice data
-      setInvoiceData(prev => ({
-        ...prev,
-        projectId,
-        invoiceDate,
-        dueDate,
-        currency: selectedProject.currency || selectedProject.freelancer_currency || prev.currency,
-        billedTo: {
-          ...prev.billedTo,
-          name: clientName || selectedProject.client_email || ''
-        },
-        lineItems: milestoneLineItems,
-        subtotal,
-        total: subtotal + prev.tax
-      }));
-    }
-  };
-
-  // Auto-populate project data from URL parameter
+  // Single effect to handle all project auto-population
   useEffect(() => {
-    if (projectIdFromUrl && projects.length > 0 && !invoiceData.projectId) {
-      populateInvoiceFromProject(projectIdFromUrl, true);
-    }
-  }, [projectIdFromUrl, projects, invoiceData.projectId]);
+    console.log('Invoice auto-population check:', {
+      projectIdFromUrl,
+      currentProjectId: invoiceData.projectId,
+      projectsCount: projects.length,
+      hasProjects: projects.length > 0
+    });
 
-  // Auto-populate project data when user selects a project manually
-  useEffect(() => {
-    if (invoiceData.projectId && projects.length > 0 && !projectIdFromUrl) {
-      populateInvoiceFromProject(invoiceData.projectId, false);
+    // Determine which project to populate from
+    const targetProjectId = projectIdFromUrl || invoiceData.projectId;
+    
+    if (!targetProjectId || projects.length === 0) {
+      return;
     }
-  }, [invoiceData.projectId, projects]);
+
+    // Only populate if we haven't already populated this project
+    if (invoiceData.projectId === targetProjectId && invoiceData.lineItems.length > 0) {
+      console.log('Project already populated, skipping');
+      return;
+    }
+
+    const selectedProject = projects.find(p => p.id === targetProjectId);
+    if (!selectedProject) {
+      console.log('Project not found:', targetProjectId);
+      return;
+    }
+
+    console.log('Populating invoice from project:', selectedProject.name);
+
+    // Calculate project dates from milestones
+    const projectDates = calculateProjectDates(selectedProject.milestones || []);
+    
+    // Enhanced client name extraction
+    let clientName = '';
+    if (selectedProject.client_email) {
+      const emailPrefix = selectedProject.client_email.split('@')[0];
+      clientName = emailPrefix
+        .replace(/[._-]/g, ' ')
+        .replace(/\b\w/g, l => l.toUpperCase())
+        .trim();
+    }
+    
+    // Create milestone line items
+    const milestoneLineItems = selectedProject.milestones?.map((milestone) => ({
+      id: milestone.id,
+      description: milestone.title,
+      quantity: 1,
+      amount: Number(milestone.price) || 0
+    })) || [];
+    
+    console.log('Project milestones loaded:', milestoneLineItems);
+    
+    // Calculate totals
+    const subtotal = milestoneLineItems.reduce((sum, item) => sum + (item.quantity * item.amount), 0);
+    
+    // Enhanced date logic with fallbacks
+    let invoiceDate = new Date();
+    let dueDate = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000); // 30 days default
+    
+    // Try milestone dates first
+    if (projectDates.start_date) {
+      invoiceDate = new Date(projectDates.start_date);
+    } else if (selectedProject.start_date) {
+      // Fallback to project-level start date
+      invoiceDate = new Date(selectedProject.start_date);
+    }
+    
+    if (projectDates.end_date) {
+      dueDate = new Date(projectDates.end_date);
+    } else if (selectedProject.end_date) {
+      // Fallback to project-level end date
+      dueDate = new Date(selectedProject.end_date);
+    }
+    
+    // Update invoice data
+    setInvoiceData(prev => ({
+      ...prev,
+      projectId: targetProjectId,
+      invoiceDate,
+      dueDate,
+      currency: selectedProject.currency || selectedProject.freelancer_currency || prev.currency,
+      billedTo: {
+        ...prev.billedTo,
+        name: clientName || selectedProject.client_email || ''
+      },
+      lineItems: milestoneLineItems,
+      subtotal,
+      total: subtotal + prev.tax
+    }));
+  }, [projectIdFromUrl, invoiceData.projectId, projects]);
 
   const {
     updateLineItem,
