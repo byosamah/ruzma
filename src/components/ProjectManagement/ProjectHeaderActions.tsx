@@ -1,12 +1,13 @@
 
 import React from 'react';
 import { Button } from '@/components/ui/button';
-import { Edit, Trash2, ExternalLink, Send, Copy } from 'lucide-react';
+import { Edit, Trash2, ExternalLink, Send, Copy, FileText } from 'lucide-react';
 import { useT } from '@/lib/i18n';
 import { DatabaseProject } from '@/hooks/projectTypes';
 import { toast } from 'sonner';
 import { sendClientLink } from '@/services/clientLinkService';
 import { supabase } from '@/integrations/supabase/client';
+import { useNavigate } from 'react-router-dom';
 
 interface ProjectHeaderActionsProps {
   project: DatabaseProject;
@@ -22,6 +23,7 @@ const ProjectHeaderActions: React.FC<ProjectHeaderActionsProps> = ({
   isMobile
 }) => {
   const t = useT();
+  const navigate = useNavigate();
 
   const handleViewProjectPage = () => {
     // Use the full client_access_token directly
@@ -74,6 +76,10 @@ const ProjectHeaderActions: React.FC<ProjectHeaderActionsProps> = ({
     }
   };
 
+  const handleCreateInvoice = () => {
+    navigate(`/create-invoice?projectId=${project.id}`);
+  };
+
   return (
     <div className="flex items-center gap-2 flex-wrap">
       <Button
@@ -104,6 +110,16 @@ const ProjectHeaderActions: React.FC<ProjectHeaderActionsProps> = ({
       >
         <Copy className="w-4 h-4 mr-2" />
         {t('copyLink')}
+      </Button>
+      
+      <Button
+        variant="ghost"
+        size="sm"
+        onClick={handleCreateInvoice}
+        className="text-gray-600 hover:text-gray-900 hover:bg-gray-50"
+      >
+        <FileText className="w-4 h-4 mr-2" />
+        {t('createInvoice')}
       </Button>
       
       <Button

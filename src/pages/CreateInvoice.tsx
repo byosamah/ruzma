@@ -1,6 +1,6 @@
 
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import Layout from '@/components/Layout';
 import { useAuth } from '@/hooks/dashboard/useAuth';
 import { useUserProfile } from '@/hooks/dashboard/useUserProfile';
@@ -13,6 +13,8 @@ import { useT } from '@/lib/i18n';
 const CreateInvoice: React.FC = () => {
   const t = useT();
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const projectId = searchParams.get('projectId');
   const { user, loading: authLoading, authChecked } = useAuth();
   const { profile, loading: profileLoading } = useUserProfile(user);
   const { generateInvoiceId } = useInvoiceContext();

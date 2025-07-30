@@ -21,6 +21,14 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({ invoiceData, setInvoiceData }
   const [showTaxInput, setShowTaxInput] = React.useState(false);
   const { user } = useAuth();
   const { projects } = useProjects(user);
+  
+  // Get projectId from URL params if present
+  const [searchParams] = React.useMemo(() => {
+    const urlParams = new URLSearchParams(window.location.search);
+    return [urlParams];
+  }, []);
+  
+  const projectIdFromUrl = searchParams.get('projectId');
 
   const updateField = (field: keyof InvoiceFormData, value: any) => {
     setInvoiceData(prev => ({ ...prev, [field]: value }));
@@ -35,6 +43,28 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({ invoiceData, setInvoiceData }
       }
     }));
   };
+
+  // Auto-populate project data from URL parameter
+  useEffect(() => {
+    if (projectIdFromUrl && projects.length > 0 && !invoiceData.projectId) {
+      const selectedProject = projects.find(p => p.id === projectIdFromUrl);
+      if (selectedProject) {
+        // Set the project ID
+        setInvoiceData(prev => ({ ...prev, projectId: projectIdFromUrl }));
+        
+        // Auto-populate client information if available
+        if (selectedProject.client_email) {
+          setInvoiceData(prev => ({
+            ...prev,
+            billedTo: {
+              ...prev.billedTo,
+              name: selectedProject.client_email || ''
+            }
+          }));
+        }
+      }
+    }
+  }, [projectIdFromUrl, projects, invoiceData.projectId, setInvoiceData]);
 
   // Populate line items with project milestones when project is selected
   useEffect(() => {
