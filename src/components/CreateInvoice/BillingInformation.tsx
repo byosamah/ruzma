@@ -57,7 +57,7 @@ const BillingInformation: React.FC<BillingInformationProps> = ({
             <div>
               <Select onValueChange={handleClientSelect}>
                 <SelectTrigger>
-                  <SelectValue />
+                  <SelectValue placeholder="Select client" />
                 </SelectTrigger>
                 <SelectContent>
                   {clients.map(client => (
@@ -73,6 +73,13 @@ const BillingInformation: React.FC<BillingInformationProps> = ({
                   </SelectItem>
                 </SelectContent>
               </Select>
+            </div>
+            <div>
+              <Input 
+                placeholder="Client name" 
+                value={invoiceData.billedTo.name} 
+                onChange={(e) => updateAddressField('billedTo', 'name', e.target.value)} 
+              />
             </div>
             <div>
               <Textarea 
