@@ -9,6 +9,7 @@ import InvoiceForm from '@/components/CreateInvoice/InvoiceForm';
 import InvoicePreview from '@/components/CreateInvoice/InvoicePreview';
 import { InvoiceFormData } from '@/components/CreateInvoice/types';
 import { useT } from '@/lib/i18n';
+import { supabase } from '@/integrations/supabase/client';
 
 const CreateInvoice: React.FC = () => {
   const t = useT();
@@ -62,6 +63,39 @@ const CreateInvoice: React.FC = () => {
       }));
     }
   }, [profile, user, generateInvoiceId]);
+
+  // Auto-fill client data when projectId is provided
+  useEffect(() => {
+    const fetchProjectClient = async () => {
+      if (projectId && user) {
+        try {
+          const { data: project } = await supabase
+            .from('projects')
+            .select(`
+              *,
+              client:clients(name, email)
+            `)
+            .eq('id', projectId)
+            .eq('user_id', user.id)
+            .maybeSingle();
+
+          if (project?.client) {
+            setInvoiceData(prev => ({
+              ...prev,
+              billedTo: {
+                name: project.client.name,
+                address: ''
+              }
+            }));
+          }
+        } catch (error) {
+          console.error('Error fetching project client:', error);
+        }
+      }
+    };
+
+    fetchProjectClient();
+  }, [projectId, user]);
 
   // Show loading while auth is being checked
   if (!authChecked || authLoading) {
