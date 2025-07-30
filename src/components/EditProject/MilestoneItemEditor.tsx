@@ -44,6 +44,7 @@ export const MilestoneItemEditor: React.FC<MilestoneItemEditorProps> = ({
           value={milestone.title}
           onChange={(e) => onMilestoneChange(index, 'title', e.target.value)}
           placeholder={t('milestoneTitlePlaceholder_edit')}
+          className="border-gray-300 border"
           required
         />
       </div>
@@ -54,6 +55,7 @@ export const MilestoneItemEditor: React.FC<MilestoneItemEditorProps> = ({
           value={milestone.description}
           onChange={(e) => onMilestoneChange(index, 'description', e.target.value)}
           placeholder={t('milestoneDescriptionPlaceholder_edit')}
+          className="border-gray-300 border"
           required
           rows={2}
         />
@@ -67,6 +69,7 @@ export const MilestoneItemEditor: React.FC<MilestoneItemEditorProps> = ({
             value={milestone.price || 0}
             onChange={(e) => onMilestoneChange(index, 'price', e.target.value)}
             placeholder={t('milestonePricePlaceholder_edit')}
+            className="border-gray-300 border"
             required
             min="0"
             step="0.01"
@@ -79,6 +82,7 @@ export const MilestoneItemEditor: React.FC<MilestoneItemEditorProps> = ({
             type="date"
             value={milestone.start_date || ''}
             onChange={(e) => onMilestoneChange(index, 'start_date', e.target.value)}
+            className="border-gray-300 border"
           />
         </div>
       </div>
@@ -89,6 +93,7 @@ export const MilestoneItemEditor: React.FC<MilestoneItemEditorProps> = ({
           type="date"
           value={milestone.end_date || ''}
           onChange={(e) => onMilestoneChange(index, 'end_date', e.target.value)}
+          className="border-gray-300 border"
         />
       </div>
     </div>

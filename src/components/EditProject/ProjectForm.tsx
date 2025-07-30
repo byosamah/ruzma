@@ -55,6 +55,7 @@ export const ProjectForm: React.FC<ProjectFormProps> = ({
           value={name}
           onChange={(e) => onNameChange(e.target.value)}
           placeholder={t('projectNamePlaceholder_edit')}
+          className="border-gray-300 border"
           required
         />
       </div>
@@ -65,6 +66,7 @@ export const ProjectForm: React.FC<ProjectFormProps> = ({
           value={brief}
           onChange={(e) => onBriefChange(e.target.value)}
           placeholder={t('projectBriefPlaceholder_edit')}
+          className="border-gray-300 border"
           required
           rows={4}
         />
