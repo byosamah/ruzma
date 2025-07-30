@@ -56,7 +56,7 @@ const BillingInformation: React.FC<BillingInformationProps> = ({
           <CardContent className="space-y-4">
             <div>
               <Select onValueChange={handleClientSelect}>
-                <SelectTrigger>
+                <SelectTrigger className="border-input">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
@@ -79,7 +79,8 @@ const BillingInformation: React.FC<BillingInformationProps> = ({
                 placeholder={t('address')} 
                 value={invoiceData.billedTo.address} 
                 onChange={(e) => updateAddressField('billedTo', 'address', e.target.value)} 
-                rows={4} 
+                rows={4}
+                className="border-input"
               />
             </div>
           </CardContent>
@@ -102,7 +103,8 @@ const BillingInformation: React.FC<BillingInformationProps> = ({
                 placeholder={t('address')} 
                 value={invoiceData.payTo.address} 
                 onChange={(e) => updateAddressField('payTo', 'address', e.target.value)} 
-                rows={4} 
+                rows={4}
+                className="border-input"
               />
             </div>
           </CardContent>
