@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import Layout from "@/components/Layout";
 import { Button } from "@/components/ui/button";
-import { CheckCircle2, DollarSign } from "lucide-react";
+import { CheckCircle2, Coins } from "lucide-react";
 import { useT } from "@/lib/i18n";
 import { useProjectManagement } from "@/hooks/useProjectManagement";
 import { useProjects } from "@/hooks/useProjects";
@@ -159,7 +159,7 @@ const ProjectManagement: React.FC = () => {
                   {userCurrency.formatCurrency(totalValue)}
                 </p>
               </div>
-              <DollarSign className="w-5 h-5 text-gray-400" />
+              <Coins className="w-5 h-5 text-gray-400" />
             </div>
           </div>
 
@@ -171,7 +171,7 @@ const ProjectManagement: React.FC = () => {
                   {userCurrency.formatCurrency(completedValue)}
                 </p>
               </div>
-              <DollarSign className="w-5 h-5 text-gray-400" />
+              <Coins className="w-5 h-5 text-gray-400" />
             </div>
           </div>
         </div>
