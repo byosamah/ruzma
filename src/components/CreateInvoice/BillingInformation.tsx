@@ -56,7 +56,7 @@ const BillingInformation: React.FC<BillingInformationProps> = ({
           <CardContent className="space-y-4">
             <div>
               <Select onValueChange={handleClientSelect}>
-                <SelectTrigger className="border-input">
+                <SelectTrigger>
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
