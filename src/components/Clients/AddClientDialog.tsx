@@ -67,6 +67,7 @@ const AddClientDialog: React.FC<AddClientDialogProps> = ({
               value={formData.name}
               onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))}
               placeholder={t('enterClientName')}
+              className="border-gray-300 border"
               required
             />
           </div>
@@ -78,6 +79,7 @@ const AddClientDialog: React.FC<AddClientDialogProps> = ({
               value={formData.email}
               onChange={(e) => setFormData(prev => ({ ...prev, email: e.target.value }))}
               placeholder={t('enterClientEmail')}
+              className="border-gray-300 border"
               required
             />
           </div>

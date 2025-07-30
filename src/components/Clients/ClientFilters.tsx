@@ -26,7 +26,7 @@ const ClientFilters: React.FC<ClientFiltersProps> = ({
           placeholder={t('searchByNameOrEmail')}
           value={searchTerm}
           onChange={(e) => onSearchChange(e.target.value)}
-          className="pl-9 border-gray-200 focus:border-gray-300 focus:ring-1 focus:ring-gray-300"
+          className="pl-9 border-gray-300 border"
         />
       </div>
       <Button 
