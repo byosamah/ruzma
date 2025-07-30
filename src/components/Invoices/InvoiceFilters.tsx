@@ -29,12 +29,12 @@ const InvoiceFilters: React.FC<InvoiceFiltersProps> = ({
           placeholder={t('searchInvoices')}
           value={searchTerm}
           onChange={(e) => onSearchChange(e.target.value)}
-          className="pl-9 border-gray-200 focus:border-gray-300 focus:ring-0"
+          className="pl-9 border-gray-300 border"
         />
       </div>
       
       <Select value={statusFilter} onValueChange={onStatusChange}>
-        <SelectTrigger className="w-full sm:w-40 border-gray-200 focus:border-gray-300 focus:ring-0">
+        <SelectTrigger className="w-full sm:w-40 border-gray-300 border">
           <SelectValue placeholder={t('status')} />
         </SelectTrigger>
         <SelectContent className="border-gray-200">
