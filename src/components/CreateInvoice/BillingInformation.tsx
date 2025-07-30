@@ -26,28 +26,6 @@ const BillingInformation: React.FC<BillingInformationProps> = ({
   const { clients, createClient } = useClients(user);
   const [showAddClientDialog, setShowAddClientDialog] = useState(false);
 
-  // Find client that matches the current billedTo name or email
-  const selectedClientId = React.useMemo(() => {
-    if (!invoiceData.billedTo.name || !clients.length) return '';
-    
-    // Try to find client by exact name match first
-    const clientByName = clients.find(client => 
-      client.name.toLowerCase() === invoiceData.billedTo.name.toLowerCase()
-    );
-    
-    if (clientByName) return clientByName.id;
-    
-    // If no exact match, try to find by email if billedTo.name looks like email
-    if (invoiceData.billedTo.name.includes('@')) {
-      const clientByEmail = clients.find(client => 
-        client.email.toLowerCase() === invoiceData.billedTo.name.toLowerCase()
-      );
-      if (clientByEmail) return clientByEmail.id;
-    }
-    
-    return '';
-  }, [clients, invoiceData.billedTo.name]);
-
   const handleClientSelect = (clientId: string) => {
     if (clientId === 'add-new') {
       setShowAddClientDialog(true);
@@ -77,9 +55,9 @@ const BillingInformation: React.FC<BillingInformationProps> = ({
           </CardHeader>
           <CardContent className="space-y-4">
             <div>
-              <Select onValueChange={handleClientSelect} value={selectedClientId}>
+              <Select onValueChange={handleClientSelect}>
                 <SelectTrigger>
-                  <SelectValue placeholder="Select Client" />
+                  <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
                   {clients.map(client => (
@@ -95,13 +73,6 @@ const BillingInformation: React.FC<BillingInformationProps> = ({
                   </SelectItem>
                 </SelectContent>
               </Select>
-            </div>
-            <div>
-              <Input 
-                placeholder="Client Name" 
-                value={invoiceData.billedTo.name} 
-                onChange={(e) => updateAddressField('billedTo', 'name', e.target.value)} 
-              />
             </div>
             <div>
               <Textarea 
