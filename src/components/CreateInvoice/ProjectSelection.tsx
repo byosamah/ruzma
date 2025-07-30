@@ -29,7 +29,7 @@ const ProjectSelection: React.FC<ProjectSelectionProps> = ({
     <Card>
       <CardContent className="pt-6">
         <div className="space-y-2">
-          <label className="text-sm font-medium">{t('project')}</label>
+          <label className="text-sm font-medium">Project</label>
           <Select
             value={invoiceData.projectId || ''}
             onValueChange={(value) => updateField('projectId', value)}
