@@ -122,7 +122,7 @@ Not Included:
             <FormLabel className="text-sm font-medium text-gray-700">{label}</FormLabel>
             <div className="flex items-center gap-2">
               <span className="text-sm text-gray-500">
-                {useDefaults[fieldName] ? 'Use a Template' : 'Custom'}
+                {useDefaults[fieldName] ? 'Use a Template' : 'Use a Template'}
               </span>
               <Switch
                 checked={useDefaults[fieldName]}
