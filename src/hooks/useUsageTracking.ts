@@ -55,14 +55,15 @@ export const useUsageTracking = (
 
     const canCreateProject = isUnlimited || currentProjects < planLimits.project_limit;
 
-    console.log('Usage tracking debug:', {
-      currentProjects,
-      maxProjects: planLimits.project_limit,
-      profileProjectCount: userProfile?.project_count,
-      canCreateProject,
-      userType,
-      isUnlimited
-    });
+    // Remove debug logging to improve performance
+    // console.log('Usage tracking debug:', {
+    //   currentProjects,
+    //   maxProjects: planLimits.project_limit,
+    //   profileProjectCount: userProfile?.project_count,
+    //   canCreateProject,
+    //   userType,
+    //   isUnlimited
+    // });
 
     return {
       projects: {
@@ -82,5 +83,5 @@ export const useUsageTracking = (
       shouldShowUpgrade: (!isUnlimited && projectsPercentage >= 80) || storagePercentage >= 80,
       loading: isLoading,
     };
-  }, [userProfile, projects, limits, isLoading, userType, syncProjectCount, t]);
+  }, [userProfile, projects, limits, isLoading, userType, t]);
 };
