@@ -34,7 +34,7 @@ const ProjectOverviewCard: React.FC<ProjectOverviewCardProps> = ({
   const progressPercentage = totalMilestones > 0 ? (completedMilestones / totalMilestones) * 100 : 0;
 
   return (
-    <Card className="bg-white border border-gray-200">
+    <Card className="bg-white border border-border">
       <CardContent className="p-6">
         <div className="space-y-6">
           {/* Project Title and Brief */}

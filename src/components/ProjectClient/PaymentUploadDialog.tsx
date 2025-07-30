@@ -67,7 +67,7 @@ const PaymentUploadDialog: React.FC<PaymentUploadDialogProps> = ({
               type="file"
               accept="image/*,.pdf"
               onChange={handleFileSelect}
-              className="mt-1"
+              className="mt-1 border-gray-300 border"
             />
           </div>
           
