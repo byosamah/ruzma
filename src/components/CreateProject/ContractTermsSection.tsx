@@ -3,7 +3,7 @@ import { UseFormReturn } from 'react-hook-form';
 import { CreateProjectFormData } from '@/lib/validators/project';
 import { FormField, FormItem, FormLabel, FormControl, FormMessage } from '@/components/ui/form';
 import { Textarea } from '@/components/ui/textarea';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Switch } from '@/components/ui/switch';
 import { FileText, DollarSign, Target, RotateCcw } from 'lucide-react';
@@ -119,9 +119,9 @@ Not Included:
       render={({ field }) => (
         <FormItem>
           <div className="flex items-center justify-between mb-2">
-            <FormLabel>{label}</FormLabel>
+            <FormLabel className="text-sm font-medium text-gray-700">{label}</FormLabel>
             <div className="flex items-center gap-2">
-              <span className="text-sm text-muted-foreground">
+              <span className="text-sm text-gray-500">
                 {useDefaults[fieldName] ? 'Template' : 'Custom'}
               </span>
               <Switch
@@ -133,7 +133,7 @@ Not Included:
           <FormControl>
             <Textarea
               placeholder={useDefaults[fieldName] ? "Using template text..." : placeholder}
-              className="min-h-[200px] resize-y"
+              className="min-h-[200px] resize-y border-gray-200 focus:border-gray-400 focus:ring-0 text-sm"
               {...field}
               disabled={useDefaults[fieldName]}
               value={useDefaults[fieldName] ? defaultText : field.value}
@@ -151,27 +151,27 @@ Not Included:
   );
 
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle className="flex items-center gap-2">
-          <FileText className="h-5 w-5 text-primary" />
-          Contract Terms
-        </CardTitle>
-        <CardDescription>
+    <div className="bg-white rounded-lg border border-gray-200 overflow-hidden">
+      <div className="px-6 py-4 border-b border-gray-100">
+        <div className="flex items-center gap-2 mb-2">
+          <FileText className="h-5 w-5 text-gray-600" />
+          <h3 className="text-sm font-medium text-gray-900">Contract Terms</h3>
+        </div>
+        <p className="text-sm text-gray-500 mb-4">
           Define the contract terms and conditions for this project. These will be sent to your client for approval.
-        </CardDescription>
-        <div className="flex items-center justify-between mt-4 p-4 bg-muted/50 rounded-lg">
+        </p>
+        <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
           <div>
-            <h4 className="font-medium">Use Contract Templates</h4>
-            <p className="text-sm text-muted-foreground">Fill all sections with standard template text</p>
+            <h4 className="text-sm font-medium text-gray-900">Use Contract Templates</h4>
+            <p className="text-sm text-gray-500">Fill all sections with standard template text</p>
           </div>
           <Switch
             checked={useTemplates}
             onCheckedChange={handleMasterToggle}
           />
         </div>
-      </CardHeader>
-      <CardContent>
+      </div>
+      <div className="p-6 space-y-6">
         <Tabs defaultValue="contract" className="w-full">
           <TabsList className="grid w-full grid-cols-4">
             <TabsTrigger value="contract" className="flex items-center gap-1">
@@ -228,7 +228,7 @@ Not Included:
             )}
           </TabsContent>
         </Tabs>
-      </CardContent>
-    </Card>
+      </div>
+    </div>
   );
 };
