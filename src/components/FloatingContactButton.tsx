@@ -13,7 +13,7 @@ const FloatingContactButton = () => {
       <Tooltip>
         <TooltipTrigger asChild>
           <Link to="/contact">
-            <Button size="icon" variant="accent" className="h-12 w-12 sm:h-14 sm:w-14 rounded-full shadow-lg hover:shadow-xl transition-all duration-150 active:scale-95 bg-stone-200 hover:bg-stone-100">
+            <Button size="icon" variant="accent" className="h-12 w-12 sm:h-14 sm:w-14 rounded-full shadow-lg hover:shadow-xl transition-all duration-150 active:scale-95 bg-slate-50">
               <MessageCircle className="w-5 h-5 sm:w-6 sm:h-6" />
             </Button>
           </Link>
