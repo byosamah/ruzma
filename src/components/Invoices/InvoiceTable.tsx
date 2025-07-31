@@ -19,6 +19,7 @@ import InvoiceActionsMenu from './InvoiceActionsMenu';
 
 interface InvoiceTableProps {
   invoices: Invoice[];
+  profile?: any;
   onDownloadPDF: (id: string) => Promise<void>;
   onSendToClient: (id: string) => void;
   onDeleteInvoice: (id: string) => void;
@@ -26,6 +27,7 @@ interface InvoiceTableProps {
 
 const InvoiceTable: React.FC<InvoiceTableProps> = ({
   invoices,
+  profile,
   onDownloadPDF,
   onSendToClient,
   onDeleteInvoice
@@ -33,7 +35,7 @@ const InvoiceTable: React.FC<InvoiceTableProps> = ({
   const t = useT();
   const { user } = useAuth();
   const { language } = useLanguage();
-  const { formatCurrency } = useUserCurrency(user);
+  const { formatCurrency } = useUserCurrency(profile || user);
   const isRTL = language === 'ar';
 
   if (invoices.length === 0) {

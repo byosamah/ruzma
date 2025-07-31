@@ -1,6 +1,5 @@
 
 import React from 'react';
-import { User } from '@supabase/supabase-js';
 import { Card, CardContent } from '@/components/ui/card';
 // Icons replaced with emojis
 import { Invoice } from '@/hooks/useInvoices';
@@ -9,12 +8,12 @@ import { useT } from '@/lib/i18n';
 
 interface InvoicesStatsProps {
   invoices: Invoice[];
-  user: User | null;
+  profile: any;
 }
 
-const InvoicesStats: React.FC<InvoicesStatsProps> = ({ invoices, user }) => {
+const InvoicesStats: React.FC<InvoicesStatsProps> = ({ invoices, profile }) => {
   const t = useT();
-  const { formatCurrency } = useUserCurrency(user);
+  const { formatCurrency } = useUserCurrency(profile);
 
   const totalInvoices = invoices.length;
   const totalAmount = invoices.reduce((sum, invoice) => sum + invoice.amount, 0);

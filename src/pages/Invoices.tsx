@@ -76,10 +76,11 @@ const Invoices: React.FC = () => {
           </Button>
         </div>
 
-        <InvoicesStats invoices={invoices} user={user} />
+        <InvoicesStats invoices={invoices} profile={profile} />
 
         <InvoicesSection
           invoices={invoices}
+          profile={profile}
           searchTerm={searchTerm}
           setSearchTerm={setSearchTerm}
           statusFilter={statusFilter}

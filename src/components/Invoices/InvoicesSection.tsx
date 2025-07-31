@@ -8,6 +8,7 @@ import InvoiceTable from './InvoiceTable';
 
 interface InvoicesSectionProps {
   invoices: Invoice[];
+  profile?: any;
   searchTerm: string;
   setSearchTerm: (value: string) => void;
   statusFilter: InvoiceStatus | 'all';
@@ -19,6 +20,7 @@ interface InvoicesSectionProps {
 
 const InvoicesSection: React.FC<InvoicesSectionProps> = ({
   invoices,
+  profile,
   searchTerm,
   setSearchTerm,
   statusFilter,
@@ -44,7 +46,8 @@ const InvoicesSection: React.FC<InvoicesSectionProps> = ({
         />
         
         <InvoiceTable 
-          invoices={invoices} 
+          invoices={invoices}
+          profile={profile}
           onDownloadPDF={handleDownloadPDF} 
           onSendToClient={handleSendToClient} 
           onDeleteInvoice={handleDeleteInvoice} 
