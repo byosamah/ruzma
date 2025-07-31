@@ -82,7 +82,7 @@ const DashboardProjectList: React.FC<DashboardProjectListProps> = ({
         className={`mt-4 ${isMobile ? 'w-full min-h-[44px] touch-manipulation' : 'w-full sm:w-auto'}`}
         disabled={!canCreateProject}
       >
-        <span className="text-lg mr-2">➕</span>
+        <span className="text-xl mr-2">➕</span>
         {t('createFirstProject')}
       </Button>
     );
@@ -118,7 +118,7 @@ const DashboardProjectList: React.FC<DashboardProjectListProps> = ({
                   disabled={!canCreateProject}
                   className={`${!canCreateProject ? 'opacity-50 cursor-not-allowed' : ''} ${isMobile ? 'w-full min-h-[44px] touch-manipulation' : 'w-full sm:w-auto'}`}
                 >
-                  <span className="text-base mr-2">➕</span>
+                  <span className="text-lg mr-2">➕</span>
                   {t('newProject')}
                 </Button>
               </TooltipTrigger>
@@ -168,19 +168,19 @@ const DashboardProjectList: React.FC<DashboardProjectListProps> = ({
                       </p>
                       <div className={`${isMobile ? 'grid grid-cols-1 gap-2' : 'flex items-center flex-wrap gap-4'} text-sm text-slate-500`}>
                         <div className="flex items-center min-w-0">
-                          <span className="text-base mr-1 flex-shrink-0">📅</span>
+                          <span className="text-lg mr-1 flex-shrink-0">📅</span>
                           <span className="text-xs sm:text-sm truncate">
                             {new Date(project.created_at).toLocaleDateString()}
                           </span>
                         </div>
                         <div className="flex items-center min-w-0">
-                          <span className="text-base mr-1 flex-shrink-0">📄</span>
+                          <span className="text-lg mr-1 flex-shrink-0">📄</span>
                           <span className="text-xs sm:text-sm">
                             {completedMilestones}/{totalMilestones} {t('completed')}
                           </span>
                         </div>
                         <div className="flex items-center min-w-0">
-                          <span className="text-base mr-1 flex-shrink-0">💰</span>
+                          <span className="text-lg mr-1 flex-shrink-0">💰</span>
                           <span className="text-xs sm:text-sm truncate">
                             {totalValue.toFixed(2)} {currency}
                           </span>
@@ -205,7 +205,7 @@ const DashboardProjectList: React.FC<DashboardProjectListProps> = ({
                           onClick={() => onEdit(project.id)}
                           className={`${isMobile ? 'min-h-[44px] min-w-[44px] touch-manipulation' : 'h-8 w-8'} p-0`}
                         >
-                          <span className="text-base">✏️</span>
+                          <span className="text-lg">✏️</span>
                         </Button>
                         <Button
                           variant="ghost"
@@ -213,7 +213,7 @@ const DashboardProjectList: React.FC<DashboardProjectListProps> = ({
                           onClick={() => onDelete(project.id)}
                           className={`text-red-500 hover:text-red-700 ${isMobile ? 'min-h-[44px] min-w-[44px] touch-manipulation' : 'h-8 w-8'} p-0`}
                         >
-                          <span className="text-base">🗑️</span>
+                          <span className="text-lg">🗑️</span>
                         </Button>
                       </div>
                     </div>

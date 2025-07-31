@@ -61,8 +61,8 @@ const DashboardStats: React.FC<DashboardStatsProps> = ({
           <Card key={index} className="border-0 shadow-none bg-gray-50">
             <CardContent className="p-4">
               <div className="flex items-center space-x-3">
-                <div className="p-2 rounded-lg bg-white">
-                  <span className="text-base">{stat.emoji}</span>
+                <div className="p-2 rounded-lg">
+                  <span className="text-2xl">{stat.emoji}</span>
                 </div>
                 <div className="min-w-0 flex-1">
                   <p className="text-xs text-gray-500 truncate">{stat.title}</p>

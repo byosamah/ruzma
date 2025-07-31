@@ -63,14 +63,14 @@ export const UpcomingDeadlines: React.FC<UpcomingDeadlinesProps> = ({ projects }
     <Card className="border-0 shadow-none bg-gray-50">
       <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-3">
         <CardTitle className="text-sm font-medium text-gray-600">{t('upcomingDeadlines')}</CardTitle>
-        <span className="text-base text-gray-400">📅</span>
+        <span className="text-2xl text-gray-400">📅</span>
       </CardHeader>
       <CardContent className="pb-4">
         <div className="space-y-3">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-3">
-              <div className="p-2 rounded-lg bg-white">
-                <span className="text-base">{content.emoji}</span>
+              <div className="p-2 rounded-lg">
+                <span className="text-2xl">{content.emoji}</span>
               </div>
               <div className="min-w-0 flex-1">
                 <p className="text-lg font-medium text-gray-900 truncate">{content.title}</p>

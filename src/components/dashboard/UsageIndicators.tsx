@@ -69,7 +69,7 @@ export const UsageIndicators: React.FC<UsageIndicatorsProps> = ({
       <Card className="border-0 shadow-none bg-gray-50">
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-3">
           <CardTitle className="text-sm font-medium text-gray-600">{t('projectsUsed')}</CardTitle>
-          <span className="text-base text-gray-400">
+          <span className="text-2xl text-gray-400">
             {usage.projects.isUnlimited ? '♾️' : '📂'}
           </span>
         </CardHeader>
@@ -80,7 +80,7 @@ export const UsageIndicators: React.FC<UsageIndicatorsProps> = ({
                 {usage.projects.isUnlimited ? (
                   <div className="flex items-center gap-2">
                     {usage.projects.current}
-                    <span className="text-lg text-gray-600">♾️</span>
+                    <span className="text-2xl text-gray-600">♾️</span>
                   </div>
                 ) : (
                   `${usage.projects.current} ${t('of')} ${usage.projects.max}`
@@ -92,7 +92,7 @@ export const UsageIndicators: React.FC<UsageIndicatorsProps> = ({
                   onClick={handleUpgradeClick} 
                   className="text-xs px-3 py-1 font-medium bg-gray-900 hover:bg-gray-800 text-white border-0 shadow-none"
                 >
-                  <span className="text-xs mr-1">{getUpgradeButtonEmoji()}</span>
+                  <span className="text-lg mr-1">{getUpgradeButtonEmoji()}</span>
                   {getUpgradeButtonText()}
                 </Button>
               )}

@@ -25,7 +25,7 @@ const DashboardAnalyticsMetrics: React.FC<DashboardAnalyticsMetricsProps> = ({
       <Card>
         <CardHeader className="flex flex-row items-center justify-between pb-2">
           <CardTitle className="text-sm font-medium">{t('growthRate')}</CardTitle>
-          <span className="text-base">
+          <span className="text-2xl">
             {revenueGrowth >= 0 ? '📈' : '📉'}
           </span>
         </CardHeader>
@@ -41,7 +41,7 @@ const DashboardAnalyticsMetrics: React.FC<DashboardAnalyticsMetricsProps> = ({
       <Card>
         <CardHeader className="flex flex-row items-center justify-between pb-2">
           <CardTitle className="text-sm font-medium">{t('averageProjectValue')}</CardTitle>
-          <span className="text-base">🎯</span>
+          <span className="text-2xl">🎯</span>
         </CardHeader>
         <CardContent>
           <div className="text-2xl font-bold">
@@ -54,7 +54,7 @@ const DashboardAnalyticsMetrics: React.FC<DashboardAnalyticsMetricsProps> = ({
       <Card>
         <CardHeader className="flex flex-row items-center justify-between pb-2">
           <CardTitle className="text-sm font-medium">{t('completionRate')}</CardTitle>
-          <span className="text-base">📅</span>
+          <span className="text-2xl">📅</span>
         </CardHeader>
         <CardContent>
           <div className="text-2xl font-bold">{completionRate.toFixed(1)}%</div>
