@@ -1,3 +1,4 @@
+// Legacy hook - use useProfileQuery instead for new code
 import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { User } from '@supabase/supabase-js';

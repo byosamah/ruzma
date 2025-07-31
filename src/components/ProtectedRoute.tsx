@@ -1,10 +1,10 @@
 
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { Navigate } from 'react-router-dom';
 import { useAuth } from '@/hooks/core/useAuth';
+import { useProfileQuery } from '@/hooks/core/useProfileQuery';
 import { useLanguageNavigation } from '@/hooks/useLanguageNavigation';
 import { useLanguage } from '@/contexts/LanguageContext';
-import { supabase } from '@/integrations/supabase/client';
 
 interface ProtectedRouteProps {
   children: React.ReactNode | ((props: { user: any; profile: any }) => React.ReactNode);
@@ -12,37 +12,9 @@ interface ProtectedRouteProps {
 
 const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
   const { user, loading, authChecked } = useAuth();
+  const { data: profile, isLoading: profileLoading } = useProfileQuery(user);
   const { navigate } = useLanguageNavigation();
   const { language } = useLanguage();
-  const [profile, setProfile] = useState<any>(null);
-  const [profileLoading, setProfileLoading] = useState(true);
-
-  // Fetch profile data when user is available
-  useEffect(() => {
-    const fetchProfile = async () => {
-      if (!user) {
-        setProfile(null);
-        setProfileLoading(false);
-        return;
-      }
-
-      try {
-        const { data: profileData } = await supabase
-          .from('profiles')
-          .select('*')
-          .eq('id', user.id)
-          .maybeSingle();
-        
-        setProfile(profileData);
-      } catch (error) {
-        console.error('Error fetching profile:', error);
-      } finally {
-        setProfileLoading(false);
-      }
-    };
-
-    fetchProfile();
-  }, [user]);
 
   // Show loading while checking authentication or fetching profile
   if (loading || !authChecked || profileLoading) {
