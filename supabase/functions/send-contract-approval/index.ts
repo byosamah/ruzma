@@ -30,7 +30,7 @@ const handler = async (req: Request): Promise<Response> => {
 
     console.log('Processing contract approval request for project:', projectId);
 
-    // Get project details with milestones
+    // Get project details with milestones and user profile for currency
     const { data: project, error: projectError } = await supabaseClient
       .from('projects')
       .select(`
@@ -42,7 +42,8 @@ const handler = async (req: Request): Promise<Response> => {
           price,
           start_date,
           end_date
-        )
+        ),
+        profiles!inner(currency)
       `)
       .eq('id', projectId)
       .single();
@@ -65,6 +66,51 @@ const handler = async (req: Request): Promise<Response> => {
       console.error('Error updating project:', updateError);
       throw new Error('Failed to update project status');
     }
+
+    // Get user's preferred currency
+    const userCurrency = project.freelancer_currency || project.profiles?.currency || 'USD';
+    
+    // Currency formatting function
+    const formatCurrency = (amount: number, currency: string) => {
+      const currencySymbols: { [key: string]: string } = {
+        'USD': '$',
+        'EUR': '€',
+        'GBP': '£',
+        'JPY': '¥',
+        'CAD': 'C$',
+        'AUD': 'A$',
+        'CHF': 'CHF',
+        'CNY': '¥',
+        'SEK': 'kr',
+        'NZD': 'NZ$',
+        'MXN': '$',
+        'SGD': 'S$',
+        'HKD': 'HK$',
+        'NOK': 'kr',
+        'TRY': '₺',
+        'RUB': '₽',
+        'INR': '₹',
+        'BRL': 'R$',
+        'ZAR': 'R',
+        'KRW': '₩',
+        'PLN': 'zł',
+        'THB': '฿',
+        'IDR': 'Rp',
+        'HUF': 'Ft',
+        'CZK': 'Kč',
+        'ILS': '₪',
+        'CLP': '$',
+        'PHP': '₱',
+        'AED': 'AED',
+        'COP': '$',
+        'SAR': 'SAR',
+        'MYR': 'RM',
+        'RON': 'lei'
+      };
+      
+      const symbol = currencySymbols[currency] || currency;
+      return `${symbol}${amount.toLocaleString()}`;
+    };
 
     // Calculate total project value
     const totalValue = project.milestones.reduce((sum: number, milestone: any) => sum + Number(milestone.price), 0);
@@ -116,7 +162,7 @@ const handler = async (req: Request): Promise<Response> => {
               </div>
               <div>
                 <strong style="color: #495057;">Total Value:</strong>
-                <span style="color: #28a745; font-size: 18px; font-weight: bold; margin-left: 10px;">$${totalValue.toLocaleString()}</span>
+                <span style="color: #28a745; font-size: 18px; font-weight: bold; margin-left: 10px;">${formatCurrency(totalValue, userCurrency)}</span>
               </div>
               ${project.start_date ? `
               <div>
@@ -138,7 +184,7 @@ const handler = async (req: Request): Promise<Response> => {
                 <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 10px;">
                   <h4 style="margin: 0; color: #495057; font-size: 16px;">Milestone ${index + 1}: ${milestone.title}</h4>
                   <span style="background: #4B72E5; color: white; padding: 4px 12px; border-radius: 15px; font-size: 14px; font-weight: bold;">
-                    $${Number(milestone.price).toLocaleString()}
+                    ${formatCurrency(Number(milestone.price), userCurrency)}
                   </span>
                 </div>
                 <p style="margin: 10px 0; color: #6c757d; line-height: 1.5;">${milestone.description}</p>
