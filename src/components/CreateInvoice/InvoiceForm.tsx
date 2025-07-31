@@ -43,6 +43,13 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({ invoiceData, setInvoiceData }
     }));
   };
 
+  const handleClientEmailChange = (email: string) => {
+    setInvoiceData(prev => ({
+      ...prev,
+      selectedClientEmail: email
+    }));
+  };
+
   // Single effect to handle all project auto-population
   useEffect(() => {
     console.log('=== INVOICE AUTO-POPULATION DEBUG ===');
@@ -194,6 +201,7 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({ invoiceData, setInvoiceData }
       <BillingInformation 
         invoiceData={invoiceData}
         updateAddressField={updateAddressField}
+        onClientEmailChange={handleClientEmailChange}
       />
 
       <CurrencySelection 

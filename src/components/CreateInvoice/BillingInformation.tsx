@@ -15,11 +15,13 @@ import { useT } from '@/lib/i18n';
 interface BillingInformationProps {
   invoiceData: InvoiceFormData;
   updateAddressField: (section: 'billedTo' | 'payTo', field: 'name' | 'address', value: string) => void;
+  onClientEmailChange: (email: string) => void;
 }
 
 const BillingInformation: React.FC<BillingInformationProps> = ({
   invoiceData,
-  updateAddressField
+  updateAddressField,
+  onClientEmailChange
 }) => {
   const t = useT();
   const { user } = useAuth();
@@ -34,6 +36,7 @@ const BillingInformation: React.FC<BillingInformationProps> = ({
     const selectedClient = clients.find(client => client.email === clientEmail);
     if (selectedClient) {
       updateAddressField('billedTo', 'name', selectedClient.name);
+      onClientEmailChange(clientEmail);
     }
   };
 
@@ -42,6 +45,7 @@ const BillingInformation: React.FC<BillingInformationProps> = ({
     if (success) {
       // Auto-select the newly created client
       updateAddressField('billedTo', 'name', clientData.name);
+      onClientEmailChange(clientData.email);
     }
     return success;
   };
@@ -55,9 +59,9 @@ const BillingInformation: React.FC<BillingInformationProps> = ({
           </CardHeader>
           <CardContent className="space-y-4">
             <div>
-              <Select onValueChange={handleClientSelect}>
+              <Select onValueChange={handleClientSelect} value={invoiceData.selectedClientEmail || ""}>
                 <SelectTrigger className="border-gray-300 border">
-                  <SelectValue />
+                  <SelectValue placeholder="Select a client" />
                 </SelectTrigger>
                 <SelectContent>
                   {clients.map(client => (

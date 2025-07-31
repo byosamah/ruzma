@@ -104,7 +104,8 @@ const CreateInvoice: React.FC = () => {
                 billedTo: {
                   name: clientName,
                   address: ''
-                }
+                },
+                selectedClientEmail: project.client?.email || project.client_email || ''
               }));
             }
           }

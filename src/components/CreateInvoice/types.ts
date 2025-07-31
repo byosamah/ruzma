@@ -21,6 +21,7 @@ export interface InvoiceFormData {
   payTo: AddressInfo;
   currency: string;
   projectId?: string;
+  selectedClientEmail?: string;
   lineItems: LineItem[];
   subtotal: number;
   tax: number;
