@@ -83,7 +83,7 @@ const Dashboard = () => {
       <Button 
         onClick={handleNewProject} 
         size="lg" 
-        className="w-full px-6 py-3 text-base mobile-touch-target bg-gray-900 hover:bg-gray-800 text-white font-medium border-0 shadow-none" 
+        className="w-full px-4 sm:px-6 py-3 text-sm sm:text-base min-h-[48px] bg-gray-900 hover:bg-gray-800 text-white font-medium border-0 shadow-none touch-manipulation" 
         disabled={false}
       >
         <span className="text-lg sm:text-xl mr-2">{buttonEmoji}</span>
@@ -117,7 +117,7 @@ const Dashboard = () => {
         author={seoData.author}
         structuredData={seoData.structuredData}
       />
-      <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6 lg:py-8 space-y-6 sm:space-y-8">
+      <div className="w-full mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6 lg:py-8 space-y-4 sm:space-y-6 lg:space-y-8 max-w-7xl">
         {/* Dashboard Header with tutorial button integrated */}
         <header>
           <DashboardHeader 
@@ -146,18 +146,18 @@ const Dashboard = () => {
         
         {/* Projects Section */}
         <main>
-          <div className="space-y-4 sm:space-y-6">
-            <div className="flex flex-col space-y-4 sm:flex-row sm:items-center sm:justify-between sm:space-y-0">
+          <div className="space-y-3 sm:space-y-4">
+            <div className="flex flex-col space-y-3 sm:flex-row sm:items-center sm:justify-between sm:space-y-0">
               <h2 className="text-lg sm:text-xl font-medium text-gray-900">{t('yourProjects')}</h2>
             </div>
 
             {projects.length === 0 ? (
-              <div className="text-center py-8 sm:py-12 bg-white rounded-lg border border-gray-100">
+              <div className="text-center py-8 sm:py-12 bg-white rounded-lg border border-gray-100 mx-0">
                 <span className="text-4xl sm:text-6xl text-gray-300 mx-auto mb-4 block">📄</span>
                 <h3 className="text-base sm:text-lg font-medium text-gray-600 mb-2 px-4">
                   {t('noProjectsYet')}
                 </h3>
-                <p className="text-sm text-gray-500 mb-6 px-4 max-w-md mx-auto">
+                <p className="text-sm text-gray-500 mb-6 px-4 max-w-md mx-auto leading-relaxed">
                   {t('createFirstProjectDesc')}
                 </p>
                 <div className="px-4">

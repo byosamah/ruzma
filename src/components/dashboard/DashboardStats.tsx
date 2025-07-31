@@ -55,19 +55,19 @@ const DashboardStats: React.FC<DashboardStatsProps> = ({
   ];
 
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
+    <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-3 sm:gap-4">
       {stats.map((stat, index) => {
         return (
           <Card key={index} className="border-0 shadow-none bg-gray-50">
-            <CardContent className="p-4">
-              <div className="flex items-center space-x-3">
-                <div className="p-2 rounded-lg">
-                  <span className="text-2xl">{stat.emoji}</span>
+            <CardContent className="p-3 sm:p-4">
+              <div className="flex items-center space-x-2 sm:space-x-3">
+                <div className="p-1.5 sm:p-2 rounded-lg flex-shrink-0">
+                  <span className="text-lg sm:text-2xl">{stat.emoji}</span>
                 </div>
                 <div className="min-w-0 flex-1">
-                  <p className="text-xs text-gray-500 truncate">{stat.title}</p>
-                  <p className="text-lg font-medium text-gray-900 truncate">{stat.value}</p>
-                  <p className="text-xs text-gray-400 truncate">{stat.subtitle}</p>
+                  <p className="text-xs text-gray-500 truncate leading-tight">{stat.title}</p>
+                  <p className="text-base sm:text-lg font-medium text-gray-900 truncate leading-tight">{stat.value}</p>
+                  <p className="text-xs text-gray-400 truncate leading-tight">{stat.subtitle}</p>
                 </div>
               </div>
             </CardContent>
