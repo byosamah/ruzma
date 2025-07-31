@@ -4,7 +4,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
-import { Upload, Palette } from 'lucide-react';
+// Icons replaced with emojis
 import { ProfileFormData } from '@/hooks/profile/types';
 import { useT } from '@/lib/i18n';
 import { brandingService } from '@/services/brandingService';
@@ -70,7 +70,7 @@ export const BrandingSection = ({
       
       <div className="space-y-4">
         <h3 className="text-sm font-medium text-gray-900 flex items-center gap-2">
-          <Palette className="w-4 h-4" />
+          <span className="text-lg">🎨</span>
           {t('brandElements')}
         </h3>
         
@@ -87,7 +87,7 @@ export const BrandingSection = ({
                     className="w-full h-full object-contain rounded-lg"
                   />
                 ) : (
-                  <Upload className="w-5 h-5 text-gray-400" />
+                  <span className="text-2xl text-gray-400">📤</span>
                 )}
               </div>
               <div className="flex-1">
@@ -105,7 +105,7 @@ export const BrandingSection = ({
                   onClick={() => logoInputRef.current?.click()}
                   className="border-gray-200 text-gray-600 hover:bg-gray-50 mb-1"
                 >
-                  <Upload className="w-3 h-3 mr-1" />
+                  <span className="text-sm mr-1">📤</span>
                   {t('upload')}
                 </Button>
                 <p className="text-xs text-gray-500">PNG, JPG {t('upTo')} 2{t('mb')}</p>

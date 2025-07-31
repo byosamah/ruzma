@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
-import { Eye, Palette, User } from 'lucide-react';
+// Icons replaced with emojis
 import { FreelancerBranding, BrandingFormData } from '@/types/branding';
 import { useT } from '@/lib/i18n';
 
@@ -54,7 +54,7 @@ export const BrandingCard: React.FC<BrandingCardProps> = ({
     <Card className="bg-white/80 backdrop-blur-sm">
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
-          <Palette className="w-5 h-5" />
+          <span className="text-xl">🎨</span>
           Advanced Branding
         </CardTitle>
         <p className="text-sm text-slate-600">
@@ -70,7 +70,7 @@ export const BrandingCard: React.FC<BrandingCardProps> = ({
               variant="outline" 
               onClick={() => setShowPreview(!showPreview)}
             >
-              <Eye className="w-4 h-4 mr-2" />
+              <span className="text-lg mr-2">👁️</span>
               {showPreview ? 'Hide Preview' : 'Show Client Page Preview'}
             </Button>
             <Button type="submit" disabled={isSaving}>
@@ -96,7 +96,7 @@ export const BrandingCard: React.FC<BrandingCardProps> = ({
                       />
                     ) : (
                       <div className="w-12 h-12 bg-slate-200 rounded-lg flex items-center justify-center">
-                        <User className="w-6 h-6 text-slate-400" />
+                        <span className="text-2xl text-slate-400">👤</span>
                       </div>
                     )}
                   </div>

@@ -2,7 +2,7 @@
 import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Save } from 'lucide-react';
+// Icons replaced with emojis
 import { useT } from '@/lib/i18n';
 import { PersonalInfoSection } from './PersonalInfoSection';
 import { BrandingSection } from './BrandingSection';
@@ -91,7 +91,7 @@ export const PersonalInformationForm = ({
                 t('saved')
               ) : (
                 <>
-                  <Save className="w-4 h-4 mr-2" />
+                  <span className="text-lg mr-2">💾</span>
                   {t('saveChanges')}
                 </>
               )}

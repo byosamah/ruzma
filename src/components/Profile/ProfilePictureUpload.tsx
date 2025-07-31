@@ -1,7 +1,7 @@
 
 import React, { useRef } from 'react';
 import { Button } from '@/components/ui/button';
-import { Upload, Loader2 } from 'lucide-react';
+// Icons replaced with emojis
 import { useT } from '@/lib/i18n';
 
 interface ProfilePictureUploadProps {
@@ -48,12 +48,12 @@ export const ProfilePictureUpload = ({
       >
         {isUploading ? (
           <>
-            <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+            <span className="text-lg mr-2 animate-spin">🔄</span>
             {t('uploading')}...
           </>
         ) : (
           <>
-            <Upload className="w-4 h-4 mr-2" />
+            <span className="text-lg mr-2">📤</span>
             {t('uploadPhoto')}
           </>
         )}

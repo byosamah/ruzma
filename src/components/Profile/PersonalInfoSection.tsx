@@ -3,7 +3,7 @@ import React from 'react';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { User, Mail, Briefcase } from 'lucide-react';
+// Icons replaced with emojis
 import { EnhancedCurrencySelect } from '@/components/ui/enhanced-currency-select';
 import { CountrySelect } from '@/components/ui/country-select';
 import { useT } from '@/lib/i18n';
@@ -37,7 +37,7 @@ export const PersonalInfoSection = ({
         <div className="space-y-2">
           <Label htmlFor="name" className="text-sm text-gray-700">{t('fullName')} *</Label>
           <div className="relative">
-            <User className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
+            <span className="absolute left-3 top-3 text-lg text-gray-400">👤</span>
             <Input
               id="name"
               name="name"
@@ -52,7 +52,7 @@ export const PersonalInfoSection = ({
         <div className="space-y-2">
           <Label htmlFor="email" className="text-sm text-gray-700">{t('emailAddress')}</Label>
           <div className="relative">
-            <Mail className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
+            <span className="absolute left-3 top-3 text-lg text-gray-400">📧</span>
             <Input
               id="email"
               name="email"
@@ -96,7 +96,7 @@ export const PersonalInfoSection = ({
       <div className="space-y-2">
         <Label htmlFor="professionalTitle" className="text-sm text-gray-700">{t('professionalTitle')}</Label>
         <div className="relative">
-          <Briefcase className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
+          <span className="absolute left-3 top-3 text-lg text-gray-400">💼</span>
           <Input
             id="professionalTitle"
             name="professionalTitle"
