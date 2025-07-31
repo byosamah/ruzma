@@ -30,22 +30,24 @@ const AdvancedAnalyticsLayout: React.FC<AdvancedAnalyticsLayoutProps> = ({
   const t = useT();
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4 sm:space-y-6">
       <Tabs defaultValue="profitability" className="w-full">
-        <TabsList className="grid w-full grid-cols-2">
-          <TabsTrigger value="client-intelligence" className="flex items-center gap-2">
-            <span>👥</span>
-            Client Intelligence
+        <TabsList className="grid w-full grid-cols-2 h-auto">
+          <TabsTrigger value="client-intelligence" className="flex items-center gap-1 sm:gap-2 px-2 sm:px-3 py-2.5 text-xs sm:text-sm">
+            <span className="text-sm sm:text-base">👥</span>
+            <span className="hidden sm:inline">Client Intelligence</span>
+            <span className="sm:hidden">Clients</span>
           </TabsTrigger>
-          <TabsTrigger value="profitability" className="flex items-center gap-2">
-            <span>💰</span>
-            Profitability Analytics
+          <TabsTrigger value="profitability" className="flex items-center gap-1 sm:gap-2 px-2 sm:px-3 py-2.5 text-xs sm:text-sm">
+            <span className="text-sm sm:text-base">💰</span>
+            <span className="hidden sm:inline">Profitability Analytics</span>
+            <span className="sm:hidden">Profitability</span>
           </TabsTrigger>
         </TabsList>
 
         {/* Client Intelligence Tab */}
-        <TabsContent value="client-intelligence" className="space-y-6 mt-6">
-          <div className="space-y-6">
+        <TabsContent value="client-intelligence" className="space-y-4 sm:space-y-6 mt-4 sm:mt-6">
+          <div className="space-y-4 sm:space-y-6">
             {/* Client Lifetime Value */}
             <ClientLifetimeValue
               clients={data.clientIntelligence.topClientsByValue}
@@ -68,8 +70,8 @@ const AdvancedAnalyticsLayout: React.FC<AdvancedAnalyticsLayoutProps> = ({
         </TabsContent>
 
         {/* Profitability Analytics Tab */}
-        <TabsContent value="profitability" className="space-y-6 mt-6">
-          <div className="space-y-6">
+        <TabsContent value="profitability" className="space-y-4 sm:space-y-6 mt-4 sm:mt-6">
+          <div className="space-y-4 sm:space-y-6">
             {/* Basic Analytics Integration */}
             <AnalyticsMetrics
               revenueGrowth={basicAnalytics.revenueGrowth}
