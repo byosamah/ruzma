@@ -7,9 +7,9 @@ const ClientsHeader: React.FC = () => {
   const t = useT();
 
   return (
-    <div className="space-y-2">
-      <div className="flex items-center gap-3 flex-wrap">
-        <h1 className="text-2xl font-medium text-primary">{t('clients')}</h1>
+    <div className="space-y-2 sm:space-y-1">
+      <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3">
+        <h1 className="text-xl sm:text-2xl font-medium text-primary">{t('clients')}</h1>
         <YouTubePopup 
           videoId="bO9SF7XHl70"
           buttonText={t('knowMore')}

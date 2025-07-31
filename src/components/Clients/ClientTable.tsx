@@ -40,80 +40,138 @@ const ClientTable: React.FC<ClientTableProps> = ({
   }
 
   return (
-    <div className="overflow-x-auto">
-      <Table>
-        <TableHeader>
-          <TableRow className="border-gray-100">
-            <TableHead className={`text-xs font-medium text-gray-500 uppercase tracking-wide ${isRTL ? 'text-right' : 'text-left'}`}>
-              {t('clientName')}
-            </TableHead>
-            <TableHead className={`text-xs font-medium text-gray-500 uppercase tracking-wide ${isRTL ? 'text-right' : 'text-left'}`}>
-              {t('clientEmail')}
-            </TableHead>
-            <TableHead className={`text-xs font-medium text-gray-500 uppercase tracking-wide ${isRTL ? 'text-right' : 'text-left'}`}>
-              {t('connectedProjects')}
-            </TableHead>
-            <TableHead className={`text-xs font-medium text-gray-500 uppercase tracking-wide ${isRTL ? 'text-left' : 'text-right'}`}>
-              {t('actions')}
-            </TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {clients.map((client) => (
-            <TableRow key={client.id} className="border-gray-50 hover:bg-gray-50/50">
-              <TableCell className={isRTL ? 'text-right' : 'text-left'}>
-                <div className="flex items-center gap-3">
-                  <div className="client-avatar">
-                    <span className="text-xs font-medium text-secondary">
-                      {client.name.charAt(0).toUpperCase()}
-                    </span>
-                  </div>
-                  <span className="font-medium text-gray-900">{client.name}</span>
-                </div>
-              </TableCell>
-              <TableCell className={`text-gray-600 ${isRTL ? 'text-right' : 'text-left'}`}>
-                {client.email}
-              </TableCell>
-              <TableCell className={isRTL ? 'text-right' : 'text-left'}>
-                <Badge variant="secondary" className="bg-gray-100 text-gray-700 hover:bg-gray-100">
-                  {client.project_count} {client.project_count === 1 ? t('project') : t('projects')}
-                </Badge>
-              </TableCell>
-              <TableCell className={isRTL ? 'text-left' : 'text-right'}>
-                <DropdownMenu>
-                  <DropdownMenuTrigger asChild>
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      className="h-8 w-8 p-0 text-gray-400 hover:text-gray-600"
-                    >
-                      <span className="text-lg">⋯</span>
-                    </Button>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent align={isRTL ? 'start' : 'end'} className="w-40">
-                    <DropdownMenuItem onClick={() => onViewDetails(client)}>
-                      <span className="text-lg mr-2">👁️</span>
-                      {t('view')}
-                    </DropdownMenuItem>
-                    <DropdownMenuItem onClick={() => onEdit(client)}>
-                      <span className="text-lg mr-2">✏️</span>
-                      {t('edit')}
-                    </DropdownMenuItem>
-                    <DropdownMenuItem 
-                      onClick={() => onDelete(client)}
-                      className="text-red-600 focus:text-red-600"
-                    >
-                      <span className="text-lg mr-2">🗑️</span>
-                      {t('delete')}
-                    </DropdownMenuItem>
-                  </DropdownMenuContent>
-                </DropdownMenu>
-              </TableCell>
+    <>
+      {/* Desktop Table View */}
+      <div className="hidden sm:block overflow-x-auto">
+        <Table>
+          <TableHeader>
+            <TableRow className="border-gray-100">
+              <TableHead className={`text-xs font-medium text-gray-500 uppercase tracking-wide ${isRTL ? 'text-right' : 'text-left'}`}>
+                {t('clientName')}
+              </TableHead>
+              <TableHead className={`text-xs font-medium text-gray-500 uppercase tracking-wide ${isRTL ? 'text-right' : 'text-left'}`}>
+                {t('clientEmail')}
+              </TableHead>
+              <TableHead className={`text-xs font-medium text-gray-500 uppercase tracking-wide ${isRTL ? 'text-right' : 'text-left'}`}>
+                {t('connectedProjects')}
+              </TableHead>
+              <TableHead className={`text-xs font-medium text-gray-500 uppercase tracking-wide ${isRTL ? 'text-left' : 'text-right'}`}>
+                {t('actions')}
+              </TableHead>
             </TableRow>
-          ))}
-        </TableBody>
-      </Table>
-    </div>
+          </TableHeader>
+          <TableBody>
+            {clients.map((client) => (
+              <TableRow key={client.id} className="border-gray-50 hover:bg-gray-50/50">
+                <TableCell className={isRTL ? 'text-right' : 'text-left'}>
+                  <div className="flex items-center gap-3">
+                    <div className="client-avatar">
+                      <span className="text-xs font-medium text-secondary">
+                        {client.name.charAt(0).toUpperCase()}
+                      </span>
+                    </div>
+                    <span className="font-medium text-gray-900">{client.name}</span>
+                  </div>
+                </TableCell>
+                <TableCell className={`text-gray-600 ${isRTL ? 'text-right' : 'text-left'}`}>
+                  {client.email}
+                </TableCell>
+                <TableCell className={isRTL ? 'text-right' : 'text-left'}>
+                  <Badge variant="secondary" className="bg-gray-100 text-gray-700 hover:bg-gray-100">
+                    {client.project_count} {client.project_count === 1 ? t('project') : t('projects')}
+                  </Badge>
+                </TableCell>
+                <TableCell className={isRTL ? 'text-left' : 'text-right'}>
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        className="h-8 w-8 p-0 text-gray-400 hover:text-gray-600"
+                      >
+                        <span className="text-lg">⋯</span>
+                      </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align={isRTL ? 'start' : 'end'} className="w-40 bg-white z-50">
+                      <DropdownMenuItem onClick={() => onViewDetails(client)}>
+                        <span className="text-lg mr-2">👁️</span>
+                        {t('view')}
+                      </DropdownMenuItem>
+                      <DropdownMenuItem onClick={() => onEdit(client)}>
+                        <span className="text-lg mr-2">✏️</span>
+                        {t('edit')}
+                      </DropdownMenuItem>
+                      <DropdownMenuItem 
+                        onClick={() => onDelete(client)}
+                        className="text-red-600 focus:text-red-600"
+                      >
+                        <span className="text-lg mr-2">🗑️</span>
+                        {t('delete')}
+                      </DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </div>
+
+      {/* Mobile Card View */}
+      <div className="sm:hidden space-y-3">
+        {clients.map((client) => (
+          <div key={client.id} className="bg-white border border-gray-200 rounded-lg p-4 space-y-3">
+            <div className="flex items-start justify-between">
+              <div className="flex items-center gap-3 flex-1 min-w-0">
+                <div className="client-avatar flex-shrink-0">
+                  <span className="text-sm font-medium text-secondary">
+                    {client.name.charAt(0).toUpperCase()}
+                  </span>
+                </div>
+                <div className="min-w-0 flex-1">
+                  <h3 className="font-medium text-gray-900 truncate">{client.name}</h3>
+                  <p className="text-sm text-gray-600 truncate">{client.email}</p>
+                </div>
+              </div>
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className="h-8 w-8 p-0 text-gray-400 hover:text-gray-600 flex-shrink-0"
+                  >
+                    <span className="text-lg">⋯</span>
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="w-40 bg-white z-50">
+                  <DropdownMenuItem onClick={() => onViewDetails(client)}>
+                    <span className="text-lg mr-2">👁️</span>
+                    {t('view')}
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => onEdit(client)}>
+                    <span className="text-lg mr-2">✏️</span>
+                    {t('edit')}
+                  </DropdownMenuItem>
+                  <DropdownMenuItem 
+                    onClick={() => onDelete(client)}
+                    className="text-red-600 focus:text-red-600"
+                  >
+                    <span className="text-lg mr-2">🗑️</span>
+                    {t('delete')}
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            </div>
+            
+            <div className="flex items-center justify-between pt-2 border-t border-gray-100">
+              <Badge variant="secondary" className="bg-gray-100 text-gray-700 hover:bg-gray-100">
+                {client.project_count} {client.project_count === 1 ? t('project') : t('projects')}
+              </Badge>
+            </div>
+          </div>
+        ))}
+      </div>
+    </>
   );
 };
 

@@ -17,7 +17,7 @@ const ClientsStats: React.FC<ClientsStatsProps> = ({ clients }) => {
   const averageProjectsPerClient = totalClients > 0 ? (totalProjects / totalClients).toFixed(1) : '0';
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
       <StatCard
         emoji="👥"
         title={t('totalClients')}

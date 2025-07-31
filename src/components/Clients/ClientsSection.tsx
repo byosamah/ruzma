@@ -35,13 +35,13 @@ const ClientsSection: React.FC<ClientsSectionProps> = ({
   }, [clients, searchTerm]);
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-4 sm:space-y-6">
       <div className="flex items-center justify-between">
-        <h2 className="text-lg font-medium text-primary">{t('allClients')}</h2>
+        <h2 className="text-base sm:text-lg font-medium text-primary">{t('allClients')}</h2>
       </div>
       
       <div className="card-flat">
-        <div className="p-4 border-b border-gray-100">
+        <div className="p-3 sm:p-4 border-b border-gray-100">
           <ClientFilters
             searchTerm={searchTerm}
             onSearchChange={setSearchTerm}
@@ -49,7 +49,7 @@ const ClientsSection: React.FC<ClientsSectionProps> = ({
           />
         </div>
         
-        <div className="p-4">
+        <div className="p-3 sm:p-4">
           <ClientTable
             clients={filteredClients}
             onEdit={onEdit}
