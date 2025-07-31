@@ -8,7 +8,7 @@ import { InvoiceFormData } from './types';
 import { useAuth } from '@/hooks/core/useAuth';
 import { useUserCurrency } from '@/hooks/useUserCurrency';
 import { useT } from '@/lib/i18n';
-import { RotateCcw } from 'lucide-react';
+// Icons replaced with emojis
 
 interface CurrencySelectionProps {
   invoiceData: InvoiceFormData;
@@ -51,7 +51,7 @@ const CurrencySelection: React.FC<CurrencySelectionProps> = ({
                 onClick={resetToDefault}
                 className="h-6 px-2 text-xs text-muted-foreground hover:text-foreground"
               >
-                <RotateCcw className="w-3 h-3 mr-1" />
+                <span className="text-sm mr-1">🔄</span>
                 Reset to default ({userCurrency})
               </Button>
             )}

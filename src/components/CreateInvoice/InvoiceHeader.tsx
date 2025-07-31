@@ -5,7 +5,7 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Calendar } from '@/components/ui/calendar';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
-import { CalendarIcon, Upload } from 'lucide-react';
+// Icons replaced with emojis
 import { format } from 'date-fns';
 import { cn } from '@/lib/utils';
 import { InvoiceFormData } from './types';
@@ -66,7 +66,7 @@ const InvoiceHeader: React.FC<InvoiceHeaderProps> = ({ invoiceData, updateField 
                 <img src={invoiceData.logoUrl} alt="Logo" className="w-full h-full object-contain rounded-lg" />
               ) : (
                 <div className="text-center">
-                  <Upload className="w-6 h-6 text-gray-400 mx-auto mb-1" />
+                  <span className="text-2xl text-gray-400 mb-1 block">📤</span>
                   <span className="text-xs text-gray-500">
                     {branding?.logo_url ? t('useDifferentLogo') : t('addLogo')}
                   </span>
@@ -99,7 +99,7 @@ const InvoiceHeader: React.FC<InvoiceHeaderProps> = ({ invoiceData, updateField 
                     !invoiceData.invoiceDate && "text-muted-foreground"
                   )}
                 >
-                  <CalendarIcon className="mr-2 h-4 w-4" />
+                  <span className="mr-2 text-lg">📅</span>
                   {invoiceData.invoiceDate ? format(invoiceData.invoiceDate, "MM/dd/yyyy") : t('selectDate')}
                 </Button>
               </PopoverTrigger>
@@ -125,7 +125,7 @@ const InvoiceHeader: React.FC<InvoiceHeaderProps> = ({ invoiceData, updateField 
                     !invoiceData.dueDate && "text-muted-foreground"
                   )}
                 >
-                  <CalendarIcon className="mr-2 h-4 w-4" />
+                  <span className="mr-2 text-lg">📅</span>
                   {invoiceData.dueDate ? format(invoiceData.dueDate, "MM/dd/yyyy") : t('selectDate')}
                 </Button>
               </PopoverTrigger>

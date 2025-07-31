@@ -5,7 +5,7 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Button } from '@/components/ui/button';
-import { Plus } from 'lucide-react';
+// Icons replaced with emojis
 import { InvoiceFormData } from './types';
 import { useClients } from '@/hooks/useClients';
 import { useAuth } from '@/hooks/core/useAuth';
@@ -74,7 +74,7 @@ const BillingInformation: React.FC<BillingInformationProps> = ({
                   ))}
                   <SelectItem value="add-new">
                     <div className="flex items-center gap-2">
-                      <Plus className="w-4 h-4" />
+                      <span className="text-lg">➕</span>
                       {t('addNewClient')}
                     </div>
                   </SelectItem>

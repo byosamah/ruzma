@@ -1,6 +1,6 @@
 
 import React, { useState } from 'react';
-import { MoreHorizontal, Download, Send, Trash2, Loader2 } from 'lucide-react';
+// Icons replaced with emojis
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -62,7 +62,7 @@ const InvoiceActionsMenu: React.FC<InvoiceActionsMenuProps> = ({
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <Button variant="ghost" size="sm" className="h-8 w-8 p-0 hover:bg-gray-100">
-          <MoreHorizontal className="h-4 w-4 text-gray-500" />
+          <span className="text-lg text-gray-500">⋯</span>
           <span className="sr-only">{t('viewMore')}</span>
         </Button>
       </DropdownMenuTrigger>
@@ -73,9 +73,9 @@ const InvoiceActionsMenu: React.FC<InvoiceActionsMenuProps> = ({
           disabled={isDownloading}
         >
           {isDownloading ? (
-            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+            <span className="mr-2 text-lg animate-spin">🔄</span>
           ) : (
-            <Download className="mr-2 h-4 w-4" />
+            <span className="mr-2 text-lg">📥</span>
           )}
           {isDownloading ? 'Generating...' : t('downloadPDF')}
         </DropdownMenuItem>
@@ -85,9 +85,9 @@ const InvoiceActionsMenu: React.FC<InvoiceActionsMenuProps> = ({
           disabled={isSending}
         >
           {isSending ? (
-            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+            <span className="mr-2 text-lg animate-spin">🔄</span>
           ) : (
-            <Send className="mr-2 h-4 w-4" />
+            <span className="mr-2 text-lg">📧</span>
           )}
           {isSending ? 'Sending...' : t('sendToClient')}
         </DropdownMenuItem>
@@ -95,7 +95,7 @@ const InvoiceActionsMenu: React.FC<InvoiceActionsMenuProps> = ({
           onClick={handleDelete}
           className="text-red-600 hover:text-red-700 hover:bg-red-50 cursor-pointer"
         >
-          <Trash2 className="mr-2 h-4 w-4" />
+          <span className="mr-2 text-lg">🗑️</span>
           {t('deleteInvoice')}
         </DropdownMenuItem>
       </DropdownMenuContent>

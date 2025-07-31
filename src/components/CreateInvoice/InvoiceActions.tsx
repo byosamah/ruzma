@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { Button } from '@/components/ui/button';
-import { FileText } from 'lucide-react';
+// Icons replaced with emojis
 import { useT } from '@/lib/i18n';
 
 interface InvoiceActionsProps {
@@ -22,7 +22,7 @@ const InvoiceActions: React.FC<InvoiceActionsProps> = ({
         className="px-8"
         disabled={isLoading}
       >
-        <FileText className="w-4 h-4 mr-2" />
+        <span className="text-lg mr-2">📄</span>
         {t('createInvoice')}
       </Button>
     </div>

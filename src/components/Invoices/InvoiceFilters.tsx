@@ -2,7 +2,7 @@
 import React from 'react';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Search } from 'lucide-react';
+// Icons replaced with emojis
 import { InvoiceStatus } from '@/hooks/useInvoices';
 import { useT } from '@/lib/i18n';
 
@@ -24,7 +24,7 @@ const InvoiceFilters: React.FC<InvoiceFiltersProps> = ({
   return (
     <div className="flex flex-col sm:flex-row gap-3 items-start sm:items-center">
       <div className="relative flex-1 max-w-sm">
-        <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+        <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 text-lg">🔍</span>
         <Input
           placeholder={t('searchInvoices')}
           value={searchTerm}

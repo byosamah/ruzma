@@ -2,7 +2,7 @@
 import React from 'react';
 import { User } from '@supabase/supabase-js';
 import { Card, CardContent } from '@/components/ui/card';
-import { FileText, Coins, Clock, CheckCircle } from 'lucide-react';
+// Icons replaced with emojis
 import { Invoice } from '@/hooks/useInvoices';
 import { useUserCurrency } from '@/hooks/useUserCurrency';
 import { useT } from '@/lib/i18n';
@@ -23,28 +23,28 @@ const InvoicesStats: React.FC<InvoicesStatsProps> = ({ invoices, user }) => {
 
   const stats = [
     {
-      icon: FileText,
+      emoji: '📄',
       label: t('totalInvoices'),
       value: totalInvoices.toString(),
       bgColor: 'bg-gray-50',
       iconColor: 'text-gray-600'
     },
     {
-      icon: Coins,
+      emoji: '💰',
       label: t('totalAmount'),
       value: formatCurrency(totalAmount),
       bgColor: 'bg-green-50',
       iconColor: 'text-green-600'
     },
     {
-      icon: CheckCircle,
+      emoji: '✅',
       label: t('paidInvoices'),
       value: paidInvoices.toString(),
       bgColor: 'bg-blue-50',
       iconColor: 'text-blue-600'
     },
     {
-      icon: Clock,
+      emoji: '⏰',
       label: t('pendingInvoices'),
       value: pendingInvoices.toString(),
       bgColor: 'bg-orange-50',
@@ -55,13 +55,12 @@ const InvoicesStats: React.FC<InvoicesStatsProps> = ({ invoices, user }) => {
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
       {stats.map((stat, index) => {
-        const Icon = stat.icon;
         return (
           <Card key={index} className="border-0 shadow-none bg-gray-50">
             <CardContent className="p-4 sm:p-6">
               <div className="flex items-start space-x-3">
                 <div className={`p-2 rounded-lg flex-shrink-0 ${stat.bgColor}`}>
-                  <Icon className={`w-4 h-4 sm:w-5 sm:h-5 ${stat.iconColor}`} />
+                  <span className="text-xl">{stat.emoji}</span>
                 </div>
                 <div className="min-w-0 flex-1 overflow-hidden">
                   <p className="text-xs sm:text-sm text-gray-500 mb-1 break-words">{stat.label}</p>

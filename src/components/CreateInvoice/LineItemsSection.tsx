@@ -3,7 +3,7 @@ import React, { useEffect } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
-import { Plus, Trash2 } from 'lucide-react';
+// Icons replaced with emojis
 import { InvoiceFormData } from './types';
 import { useAuth } from '@/hooks/core/useAuth';
 import { useProjects } from '@/hooks/useProjects';
@@ -105,7 +105,7 @@ const LineItemsSection: React.FC<LineItemsSectionProps> = ({
                     size="sm"
                     onClick={() => removeLineItem(item.id)}
                   >
-                    <Trash2 className="w-4 h-4 text-red-500" />
+                    <span className="text-lg text-red-500">🗑️</span>
                   </Button>
                 )}
               </div>
@@ -117,7 +117,7 @@ const LineItemsSection: React.FC<LineItemsSectionProps> = ({
             onClick={addLineItem}
             className="text-blue-600 hover:text-blue-700"
           >
-            <Plus className="w-4 h-4 mr-2" />
+            <span className="text-lg mr-2">➕</span>
             {t('addCustomCharge')}
           </Button>
         </div>
@@ -134,7 +134,7 @@ const LineItemsSection: React.FC<LineItemsSectionProps> = ({
               className="text-blue-600 hover:text-blue-700 p-0 h-auto"
               onClick={() => setShowTaxInput(true)}
             >
-              <Plus className="w-4 h-4 mr-2" />
+              <span className="text-lg mr-2">➕</span>
               {t('addTax')}
             </Button>
           ) : (
