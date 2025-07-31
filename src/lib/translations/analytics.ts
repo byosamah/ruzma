@@ -101,6 +101,17 @@ export const analyticsTranslations = {
     pricingRecommendation: "Pricing Recommendation",
     basedOnYourPerformance: "Based on your performance data, you could increase your rates by",
     toPerProject: "per project. This could significantly boost your revenue while maintaining competitiveness.",
+    // Metric names for translation
+    projectCompletionRate: "Project Completion Rate",
+    revenueGrowthRate: "Revenue Growth Rate",
+    profitMargin: "Profit Margin",
+    monthlyRevenue: "Monthly Revenue",
+    clientAcquisitionRate: "Client Acquisition Rate",
+    // Time periods
+    thisWeek: "This Week",
+    lastWeek: "Last Week",
+    thisQuarter: "This Quarter",
+    lastQuarter: "Last Quarter",
   },
   ar: {
     analytics: "التحليلات",
@@ -203,5 +214,16 @@ export const analyticsTranslations = {
     pricingRecommendation: "توصية التسعير",
     basedOnYourPerformance: "بناءً على بيانات أدائك، يمكنك زيادة أسعارك بنسبة",
     toPerProject: "لكل مشروع. يمكن أن يؤدي هذا إلى زيادة إيراداتك بشكل كبير مع الحفاظ على القدرة التنافسية.",
+    // Metric names for translation
+    projectCompletionRate: "معدل إنجاز المشاريع",
+    revenueGrowthRate: "معدل نمو الإيرادات",
+    profitMargin: "هامش الربح",
+    monthlyRevenue: "الإيرادات الشهرية",
+    clientAcquisitionRate: "معدل كسب العملاء",
+    // Time periods
+    thisWeek: "هذا الأسبوع",
+    lastWeek: "الأسبوع الماضي",
+    thisQuarter: "هذا الربع",
+    lastQuarter: "الربع الماضي",
   },
 };

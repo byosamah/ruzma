@@ -15,6 +15,34 @@ const RevenueOptimization: React.FC<RevenueOptimizationProps> = ({
 }) => {
   const t = useT();
 
+  // Function to translate metric names
+  const translateMetric = (metric: string) => {
+    const translations: Record<string, string> = {
+      'Average Project Value': t('averageProjectValue'),
+      'Client Retention Rate': t('clientRetentionRate'),
+      'Project Completion Rate': t('projectCompletionRate'),
+      'Revenue Growth Rate': t('revenueGrowthRate'),
+      'Profit Margin': t('profitMargin'),
+      'Monthly Revenue': t('monthlyRevenue'),
+      'Client Acquisition Rate': t('clientAcquisitionRate'),
+    };
+    return translations[metric] || metric;
+  };
+
+  // Function to translate time periods
+  const translatePeriod = (period: string) => {
+    const translations: Record<string, string> = {
+      'This Month': t('thisMonth'),
+      'Last Month': t('lastMonth'),
+      'This Year': t('thisYear'),
+      'This Week': t('thisWeek'),
+      'Last Week': t('lastWeek'),
+      'This Quarter': t('thisQuarter'),
+      'Last Quarter': t('lastQuarter'),
+    };
+    return translations[period] || period;
+  };
+
   const getTrendEmoji = (trend: string) => {
     switch (trend) {
       case 'up': return '📈';
@@ -76,11 +104,11 @@ const RevenueOptimization: React.FC<RevenueOptimizationProps> = ({
                     {getTrendEmoji(metric.trend)}
                   </span>
                   <div>
-                    <p className="font-medium text-sm">
-                      {metric.metric}
+                    <p className="font-medium text-sm" dir={t('profitabilityMetrics') === 'مقاييس الربحية' ? 'rtl' : 'ltr'}>
+                      {translateMetric(metric.metric)}
                     </p>
-                    <p className="text-xs text-muted-foreground">
-                      {metric.period}
+                    <p className="text-xs text-muted-foreground" dir={t('profitabilityMetrics') === 'مقاييس الربحية' ? 'rtl' : 'ltr'}>
+                      {translatePeriod(metric.period)}
                     </p>
                   </div>
                 </div>
