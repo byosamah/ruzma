@@ -39,8 +39,8 @@ const MilestoneCard: React.FC<MilestoneCardProps> = ({
   token,
 }) => {
   return (
-    <Card className="bg-white border border-gray-100 hover:border-gray-200 transition-colors">
-      <CardContent className="p-6">
+    <Card className="bg-gray-50 border border-gray-100">
+      <CardContent className="p-4 sm:p-6">
         <MilestoneHeader 
           milestone={milestone} 
           currency={currency}

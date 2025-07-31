@@ -1,85 +1,66 @@
 
 import React from 'react';
-import { User, Briefcase } from 'lucide-react';
-import { useT } from '@/lib/i18n';
 import LanguageSelector from '@/components/LanguageSelector';
-import { useIsMobile } from '@/hooks/use-mobile';
 import { FreelancerBranding } from '@/types/branding';
+import { User } from 'lucide-react';
+import { useT } from '@/lib/i18n';
 
 interface BrandedClientHeaderProps {
-  branding: FreelancerBranding | null;
+  branding?: FreelancerBranding | null;
 }
 
-const BrandedClientHeader: React.FC<BrandedClientHeaderProps> = ({
-  branding
-}) => {
+const BrandedClientHeader: React.FC<BrandedClientHeaderProps> = ({ branding }) => {
   const t = useT();
-  const isMobile = useIsMobile();
-  const primaryColor = branding?.primary_color || '#4B72E5';
 
   return (
-    <div className="bg-white border-b border-border">
+    <div className="bg-white border-b border-gray-100">
       {/* Top Navigation Bar */}
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center space-x-2">
-            <div 
-              className="w-5 h-5 rounded flex items-center justify-center" 
-              style={{ backgroundColor: `${primaryColor}20` }}
-            >
-              <Briefcase className="w-3 h-3" style={{ color: primaryColor }} />
-            </div>
-            <span className="text-sm text-gray-600 font-medium">
+      <div className="bg-gray-50 border-b border-gray-100">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex items-center justify-between h-12">
+            <div className="text-sm text-gray-600">
               {t('clientProjectPortal')}
-            </span>
+            </div>
+            <LanguageSelector />
           </div>
-          <LanguageSelector />
         </div>
       </div>
-
-      {/* Freelancer Brand Section */}
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="flex items-center space-x-4">
-          {/* Logo */}
+      
+      {/* Freelancer Branding Section */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6">
+        <div className="flex items-start space-x-3 sm:space-x-4">
+          {/* Logo/Avatar */}
           <div className="flex-shrink-0">
-            <div 
-              className="w-12 h-12 rounded-lg bg-white border border-border flex items-center justify-center"
-            >
-              {branding?.logo_url ? (
-                <img 
-                  src={branding.logo_url} 
-                  alt={branding.freelancer_name || 'Freelancer Logo'} 
-                  className="w-10 h-10 object-contain rounded-md" 
-                />
-              ) : (
-                <User 
-                  className="w-6 h-6 text-gray-400" 
-                />
-              )}
-            </div>
+            {branding?.logo_url ? (
+              <img
+                src={branding.logo_url}
+                alt={`${branding.freelancer_name || 'Freelancer'} logo`}
+                className="w-10 h-10 sm:w-12 sm:h-12 rounded-lg object-cover border border-gray-200"
+              />
+            ) : (
+              <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-lg flex items-center justify-center bg-gray-100 border border-gray-200">
+                <User className="w-5 h-5 sm:w-6 sm:h-6 text-gray-400" />
+              </div>
+            )}
           </div>
-
+          
           {/* Freelancer Info */}
           <div className="flex-1 min-w-0">
-            <h1 className="text-lg font-semibold text-gray-900 truncate">
+            <h1 className="text-lg sm:text-xl font-medium text-gray-900 truncate">
               {branding?.freelancer_name || 'Professional Freelancer'}
             </h1>
-            
             {branding?.freelancer_title && (
-              <p className="text-sm text-gray-500 mt-1">
+              <p className="text-sm text-gray-600 mt-1">
                 {branding.freelancer_title}
+              </p>
+            )}
+            {branding?.freelancer_bio && (
+              <p className="text-sm text-gray-500 mt-2 line-clamp-2 leading-relaxed">
+                {branding.freelancer_bio}
               </p>
             )}
           </div>
         </div>
-
-        {branding?.freelancer_bio && (
-          <div className="mt-4">
-            <p className="text-sm text-gray-600 leading-relaxed">
-              {branding.freelancer_bio}
-            </p>
-          </div>
-        )}
       </div>
     </div>
   );

@@ -103,7 +103,7 @@ const ClientProject = () => {
       
       {/* Main Content - Only show if contract is approved or doesn't require approval */}
       {!needsContractApproval && !contractRejected && (
-        <main className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-6">
+        <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6 lg:py-8 space-y-4 sm:space-y-6">
           {/* Contract Status - Show for all approved contracts */}
           {project.contract_status && (
             <ClientContractStatus

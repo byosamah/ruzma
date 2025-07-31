@@ -1,11 +1,10 @@
 
 import React from 'react';
-import { Card, CardContent } from '@/components/ui/card';
-import { Calendar, Target, Coins } from 'lucide-react';
 import { useT } from '@/lib/i18n';
 import { formatCurrency, CurrencyCode } from '@/lib/currency';
 import { format } from 'date-fns';
 import { FreelancerBranding } from '@/types/branding';
+import { StatCard } from '@/components/shared';
 
 interface ProjectOverviewCardProps {
   projectName: string;
@@ -33,86 +32,61 @@ const ProjectOverviewCard: React.FC<ProjectOverviewCardProps> = ({
   const t = useT();
   const progressPercentage = totalMilestones > 0 ? (completedMilestones / totalMilestones) * 100 : 0;
 
+  const formatDateRange = () => {
+    if (startDate && endDate) {
+      return `${format(new Date(startDate), 'MMM d')} - ${format(new Date(endDate), 'MMM d')}`;
+    } else if (startDate) {
+      return `${t('starts')} ${format(new Date(startDate), 'MMM d, yyyy')}`;
+    } else if (endDate) {
+      return `${t('ends')} ${format(new Date(endDate), 'MMM d, yyyy')}`;
+    }
+    return t('noDateSet');
+  };
+
   return (
-    <Card className="bg-white border border-border">
-      <CardContent className="p-6">
-        <div className="space-y-6">
-          {/* Project Title and Brief */}
-          <div>
-            <h2 className="text-xl font-semibold text-gray-900 mb-2">
-              {projectName}
-            </h2>
-            {projectBrief && (
-              <p className="text-sm text-gray-600 leading-relaxed">
-                {projectBrief}
-              </p>
-            )}
-          </div>
+    <div className="space-y-4 sm:space-y-6">
+      {/* Project Title and Brief */}
+      <div className="bg-white rounded-lg border border-gray-100 p-4 sm:p-6">
+        <h2 className="text-lg sm:text-xl font-medium text-gray-900 mb-2">
+          {projectName}
+        </h2>
+        {projectBrief && (
+          <p className="text-sm text-gray-600 leading-relaxed">
+            {projectBrief}
+          </p>
+        )}
+      </div>
 
-          {/* Key Metrics */}
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-            <div className="flex items-center space-x-3">
-              <div className="w-8 h-8 bg-gray-50 rounded-lg flex items-center justify-center">
-                <Coins className="w-4 h-4 text-gray-600" />
-              </div>
-              <div>
-                <p className="text-xs text-gray-500 uppercase tracking-wide">{t('totalValue')}</p>
-                <p className="text-sm font-medium text-gray-900">
-                  {formatCurrency(totalValue, currency)}
-                </p>
-              </div>
-            </div>
+      {/* Project Stats */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <StatCard
+          emoji="💰"
+          title={t('totalValue')}
+          value={formatCurrency(totalValue, currency)}
+        />
 
-            <div className="flex items-center space-x-3">
-              <div className="w-8 h-8 bg-gray-50 rounded-lg flex items-center justify-center">
-                <Target className="w-4 h-4 text-gray-600" />
-              </div>
-              <div>
-                <p className="text-xs text-gray-500 uppercase tracking-wide">{t('progress')}</p>
-                <p className="text-sm font-medium text-gray-900">
-                  {completedMilestones}/{totalMilestones} {t('milestones')}
-                </p>
-              </div>
-            </div>
+        <StatCard
+          emoji="📊"
+          title={t('progress')}
+          value={`${completedMilestones}/${totalMilestones}`}
+          subtitle={t('milestones')}
+        />
 
-            {(startDate || endDate) && (
-              <div className="flex items-center space-x-3">
-                <div className="w-8 h-8 bg-gray-50 rounded-lg flex items-center justify-center">
-                  <Calendar className="w-4 h-4 text-gray-600" />
-                </div>
-                <div>
-                  <p className="text-xs text-gray-500 uppercase tracking-wide">{t('timeline')}</p>
-                  <p className="text-sm font-medium text-gray-900">
-                    {startDate && endDate 
-                      ? `${format(new Date(startDate), 'MMM d')} - ${format(new Date(endDate), 'MMM d')}`
-                      : startDate 
-                        ? `${t('starts')} ${format(new Date(startDate), 'MMM d, yyyy')}`
-                        : endDate 
-                          ? `${t('ends')} ${format(new Date(endDate), 'MMM d, yyyy')}`
-                          : t('noDateSet')
-                    }
-                  </p>
-                </div>
-              </div>
-            )}
-          </div>
+        <StatCard
+          emoji="✅"
+          title={t('completed')}
+          value={`${Math.round(progressPercentage)}%`}
+        />
 
-          {/* Progress Bar */}
-          <div>
-            <div className="flex items-center justify-between mb-2">
-              <span className="text-xs text-gray-500 uppercase tracking-wide">{t('projectProgress')}</span>
-              <span className="text-xs text-gray-600 font-medium">{Math.round(progressPercentage)}%</span>
-            </div>
-            <div className="w-full bg-gray-100 rounded-full h-2">
-              <div 
-                className="bg-gray-900 h-2 rounded-full transition-all duration-300"
-                style={{ width: `${progressPercentage}%` }}
-              />
-            </div>
-          </div>
-        </div>
-      </CardContent>
-    </Card>
+        {(startDate || endDate) && (
+          <StatCard
+            emoji="📅"
+            title={t('timeline')}
+            value={formatDateRange()}
+          />
+        )}
+      </div>
+    </div>
   );
 };
 
