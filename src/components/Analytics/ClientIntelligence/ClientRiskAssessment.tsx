@@ -25,7 +25,7 @@ const ClientRiskAssessment: React.FC<ClientRiskAssessmentProps> = ({
 
   const riskMetrics = [
     {
-      label: 'High Risk',
+      label: t('highRisk'),
       value: riskAssessment.highRisk,
       percentage: totalClients > 0 ? (riskAssessment.highRisk / totalClients) * 100 : 0,
       color: 'bg-red-500',
@@ -33,7 +33,7 @@ const ClientRiskAssessment: React.FC<ClientRiskAssessmentProps> = ({
       emoji: '🚨',
     },
     {
-      label: 'Medium Risk',
+      label: t('mediumRisk'),
       value: riskAssessment.mediumRisk,
       percentage: totalClients > 0 ? (riskAssessment.mediumRisk / totalClients) * 100 : 0,
       color: 'bg-yellow-500',
@@ -41,7 +41,7 @@ const ClientRiskAssessment: React.FC<ClientRiskAssessmentProps> = ({
       emoji: '⚠️',
     },
     {
-      label: 'Low Risk',
+      label: t('lowRisk'),
       value: riskAssessment.lowRisk,
       percentage: totalClients > 0 ? (riskAssessment.lowRisk / totalClients) * 100 : 0,
       color: 'bg-green-500',
@@ -56,7 +56,7 @@ const ClientRiskAssessment: React.FC<ClientRiskAssessmentProps> = ({
       <Card className="card-flat">
         <CardHeader className="pb-4">
           <CardTitle className="text-lg font-medium text-primary flex items-center gap-2">
-            🎯 Client Risk Assessment
+            🎯 {t('clientRiskAssessment')}
           </CardTitle>
         </CardHeader>
         <CardContent>
@@ -88,7 +88,7 @@ const ClientRiskAssessment: React.FC<ClientRiskAssessmentProps> = ({
       <Card className="card-flat">
         <CardHeader className="pb-4">
           <CardTitle className="text-lg font-medium text-primary">
-            Relationship Metrics
+            {t('relationshipMetrics')}
           </CardTitle>
         </CardHeader>
         <CardContent>
@@ -98,10 +98,10 @@ const ClientRiskAssessment: React.FC<ClientRiskAssessmentProps> = ({
                 {clientRetentionRate.toFixed(1)}%
               </div>
               <div className="text-sm text-muted-foreground mt-1">
-                Client Retention Rate
+                {t('clientRetentionRate')}
               </div>
               <div className="text-xs text-muted-foreground mt-1">
-                Clients with multiple projects
+                {t('clientsWithMultipleProjects')}
               </div>
             </div>
 
@@ -110,10 +110,10 @@ const ClientRiskAssessment: React.FC<ClientRiskAssessmentProps> = ({
                 {averageClientLifetime.toFixed(1)}
               </div>
               <div className="text-sm text-muted-foreground mt-1">
-                Average Client Lifetime
+                {t('averageClientLifetime')}
               </div>
               <div className="text-xs text-muted-foreground mt-1">
-                Months of collaboration
+                {t('monthsOfCollaboration')}
               </div>
             </div>
 
@@ -121,10 +121,10 @@ const ClientRiskAssessment: React.FC<ClientRiskAssessmentProps> = ({
               <div className="p-3 rounded-lg bg-red-50 border border-red-200">
                 <div className="flex items-center gap-2 text-red-700">
                   <span>⚠️</span>
-                  <span className="text-sm font-medium">Action Required</span>
+                  <span className="text-sm font-medium">{t('actionRequired')}</span>
                 </div>
                 <p className="text-xs text-red-600 mt-1">
-                  You have {riskAssessment.highRisk} high-risk client{riskAssessment.highRisk !== 1 ? 's' : ''} that may need attention.
+                  You have {riskAssessment.highRisk} {riskAssessment.highRisk !== 1 ? t('highRiskClientsMessage') : t('highRiskClientMessage')} {t('thatMayNeedAttention')}
                 </p>
               </div>
             )}

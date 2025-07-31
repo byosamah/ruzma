@@ -64,13 +64,13 @@ const ProjectTypeProfitability: React.FC<ProjectTypeProfitabilityProps> = ({
                       <div className="bg-background border rounded-lg shadow-lg p-3">
                         <p className="font-medium">{data.fullCategory}</p>
                         <p className="text-sm text-muted-foreground">
-                          {formatCurrency(data.revenue, userCurrency)} total
+                          {formatCurrency(data.revenue, userCurrency)} {t('total')}
                         </p>
                         <p className="text-sm text-muted-foreground">
-                          {data.projectCount} projects
+                          {data.projectCount} {t('projects')}
                         </p>
                         <p className="text-sm text-muted-foreground">
-                          {formatCurrency(data.revenuePerDay, userCurrency)}/day avg
+                          {formatCurrency(data.revenuePerDay, userCurrency)}/{t('day')} {t('avg')}
                         </p>
                       </div>
                     );
@@ -106,7 +106,7 @@ const ProjectTypeProfitability: React.FC<ProjectTypeProfitabilityProps> = ({
                     <div className="flex items-center gap-4 text-xs text-muted-foreground">
                       <span>{type.projectCount} {t('projects')}</span>
                       <span>{type.completionRate.toFixed(1)}% {t('completed')}</span>
-                      <span>{type.clientSatisfactionProxy.toFixed(1)}% repeat rate</span>
+                      <span>{type.clientSatisfactionProxy.toFixed(1)}% {t('repeatRate')}</span>
                     </div>
                   </div>
                 </div>
@@ -115,7 +115,7 @@ const ProjectTypeProfitability: React.FC<ProjectTypeProfitabilityProps> = ({
                     {formatCurrency(type.totalRevenue, userCurrency)}
                   </p>
                   <p className="text-xs text-muted-foreground">
-                    {formatCurrency(type.revenuePerDay, userCurrency)}/day
+                    {formatCurrency(type.revenuePerDay, userCurrency)}/{t('day')}
                   </p>
                 </div>
               </div>

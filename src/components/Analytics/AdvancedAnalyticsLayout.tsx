@@ -35,13 +35,13 @@ const AdvancedAnalyticsLayout: React.FC<AdvancedAnalyticsLayoutProps> = ({
         <TabsList className="grid w-full grid-cols-2 h-auto">
           <TabsTrigger value="client-intelligence" className="flex items-center gap-1 sm:gap-2 px-2 sm:px-3 py-2.5 text-xs sm:text-sm">
             <span className="text-sm sm:text-base">👥</span>
-            <span className="hidden sm:inline">Client Intelligence</span>
-            <span className="sm:hidden">Clients</span>
+            <span className="hidden sm:inline">{t('clientIntelligence')}</span>
+            <span className="sm:hidden">{t('clientIntelligenceShort')}</span>
           </TabsTrigger>
           <TabsTrigger value="profitability" className="flex items-center gap-1 sm:gap-2 px-2 sm:px-3 py-2.5 text-xs sm:text-sm">
             <span className="text-sm sm:text-base">💰</span>
-            <span className="hidden sm:inline">Profitability Analytics</span>
-            <span className="sm:hidden">Profitability</span>
+            <span className="hidden sm:inline">{t('profitabilityAnalytics')}</span>
+            <span className="sm:hidden">{t('profitabilityShort')}</span>
           </TabsTrigger>
         </TabsList>
 

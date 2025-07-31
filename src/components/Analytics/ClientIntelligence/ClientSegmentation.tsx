@@ -30,11 +30,11 @@ const ClientSegmentation: React.FC<ClientSegmentationProps> = ({
 
   const getSegmentLabel = (segment: string) => {
     switch (segment) {
-      case 'champion': return 'Champions';
-      case 'growing': return 'Growing';
-      case 'stable': return 'Stable';
-      case 'at-risk': return 'At Risk';
-      case 'one-time': return 'One-time';
+      case 'champion': return t('champions');
+      case 'growing': return t('growing');
+      case 'stable': return t('stable');
+      case 'at-risk': return t('atRisk');
+      case 'one-time': return t('oneTime');
       default: return segment;
     }
   };
@@ -48,7 +48,7 @@ const ClientSegmentation: React.FC<ClientSegmentationProps> = ({
   }));
 
   const chartConfig = {
-    count: { label: "Clients", color: "hsl(var(--chart-1))" },
+    count: { label: t('clients'), color: "hsl(var(--chart-1))" },
   };
 
   return (
@@ -57,7 +57,7 @@ const ClientSegmentation: React.FC<ClientSegmentationProps> = ({
       <Card className="card-flat">
         <CardHeader className="pb-4">
           <CardTitle className="text-lg font-medium text-primary flex items-center gap-2">
-            📊 Client Segments
+            📊 {t('clientSegments')}
           </CardTitle>
         </CardHeader>
         <CardContent>
@@ -84,10 +84,10 @@ const ClientSegmentation: React.FC<ClientSegmentationProps> = ({
                       <div className="bg-background border rounded-lg shadow-lg p-3">
                         <p className="font-medium">{data.name}</p>
                         <p className="text-sm text-muted-foreground">
-                          {data.value} clients
+                          {data.value} {t('clients')}
                         </p>
                         <p className="text-sm text-muted-foreground">
-                          {formatCurrency(data.totalValue, userCurrency)} total value
+                          {formatCurrency(data.totalValue, userCurrency)} {t('total')} value
                         </p>
                       </div>
                     );
@@ -107,7 +107,7 @@ const ClientSegmentation: React.FC<ClientSegmentationProps> = ({
       <Card className="card-flat">
         <CardHeader className="pb-4">
           <CardTitle className="text-lg font-medium text-primary">
-            Segment Details
+            {t('segmentDetails')}
           </CardTitle>
         </CardHeader>
         <CardContent>
@@ -123,7 +123,7 @@ const ClientSegmentation: React.FC<ClientSegmentationProps> = ({
                       {getSegmentLabel(segment.segment)}
                     </p>
                     <p className="text-xs text-muted-foreground">
-                      {segment.count} clients
+                      {segment.count} {t('clients')}
                     </p>
                   </div>
                 </div>
@@ -132,7 +132,7 @@ const ClientSegmentation: React.FC<ClientSegmentationProps> = ({
                     {formatCurrency(segment.totalValue, userCurrency)}
                   </p>
                   <p className="text-xs text-muted-foreground">
-                    {formatCurrency(segment.avgValue, userCurrency)} avg
+                    {formatCurrency(segment.avgValue, userCurrency)} {t('avg')}
                   </p>
                 </div>
               </div>

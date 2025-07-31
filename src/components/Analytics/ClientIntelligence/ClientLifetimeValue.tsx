@@ -37,14 +37,14 @@ const ClientLifetimeValue: React.FC<ClientLifetimeValueProps> = ({
     <Card className="card-flat">
       <CardHeader className="pb-4">
         <CardTitle className="text-lg font-medium text-primary flex items-center gap-2">
-          👑 Top Clients by Lifetime Value
+          👑 {t('topClientsByLifetimeValue')}
         </CardTitle>
       </CardHeader>
       <CardContent>
         <div className="space-y-4">
           {topClients.length === 0 ? (
             <p className="text-sm text-muted-foreground text-center py-8">
-              No client data available yet
+              {t('noClientDataAvailable')}
             </p>
           ) : (
             topClients.map((client, index) => (
@@ -63,9 +63,9 @@ const ClientLifetimeValue: React.FC<ClientLifetimeValueProps> = ({
                       </span>
                     </div>
                     <div className="flex items-center gap-4 text-xs text-muted-foreground">
-                      <span>{client.totalProjects} projects</span>
+                      <span>{client.totalProjects} {t('projects')}</span>
                       <span className={getRiskColor(client.riskLevel)}>
-                        {client.riskLevel} risk
+                        {client.riskLevel} {t('risk')}
                       </span>
                     </div>
                   </div>
@@ -75,7 +75,7 @@ const ClientLifetimeValue: React.FC<ClientLifetimeValueProps> = ({
                     {formatCurrency(client.lifetimeValue, userCurrency)}
                   </p>
                   <p className="text-xs text-muted-foreground">
-                    {formatCurrency(client.avgProjectValue, userCurrency)} avg
+                    {formatCurrency(client.avgProjectValue, userCurrency)} {t('avg')}
                   </p>
                 </div>
               </div>

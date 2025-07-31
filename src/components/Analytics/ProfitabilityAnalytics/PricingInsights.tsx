@@ -31,7 +31,7 @@ const PricingInsights: React.FC<PricingInsightsProps> = ({
   const t = useT();
 
   const chartConfig = {
-    avgPrice: { label: "Average Price", color: "hsl(var(--chart-1))" },
+    avgPrice: { label: t('averageProjectValue'), color: "hsl(var(--chart-1))" },
   };
 
   return (
@@ -64,10 +64,10 @@ const PricingInsights: React.FC<PricingInsightsProps> = ({
                       <div className="bg-background border rounded-lg shadow-lg p-3">
                         <p className="font-medium">{label}</p>
                         <p className="text-sm text-muted-foreground">
-                          Avg: {formatCurrency(data.avgPrice, userCurrency)}
+                          {t('avg')}: {formatCurrency(data.avgPrice, userCurrency)}
                         </p>
                         <p className="text-sm text-muted-foreground">
-                          {data.projectCount} projects
+                          {data.projectCount} {t('projects')}
                         </p>
                       </div>
                     );
@@ -129,13 +129,13 @@ const PricingInsights: React.FC<PricingInsightsProps> = ({
             <div className="mt-4 p-4 rounded-lg bg-blue-50 border border-blue-200">
               <div className="flex items-center gap-2 text-blue-700 mb-2">
                 <span>💡</span>
-                <span className="font-medium text-sm">Pricing Recommendation</span>
+                <span className="font-medium text-sm">{t('pricingRecommendation')}</span>
               </div>
               <p className="text-sm text-blue-600">
-                Based on your performance data, you could increase your rates by{' '}
+                {t('basedOnYourPerformance')}{' '}
                 <strong>{revenueOptimization.potentialIncrease.toFixed(1)}%</strong> to{' '}
                 <strong>{formatCurrency(revenueOptimization.suggestedRate, userCurrency)}</strong>{' '}
-                per project. This could significantly boost your revenue while maintaining competitiveness.
+                {t('toPerProject')}
               </p>
             </div>
           )}
