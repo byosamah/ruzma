@@ -79,14 +79,34 @@ const CreateInvoice: React.FC = () => {
             .eq('user_id', user.id)
             .maybeSingle();
 
-          if (project?.client) {
-            setInvoiceData(prev => ({
-              ...prev,
-              billedTo: {
-                name: project.client.name,
-                address: ''
-              }
-            }));
+          if (project) {
+            let clientName = '';
+            
+            // Case 1: Project has a client_id with valid relationship
+            if (project.client) {
+              clientName = project.client.name;
+            }
+            // Case 2: Project has client_email but no client_id, try to find client by email
+            else if (project.client_email) {
+              const { data: clientByEmail } = await supabase
+                .from('clients')
+                .select('name, email')
+                .eq('email', project.client_email)
+                .eq('user_id', user.id)
+                .maybeSingle();
+              
+              clientName = clientByEmail?.name || project.client_email;
+            }
+
+            if (clientName) {
+              setInvoiceData(prev => ({
+                ...prev,
+                billedTo: {
+                  name: clientName,
+                  address: ''
+                }
+              }));
+            }
           }
         } catch (error) {
           console.error('Error fetching project client:', error);
