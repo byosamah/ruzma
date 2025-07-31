@@ -53,10 +53,10 @@ export const useCreateProjectSubmission = () => {
       console.log('Creating project for user:', user.id);
       securityMonitor.monitorDataModification('projects', 'create', { userId: user.id });
 
-      // Get user profile to check current status
+      // Get user profile to check current status and currency
       const { data: profile, error: profileError } = await supabase
         .from('profiles')
-        .select('user_type, project_count, full_name')
+        .select('user_type, project_count, full_name, currency')
         .eq('id', user.id)
         .single();
 
@@ -198,7 +198,7 @@ export const useCreateProjectSubmission = () => {
       // Calculate project dates from milestones
       const { start_date, end_date } = calculateProjectDates(data.milestones);
 
-      // Create the project with proper client linking and payment proof requirement
+      // Create the project with proper client linking, payment proof requirement, and user currency
       const { data: project, error: projectError } = await supabase
         .from('projects')
         .insert({
@@ -215,6 +215,7 @@ export const useCreateProjectSubmission = () => {
           payment_terms: data.paymentTerms || null,
           project_scope: data.projectScope || null,
           revision_policy: data.revisionPolicy || null,
+          freelancer_currency: profile.currency || 'USD',
           contract_approval_token: crypto.randomUUID(),
           contract_status: (clientEmail && data.contractRequired) ? 'pending' : null,
           slug: '', // Temporary value, will be overwritten by trigger
