@@ -80,10 +80,10 @@ const CreateProject: React.FC<CreateProjectProps> = ({ user, profile }) => {
   return (
     <Layout user={profile || user} onSignOut={handleSignOut}>
       <div className="min-h-screen bg-gray-50/30">
-        <div className="max-w-3xl mx-auto px-4 py-8 space-y-8">
+        <div className="w-full max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6 lg:py-8 space-y-6 sm:space-y-8">
           {/* Header */}
-          <div className="space-y-2">
-            <h1 className="text-2xl font-semibold text-gray-900">
+          <div className="space-y-1 sm:space-y-2">
+            <h1 className="text-xl sm:text-2xl font-semibold text-gray-900">
               {templateData ? t('createProjectFromTemplate') : t('createNewProject')}
             </h1>
             <p className="text-gray-600 text-sm">
@@ -93,7 +93,7 @@ const CreateProject: React.FC<CreateProjectProps> = ({ user, profile }) => {
 
           {/* Form */}
           <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 sm:space-y-6">
               <ProjectDetailsForm user={user} />
               <PaymentProofSettings />
               <MilestonesList user={user} />

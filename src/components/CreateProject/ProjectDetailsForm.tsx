@@ -14,11 +14,11 @@ const ProjectDetailsForm = ({ user }: { user?: any }) => {
 
   return (
     <div className="bg-white rounded-lg border border-gray-200 overflow-hidden">
-      <div className="px-6 py-4 border-b border-gray-100">
+      <div className="px-4 sm:px-6 py-3 sm:py-4 border-b border-gray-100">
         <h3 className="text-sm font-medium text-gray-900">{t('projectDetails')}</h3>
       </div>
       
-      <div className="p-6 space-y-5">
+      <div className="p-4 sm:p-6 space-y-4 sm:space-y-5">
         <FormField
           control={control}
           name="name"
@@ -30,7 +30,7 @@ const ProjectDetailsForm = ({ user }: { user?: any }) => {
               <FormControl>
                 <Input 
                   placeholder={t('projectNamePlaceholder')} 
-                  className="border-gray-300 border"
+                  className="border-gray-300 border h-10 sm:h-9 text-base sm:text-sm"
                   {...field} 
                 />
               </FormControl>
@@ -51,7 +51,7 @@ const ProjectDetailsForm = ({ user }: { user?: any }) => {
                 <Textarea 
                   placeholder={t('projectBriefPlaceholder')} 
                   rows={3} 
-                  className="border-gray-300 border"
+                  className="border-gray-300 border text-base sm:text-sm resize-none"
                   {...field} 
                 />
               </FormControl>

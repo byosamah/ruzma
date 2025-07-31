@@ -30,13 +30,13 @@ const MilestonesList: React.FC<MilestonesListProps> = ({ user }) => {
 
   return (
     <div className="bg-white rounded-lg border border-gray-200 overflow-hidden">
-      <div className="px-6 py-4 border-b border-gray-100">
+      <div className="px-4 sm:px-6 py-3 sm:py-4 border-b border-gray-100">
         <h3 className="text-sm font-medium text-gray-900">{t('projectMilestones')}</h3>
       </div>
       
-      <div className="p-6 space-y-6">
+      <div className="p-4 sm:p-6 space-y-4 sm:space-y-6">
         {fields.map((field, index) => (
-          <div key={field.id} className="border border-gray-100 rounded-lg p-4 space-y-4 bg-gray-50/30">
+          <div key={field.id} className="border border-gray-100 rounded-lg p-3 sm:p-4 space-y-3 sm:space-y-4 bg-gray-50/30">
             <div className="flex justify-between items-center">
               <h4 className="text-sm font-medium text-gray-800">
                 {t('milestoneLabel', { index: (index + 1).toString() })}
@@ -47,14 +47,14 @@ const MilestonesList: React.FC<MilestonesListProps> = ({ user }) => {
                   variant="ghost"
                   size="sm"
                   onClick={() => remove(index)}
-                  className="text-gray-400 hover:text-red-600 hover:bg-red-50 p-1 h-auto"
+                  className="text-gray-400 hover:text-red-600 hover:bg-red-50 p-1 h-auto mobile-touch-target"
                 >
-                  <span className="text-sm">🗑️</span>
+                  <span className="text-base sm:text-sm">🗑️</span>
                 </Button>
               )}
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
               <FormField
                 control={control}
                 name={`milestones.${index}.title`}
@@ -66,7 +66,7 @@ const MilestonesList: React.FC<MilestonesListProps> = ({ user }) => {
                     <FormControl>
                       <Input 
                         placeholder={t('milestoneTitlePlaceholder')} 
-                        className="border-gray-200 focus:border-gray-400 focus:ring-0 text-sm h-9"
+                        className="border-gray-200 focus:border-gray-400 focus:ring-0 text-sm h-10 sm:h-9"
                         {...field} 
                       />
                     </FormControl>
@@ -88,7 +88,7 @@ const MilestonesList: React.FC<MilestonesListProps> = ({ user }) => {
                         min="0"
                         step="0.01"
                         placeholder="0.00"
-                        className="border-gray-200 focus:border-gray-400 focus:ring-0 text-sm h-9"
+                        className="border-gray-200 focus:border-gray-400 focus:ring-0 text-sm h-10 sm:h-9"
                         {...field}
                       />
                     </FormControl>
@@ -98,7 +98,7 @@ const MilestonesList: React.FC<MilestonesListProps> = ({ user }) => {
               />
             </div>
             
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
               <FormField
                 control={control}
                 name={`milestones.${index}.start_date`}
@@ -108,7 +108,7 @@ const MilestonesList: React.FC<MilestonesListProps> = ({ user }) => {
                     <FormControl>
                       <Input 
                         type="date" 
-                        className="border-gray-200 focus:border-gray-400 focus:ring-0 text-sm h-9"
+                        className="border-gray-200 focus:border-gray-400 focus:ring-0 text-sm h-10 sm:h-9"
                         {...field} 
                       />
                     </FormControl>
@@ -125,7 +125,7 @@ const MilestonesList: React.FC<MilestonesListProps> = ({ user }) => {
                     <FormControl>
                       <Input 
                         type="date" 
-                        className="border-gray-200 focus:border-gray-400 focus:ring-0 text-sm h-9"
+                        className="border-gray-200 focus:border-gray-400 focus:ring-0 text-sm h-10 sm:h-9"
                         {...field} 
                       />
                     </FormControl>
@@ -159,15 +159,15 @@ const MilestonesList: React.FC<MilestonesListProps> = ({ user }) => {
         ))}
         
         {/* Add Milestone Button - Now positioned after all milestones */}
-        <div className="flex justify-center pt-4">
+        <div className="flex justify-center pt-2 sm:pt-4">
           <Button 
             type="button" 
             onClick={addMilestone} 
             variant="outline" 
             size="sm"
-            className="text-gray-600 hover:text-gray-900 hover:bg-gray-50 text-sm font-medium"
+            className="text-gray-600 hover:text-gray-900 hover:bg-gray-50 text-sm font-medium mobile-touch-target"
           >
-            <span className="text-lg mr-2">➕</span>
+            <span className="text-base sm:text-lg mr-2">➕</span>
             {t('addMilestone')}
           </Button>
         </div>

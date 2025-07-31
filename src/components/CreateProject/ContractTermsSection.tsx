@@ -163,17 +163,17 @@ Not Included:
 
   return (
     <div className="bg-white rounded-lg border border-gray-200 overflow-hidden">
-      <div className="px-6 py-4 border-b border-gray-100">
+      <div className="px-4 sm:px-6 py-3 sm:py-4 border-b border-gray-100">
         <div className="flex items-center gap-2 mb-2">
-          <span className="text-xl text-gray-600">📄</span>
+          <span className="text-base sm:text-xl text-gray-600">📄</span>
           <h3 className="text-sm font-medium text-gray-900">Contract Terms</h3>
         </div>
-        <p className="text-sm text-gray-500 mb-4">
+        <p className="text-sm text-gray-500 mb-3 sm:mb-4">
           Configure contract requirements and terms for this project.
         </p>
 
         {/* Contract Required Toggle */}
-        <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg mb-4">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between p-3 sm:p-4 bg-gray-50 rounded-lg mb-3 sm:mb-4 space-y-2 sm:space-y-0">
           <div>
             <h4 className="text-sm font-medium text-gray-900">Require Contract Approval</h4>
             <p className="text-sm text-gray-500">Client must approve contract terms before accessing the project</p>
@@ -195,8 +195,8 @@ Not Included:
         </div>
 
         {!contractRequired && (
-          <Alert className="mb-4">
-            <span className="text-lg">⚠️</span>
+          <Alert className="mb-3 sm:mb-4">
+            <span className="text-base sm:text-lg">⚠️</span>
             <AlertDescription>
               Contract approval disabled - clients can access project immediately without signing any contract.
             </AlertDescription>
@@ -204,7 +204,7 @@ Not Included:
         )}
 
         {contractRequired && (
-          <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between p-3 sm:p-4 bg-gray-50 rounded-lg space-y-2 sm:space-y-0">
             <div>
               <h4 className="text-sm font-medium text-gray-900">Use a template for all sections</h4>
               <p className="text-sm text-gray-500">Fill all sections with standard template text</p>
@@ -215,24 +215,28 @@ Not Included:
       </div>
 
       {contractRequired && (
-        <div className="p-6 space-y-6">
+        <div className="p-4 sm:p-6 space-y-4 sm:space-y-6">
           <Tabs defaultValue="contract" className="w-full">
-            <TabsList className="grid w-full grid-cols-4">
-              <TabsTrigger value="contract" className="flex items-center gap-1">
-                <span className="text-lg">📄</span>
-                Contract
+            <TabsList className="grid w-full grid-cols-2 sm:grid-cols-4 h-auto">
+              <TabsTrigger value="contract" className="flex items-center gap-1 text-xs sm:text-sm px-2 sm:px-3 py-2">
+                <span className="text-sm sm:text-lg">📄</span>
+                <span className="hidden sm:inline">Contract</span>
+                <span className="sm:hidden">Terms</span>
               </TabsTrigger>
-              <TabsTrigger value="payment" className="flex items-center gap-1">
-                <span className="text-lg">💰</span>
-                Payment
+              <TabsTrigger value="payment" className="flex items-center gap-1 text-xs sm:text-sm px-2 sm:px-3 py-2">
+                <span className="text-sm sm:text-lg">💰</span>
+                <span className="hidden sm:inline">Payment</span>
+                <span className="sm:hidden">Pay</span>
               </TabsTrigger>
-              <TabsTrigger value="scope" className="flex items-center gap-1">
-                <span className="text-lg">🎯</span>
-                Scope
+              <TabsTrigger value="scope" className="flex items-center gap-1 text-xs sm:text-sm px-2 sm:px-3 py-2">
+                <span className="text-sm sm:text-lg">🎯</span>
+                <span className="hidden sm:inline">Scope</span>
+                <span className="sm:hidden">Scope</span>
               </TabsTrigger>
-              <TabsTrigger value="revisions" className="flex items-center gap-1">
-                <span className="text-lg">🔄</span>
-                Revisions
+              <TabsTrigger value="revisions" className="flex items-center gap-1 text-xs sm:text-sm px-2 sm:px-3 py-2">
+                <span className="text-sm sm:text-lg">🔄</span>
+                <span className="hidden sm:inline">Revisions</span>
+                <span className="sm:hidden">Rev</span>
               </TabsTrigger>
             </TabsList>
 
