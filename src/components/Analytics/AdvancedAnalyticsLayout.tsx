@@ -31,7 +31,7 @@ const AdvancedAnalyticsLayout: React.FC<AdvancedAnalyticsLayoutProps> = ({
 
   return (
     <div className="space-y-6">
-      <Tabs defaultValue="client-intelligence" className="w-full">
+      <Tabs defaultValue="profitability" className="w-full">
         <TabsList className="grid w-full grid-cols-2">
           <TabsTrigger value="client-intelligence" className="flex items-center gap-2">
             <span>👥</span>
