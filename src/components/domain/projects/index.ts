@@ -26,4 +26,7 @@ export { default as SaveAsTemplateCheckbox } from '../../CreateProject/SaveAsTem
 
 // Edit Project
 export { MilestoneItemEditor } from '../../EditProject/MilestoneItemEditor';
-export { ProjectForm } from '../../EditProject/ProjectForm';
+export { default as EditProjectDetailsForm } from '../../EditProject/EditProjectDetailsForm';
+export { default as EditPaymentProofSettings } from '../../EditProject/EditPaymentProofSettings';
+export { default as EditMilestonesList } from '../../EditProject/EditMilestonesList';
+export { default as EditFormActions } from '../../EditProject/EditFormActions';

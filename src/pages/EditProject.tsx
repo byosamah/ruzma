@@ -1,23 +1,22 @@
 
 import React, { useState } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import Layout from '@/components/Layout';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-// Icons replaced with emojis
-import { ProjectForm } from '@/components/EditProject/ProjectForm';
 import { useEditProject } from '@/hooks/useEditProject';
 import { useT } from '@/lib/i18n';
-import { useIsMobile } from '@/hooks/use-mobile';
+import { useLanguageNavigation } from '@/hooks/useLanguageNavigation';
 import ContractStatusCard from '@/components/CreateProject/ContractStatusCard';
+import EditProjectDetailsForm from '@/components/EditProject/EditProjectDetailsForm';
+import EditPaymentProofSettings from '@/components/EditProject/EditPaymentProofSettings';
+import EditMilestonesList from '@/components/EditProject/EditMilestonesList';
+import EditFormActions from '@/components/EditProject/EditFormActions';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 
 const EditProject: React.FC = () => {
   const { slug } = useParams<{ slug: string }>();
-  const navigate = useNavigate();
+  const { navigate } = useLanguageNavigation();
   const t = useT();
-  const isMobile = useIsMobile();
 
   const {
     user,
@@ -62,6 +61,10 @@ const EditProject: React.FC = () => {
     }
   };
 
+  const handleCancel = () => {
+    navigate('/dashboard');
+  };
+
   if (loading) {
     return (
       <Layout>
@@ -78,11 +81,16 @@ const EditProject: React.FC = () => {
   if (!user || !project) {
     return (
       <Layout>
-        <div className="text-center py-12">
-          <p className="text-slate-600">{t('projectNotFoundAccessDenied')}</p>
-          <Button onClick={() => navigate('/dashboard')} className="mt-4">
-            {t('returnToDashboard')}
-          </Button>
+        <div className="flex items-center justify-center min-h-[400px]">
+          <div className="text-center">
+            <p className="text-slate-600 mb-4">{t('projectNotFoundAccessDenied')}</p>
+            <button 
+              onClick={() => navigate('/dashboard')} 
+              className="text-blue-600 hover:text-blue-800"
+            >
+              {t('returnToDashboard')}
+            </button>
+          </div>
         </div>
       </Layout>
     );
@@ -90,49 +98,66 @@ const EditProject: React.FC = () => {
 
   return (
     <Layout user={profile || user} onSignOut={handleSignOut}>
-      <div className={`${isMobile ? 'max-w-full' : 'max-w-2xl'} mx-auto`}>
-        <Card>
-          <CardHeader>
-            <CardTitle className={`${isMobile ? 'text-xl' : 'text-2xl'}`}>{t('editProject')}</CardTitle>
-          </CardHeader>
-          <CardContent className={isMobile ? 'px-4' : ''}>
-            {/* Contract Status */}
-            {project.contract_status && (
-              <div className="mb-6">
-                <ContractStatusCard
-                  contractStatus={project.contract_status as 'pending' | 'approved' | 'rejected'}
-                  contractSentAt={project.contract_sent_at}
-                  contractApprovedAt={project.contract_approved_at}
-                  rejectionReason={project.contract_rejection_reason}
-                  onResendContract={handleResendContract}
-                  onEditContract={() => {}} // Will be implemented if needed
-                  isResending={isResendingContract}
-                  contractTerms={project.contract_terms}
-                  paymentTerms={project.payment_terms}
-                  projectScope={project.project_scope}
-                  revisionPolicy={project.revision_policy}
-                />
-              </div>
-            )}
-            
-            <ProjectForm
+      <div className="min-h-screen bg-gray-50/30">
+        <div className="w-full max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6 lg:py-8 space-y-6 sm:space-y-8">
+          {/* Header */}
+          <div className="space-y-1 sm:space-y-2">
+            <h1 className="text-xl sm:text-2xl font-semibold text-gray-900">
+              {t('editProject')}
+            </h1>
+            <p className="text-gray-600 text-sm">
+              {t('setupProjectMilestones')}
+            </p>
+          </div>
+
+          {/* Contract Status */}
+          {project.contract_status && (
+            <ContractStatusCard
+              contractStatus={project.contract_status as 'pending' | 'approved' | 'rejected'}
+              contractSentAt={project.contract_sent_at}
+              contractApprovedAt={project.contract_approved_at}
+              rejectionReason={project.contract_rejection_reason}
+              onResendContract={handleResendContract}
+              onEditContract={() => {}} // Will be implemented if needed
+              isResending={isResendingContract}
+              contractTerms={project.contract_terms}
+              paymentTerms={project.payment_terms}
+              projectScope={project.project_scope}
+              revisionPolicy={project.revision_policy}
+            />
+          )}
+
+          {/* Form */}
+          <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-6">
+            <EditProjectDetailsForm
               name={name}
               brief={brief}
               clientEmail={clientEmail}
-              paymentProofRequired={paymentProofRequired}
-              milestones={milestones}
-              updating={updating}
               onNameChange={setName}
               onBriefChange={setBrief}
               onClientEmailChange={setClientEmail}
+              user={user}
+            />
+
+            <EditPaymentProofSettings
+              paymentProofRequired={paymentProofRequired}
               onPaymentProofRequiredChange={setPaymentProofRequired}
+            />
+
+            <EditMilestonesList
+              milestones={milestones}
               onMilestoneChange={handleMilestoneChange}
               onAddMilestone={handleAddMilestone}
               onDeleteMilestone={handleDeleteMilestone}
-              onSubmit={handleSubmit}
+              profile={profile}
             />
-          </CardContent>
-        </Card>
+
+            <EditFormActions 
+              isSubmitting={updating}
+              onCancel={handleCancel}
+            />
+          </form>
+        </div>
       </div>
     </Layout>
   );
