@@ -71,7 +71,7 @@ const Invoices: React.FC = () => {
         <div className="flex items-center justify-between">
           <InvoicesHeader />
           <Button onClick={handleCreateInvoice} className="bg-gray-900 hover:bg-gray-800 text-white px-4 py-2 rounded-lg">
-            <span className="text-lg mr-2">➕</span>
+            <span className="text-lg mr-2">🧾</span>
             {t('newInvoice')}
           </Button>
         </div>
