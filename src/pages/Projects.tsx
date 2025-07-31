@@ -93,7 +93,7 @@ const Projects = () => {
                 disabled={!usage.canCreateProject}
                 className={`flex items-center gap-2 ${isMobile ? 'w-full' : 'w-auto'} bg-gray-900 hover:bg-gray-800 text-white font-medium border-0 shadow-none`}
               >
-                <span className="text-lg">➕</span>
+                <span className="text-lg">✨</span>
                 {t('newProject')}
               </Button>
             </div>
