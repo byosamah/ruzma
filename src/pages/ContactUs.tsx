@@ -11,7 +11,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { toast } from 'sonner';
 import { useNavigate } from 'react-router-dom';
-import { Mail } from 'lucide-react';
+// Icons replaced with emojis
 import { useT } from '@/lib/i18n';
 import { useDashboard } from '@/hooks/useDashboard';
 import { supabase } from '@/integrations/supabase/client';
@@ -165,7 +165,7 @@ const ContactUs = () => {
             <CardContent className="space-y-6">
               <div className="space-y-4">
                 <div className="flex items-start space-x-3">
-                  <Mail className="w-5 h-5 text-brand-yellow mt-1" />
+                  <span className="text-xl mt-1">📧</span>
                   <div>
                     <h3 className="font-medium text-slate-800">{t('contactEmailLabel')}</h3>
                     <p className="text-slate-600">hey@ruzma.co</p>
