@@ -53,27 +53,27 @@ export const UsageIndicators: React.FC<UsageIndicatorsProps> = ({
         </Card>
       </div>;
   }
-  return <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+  return <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6 mb-4 sm:mb-6">
       {/* Projects Usage */}
       <Card className="border-0 shadow-none bg-gray-50">
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-3">
           <CardTitle className="text-sm font-medium text-gray-600">{t('projectsUsed')}</CardTitle>
-          <span className="text-2xl text-gray-400">
+          <span className="text-xl sm:text-2xl text-gray-400">
             {usage.projects.isUnlimited ? '♾️' : '📂'}
           </span>
         </CardHeader>
         <CardContent className="pb-4">
           <div className="space-y-3">
-            <div className="flex items-center justify-between">
-              <span className="text-2xl font-semibold text-gray-900">
+            <div className="flex items-center justify-between gap-2">
+              <span className="text-lg sm:text-2xl font-semibold text-gray-900">
                 {usage.projects.isUnlimited ? <div className="flex items-center gap-2">
                     {usage.projects.current}
                     
                   </div> : `${usage.projects.current} ${t('of')} ${usage.projects.max}`}
               </span>
               {!usage.projects.isUnlimited && usage.projects.percentage >= 100 && <Button size="sm" onClick={handleUpgradeClick} className="text-xs px-3 py-1 font-medium bg-gray-900 hover:bg-gray-800 text-white border-0 shadow-none">
-                  <span className="text-lg mr-1">{getUpgradeButtonEmoji()}</span>
-                  {getUpgradeButtonText()}
+                  <span className="text-sm sm:text-lg mr-1">{getUpgradeButtonEmoji()}</span>
+                  <span className="hidden sm:inline">{getUpgradeButtonText()}</span>
                 </Button>}
             </div>
             {!usage.projects.isUnlimited && <>

@@ -23,11 +23,11 @@ const DashboardHeaderButtons: React.FC<DashboardHeaderButtonsProps> = ({
       <Button 
         onClick={onNewProject} 
         disabled={!canCreateProject} 
-        size={isMobile ? "default" : "default"} 
-        className={`${!canCreateProject ? 'opacity-50 cursor-not-allowed' : ''} ${isMobile ? 'w-full' : ''}`}
+        size="default"
+        className={`${!canCreateProject ? 'opacity-50 cursor-not-allowed' : ''} mobile-touch-target`}
       >
-        <span className="text-xl mr-2">✨</span>
-        {t('newProject')}
+        <span className="text-base sm:text-lg mr-2">✨</span>
+        <span className="text-sm sm:text-base">{t('newProject')}</span>
       </Button>
     );
 

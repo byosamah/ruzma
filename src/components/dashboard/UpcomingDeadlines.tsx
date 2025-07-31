@@ -65,10 +65,10 @@ export const UpcomingDeadlines: React.FC<UpcomingDeadlinesProps> = ({
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-3">
               <div className="p-2 rounded-lg">
-                <span className="text-2xl">{content.emoji}</span>
+                <span className="text-xl sm:text-2xl">{content.emoji}</span>
               </div>
               <div className="min-w-0 flex-1">
-                <p className="text-lg font-medium text-gray-900 truncate">{content.title}</p>
+                <p className="text-base sm:text-lg font-medium text-gray-900 truncate">{content.title}</p>
                 <p className="text-xs text-gray-500 truncate">{content.subtitle}</p>
               </div>
             </div>

@@ -22,9 +22,9 @@ const DashboardHeader: React.FC<DashboardHeaderProps> = ({
   if (isMobile) {
     return (
       <div className="space-y-4 mb-6 max-w-full">
-        <div className="space-y-1">
-          <div className="flex items-center gap-3 flex-wrap">
-            <h1 className="text-xl sm:text-2xl font-medium text-gray-900 break-words">
+        <div className="space-y-1 sm:space-y-2">
+          <div className="flex items-center gap-2 sm:gap-3 flex-wrap">
+            <h1 className="text-lg sm:text-xl font-medium text-gray-900 break-words">
               {t('welcomeComma')} {displayName}
             </h1>
             <YouTubePopup 
@@ -47,10 +47,10 @@ const DashboardHeader: React.FC<DashboardHeaderProps> = ({
   }
 
   return (
-    <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start mb-8 gap-4 max-w-full">
-      <div className="space-y-1 flex-1 min-w-0">
-        <div className="flex items-center gap-3 flex-wrap">
-          <h1 className="text-2xl font-medium text-gray-900 break-words">
+    <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start mb-6 sm:mb-8 gap-4 max-w-full">
+      <div className="space-y-1 sm:space-y-2 flex-1 min-w-0">
+        <div className="flex items-center gap-2 sm:gap-3 flex-wrap">
+          <h1 className="text-xl sm:text-2xl font-medium text-gray-900 break-words">
             {t('welcomeComma')} {displayName}
           </h1>
           <YouTubePopup 

@@ -83,11 +83,11 @@ const Dashboard = () => {
       <Button 
         onClick={handleNewProject} 
         size="lg" 
-        className={`${isMobile ? 'w-full' : 'w-full sm:w-auto'} px-6 py-3 text-base min-h-[44px] touch-manipulation bg-gray-900 hover:bg-gray-800 text-white font-medium border-0 shadow-none`} 
+        className="w-full px-6 py-3 text-base mobile-touch-target bg-gray-900 hover:bg-gray-800 text-white font-medium border-0 shadow-none" 
         disabled={false}
       >
-        <span className="text-xl mr-2">{buttonEmoji}</span>
-        {buttonText}
+        <span className="text-lg sm:text-xl mr-2">{buttonEmoji}</span>
+        <span className="text-sm sm:text-base">{buttonText}</span>
       </Button>
     );
 
@@ -117,7 +117,7 @@ const Dashboard = () => {
         author={seoData.author}
         structuredData={seoData.structuredData}
       />
-      <div className={`space-y-8 ${isMobile ? 'px-2' : ''}`}>
+      <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6 lg:py-8 space-y-6 sm:space-y-8">
         {/* Dashboard Header with tutorial button integrated */}
         <header>
           <DashboardHeader 
@@ -146,15 +146,15 @@ const Dashboard = () => {
         
         {/* Projects Section */}
         <main>
-          <div className="space-y-6">
+          <div className="space-y-4 sm:space-y-6">
             <div className="flex flex-col space-y-4 sm:flex-row sm:items-center sm:justify-between sm:space-y-0">
-              <h2 className="text-xl font-medium text-gray-900">{t('yourProjects')}</h2>
+              <h2 className="text-lg sm:text-xl font-medium text-gray-900">{t('yourProjects')}</h2>
             </div>
 
             {projects.length === 0 ? (
-              <div className={`text-center py-12 bg-white rounded-lg border border-gray-100 ${isMobile ? 'mx-0' : 'mx-2 sm:mx-0'}`}>
-                <span className="text-6xl text-gray-300 mx-auto mb-4 block">📄</span>
-                <h3 className="text-lg font-medium text-gray-600 mb-2 px-4">
+              <div className="text-center py-8 sm:py-12 bg-white rounded-lg border border-gray-100">
+                <span className="text-4xl sm:text-6xl text-gray-300 mx-auto mb-4 block">📄</span>
+                <h3 className="text-base sm:text-lg font-medium text-gray-600 mb-2 px-4">
                   {t('noProjectsYet')}
                 </h3>
                 <p className="text-sm text-gray-500 mb-6 px-4 max-w-md mx-auto">
@@ -165,9 +165,9 @@ const Dashboard = () => {
                 </div>
               </div>
             ) : (
-              <section aria-label="Your projects" className="space-y-4">
+              <section aria-label="Your projects" className="space-y-3 sm:space-y-4">
                 {projects.map(project => (
-                  <div key={project.id} className={isMobile ? 'project-card-mobile' : ''}>
+                  <div key={project.id}>
                     <ProjectCard 
                       project={project} 
                       onViewClick={() => handleViewProject(project.slug)} 
