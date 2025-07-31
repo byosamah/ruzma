@@ -4,7 +4,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import Layout from '@/components/Layout';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { ArrowLeft } from 'lucide-react';
+// Icons replaced with emojis
 import { ProjectForm } from '@/components/EditProject/ProjectForm';
 import { useEditProject } from '@/hooks/useEditProject';
 import { useT } from '@/lib/i18n';

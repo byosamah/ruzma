@@ -3,7 +3,7 @@ import React from 'react';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Button } from '@/components/ui/button';
-import { Trash2 } from 'lucide-react';
+// Icons replaced with emojis
 import { MilestoneFormData } from './types';
 import { useT } from '@/lib/i18n';
 import { useAuth } from '@/hooks/core/useAuth';
@@ -35,7 +35,7 @@ export const MilestoneItemEditor: React.FC<MilestoneItemEditorProps> = ({
         className="absolute top-2 right-2 h-7 w-7 text-slate-500 hover:bg-red-100 hover:text-red-600"
         onClick={() => onDeleteMilestone(index)}
       >
-        <Trash2 className="w-4 h-4" />
+        <span className="text-lg">🗑️</span>
       </Button>
       <div className="space-y-2">
         <label htmlFor={`milestone-title-${index}`} className="text-sm font-medium text-slate-700">{t('title')}</label>

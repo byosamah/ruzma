@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button';
 import { FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
-import { Plus, Trash2 } from 'lucide-react';
+// Icons replaced with emojis
 import { useT } from '@/lib/i18n';
 import { CreateProjectFormData } from '@/lib/validators/project';
 import { useUserCurrency } from '@/hooks/useUserCurrency';
@@ -49,7 +49,7 @@ const MilestonesList: React.FC<MilestonesListProps> = ({ user }) => {
                   onClick={() => remove(index)}
                   className="text-gray-400 hover:text-red-600 hover:bg-red-50 p-1 h-auto"
                 >
-                  <Trash2 className="w-3 h-3" />
+                  <span className="text-sm">🗑️</span>
                 </Button>
               )}
             </div>
@@ -167,7 +167,7 @@ const MilestonesList: React.FC<MilestonesListProps> = ({ user }) => {
             size="sm"
             className="text-gray-600 hover:text-gray-900 hover:bg-gray-50 text-sm font-medium"
           >
-            <Plus className="w-4 h-4 mr-2" />
+            <span className="text-lg mr-2">➕</span>
             {t('addMilestone')}
           </Button>
         </div>

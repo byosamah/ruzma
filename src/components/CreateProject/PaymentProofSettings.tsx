@@ -2,7 +2,7 @@
 import React from 'react';
 import { FormField, FormItem, FormLabel, FormControl, FormDescription } from '@/components/ui/form';
 import { Switch } from '@/components/ui/switch';
-import { Shield } from 'lucide-react';
+// Icons replaced with emojis
 import { useFormContext } from 'react-hook-form';
 import { useT } from '@/lib/i18n';
 
@@ -14,7 +14,7 @@ const PaymentProofSettings = () => {
     <div className="bg-white rounded-lg border border-gray-200 overflow-hidden">
       <div className="px-6 py-4 border-b border-gray-100">
         <div className="flex items-center gap-2">
-          <Shield className="w-4 h-4 text-blue-600" />
+          <span className="text-lg text-blue-600">🛡️</span>
           <h3 className="text-sm font-medium text-gray-900">{t('paymentDeliverySettings')}</h3>
         </div>
       </div>

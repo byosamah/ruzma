@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { Button } from '@/components/ui/button';
-import { Copy, Link, Mail } from 'lucide-react';
+// Icons replaced with emojis
 import { useIsMobile } from '@/hooks/use-mobile';
 import { useT } from '@/lib/i18n';
 
@@ -30,7 +30,7 @@ const ProjectCardActionsFooter: React.FC<ProjectCardActionsFooterProps> = ({
           onClick={onCopyClientLink} 
           className={`flex items-center gap-2 ${isMobile ? 'w-full justify-start min-h-[44px]' : 'flex-1'} touch-manipulation`}
         >
-          <Copy className="w-4 h-4 shrink-0" />
+          <span className="text-lg shrink-0">📋</span>
           <span className={isMobile ? 'text-sm' : 'text-xs'}>{t('copyLink')}</span>
         </Button>
         
@@ -40,7 +40,7 @@ const ProjectCardActionsFooter: React.FC<ProjectCardActionsFooterProps> = ({
           onClick={onViewClientPage} 
           className={`flex items-center gap-2 ${isMobile ? 'w-full justify-start min-h-[44px]' : 'flex-1'} touch-manipulation`}
         >
-          <Link className="w-4 h-4 shrink-0" />
+          <span className="text-lg shrink-0">🔗</span>
           <span className={isMobile ? 'text-sm' : 'text-xs'}>{t('viewPage')}</span>
         </Button>
         
@@ -51,7 +51,7 @@ const ProjectCardActionsFooter: React.FC<ProjectCardActionsFooterProps> = ({
             onClick={onSendClientLink} 
             className={`flex items-center gap-2 ${isMobile ? 'w-full justify-start min-h-[44px]' : 'flex-1'} touch-manipulation`}
           >
-            <Mail className="w-4 h-4 shrink-0" />
+            <span className="text-lg shrink-0">📧</span>
             <span className={isMobile ? 'text-sm' : 'text-xs'}>{t('sendLink')}</span>
           </Button>
         )}
@@ -67,7 +67,7 @@ const ProjectCardActionsFooter: React.FC<ProjectCardActionsFooterProps> = ({
         onClick={onCopyClientLink} 
         className="flex items-center gap-2 w-full justify-start min-h-[44px] touch-manipulation"
       >
-        <Copy className="w-4 h-4 shrink-0" />
+        <span className="text-lg shrink-0">📋</span>
         <span className="text-sm">{t('copyLink')}</span>
       </Button>
       
@@ -77,7 +77,7 @@ const ProjectCardActionsFooter: React.FC<ProjectCardActionsFooterProps> = ({
         onClick={onViewClientPage} 
         className="flex items-center gap-2 w-full justify-start min-h-[44px] touch-manipulation"
       >
-        <Link className="w-4 h-4 shrink-0" />
+        <span className="text-lg shrink-0">🔗</span>
         <span className="text-sm">{t('viewPage')}</span>
       </Button>
       
@@ -88,7 +88,7 @@ const ProjectCardActionsFooter: React.FC<ProjectCardActionsFooterProps> = ({
           onClick={onSendClientLink} 
           className="flex items-center gap-2 w-full justify-start min-h-[44px] touch-manipulation"
         >
-          <Mail className="w-4 h-4 shrink-0" />
+          <span className="text-lg shrink-0">📧</span>
           <span className="text-sm">{t('sendLink')}</span>
         </Button>
       )}

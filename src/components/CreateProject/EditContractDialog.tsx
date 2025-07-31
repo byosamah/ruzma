@@ -7,7 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Form, FormField, FormItem, FormLabel, FormControl, FormMessage } from '@/components/ui/form';
 import { Textarea } from '@/components/ui/textarea';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { FileText, DollarSign, Target, RotateCcw, Save, Send } from 'lucide-react';
+// Icons replaced with emojis
 import { DatabaseProject } from '@/hooks/projectTypes';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
@@ -137,7 +137,7 @@ Not Included:
       <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
-            <FileText className="h-5 w-5" />
+            <span className="text-xl">📄</span>
             Edit Contract Terms
           </DialogTitle>
           <DialogDescription>
@@ -150,19 +150,19 @@ Not Included:
             <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
               <TabsList className="grid w-full grid-cols-4">
                 <TabsTrigger value="contract" className="flex items-center gap-1">
-                  <FileText className="h-4 w-4" />
+                  <span className="text-lg">📄</span>
                   Contract
                 </TabsTrigger>
                 <TabsTrigger value="payment" className="flex items-center gap-1">
-                  <DollarSign className="h-4 w-4" />
+                  <span className="text-lg">💰</span>
                   Payment
                 </TabsTrigger>
                 <TabsTrigger value="scope" className="flex items-center gap-1">
-                  <Target className="h-4 w-4" />
+                  <span className="text-lg">🎯</span>
                   Scope
                 </TabsTrigger>
                 <TabsTrigger value="revisions" className="flex items-center gap-1">
-                  <RotateCcw className="h-4 w-4" />
+                  <span className="text-lg">🔄</span>
                   Revisions
                 </TabsTrigger>
               </TabsList>
@@ -270,11 +270,9 @@ Not Included:
                 disabled={isUpdating}
                 className="gap-2"
               >
-                {isUpdating ? (
-                  <RotateCcw className="w-4 h-4 animate-spin" />
-                ) : (
-                  <Send className="w-4 h-4" />
-                )}
+                <span className="text-lg">
+                  {isUpdating ? '🔄' : '📧'}
+                </span>
                 Update & Resend Contract
               </Button>
             </div>

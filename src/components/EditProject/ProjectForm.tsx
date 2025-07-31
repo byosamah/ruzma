@@ -5,7 +5,7 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Switch } from '@/components/ui/switch';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Shield, Plus } from 'lucide-react';
+// Icons replaced with emojis
 import { MilestoneFormData } from './types';
 import { MilestoneItemEditor } from './MilestoneItemEditor';
 import { useT } from '@/lib/i18n';
@@ -83,7 +83,7 @@ export const ProjectForm: React.FC<ProjectFormProps> = ({
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
-            <Shield className="w-5 h-5 text-blue-600" />
+            <span className="text-xl text-blue-600">🛡️</span>
             Payment & Delivery Settings
           </CardTitle>
         </CardHeader>
@@ -124,7 +124,7 @@ export const ProjectForm: React.FC<ProjectFormProps> = ({
           onClick={onAddMilestone}
           className="w-full flex items-center"
         >
-          <Plus className="w-4 h-4 mr-2" />
+          <span className="text-lg mr-2">➕</span>
           {t('addMilestone')}
         </Button>
       </div>

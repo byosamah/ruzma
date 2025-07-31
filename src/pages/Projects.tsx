@@ -4,7 +4,7 @@ import Layout from '@/components/Layout';
 import ProjectCard from '@/components/ProjectCard';
 import YouTubePopup from '@/components/YouTubePopup';
 import { Button } from '@/components/ui/button';
-import { Plus, FileText } from 'lucide-react';
+// Icons replaced with emojis
 import { useT } from '@/lib/i18n';
 import { useDashboard } from '@/hooks/useDashboard';
 import { useUsageTracking } from '@/hooks/useUsageTracking';
@@ -85,7 +85,7 @@ const Projects = () => {
                 onClick={() => navigate('/templates')}
                 className={`flex items-center gap-2 ${isMobile ? 'w-full' : 'w-auto'} border-gray-200 text-gray-600 hover:bg-gray-50`}
               >
-                <FileText className="w-4 h-4" />
+                <span className="text-lg">📄</span>
                 {t('templates')}
               </Button>
               <Button 
@@ -93,7 +93,7 @@ const Projects = () => {
                 disabled={!usage.canCreateProject}
                 className={`flex items-center gap-2 ${isMobile ? 'w-full' : 'w-auto'} bg-gray-900 hover:bg-gray-800 text-white font-medium border-0 shadow-none`}
               >
-                <Plus className="w-4 h-4" />
+                <span className="text-lg">➕</span>
                 {t('newProject')}
               </Button>
             </div>
@@ -103,7 +103,7 @@ const Projects = () => {
         {/* Projects List */}
         {projects.length === 0 ? (
           <div className={`text-center py-16 bg-white rounded-lg border border-gray-100 ${isMobile ? 'mx-0' : 'mx-2 sm:mx-0'}`}>
-            <FileText className="w-12 h-12 text-gray-300 mx-auto mb-6" aria-hidden="true" />
+            <span className="text-6xl text-gray-300 mx-auto mb-6 block">📄</span>
             <h3 className="text-lg font-medium text-gray-600 mb-2 px-4">
               {t('noProjectsYet')}
             </h3>

@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { Button } from '@/components/ui/button';
-import { Edit, Trash2 } from 'lucide-react';
+// Icons replaced with emojis
 import { useIsMobile } from '@/hooks/use-mobile';
 import { useT } from '@/lib/i18n';
 
@@ -34,7 +34,7 @@ const ProjectCardActionsHeader: React.FC<ProjectCardActionsHeaderProps> = ({
         onClick={onEditClick} 
         className="flex items-center gap-1 min-w-[44px] min-h-[44px] touch-manipulation"
       >
-        <Edit className="w-4 h-4" />
+        <span className="text-lg">✏️</span>
       </Button>
       
       {onDeleteClick && (
@@ -44,7 +44,7 @@ const ProjectCardActionsHeader: React.FC<ProjectCardActionsHeaderProps> = ({
           onClick={handleDeleteClick}
           className="flex items-center gap-1 text-red-500 hover:text-red-700 hover:bg-red-50 min-w-[44px] min-h-[44px] touch-manipulation"
         >
-          <Trash2 className="w-4 h-4" />
+          <span className="text-lg">🗑️</span>
         </Button>
       )}
     </div>

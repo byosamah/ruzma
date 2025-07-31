@@ -6,7 +6,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Switch } from '@/components/ui/switch';
 import { Alert, AlertDescription } from '@/components/ui/alert';
-import { FileText, DollarSign, Target, RotateCcw, AlertCircle } from 'lucide-react';
+// Icons replaced with emojis
 
 interface ContractTermsSectionProps {
   form: UseFormReturn<CreateProjectFormData>;
@@ -165,7 +165,7 @@ Not Included:
     <div className="bg-white rounded-lg border border-gray-200 overflow-hidden">
       <div className="px-6 py-4 border-b border-gray-100">
         <div className="flex items-center gap-2 mb-2">
-          <FileText className="h-5 w-5 text-gray-600" />
+          <span className="text-xl text-gray-600">📄</span>
           <h3 className="text-sm font-medium text-gray-900">Contract Terms</h3>
         </div>
         <p className="text-sm text-gray-500 mb-4">
@@ -196,7 +196,7 @@ Not Included:
 
         {!contractRequired && (
           <Alert className="mb-4">
-            <AlertCircle className="h-4 w-4" />
+            <span className="text-lg">⚠️</span>
             <AlertDescription>
               Contract approval disabled - clients can access project immediately without signing any contract.
             </AlertDescription>
@@ -219,19 +219,19 @@ Not Included:
           <Tabs defaultValue="contract" className="w-full">
             <TabsList className="grid w-full grid-cols-4">
               <TabsTrigger value="contract" className="flex items-center gap-1">
-                <FileText className="h-4 w-4" />
+                <span className="text-lg">📄</span>
                 Contract
               </TabsTrigger>
               <TabsTrigger value="payment" className="flex items-center gap-1">
-                <DollarSign className="h-4 w-4" />
+                <span className="text-lg">💰</span>
                 Payment
               </TabsTrigger>
               <TabsTrigger value="scope" className="flex items-center gap-1">
-                <Target className="h-4 w-4" />
+                <span className="text-lg">🎯</span>
                 Scope
               </TabsTrigger>
               <TabsTrigger value="revisions" className="flex items-center gap-1">
-                <RotateCcw className="h-4 w-4" />
+                <span className="text-lg">🔄</span>
                 Revisions
               </TabsTrigger>
             </TabsList>

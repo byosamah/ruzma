@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import Layout from '@/components/Layout';
-import { ArrowLeft, Plus, FileText, Trash2 } from 'lucide-react';
+// Icons replaced with emojis
 import { supabase } from '@/integrations/supabase/client';
 import { User } from '@supabase/supabase-js';
 import { useT } from '@/lib/i18n';
@@ -100,7 +100,7 @@ const ProjectTemplates = () => {
 
         {templates.length === 0 ? <Card className="text-center py-12 bg-white/80 backdrop-blur-sm">
             <CardContent>
-              <FileText className="w-16 h-16 text-muted-foreground mx-auto mb-4" />
+              <span className="text-6xl text-muted-foreground mx-auto mb-4 block">📄</span>
               <h3 className="text-xl font-semibold text-foreground mb-2">
                 {t('noTemplatesYet')}
               </h3>
@@ -125,7 +125,7 @@ const ProjectTemplates = () => {
                     </div>
                     <div className="flex space-x-1 ml-2">
                       <Button variant="ghost" size="sm" onClick={() => handleDeleteTemplate(template.id)} className="text-red-600 hover:text-red-700">
-                        <Trash2 className="w-4 h-4" />
+                        <span className="text-lg">🗑️</span>
                       </Button>
                     </div>
                   </div>
@@ -141,7 +141,7 @@ const ProjectTemplates = () => {
                       {t('total')}: {formatCurrency(template.milestones.reduce((sum: number, m: any) => sum + m.price, 0))}
                     </div>
                     <Button onClick={() => handleCreateFromTemplate(template)} className="w-full">
-                      <Plus className="w-4 h-4 mr-2" />
+                      <span className="text-lg mr-2">➕</span>
                       {t('useTemplate')}
                     </Button>
                   </div>

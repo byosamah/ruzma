@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Command, CommandEmpty, CommandGroup, CommandItem, CommandList } from '@/components/ui/command';
-import { Check, ChevronsUpDown, Plus } from 'lucide-react';
+// Icons replaced with emojis
 import { cn } from '@/lib/utils';
 import { useClients } from '@/hooks/useClients';
 import AddClientDialog from '@/components/Clients/AddClientDialog';
@@ -61,7 +61,7 @@ const ClientDropdown: React.FC<ClientDropdownProps> = ({ value, onChange, user }
             ) : (
               <span className="text-gray-500 text-sm">{t('selectClientOrEnterEmail')}</span>
             )}
-            <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+            <span className="ml-2 text-sm shrink-0 opacity-50">⬍</span>
           </Button>
         </PopoverTrigger>
         <PopoverContent className="w-full p-0" align="start">
@@ -80,12 +80,12 @@ const ClientDropdown: React.FC<ClientDropdownProps> = ({ value, onChange, user }
                     onSelect={handleClientSelect}
                     className="flex items-center gap-2 px-3 py-2"
                   >
-                    <Check
+                    <span
                       className={cn(
-                        "h-4 w-4",
+                        "text-lg",
                         value === client.email ? "opacity-100" : "opacity-0"
                       )}
-                    />
+                    >✓</span>
                     <div className="flex flex-col flex-1 min-w-0">
                       <span className="font-medium text-sm truncate">{client.name}</span>
                       <span className="text-xs text-gray-500 truncate">{client.email}</span>
@@ -97,7 +97,7 @@ const ClientDropdown: React.FC<ClientDropdownProps> = ({ value, onChange, user }
                   onSelect={handleClientSelect}
                   className="flex items-center gap-2 px-3 py-2 text-blue-600 hover:text-blue-700"
                 >
-                  <Plus className="h-4 w-4" />
+                  <span className="text-lg">➕</span>
                   <span className="text-sm font-medium">{t('addNewClient')}</span>
                 </CommandItem>
               </CommandGroup>

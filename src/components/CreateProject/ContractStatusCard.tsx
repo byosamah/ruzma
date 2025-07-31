@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Clock, CheckCircle, XCircle, Mail, RotateCcw, Edit, ChevronDown, ChevronUp } from 'lucide-react';
+// Icons replaced with emojis
 
 interface ContractStatusCardProps {
   contractStatus: 'pending' | 'approved' | 'rejected';
@@ -46,7 +46,7 @@ const ContractStatusCard: React.FC<ContractStatusCardProps> = ({
     switch (contractStatus) {
       case 'pending':
         return {
-          icon: <Clock className="w-5 h-5 text-orange-500" />,
+          icon: <span className="text-xl text-orange-500">⏰</span>,
           badge: <Badge variant="outline" className="text-orange-600">Pending Approval</Badge>,
           title: 'Contract Awaiting Approval',
           description: 'Your contract has been sent to the client for review and approval.',
@@ -54,7 +54,7 @@ const ContractStatusCard: React.FC<ContractStatusCardProps> = ({
         };
       case 'approved':
         return {
-          icon: <CheckCircle className="w-5 h-5 text-green-500" />,
+          icon: <span className="text-xl text-green-500">✅</span>,
           badge: <Badge variant="default" className="bg-green-500 hover:bg-green-600">Approved</Badge>,
           title: 'Contract Approved',
           description: 'Great! Your client has approved the contract. You can now begin work on the project.',
@@ -62,7 +62,7 @@ const ContractStatusCard: React.FC<ContractStatusCardProps> = ({
         };
       case 'rejected':
         return {
-          icon: <XCircle className="w-5 h-5 text-red-500" />,
+          icon: <span className="text-xl text-red-500">❌</span>,
           badge: <Badge variant="destructive">Changes Requested</Badge>,
           title: 'Contract Requires Changes',
           description: 'Your client has requested changes to the project proposal.',
@@ -70,7 +70,7 @@ const ContractStatusCard: React.FC<ContractStatusCardProps> = ({
         };
       default:
         return {
-          icon: <Clock className="w-5 h-5" />,
+          icon: <span className="text-xl">⏰</span>,
           badge: <Badge variant="outline">Unknown</Badge>,
           title: 'Contract Status',
           description: 'Contract status information',
@@ -97,7 +97,7 @@ const ContractStatusCard: React.FC<ContractStatusCardProps> = ({
                 onClick={() => setIsExpanded(!isExpanded)}
                 className="gap-1 h-8 px-2"
               >
-                {isExpanded ? <ChevronUp className="w-3 h-3" /> : <ChevronDown className="w-3 h-3" />}
+                <span className="text-sm">{isExpanded ? '⬆' : '⬇'}</span>
                 <span className="text-xs">{isExpanded ? 'Hide' : 'Details'}</span>
               </Button>
             )}
@@ -111,7 +111,7 @@ const ContractStatusCard: React.FC<ContractStatusCardProps> = ({
                     disabled={isResending}
                     className="gap-2"
                   >
-                    <Edit className="w-4 h-4" />
+                    <span className="text-lg">✏️</span>
                     Update & Resend
                   </Button>
                 ) : (
@@ -122,11 +122,9 @@ const ContractStatusCard: React.FC<ContractStatusCardProps> = ({
                     disabled={isResending}
                     className="gap-2"
                   >
-                    {isResending ? (
-                      <RotateCcw className="w-4 h-4 animate-spin" />
-                    ) : (
-                      <Mail className="w-4 h-4" />
-                    )}
+                    <span className="text-lg">
+                      {isResending ? '🔄' : '📧'}
+                    </span>
                     Resend Contract
                   </Button>
                 )}
