@@ -153,7 +153,7 @@ const ResetPassword = () => {
   // Show loading state while validating token
   if (isValidatingToken) {
     return (
-      <div className="min-h-screen bg-auth-background flex flex-col items-center justify-center p-4">
+      <div className="min-h-screen bg-white flex flex-col items-center justify-center p-4">
         <div className="absolute top-10 sm:top-16">
           <Link to="/">
             <img src="/lovable-uploads/bca9fbc0-5ee9-455b-91b3-b7eff1f56169.png" alt="Ruzma Logo" className="h-10" />
@@ -162,8 +162,8 @@ const ResetPassword = () => {
         <div className="w-full max-w-md">
           <Card>
             <CardContent className="text-center py-8">
-              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-brand-yellow mx-auto mb-4"></div>
-              <p className="text-slate-600">Validating reset link...</p>
+              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900 mx-auto mb-4"></div>
+              <p className="text-gray-600">Validating reset link...</p>
             </CardContent>
           </Card>
         </div>
@@ -174,7 +174,7 @@ const ResetPassword = () => {
   // Show error state if token is invalid
   if (!hasValidToken || error) {
     return (
-      <div className="min-h-screen bg-auth-background flex flex-col items-center justify-center p-4">
+      <div className="min-h-screen bg-white flex flex-col items-center justify-center p-4">
         <div className="absolute top-10 sm:top-16">
           <Link to="/">
             <img src="/lovable-uploads/bca9fbc0-5ee9-455b-91b3-b7eff1f56169.png" alt="Ruzma Logo" className="h-10" />
@@ -184,24 +184,24 @@ const ResetPassword = () => {
           <Card>
             <CardHeader className="text-center">
               <AlertCircle className="h-12 w-12 text-red-500 mx-auto mb-2" />
-              <CardTitle className="text-2xl font-bold text-slate-800">Invalid Reset Link</CardTitle>
+              <CardTitle className="text-2xl font-bold text-gray-900">Invalid Reset Link</CardTitle>
             </CardHeader>
             <CardContent className="text-center">
-              <p className="text-slate-600 mb-4">
+              <p className="text-gray-600 mb-4">
                 {error || 'This password reset link is invalid or has expired.'}
               </p>
-              <Button asChild className="w-full bg-brand-yellow text-brand-black hover:bg-brand-yellow/90">
+              <Button asChild className="w-full bg-gray-900 text-white hover:bg-gray-800">
                 <Link to="/forgot-password">Request New Reset Link</Link>
               </Button>
               <div className="mt-4">
-                <Link to="/login" className="text-sm text-brand-yellow hover:underline">
+                <Link to="/login" className="text-sm text-gray-900 hover:underline">
                   Back to Login
                 </Link>
               </div>
             </CardContent>
           </Card>
         </div>
-        <div className="absolute bottom-8 text-sm text-slate-600">
+        <div className="absolute bottom-8 text-sm text-gray-600">
           {t('footerRights', { year: new Date().getFullYear().toString() })}
         </div>
       </div>
@@ -210,7 +210,7 @@ const ResetPassword = () => {
 
   // Show password reset form
   return (
-    <div className="min-h-screen bg-auth-background flex flex-col items-center justify-center p-4">
+    <div className="min-h-screen bg-white flex flex-col items-center justify-center p-4">
       <div className="absolute top-10 sm:top-16">
         <Link to="/">
           <img src="/lovable-uploads/bca9fbc0-5ee9-455b-91b3-b7eff1f56169.png" alt="Ruzma Logo" className="h-10" />
@@ -219,8 +219,8 @@ const ResetPassword = () => {
       <div className="w-full max-w-md">
         <Card>
           <CardHeader className="text-center">
-            <CardTitle className="text-2xl font-bold text-slate-800">{t('setNewPasswordTitle')}</CardTitle>
-            <p className="text-slate-600">{t('setNewPasswordSubtitle')}</p>
+            <CardTitle className="text-2xl font-bold text-gray-900">{t('setNewPasswordTitle')}</CardTitle>
+            <p className="text-gray-600">{t('setNewPasswordSubtitle')}</p>
           </CardHeader>
           <CardContent>
             <form onSubmit={handleSubmit} className="space-y-4">
@@ -244,9 +244,9 @@ const ResetPassword = () => {
                     onClick={() => setShowPassword(!showPassword)}
                   >
                     {showPassword ? (
-                      <EyeOff className="h-4 w-4 text-slate-400" />
+                      <EyeOff className="h-4 w-4 text-gray-400" />
                     ) : (
-                      <Eye className="h-4 w-4 text-slate-400" />
+                      <Eye className="h-4 w-4 text-gray-400" />
                     )}
                   </Button>
                 </div>
@@ -272,9 +272,9 @@ const ResetPassword = () => {
                     onClick={() => setShowConfirmPassword(!showConfirmPassword)}
                   >
                     {showConfirmPassword ? (
-                      <EyeOff className="h-4 w-4 text-slate-400" />
+                      <EyeOff className="h-4 w-4 text-gray-400" />
                     ) : (
-                      <Eye className="h-4 w-4 text-slate-400" />
+                      <Eye className="h-4 w-4 text-gray-400" />
                     )}
                   </Button>
                 </div>
@@ -282,7 +282,7 @@ const ResetPassword = () => {
 
               <Button 
                 type="submit" 
-                className="w-full bg-brand-yellow text-brand-black hover:bg-brand-yellow/90" 
+                className="w-full bg-gray-900 text-white hover:bg-gray-800" 
                 disabled={isLoading}
               >
                 {isLoading ? t('updatingPassword') : t('updatePassword')}
@@ -291,7 +291,7 @@ const ResetPassword = () => {
           </CardContent>
         </Card>
       </div>
-      <div className="absolute bottom-8 text-sm text-slate-600">
+      <div className="absolute bottom-8 text-sm text-gray-600">
         {t('footerRights', { year: new Date().getFullYear().toString() })}
       </div>
     </div>
