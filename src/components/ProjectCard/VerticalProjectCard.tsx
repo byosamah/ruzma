@@ -23,9 +23,9 @@ const VerticalProjectCard: React.FC<ProjectCardProps> = ({
       className="hover:shadow-md transition-shadow duration-200 cursor-pointer border-slate-200" 
       onClick={actions.handleCardClick}
     >
-      <CardHeader className="pb-2 px-4 pt-4">
+      <CardHeader className="pb-2 px-3 sm:px-4 pt-3 sm:pt-4">
         <div className="flex justify-between items-start gap-2">
-          <CardTitle className="text-sm font-semibold text-slate-800 line-clamp-2 flex-1 leading-tight">
+          <CardTitle className="text-sm sm:text-base font-semibold text-slate-800 line-clamp-2 flex-1 leading-tight">
             {project.name}
           </CardTitle>
           <ProjectCardActions
@@ -40,7 +40,7 @@ const VerticalProjectCard: React.FC<ProjectCardProps> = ({
         </div>
       </CardHeader>
       
-      <CardContent className="pt-0 pb-3 px-4">
+      <CardContent className="pt-0 pb-3 px-3 sm:px-4">
         <ProjectCardContent
           project={project}
           stats={stats}
