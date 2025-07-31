@@ -12,9 +12,10 @@ import { useUserCurrency } from '@/hooks/useUserCurrency';
 
 interface MilestonesListProps {
   user?: any;
+  profile?: any;
 }
 
-const MilestonesList: React.FC<MilestonesListProps> = ({ user }) => {
+const MilestonesList: React.FC<MilestonesListProps> = ({ user, profile }) => {
   const t = useT();
   const { control } = useFormContext<CreateProjectFormData>();
   const { fields, append, remove } = useFieldArray({
@@ -22,7 +23,7 @@ const MilestonesList: React.FC<MilestonesListProps> = ({ user }) => {
     name: 'milestones',
   });
   
-  const { currency, formatCurrency } = useUserCurrency(user);
+  const { currency, formatCurrency } = useUserCurrency(profile);
 
   const addMilestone = () => {
     append({ title: '', description: '', price: 0, start_date: '', end_date: '' });

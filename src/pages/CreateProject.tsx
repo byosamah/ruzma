@@ -102,7 +102,7 @@ const CreateProject: React.FC<CreateProjectProps> = ({ user, profile }) => {
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 sm:space-y-6">
               <ProjectDetailsForm user={user} />
               <PaymentProofSettings />
-              <MilestonesList user={user} />
+              <MilestonesList user={user} profile={profile} />
               <ContractTermsSection form={form} />
               <SaveAsTemplateCheckbox checked={saveAsTemplate} onCheckedChange={handleSaveAsTemplateChange} />
               <FormActions isSubmitting={isSubmitting} onCancel={() => navigate('/dashboard')} />
