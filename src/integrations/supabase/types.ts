@@ -354,6 +354,7 @@ export type Database = {
           contract_terms: string | null
           created_at: string
           end_date: string | null
+          freelancer_currency: string | null
           id: string
           name: string
           payment_proof_required: boolean
@@ -379,6 +380,7 @@ export type Database = {
           contract_terms?: string | null
           created_at?: string
           end_date?: string | null
+          freelancer_currency?: string | null
           id?: string
           name: string
           payment_proof_required?: boolean
@@ -404,6 +406,7 @@ export type Database = {
           contract_terms?: string | null
           created_at?: string
           end_date?: string | null
+          freelancer_currency?: string | null
           id?: string
           name?: string
           payment_proof_required?: boolean
