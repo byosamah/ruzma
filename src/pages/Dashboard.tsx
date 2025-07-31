@@ -76,7 +76,7 @@ const Dashboard = () => {
   const EmptyProjectsButton = () => {
     const userType = profile?.user_type || 'free';
     const buttonText = !usage.canCreateProject && userType === 'pro' ? t('contactUsForMoreProjects') : t('createFirstProject');
-    const buttonEmoji = !usage.canCreateProject && userType === 'pro' ? '💬' : '➕';
+    const buttonEmoji = !usage.canCreateProject && userType === 'pro' ? '💬' : '✨';
     const tooltipMessage = !usage.canCreateProject ? userType === 'pro' ? t('projectLimitReachedPro') : t('projectLimitReached') : '';
     
     const button = (

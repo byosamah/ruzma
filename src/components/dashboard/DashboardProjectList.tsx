@@ -82,7 +82,7 @@ const DashboardProjectList: React.FC<DashboardProjectListProps> = ({
         className={`mt-4 ${isMobile ? 'w-full min-h-[44px] touch-manipulation' : 'w-full sm:w-auto'}`}
         disabled={!canCreateProject}
       >
-        <span className="text-xl mr-2">➕</span>
+        <span className="text-xl mr-2">✨</span>
         {t('createFirstProject')}
       </Button>
     );
@@ -118,7 +118,7 @@ const DashboardProjectList: React.FC<DashboardProjectListProps> = ({
                   disabled={!canCreateProject}
                   className={`${!canCreateProject ? 'opacity-50 cursor-not-allowed' : ''} ${isMobile ? 'w-full min-h-[44px] touch-manipulation' : 'w-full sm:w-auto'}`}
                 >
-                  <span className="text-lg mr-2">➕</span>
+                  <span className="text-lg mr-2">✨</span>
                   {t('newProject')}
                 </Button>
               </TooltipTrigger>
