@@ -38,23 +38,10 @@ const Analytics = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
         <AnalyticsHeader />
         
-        {/* Basic Analytics Metrics */}
-        <AnalyticsMetrics
-          revenueGrowth={analyticsData.revenueGrowth}
-          avgProjectValue={analyticsData.avgProjectValue}
-          completionRate={analyticsData.completionRate}
-          userCurrency={userCurrency.currency}
-        />
-        
-        {/* Basic Analytics Charts */}
-        <AnalyticsCharts
-          data={analyticsData}
-          userCurrency={userCurrency.currency}
-        />
-        
         {/* Advanced Analytics */}
         <AdvancedAnalyticsLayout
           data={advancedAnalyticsData}
+          basicAnalytics={analyticsData}
           userCurrency={userCurrency.currency}
         />
       </div>

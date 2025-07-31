@@ -3,6 +3,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useT } from '@/lib/i18n';
 import { CurrencyCode } from '@/lib/currency';
 import { AdvancedAnalyticsData } from '@/types/advancedAnalytics';
+import AnalyticsMetrics from '@/components/Analytics/AnalyticsMetrics';
+import AnalyticsCharts from '@/components/Analytics/AnalyticsCharts';
 
 // Client Intelligence Components
 import ClientLifetimeValue from './ClientIntelligence/ClientLifetimeValue';
@@ -16,11 +18,13 @@ import RevenueOptimization from './ProfitabilityAnalytics/RevenueOptimization';
 
 interface AdvancedAnalyticsLayoutProps {
   data: AdvancedAnalyticsData;
+  basicAnalytics: any;
   userCurrency: CurrencyCode;
 }
 
 const AdvancedAnalyticsLayout: React.FC<AdvancedAnalyticsLayoutProps> = ({
   data,
+  basicAnalytics,
   userCurrency,
 }) => {
   const t = useT();
@@ -66,6 +70,19 @@ const AdvancedAnalyticsLayout: React.FC<AdvancedAnalyticsLayoutProps> = ({
         {/* Profitability Analytics Tab */}
         <TabsContent value="profitability" className="space-y-6 mt-6">
           <div className="space-y-6">
+            {/* Basic Analytics Integration */}
+            <AnalyticsMetrics
+              revenueGrowth={basicAnalytics.revenueGrowth}
+              avgProjectValue={basicAnalytics.avgProjectValue}
+              completionRate={basicAnalytics.completionRate}
+              userCurrency={userCurrency}
+            />
+            
+            <AnalyticsCharts
+              data={basicAnalytics}
+              userCurrency={userCurrency}
+            />
+
             {/* Project Type Profitability */}
             <ProjectTypeProfitability
               projectTypes={data.profitability.projectTypes}
