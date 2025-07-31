@@ -40,7 +40,7 @@ const PricingInsights: React.FC<PricingInsightsProps> = ({
       <Card className="card-flat">
         <CardHeader className="pb-4">
           <CardTitle className="text-lg font-medium text-primary flex items-center gap-2">
-            📈 Pricing Trends
+            📈 {t('pricingTrends')}
           </CardTitle>
         </CardHeader>
         <CardContent>
@@ -92,7 +92,7 @@ const PricingInsights: React.FC<PricingInsightsProps> = ({
       <Card className="card-flat">
         <CardHeader className="pb-4">
           <CardTitle className="text-lg font-medium text-primary flex items-center gap-2">
-            🎯 Revenue Optimization
+            🎯 {t('revenueOptimization')}
           </CardTitle>
         </CardHeader>
         <CardContent>
@@ -102,7 +102,7 @@ const PricingInsights: React.FC<PricingInsightsProps> = ({
                 {formatCurrency(revenueOptimization.currentAvgRate, userCurrency)}
               </div>
               <div className="text-sm text-muted-foreground mt-1">
-                Current Average Rate
+                {t('currentAverageRate')}
               </div>
             </div>
 
@@ -111,7 +111,7 @@ const PricingInsights: React.FC<PricingInsightsProps> = ({
                 {formatCurrency(revenueOptimization.suggestedRate, userCurrency)}
               </div>
               <div className="text-sm text-green-700 mt-1">
-                Suggested Rate
+                {t('suggestedRate')}
               </div>
             </div>
 
@@ -120,7 +120,7 @@ const PricingInsights: React.FC<PricingInsightsProps> = ({
                 +{revenueOptimization.potentialIncrease.toFixed(1)}%
               </div>
               <div className="text-sm text-blue-700 mt-1">
-                Potential Increase
+                {t('potentialIncrease')}
               </div>
             </div>
           </div>

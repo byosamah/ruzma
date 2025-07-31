@@ -37,7 +37,7 @@ const ProjectTypeProfitability: React.FC<ProjectTypeProfitabilityProps> = ({
       <Card className="card-flat">
         <CardHeader className="pb-4">
           <CardTitle className="text-lg font-medium text-primary flex items-center gap-2">
-            📊 Revenue by Project Type
+            📊 {t('revenueByProjectType')}
           </CardTitle>
         </CardHeader>
         <CardContent>
@@ -88,7 +88,7 @@ const ProjectTypeProfitability: React.FC<ProjectTypeProfitabilityProps> = ({
       <Card className="card-flat">
         <CardHeader className="pb-4">
           <CardTitle className="text-lg font-medium text-primary">
-            Project Type Performance
+            {t('projectTypePerformance')}
           </CardTitle>
         </CardHeader>
         <CardContent>
@@ -104,8 +104,8 @@ const ProjectTypeProfitability: React.FC<ProjectTypeProfitabilityProps> = ({
                       {type.category}
                     </p>
                     <div className="flex items-center gap-4 text-xs text-muted-foreground">
-                      <span>{type.projectCount} projects</span>
-                      <span>{type.completionRate.toFixed(1)}% completion</span>
+                      <span>{type.projectCount} {t('projects')}</span>
+                      <span>{type.completionRate.toFixed(1)}% {t('completed')}</span>
                       <span>{type.clientSatisfactionProxy.toFixed(1)}% repeat rate</span>
                     </div>
                   </div>

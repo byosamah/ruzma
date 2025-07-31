@@ -33,26 +33,26 @@ const RevenueOptimization: React.FC<RevenueOptimizationProps> = ({
 
   const recommendations = [
     {
-      title: 'Focus on High-Value Project Types',
-      description: 'Prioritize project categories with the highest revenue per day to maximize your earnings.',
+      title: t('focusOnHighValueProjects'),
+      description: t('focusOnHighValueProjectsDesc'),
       emoji: '🎯',
       actionable: true,
     },
     {
-      title: 'Improve Client Retention',
-      description: 'Clients with multiple projects tend to pay better rates and provide more stable income.',
+      title: t('improveClientRetention'),
+      description: t('improveClientRetentionDesc'),
       emoji: '🤝',
       actionable: true,
     },
     {
-      title: 'Optimize Project Timelines',
-      description: 'Shorter delivery times while maintaining quality can increase your effective hourly rate.',
+      title: t('optimizeProjectTimelines'),
+      description: t('optimizeProjectTimelinesDesc'),
       emoji: '⏱️',
       actionable: true,
     },
     {
-      title: 'Consider Premium Positioning',
-      description: 'Your completion rates suggest you could command higher rates for your expertise.',
+      title: t('considerPremiumPositioning'),
+      description: t('considerPremiumPositioningDesc'),
       emoji: '⭐',
       actionable: false,
     },
@@ -64,7 +64,7 @@ const RevenueOptimization: React.FC<RevenueOptimizationProps> = ({
       <Card className="card-flat">
         <CardHeader className="pb-4">
           <CardTitle className="text-lg font-medium text-primary flex items-center gap-2">
-            📊 Profitability Metrics
+            📊 {t('profitabilityMetrics')}
           </CardTitle>
         </CardHeader>
         <CardContent>
@@ -99,7 +99,7 @@ const RevenueOptimization: React.FC<RevenueOptimizationProps> = ({
       <Card className="card-flat">
         <CardHeader className="pb-4">
           <CardTitle className="text-lg font-medium text-primary flex items-center gap-2">
-            💡 Growth Recommendations
+            💡 {t('growthRecommendations')}
           </CardTitle>
         </CardHeader>
         <CardContent>
@@ -120,7 +120,7 @@ const RevenueOptimization: React.FC<RevenueOptimizationProps> = ({
                     {rec.actionable && (
                       <div className="mt-2">
                         <span className="text-xs bg-primary/10 text-primary px-2 py-1 rounded">
-                          Actionable
+                          {t('actionable')}
                         </span>
                       </div>
                     )}
