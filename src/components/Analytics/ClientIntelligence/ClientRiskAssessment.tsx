@@ -53,18 +53,18 @@ const ClientRiskAssessment: React.FC<ClientRiskAssessmentProps> = ({
   return (
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
       {/* Risk Distribution */}
-      <Card className="card-flat">
+      <Card className="card-flat" dir={t('clientRiskAssessment') === 'تقييم مخاطر العملاء' ? 'rtl' : 'ltr'}>
         <CardHeader className="pb-4">
-          <CardTitle className="text-lg font-medium text-primary flex items-center gap-2">
+          <CardTitle className="text-lg font-medium text-primary flex items-center gap-2 rtl:flex-row-reverse">
             🎯 {t('clientRiskAssessment')}
           </CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="space-y-4">
+          <div className="space-y-4 rtl:space-y-reverse">
             {riskMetrics.map((metric) => (
               <div key={metric.label} className="space-y-2">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2">
+                <div className="flex items-center justify-between rtl:flex-row-reverse">
+                  <div className="flex items-center gap-2 rtl:flex-row-reverse">
                     <span className="text-sm">{metric.emoji}</span>
                     <span className="text-sm font-medium">{metric.label}</span>
                   </div>
@@ -85,14 +85,14 @@ const ClientRiskAssessment: React.FC<ClientRiskAssessmentProps> = ({
       </Card>
 
       {/* Key Metrics */}
-      <Card className="card-flat">
+      <Card className="card-flat" dir={t('relationshipMetrics') === 'مقاييس العلاقات' ? 'rtl' : 'ltr'}>
         <CardHeader className="pb-4">
           <CardTitle className="text-lg font-medium text-primary">
             {t('relationshipMetrics')}
           </CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="space-y-6">
+          <div className="space-y-6 rtl:space-y-reverse">
             <div className="text-center p-4 rounded-lg bg-muted/30">
               <div className="text-2xl font-bold text-primary">
                 {clientRetentionRate.toFixed(1)}%
@@ -119,7 +119,7 @@ const ClientRiskAssessment: React.FC<ClientRiskAssessmentProps> = ({
 
             {riskAssessment.highRisk > 0 && (
               <div className="p-3 rounded-lg bg-red-50 border border-red-200">
-                <div className="flex items-center gap-2 text-red-700">
+                <div className="flex items-center gap-2 text-red-700 rtl:flex-row-reverse">
                   <span>⚠️</span>
                   <span className="text-sm font-medium">{t('actionRequired')}</span>
                 </div>

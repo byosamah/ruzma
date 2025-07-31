@@ -34,9 +34,9 @@ const ProjectTypeProfitability: React.FC<ProjectTypeProfitabilityProps> = ({
   return (
     <div className="space-y-6">
       {/* Revenue by Project Type Chart */}
-      <Card className="card-flat">
+      <Card className="card-flat" dir={t('revenueByProjectType') === 'الإيرادات حسب نوع المشروع' ? 'rtl' : 'ltr'}>
         <CardHeader className="pb-4">
-          <CardTitle className="text-lg font-medium text-primary flex items-center gap-2">
+          <CardTitle className="text-lg font-medium text-primary flex items-center gap-2 rtl:flex-row-reverse">
             📊 {t('revenueByProjectType')}
           </CardTitle>
         </CardHeader>
@@ -85,17 +85,17 @@ const ProjectTypeProfitability: React.FC<ProjectTypeProfitabilityProps> = ({
       </Card>
 
       {/* Project Type Details Table */}
-      <Card className="card-flat">
+      <Card className="card-flat" dir={t('projectTypePerformance') === 'أداء نوع المشروع' ? 'rtl' : 'ltr'}>
         <CardHeader className="pb-4">
           <CardTitle className="text-lg font-medium text-primary">
             {t('projectTypePerformance')}
           </CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="space-y-3">
+          <div className="space-y-3 rtl:space-y-reverse">
             {projectTypes.slice(0, 6).map((type, index) => (
-              <div key={type.category} className="flex items-center justify-between p-3 rounded-lg bg-muted/30">
-                <div className="flex items-center gap-3 min-w-0 flex-1">
+              <div key={type.category} className="flex items-center justify-between p-3 rounded-lg bg-muted/30 rtl:flex-row-reverse">
+                <div className="flex items-center gap-3 min-w-0 flex-1 rtl:flex-row-reverse">
                   <div className="flex-shrink-0 w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center text-sm font-medium text-primary">
                     {index + 1}
                   </div>
@@ -103,14 +103,14 @@ const ProjectTypeProfitability: React.FC<ProjectTypeProfitabilityProps> = ({
                     <p className="font-medium text-sm truncate">
                       {type.category}
                     </p>
-                    <div className="flex items-center gap-4 text-xs text-muted-foreground">
+                    <div className="flex items-center gap-4 text-xs text-muted-foreground rtl:flex-row-reverse">
                       <span>{type.projectCount} {t('projects')}</span>
                       <span>{type.completionRate.toFixed(1)}% {t('completed')}</span>
                       <span>{type.clientSatisfactionProxy.toFixed(1)}% {t('repeatRate')}</span>
                     </div>
                   </div>
                 </div>
-                <div className="text-right">
+                <div className="text-right rtl:text-left">
                   <p className="font-medium text-sm">
                     {formatCurrency(type.totalRevenue, userCurrency)}
                   </p>

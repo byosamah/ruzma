@@ -34,27 +34,27 @@ const ClientLifetimeValue: React.FC<ClientLifetimeValueProps> = ({
   };
 
   return (
-    <Card className="card-flat">
+    <Card className="card-flat" dir={t('topClientsByLifetimeValue') === 'أفضل العملاء حسب القيمة الإجمالية' ? 'rtl' : 'ltr'}>
       <CardHeader className="pb-4">
-        <CardTitle className="text-lg font-medium text-primary flex items-center gap-2">
+        <CardTitle className="text-lg font-medium text-primary flex items-center gap-2 rtl:flex-row-reverse">
           👑 {t('topClientsByLifetimeValue')}
         </CardTitle>
       </CardHeader>
       <CardContent>
-        <div className="space-y-4">
+        <div className="space-y-4 rtl:space-y-reverse">
           {topClients.length === 0 ? (
             <p className="text-sm text-muted-foreground text-center py-8">
               {t('noClientDataAvailable')}
             </p>
           ) : (
             topClients.map((client, index) => (
-              <div key={client.clientId} className="flex items-center justify-between p-3 rounded-lg bg-muted/30">
-                <div className="flex items-center gap-3 min-w-0 flex-1">
+              <div key={client.clientId} className="flex items-center justify-between p-3 rounded-lg bg-muted/30 rtl:flex-row-reverse">
+                <div className="flex items-center gap-3 min-w-0 flex-1 rtl:flex-row-reverse">
                   <div className="flex-shrink-0 w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center text-sm font-medium text-primary">
                     {index + 1}
                   </div>
                   <div className="min-w-0 flex-1">
-                    <div className="flex items-center gap-2">
+                    <div className="flex items-center gap-2 rtl:flex-row-reverse">
                       <p className="font-medium text-sm truncate">
                         {client.clientName}
                       </p>
@@ -62,7 +62,7 @@ const ClientLifetimeValue: React.FC<ClientLifetimeValueProps> = ({
                         {getTrendEmoji(client.growthTrend)}
                       </span>
                     </div>
-                    <div className="flex items-center gap-4 text-xs text-muted-foreground">
+                    <div className="flex items-center gap-4 text-xs text-muted-foreground rtl:flex-row-reverse">
                       <span>{client.totalProjects} {t('projects')}</span>
                       <span className={getRiskColor(client.riskLevel)}>
                         {client.riskLevel} {t('risk')}
@@ -70,7 +70,7 @@ const ClientLifetimeValue: React.FC<ClientLifetimeValueProps> = ({
                     </div>
                   </div>
                 </div>
-                <div className="text-right">
+                <div className="text-right rtl:text-left">
                   <p className="font-medium text-sm">
                     {formatCurrency(client.lifetimeValue, userCurrency)}
                   </p>

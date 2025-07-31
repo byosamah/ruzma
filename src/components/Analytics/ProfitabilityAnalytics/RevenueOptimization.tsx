@@ -61,17 +61,17 @@ const RevenueOptimization: React.FC<RevenueOptimizationProps> = ({
   return (
     <div className="space-y-6">
       {/* Profitability Metrics */}
-      <Card className="card-flat">
+      <Card className="card-flat" dir={t('profitabilityMetrics') === 'مقاييس الربحية' ? 'rtl' : 'ltr'}>
         <CardHeader className="pb-4">
-          <CardTitle className="text-lg font-medium text-primary flex items-center gap-2">
+          <CardTitle className="text-lg font-medium text-primary flex items-center gap-2 rtl:flex-row-reverse">
             📊 {t('profitabilityMetrics')}
           </CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="space-y-4">
+          <div className="space-y-4 rtl:space-y-reverse">
             {profitabilityMetrics.map((metric, index) => (
-              <div key={index} className="flex items-center justify-between p-3 rounded-lg bg-muted/30">
-                <div className="flex items-center gap-3">
+              <div key={index} className="flex items-center justify-between p-3 rounded-lg bg-muted/30 rtl:flex-row-reverse">
+                <div className="flex items-center gap-3 rtl:flex-row-reverse">
                   <span className="text-lg">
                     {getTrendEmoji(metric.trend)}
                   </span>
@@ -84,7 +84,7 @@ const RevenueOptimization: React.FC<RevenueOptimizationProps> = ({
                     </p>
                   </div>
                 </div>
-                <div className="text-right">
+                <div className="text-right rtl:text-left">
                   <p className={`font-medium text-sm ${getTrendColor(metric.trend)}`}>
                     {metric.value.toFixed(1)}%
                   </p>
@@ -96,17 +96,17 @@ const RevenueOptimization: React.FC<RevenueOptimizationProps> = ({
       </Card>
 
       {/* Actionable Recommendations */}
-      <Card className="card-flat">
+      <Card className="card-flat" dir={t('growthRecommendations') === 'توصيات النمو' ? 'rtl' : 'ltr'}>
         <CardHeader className="pb-4">
-          <CardTitle className="text-lg font-medium text-primary flex items-center gap-2">
+          <CardTitle className="text-lg font-medium text-primary flex items-center gap-2 rtl:flex-row-reverse">
             💡 {t('growthRecommendations')}
           </CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="space-y-4">
+          <div className="space-y-4 rtl:space-y-reverse">
             {recommendations.map((rec, index) => (
               <div key={index} className="p-4 rounded-lg bg-muted/30">
-                <div className="flex items-start gap-3">
+                <div className="flex items-start gap-3 rtl:flex-row-reverse">
                   <span className="text-lg flex-shrink-0 mt-0.5">
                     {rec.emoji}
                   </span>
@@ -119,7 +119,7 @@ const RevenueOptimization: React.FC<RevenueOptimizationProps> = ({
                     </p>
                     {rec.actionable && (
                       <div className="mt-2">
-                        <span className="text-xs bg-primary/10 text-primary px-2 py-1 rounded">
+                        <span className="text-xs bg-primary/10 text-primary px-2 py-1 rounded rtl:text-right">
                           {t('actionable')}
                         </span>
                       </div>

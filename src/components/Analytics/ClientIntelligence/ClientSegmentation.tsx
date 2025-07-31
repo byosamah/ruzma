@@ -54,9 +54,9 @@ const ClientSegmentation: React.FC<ClientSegmentationProps> = ({
   return (
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
       {/* Pie Chart */}
-      <Card className="card-flat">
+      <Card className="card-flat" dir={t('clientSegments') === 'شرائح العملاء' ? 'rtl' : 'ltr'}>
         <CardHeader className="pb-4">
-          <CardTitle className="text-lg font-medium text-primary flex items-center gap-2">
+          <CardTitle className="text-lg font-medium text-primary flex items-center gap-2 rtl:flex-row-reverse">
             📊 {t('clientSegments')}
           </CardTitle>
         </CardHeader>
@@ -104,17 +104,17 @@ const ClientSegmentation: React.FC<ClientSegmentationProps> = ({
       </Card>
 
       {/* Segment Details */}
-      <Card className="card-flat">
+      <Card className="card-flat" dir={t('segmentDetails') === 'تفاصيل الشرائح' ? 'rtl' : 'ltr'}>
         <CardHeader className="pb-4">
           <CardTitle className="text-lg font-medium text-primary">
             {t('segmentDetails')}
           </CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="space-y-4">
+          <div className="space-y-4 rtl:space-y-reverse">
             {segments.map((segment) => (
-              <div key={segment.segment} className="flex items-center justify-between p-3 rounded-lg bg-muted/30">
-                <div className="flex items-center gap-3">
+              <div key={segment.segment} className="flex items-center justify-between p-3 rounded-lg bg-muted/30 rtl:flex-row-reverse">
+                <div className="flex items-center gap-3 rtl:flex-row-reverse">
                   <span className="text-lg">
                     {getSegmentEmoji(segment.segment)}
                   </span>
@@ -127,7 +127,7 @@ const ClientSegmentation: React.FC<ClientSegmentationProps> = ({
                     </p>
                   </div>
                 </div>
-                <div className="text-right">
+                <div className="text-right rtl:text-left">
                   <p className="font-medium text-sm">
                     {formatCurrency(segment.totalValue, userCurrency)}
                   </p>

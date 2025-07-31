@@ -30,8 +30,9 @@ const AdvancedAnalyticsLayout: React.FC<AdvancedAnalyticsLayoutProps> = ({
   const t = useT();
 
   return (
-    <div className="space-y-4 sm:space-y-6">
-      <Tabs defaultValue="profitability" className="w-full">
+    <div className="space-y-4 sm:space-y-6 rtl:space-y-reverse">
+      <Tabs defaultValue="profitability" className="w-full"
+        dir={t('clientIntelligence') === 'ذكاء العملاء' ? 'rtl' : 'ltr'}>
         <TabsList className="grid w-full grid-cols-2 h-auto">
           <TabsTrigger value="client-intelligence" className="flex items-center gap-1 sm:gap-2 px-2 sm:px-3 py-2.5 text-xs sm:text-sm">
             <span className="text-sm sm:text-base">👥</span>
@@ -46,8 +47,8 @@ const AdvancedAnalyticsLayout: React.FC<AdvancedAnalyticsLayoutProps> = ({
         </TabsList>
 
         {/* Client Intelligence Tab */}
-        <TabsContent value="client-intelligence" className="space-y-4 sm:space-y-6 mt-4 sm:mt-6">
-          <div className="space-y-4 sm:space-y-6">
+        <TabsContent value="client-intelligence" className="space-y-4 sm:space-y-6 mt-4 sm:mt-6 rtl:space-y-reverse">
+          <div className="space-y-4 sm:space-y-6 rtl:space-y-reverse">
             {/* Client Lifetime Value */}
             <ClientLifetimeValue
               clients={data.clientIntelligence.topClientsByValue}
@@ -70,8 +71,8 @@ const AdvancedAnalyticsLayout: React.FC<AdvancedAnalyticsLayoutProps> = ({
         </TabsContent>
 
         {/* Profitability Analytics Tab */}
-        <TabsContent value="profitability" className="space-y-4 sm:space-y-6 mt-4 sm:mt-6">
-          <div className="space-y-4 sm:space-y-6">
+        <TabsContent value="profitability" className="space-y-4 sm:space-y-6 mt-4 sm:mt-6 rtl:space-y-reverse">
+          <div className="space-y-4 sm:space-y-6 rtl:space-y-reverse">
             {/* Basic Analytics Integration */}
             <AnalyticsMetrics
               revenueGrowth={basicAnalytics.revenueGrowth}

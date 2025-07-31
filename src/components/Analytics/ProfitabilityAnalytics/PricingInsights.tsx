@@ -37,9 +37,9 @@ const PricingInsights: React.FC<PricingInsightsProps> = ({
   return (
     <div className="space-y-6">
       {/* Pricing Trends Chart */}
-      <Card className="card-flat">
+      <Card className="card-flat" dir={t('pricingTrends') === 'اتجاهات التسعير' ? 'rtl' : 'ltr'}>
         <CardHeader className="pb-4">
-          <CardTitle className="text-lg font-medium text-primary flex items-center gap-2">
+          <CardTitle className="text-lg font-medium text-primary flex items-center gap-2 rtl:flex-row-reverse">
             📈 {t('pricingTrends')}
           </CardTitle>
         </CardHeader>
@@ -89,9 +89,9 @@ const PricingInsights: React.FC<PricingInsightsProps> = ({
       </Card>
 
       {/* Revenue Optimization */}
-      <Card className="card-flat">
+      <Card className="card-flat" dir={t('revenueOptimization') === 'تحسين الإيرادات' ? 'rtl' : 'ltr'}>
         <CardHeader className="pb-4">
-          <CardTitle className="text-lg font-medium text-primary flex items-center gap-2">
+          <CardTitle className="text-lg font-medium text-primary flex items-center gap-2 rtl:flex-row-reverse">
             🎯 {t('revenueOptimization')}
           </CardTitle>
         </CardHeader>
@@ -127,7 +127,7 @@ const PricingInsights: React.FC<PricingInsightsProps> = ({
 
           {revenueOptimization.potentialIncrease > 0 && (
             <div className="mt-4 p-4 rounded-lg bg-blue-50 border border-blue-200">
-              <div className="flex items-center gap-2 text-blue-700 mb-2">
+              <div className="flex items-center gap-2 text-blue-700 mb-2 rtl:flex-row-reverse">
                 <span>💡</span>
                 <span className="font-medium text-sm">{t('pricingRecommendation')}</span>
               </div>
