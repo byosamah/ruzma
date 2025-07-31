@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useLanguageNavigation } from '@/hooks/useLanguageNavigation';
 import Layout from '@/components/Layout';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -14,7 +14,7 @@ import InvoicesStats from '@/components/Invoices/InvoicesStats';
 import InvoicesSection from '@/components/Invoices/InvoicesSection';
 
 const Invoices: React.FC = () => {
-  const navigate = useNavigate();
+  const { navigate } = useLanguageNavigation();
   const t = useT();
   const {
     user,
