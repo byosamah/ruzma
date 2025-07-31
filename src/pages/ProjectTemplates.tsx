@@ -9,10 +9,11 @@ import { useT } from '@/lib/i18n';
 import { useProjectTemplates } from '@/hooks/useProjectTemplates';
 import { useUserCurrency } from '@/hooks/useUserCurrency';
 import { useLanguageNavigation } from '@/hooks/useLanguageNavigation';
-
 const ProjectTemplates = () => {
   const t = useT();
-  const { navigate } = useLanguageNavigation();
+  const {
+    navigate
+  } = useLanguageNavigation();
   const [user, setUser] = useState<User | null>(null);
   const [profile, setProfile] = useState<any>(null);
   const [authLoading, setAuthLoading] = useState(true);
@@ -25,8 +26,9 @@ const ProjectTemplates = () => {
   } = useProjectTemplates(user);
 
   // Get user's currency formatting function
-  const { formatCurrency } = useUserCurrency(user);
-
+  const {
+    formatCurrency
+  } = useUserCurrency(user);
   useEffect(() => {
     const checkAuthAndLoadData = async () => {
       setAuthLoading(true);
@@ -55,7 +57,6 @@ const ProjectTemplates = () => {
     await supabase.auth.signOut();
     navigate('/');
   };
-
   const handleCreateFromTemplate = (template: any) => {
     console.log('Creating project from template:', template);
     // Navigate to create project with template data
@@ -69,12 +70,10 @@ const ProjectTemplates = () => {
       }
     });
   };
-
   const handleDeleteTemplate = async (templateId: string) => {
     if (!confirm(t('deleteTemplateConfirmation'))) return;
     await deleteTemplate(templateId);
   };
-
   if (authLoading || loading) {
     return <Layout>
         <div className="flex items-center justify-center min-h-[400px]">
@@ -85,7 +84,6 @@ const ProjectTemplates = () => {
         </div>
       </Layout>;
   }
-
   return <Layout user={profile || user} onSignOut={handleSignOut}>
       <div className="space-y-8">
         <div className="flex items-center justify-between">
@@ -137,9 +135,7 @@ const ProjectTemplates = () => {
                   count: String(template.milestones.length)
                 })}
                     </div>
-                    <div className="text-sm text-muted-foreground">
-                      {t('total')}: {formatCurrency(template.milestones.reduce((sum: number, m: any) => sum + m.price, 0))}
-                    </div>
+                    
                     <Button onClick={() => handleCreateFromTemplate(template)} className="w-full">
                       <span className="text-lg mr-2">➕</span>
                       {t('useTemplate')}
@@ -151,5 +147,4 @@ const ProjectTemplates = () => {
       </div>
     </Layout>;
 };
-
 export default ProjectTemplates;
