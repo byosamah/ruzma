@@ -65,7 +65,7 @@ export const UsageIndicators: React.FC<UsageIndicatorsProps> = ({
         <CardContent className="pb-4">
           <div className="space-y-3">
             <div className="flex items-center justify-between gap-2">
-              <span className="text-xl sm:text-3xl font-semibold text-gray-900">
+              <span className="text-base sm:text-lg font-medium text-gray-900">
                 {usage.projects.isUnlimited ? <div className="flex items-center gap-2">
                     {usage.projects.current}
                     

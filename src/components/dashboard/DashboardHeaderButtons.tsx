@@ -23,11 +23,11 @@ const DashboardHeaderButtons: React.FC<DashboardHeaderButtonsProps> = ({
       <Button 
         onClick={onNewProject} 
         disabled={!canCreateProject} 
-        size="default"
-        className={`${!canCreateProject ? 'opacity-50 cursor-not-allowed' : ''} min-h-[48px] px-4 sm:px-6 touch-manipulation`}
+        size="lg"
+        className={`${!canCreateProject ? 'opacity-50 cursor-not-allowed' : ''} w-full min-h-[56px] px-6 sm:px-8 py-4 text-base sm:text-lg font-medium touch-manipulation animate-hover-scale`}
       >
-        <span className="text-base sm:text-lg mr-2">✨</span>
-        <span className="text-sm sm:text-base">{t('newProject')}</span>
+        <span className="text-lg sm:text-xl mr-2">✨</span>
+        <span className="text-base sm:text-lg">{t('newProject')}</span>
       </Button>
     );
 
@@ -48,8 +48,10 @@ const DashboardHeaderButtons: React.FC<DashboardHeaderButtonsProps> = ({
   };
 
   return (
-    <div className="flex justify-end">
-      <NewProjectButton />
+    <div className="flex justify-center w-full">
+      <div className="w-full max-w-md">
+        <NewProjectButton />
+      </div>
     </div>
   );
 };
