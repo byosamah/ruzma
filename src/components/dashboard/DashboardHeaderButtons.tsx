@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { Button } from '@/components/ui/button';
-import { Plus } from 'lucide-react';
+// Replaced icons with emojis
 import { useT } from '@/lib/i18n';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 import { useIsMobile } from '@/hooks/use-mobile';
@@ -26,7 +26,7 @@ const DashboardHeaderButtons: React.FC<DashboardHeaderButtonsProps> = ({
         size={isMobile ? "default" : "default"} 
         className={`${!canCreateProject ? 'opacity-50 cursor-not-allowed' : ''} ${isMobile ? 'w-full' : ''}`}
       >
-        <Plus className="w-4 h-4 mr-2" />
+        <span className="text-base mr-2">➕</span>
         {t('newProject')}
       </Button>
     );

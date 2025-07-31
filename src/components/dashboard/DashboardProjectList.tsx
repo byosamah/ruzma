@@ -4,7 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
-import { Plus, Calendar, Coins, FileText, Edit, Trash2 } from 'lucide-react';
+// Replaced icons with emojis
 import { useT } from '@/lib/i18n';
 import { DatabaseProject } from '@/hooks/projectTypes';
 import { useIsMobile } from '@/hooks/use-mobile';
@@ -82,7 +82,7 @@ const DashboardProjectList: React.FC<DashboardProjectListProps> = ({
         className={`mt-4 ${isMobile ? 'w-full min-h-[44px] touch-manipulation' : 'w-full sm:w-auto'}`}
         disabled={!canCreateProject}
       >
-        <Plus className="w-5 h-5 mr-2" />
+        <span className="text-lg mr-2">➕</span>
         {t('createFirstProject')}
       </Button>
     );
@@ -118,7 +118,7 @@ const DashboardProjectList: React.FC<DashboardProjectListProps> = ({
                   disabled={!canCreateProject}
                   className={`${!canCreateProject ? 'opacity-50 cursor-not-allowed' : ''} ${isMobile ? 'w-full min-h-[44px] touch-manipulation' : 'w-full sm:w-auto'}`}
                 >
-                  <Plus className="w-4 h-4 mr-2" />
+                  <span className="text-base mr-2">➕</span>
                   {t('newProject')}
                 </Button>
               </TooltipTrigger>
@@ -134,7 +134,7 @@ const DashboardProjectList: React.FC<DashboardProjectListProps> = ({
       <CardContent className={`${isMobile ? 'p-4 pt-0' : 'p-6 pt-0'}`}>
         {projects.length === 0 ? (
           <div className="text-center py-8">
-            <FileText className="w-16 h-16 text-slate-300 mx-auto mb-4" />
+            <span className="text-6xl text-slate-300 mx-auto mb-4 block">📄</span>
             <h3 className="text-lg font-medium text-slate-600 mb-2">
               {t('noProjectsYet')}
             </h3>
@@ -168,19 +168,19 @@ const DashboardProjectList: React.FC<DashboardProjectListProps> = ({
                       </p>
                       <div className={`${isMobile ? 'grid grid-cols-1 gap-2' : 'flex items-center flex-wrap gap-4'} text-sm text-slate-500`}>
                         <div className="flex items-center min-w-0">
-                          <Calendar className="w-4 h-4 mr-1 flex-shrink-0" />
+                          <span className="text-base mr-1 flex-shrink-0">📅</span>
                           <span className="text-xs sm:text-sm truncate">
                             {new Date(project.created_at).toLocaleDateString()}
                           </span>
                         </div>
                         <div className="flex items-center min-w-0">
-                          <FileText className="w-4 h-4 mr-1 flex-shrink-0" />
+                          <span className="text-base mr-1 flex-shrink-0">📄</span>
                           <span className="text-xs sm:text-sm">
                             {completedMilestones}/{totalMilestones} {t('completed')}
                           </span>
                         </div>
                         <div className="flex items-center min-w-0">
-                          <Coins className="w-4 h-4 mr-1 flex-shrink-0" />
+                          <span className="text-base mr-1 flex-shrink-0">💰</span>
                           <span className="text-xs sm:text-sm truncate">
                             {totalValue.toFixed(2)} {currency}
                           </span>
@@ -205,7 +205,7 @@ const DashboardProjectList: React.FC<DashboardProjectListProps> = ({
                           onClick={() => onEdit(project.id)}
                           className={`${isMobile ? 'min-h-[44px] min-w-[44px] touch-manipulation' : 'h-8 w-8'} p-0`}
                         >
-                          <Edit className="w-4 h-4" />
+                          <span className="text-base">✏️</span>
                         </Button>
                         <Button
                           variant="ghost"
@@ -213,7 +213,7 @@ const DashboardProjectList: React.FC<DashboardProjectListProps> = ({
                           onClick={() => onDelete(project.id)}
                           className={`text-red-500 hover:text-red-700 ${isMobile ? 'min-h-[44px] min-w-[44px] touch-manipulation' : 'h-8 w-8'} p-0`}
                         >
-                          <Trash2 className="w-4 h-4" />
+                          <span className="text-base">🗑️</span>
                         </Button>
                       </div>
                     </div>

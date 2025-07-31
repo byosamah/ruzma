@@ -3,7 +3,7 @@ import React from 'react';
 import { Progress } from '@/components/ui/progress';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { FolderOpen, TrendingUp, MessageCircle, Infinity } from 'lucide-react';
+// Replaced icons with emojis
 import { useNavigate } from 'react-router-dom';
 import { useUsageTracking } from '@/hooks/useUsageTracking';
 import { DatabaseProject } from '@/hooks/projectTypes';
@@ -36,8 +36,8 @@ export const UsageIndicators: React.FC<UsageIndicatorsProps> = ({
     return userType === 'pro' ? t('contactUs') : t('upgrade');
   };
 
-  const getUpgradeButtonIcon = () => {
-    return userType === 'pro' ? MessageCircle : TrendingUp;
+  const getUpgradeButtonEmoji = () => {
+    return userType === 'pro' ? '💬' : '📈';
   };
 
   if (usage.loading) {
@@ -69,11 +69,9 @@ export const UsageIndicators: React.FC<UsageIndicatorsProps> = ({
       <Card className="border-0 shadow-none bg-gray-50">
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-3">
           <CardTitle className="text-sm font-medium text-gray-600">{t('projectsUsed')}</CardTitle>
-          {usage.projects.isUnlimited ? (
-            <Infinity className="h-4 w-4 text-gray-400" />
-          ) : (
-            <FolderOpen className="h-4 w-4 text-gray-400" />
-          )}
+          <span className="text-base text-gray-400">
+            {usage.projects.isUnlimited ? '♾️' : '📂'}
+          </span>
         </CardHeader>
         <CardContent className="pb-4">
           <div className="space-y-3">
@@ -82,7 +80,7 @@ export const UsageIndicators: React.FC<UsageIndicatorsProps> = ({
                 {usage.projects.isUnlimited ? (
                   <div className="flex items-center gap-2">
                     {usage.projects.current}
-                    <Infinity className="h-5 w-5 text-gray-600" />
+                    <span className="text-lg text-gray-600">♾️</span>
                   </div>
                 ) : (
                   `${usage.projects.current} ${t('of')} ${usage.projects.max}`
@@ -94,9 +92,7 @@ export const UsageIndicators: React.FC<UsageIndicatorsProps> = ({
                   onClick={handleUpgradeClick} 
                   className="text-xs px-3 py-1 font-medium bg-gray-900 hover:bg-gray-800 text-white border-0 shadow-none"
                 >
-                  {React.createElement(getUpgradeButtonIcon(), {
-                    className: "h-3 w-3 mr-1"
-                  })}
+                  <span className="text-xs mr-1">{getUpgradeButtonEmoji()}</span>
                   {getUpgradeButtonText()}
                 </Button>
               )}

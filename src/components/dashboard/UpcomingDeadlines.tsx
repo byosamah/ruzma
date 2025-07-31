@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Calendar, Clock, AlertTriangle, CheckCircle } from 'lucide-react';
+// Replaced icons with emojis
 import { useLanguageNavigation } from '@/hooks/useLanguageNavigation';
 import { useUpcomingDeadlines } from '@/hooks/useUpcomingDeadlines';
 import { DatabaseProject } from '@/hooks/projectTypes';
@@ -19,8 +19,7 @@ export const UpcomingDeadlines: React.FC<UpcomingDeadlinesProps> = ({ projects }
   const getDisplayContent = () => {
     if (stats.total === 0) {
       return {
-        icon: CheckCircle,
-        iconColor: 'text-green-600',
+        emoji: '✅',
         title: t('noUpcomingDeadlines'),
         subtitle: t('allProjectsOnTrack'),
       };
@@ -28,8 +27,7 @@ export const UpcomingDeadlines: React.FC<UpcomingDeadlinesProps> = ({ projects }
 
     if (stats.overdue > 0) {
       return {
-        icon: AlertTriangle,
-        iconColor: 'text-red-600',
+        emoji: '⚠️',
         title: `${stats.overdue} ${t('overdue')}`,
         subtitle: t('needsAttention'),
       };
@@ -37,8 +35,7 @@ export const UpcomingDeadlines: React.FC<UpcomingDeadlinesProps> = ({ projects }
 
     if (stats.dueSoon > 0) {
       return {
-        icon: Clock,
-        iconColor: 'text-amber-600',
+        emoji: '⏰',
         title: `${stats.dueSoon} ${t('dueSoon')}`,
         subtitle: t('within7Days'),
       };
@@ -47,36 +44,33 @@ export const UpcomingDeadlines: React.FC<UpcomingDeadlinesProps> = ({ projects }
     if (stats.nextDeadline) {
       const daysText = stats.nextDeadline.daysRemaining === 1 ? t('tomorrow') : `${stats.nextDeadline.daysRemaining} ${t('daysLeft')}`;
       return {
-        icon: Calendar,
-        iconColor: 'text-blue-600',
+        emoji: '📅',
         title: daysText,
         subtitle: stats.nextDeadline.projectName,
       };
     }
 
     return {
-      icon: Calendar,
-      iconColor: 'text-gray-400',
+      emoji: '📅',
       title: t('noDeadlines'),
       subtitle: t('noProjectDeadlines'),
     };
   };
 
   const content = getDisplayContent();
-  const Icon = content.icon;
 
   return (
     <Card className="border-0 shadow-none bg-gray-50">
       <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-3">
         <CardTitle className="text-sm font-medium text-gray-600">{t('upcomingDeadlines')}</CardTitle>
-        <Calendar className="h-4 w-4 text-gray-400" />
+        <span className="text-base text-gray-400">📅</span>
       </CardHeader>
       <CardContent className="pb-4">
         <div className="space-y-3">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-3">
               <div className="p-2 rounded-lg bg-white">
-                <Icon className={`w-4 h-4 ${content.iconColor}`} />
+                <span className="text-base">{content.emoji}</span>
               </div>
               <div className="min-w-0 flex-1">
                 <p className="text-lg font-medium text-gray-900 truncate">{content.title}</p>

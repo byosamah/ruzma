@@ -11,7 +11,7 @@ import { useDashboardSEO } from '@/hooks/dashboard/useDashboardSEO';
 import { useUsageTracking } from '@/hooks/useUsageTracking';
 import { useLanguageNavigation } from '@/hooks/useLanguageNavigation';
 import { Button } from '@/components/ui/button';
-import { Plus, FileText, MessageCircle } from 'lucide-react';
+// Replaced icons with emojis
 import { useT } from '@/lib/i18n';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 import { useIsMobile } from '@/hooks/use-mobile';
@@ -76,7 +76,7 @@ const Dashboard = () => {
   const EmptyProjectsButton = () => {
     const userType = profile?.user_type || 'free';
     const buttonText = !usage.canCreateProject && userType === 'pro' ? t('contactUsForMoreProjects') : t('createFirstProject');
-    const ButtonIcon = !usage.canCreateProject && userType === 'pro' ? MessageCircle : Plus;
+    const buttonEmoji = !usage.canCreateProject && userType === 'pro' ? '💬' : '➕';
     const tooltipMessage = !usage.canCreateProject ? userType === 'pro' ? t('projectLimitReachedPro') : t('projectLimitReached') : '';
     
     const button = (
@@ -86,7 +86,7 @@ const Dashboard = () => {
         className={`${isMobile ? 'w-full' : 'w-full sm:w-auto'} px-6 py-3 text-base min-h-[44px] touch-manipulation bg-gray-900 hover:bg-gray-800 text-white font-medium border-0 shadow-none`} 
         disabled={false}
       >
-        <ButtonIcon className="w-5 h-5 mr-2" />
+        <span className="text-lg mr-2">{buttonEmoji}</span>
         {buttonText}
       </Button>
     );
@@ -153,7 +153,7 @@ const Dashboard = () => {
 
             {projects.length === 0 ? (
               <div className={`text-center py-12 bg-white rounded-lg border border-gray-100 ${isMobile ? 'mx-0' : 'mx-2 sm:mx-0'}`}>
-                <FileText className="w-12 h-12 text-gray-300 mx-auto mb-4" aria-hidden="true" />
+                <span className="text-5xl text-gray-300 mx-auto mb-4 block">📄</span>
                 <h3 className="text-lg font-medium text-gray-600 mb-2 px-4">
                   {t('noProjectsYet')}
                 </h3>

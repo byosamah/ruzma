@@ -4,7 +4,7 @@ import {
   Card,
   CardContent,
 } from "@/components/ui/card";
-import { Briefcase, Coins, Clock, CheckCircle } from "lucide-react";
+// Replaced icons with emojis
 import { formatCurrency, CurrencyCode } from "@/lib/currency";
 import { useT } from "@/lib/i18n";
 
@@ -32,42 +32,37 @@ const DashboardStats: React.FC<DashboardStatsProps> = ({
       title: t("totalProjects"),
       value: totalProjects.toString(),
       subtitle: t("activeProjects"),
-      icon: Briefcase,
-      iconColor: 'text-blue-600',
+      emoji: '💼',
     },
     {
       title: t("totalEarnings"),
       value: formatCurrency(totalEarnings, userCurrency),
       subtitle: t("fromCompletedMilestones"),
-      icon: Coins,
-      iconColor: 'text-green-600',
+      emoji: '💰',
     },
     {
       title: t("pendingPayments"),
       value: pendingPayments.toString(),
       subtitle: t("awaitingApproval"),
-      icon: Clock,
-      iconColor: 'text-amber-600',
+      emoji: '⏰',
     },
     {
       title: t("completed"),
       value: `${completedMilestones}/${totalMilestones}`,
       subtitle: t("milestonesCompleted"),
-      icon: CheckCircle,
-      iconColor: 'text-purple-600',
+      emoji: '✅',
     },
   ];
 
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
       {stats.map((stat, index) => {
-        const Icon = stat.icon;
         return (
           <Card key={index} className="border-0 shadow-none bg-gray-50">
             <CardContent className="p-4">
               <div className="flex items-center space-x-3">
                 <div className="p-2 rounded-lg bg-white">
-                  <Icon className={`w-4 h-4 ${stat.iconColor}`} />
+                  <span className="text-base">{stat.emoji}</span>
                 </div>
                 <div className="min-w-0 flex-1">
                   <p className="text-xs text-gray-500 truncate">{stat.title}</p>

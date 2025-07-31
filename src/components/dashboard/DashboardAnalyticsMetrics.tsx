@@ -1,7 +1,7 @@
 
 import React from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { TrendingUp, TrendingDown, Calendar, Target } from "lucide-react";
+// Replaced icons with emojis
 import { formatCurrency, CurrencyCode } from "@/lib/currency";
 import { useT } from "@/lib/i18n";
 
@@ -25,11 +25,9 @@ const DashboardAnalyticsMetrics: React.FC<DashboardAnalyticsMetricsProps> = ({
       <Card>
         <CardHeader className="flex flex-row items-center justify-between pb-2">
           <CardTitle className="text-sm font-medium">{t('growthRate')}</CardTitle>
-          {revenueGrowth >= 0 ? (
-            <TrendingUp className="w-4 h-4 text-green-600" />
-          ) : (
-            <TrendingDown className="w-4 h-4 text-red-600" />
-          )}
+          <span className="text-base">
+            {revenueGrowth >= 0 ? '📈' : '📉'}
+          </span>
         </CardHeader>
         <CardContent>
           <div className="text-2xl font-bold">
@@ -43,7 +41,7 @@ const DashboardAnalyticsMetrics: React.FC<DashboardAnalyticsMetricsProps> = ({
       <Card>
         <CardHeader className="flex flex-row items-center justify-between pb-2">
           <CardTitle className="text-sm font-medium">{t('averageProjectValue')}</CardTitle>
-          <Target className="w-4 h-4 text-blue-600" />
+          <span className="text-base">🎯</span>
         </CardHeader>
         <CardContent>
           <div className="text-2xl font-bold">
@@ -56,7 +54,7 @@ const DashboardAnalyticsMetrics: React.FC<DashboardAnalyticsMetricsProps> = ({
       <Card>
         <CardHeader className="flex flex-row items-center justify-between pb-2">
           <CardTitle className="text-sm font-medium">{t('completionRate')}</CardTitle>
-          <Calendar className="w-4 h-4 text-purple-600" />
+          <span className="text-base">📅</span>
         </CardHeader>
         <CardContent>
           <div className="text-2xl font-bold">{completionRate.toFixed(1)}%</div>
