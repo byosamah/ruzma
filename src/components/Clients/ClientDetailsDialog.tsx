@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Calendar, Mail, Hash, FolderOpen } from 'lucide-react';
+// Icons replaced with emojis
 import { ClientWithProjectCount } from '@/types/client';
 import { supabase } from '@/integrations/supabase/client';
 import { DatabaseProject } from '@/hooks/projectTypes';
@@ -74,7 +74,7 @@ const ClientDetailsDialog: React.FC<ClientDetailsDialogProps> = ({
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <div className="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center">
-              <Hash className="w-4 h-4 text-blue-600" />
+              <span className="text-lg text-blue-600">#️⃣</span>
             </div>
             {t('clientDetails')}
           </DialogTitle>
@@ -96,7 +96,7 @@ const ClientDetailsDialog: React.FC<ClientDetailsDialogProps> = ({
                 <div>
                   <h3 className="font-medium">{client.name}</h3>
                   <div className="flex items-center gap-1 text-sm text-gray-600">
-                    <Mail className="w-4 h-4" />
+                    <span className="text-lg">📧</span>
                     {client.email}
                   </div>
                 </div>
@@ -112,7 +112,7 @@ const ClientDetailsDialog: React.FC<ClientDetailsDialogProps> = ({
                 <div>
                   <p className="text-sm text-gray-600">{t('joined')}</p>
                   <div className="flex items-center gap-1 text-sm">
-                    <Calendar className="w-4 h-4" />
+                    <span className="text-lg">📅</span>
                     {new Date(client.created_at).toLocaleDateString()}
                   </div>
                 </div>
@@ -140,7 +140,7 @@ const ClientDetailsDialog: React.FC<ClientDetailsDialogProps> = ({
                   {projects.map((project) => (
                     <div key={project.id} className="flex items-center justify-between p-3 border rounded-lg">
                       <div className="flex items-center gap-3">
-                        <FolderOpen className="w-5 h-5 text-gray-400" />
+                        <span className="text-xl text-gray-400">📂</span>
                         <div>
                           <h4 className="font-medium">{project.name}</h4>
                           <p className="text-sm text-gray-600 truncate max-w-xs">
@@ -158,7 +158,7 @@ const ClientDetailsDialog: React.FC<ClientDetailsDialogProps> = ({
                 </div>
               ) : (
                 <div className="text-center py-8 text-gray-500">
-                  <FolderOpen className="w-12 h-12 mx-auto mb-3 text-gray-300" />
+                  <span className="text-6xl mx-auto mb-3 text-gray-300 block">📂</span>
                   <p>{t('noProjectsFoundForClient')}</p>
                 </div>
               )}

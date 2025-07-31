@@ -1,9 +1,9 @@
 import React from 'react';
-import { LucideIcon } from 'lucide-react';
+// Icons replaced with emojis
 import { Button } from '@/components/ui/button';
 
 interface EmptyStateProps {
-  icon: LucideIcon;
+  emoji: string;
   title: string;
   description: string;
   actionLabel?: string;
@@ -12,7 +12,7 @@ interface EmptyStateProps {
 }
 
 export const EmptyState: React.FC<EmptyStateProps> = ({
-  icon: Icon,
+  emoji,
   title,
   description,
   actionLabel,
@@ -22,7 +22,7 @@ export const EmptyState: React.FC<EmptyStateProps> = ({
   return (
     <div className={`text-center py-8 ${className}`}>
       <div className="w-16 h-16 surface-muted rounded-lg flex items-center justify-center mx-auto mb-4">
-        <Icon className="w-6 h-6 text-secondary" />
+        <span className="text-4xl">{emoji}</span>
       </div>
       <h3 className="text-base font-medium text-primary mb-2">{title}</h3>
       <p className="text-sm text-secondary mb-4">{description}</p>

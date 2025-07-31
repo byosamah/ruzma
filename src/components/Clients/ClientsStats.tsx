@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { Users, Mail, FolderOpen } from 'lucide-react';
+// Icons replaced with emojis
 import { ClientWithProjectCount } from '@/types/client';
 import { useT } from '@/lib/i18n';
 import { StatCard } from '@/components/shared';
@@ -19,19 +19,19 @@ const ClientsStats: React.FC<ClientsStatsProps> = ({ clients }) => {
   return (
     <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
       <StatCard
-        icon={Users}
+        emoji="👥"
         title={t('totalClients')}
         value={totalClients}
       />
 
       <StatCard
-        icon={FolderOpen}
+        emoji="📂"
         title={t('totalProjects')}
         value={totalProjects}
       />
 
       <StatCard
-        icon={Mail}
+        emoji="📊"
         title={t('avgProjectsPerClient')}
         value={averageProjectsPerClient}
       />

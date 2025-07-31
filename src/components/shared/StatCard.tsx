@@ -1,8 +1,8 @@
 import React from 'react';
-import { LucideIcon } from 'lucide-react';
+// Icons replaced with emojis
 
 interface StatCardProps {
-  icon: LucideIcon;
+  emoji: string;
   title: string;
   value: string | number;
   subtitle?: string;
@@ -10,7 +10,7 @@ interface StatCardProps {
 }
 
 export const StatCard: React.FC<StatCardProps> = ({
-  icon: Icon,
+  emoji,
   title,
   value,
   subtitle,
@@ -20,7 +20,7 @@ export const StatCard: React.FC<StatCardProps> = ({
     <div className={`stat-card ${className}`}>
       <div className="flex items-start justify-between">
         <div className="metric-icon">
-          <Icon className="w-4 h-4" />
+          <span className="text-xl">{emoji}</span>
         </div>
       </div>
       <div className="mt-3 space-y-1">

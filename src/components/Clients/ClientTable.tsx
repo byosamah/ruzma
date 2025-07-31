@@ -3,7 +3,7 @@ import React from 'react';
 import { Button } from '@/components/ui/button';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
-import { Edit, Trash2, Eye, MoreHorizontal, Users } from 'lucide-react';
+// Icons replaced with emojis
 import { ClientWithProjectCount } from '@/types/client';
 import { useT } from '@/lib/i18n';
 import { useLanguage } from '@/contexts/LanguageContext';
@@ -31,7 +31,7 @@ const ClientTable: React.FC<ClientTableProps> = ({
     return (
       <div className="text-center py-16">
         <EmptyState
-          icon={Users}
+          emoji="👥"
           title={t('noClientsFound')}
           description={t('getStartedByAdding')}
         />
@@ -87,23 +87,23 @@ const ClientTable: React.FC<ClientTableProps> = ({
                       size="sm"
                       className="h-8 w-8 p-0 text-gray-400 hover:text-gray-600"
                     >
-                      <MoreHorizontal className="w-4 h-4" />
+                      <span className="text-lg">⋯</span>
                     </Button>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align={isRTL ? 'start' : 'end'} className="w-40">
                     <DropdownMenuItem onClick={() => onViewDetails(client)}>
-                      <Eye className="w-4 h-4 mr-2" />
+                      <span className="text-lg mr-2">👁️</span>
                       {t('view')}
                     </DropdownMenuItem>
                     <DropdownMenuItem onClick={() => onEdit(client)}>
-                      <Edit className="w-4 h-4 mr-2" />
+                      <span className="text-lg mr-2">✏️</span>
                       {t('edit')}
                     </DropdownMenuItem>
                     <DropdownMenuItem 
                       onClick={() => onDelete(client)}
                       className="text-red-600 focus:text-red-600"
                     >
-                      <Trash2 className="w-4 h-4 mr-2" />
+                      <span className="text-lg mr-2">🗑️</span>
                       {t('delete')}
                     </DropdownMenuItem>
                   </DropdownMenuContent>
