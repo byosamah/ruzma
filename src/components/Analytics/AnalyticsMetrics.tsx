@@ -1,7 +1,7 @@
 
 import React from "react";
 import { Card, CardContent } from "@/components/ui/card";
-import { TrendingUp, TrendingDown, Target, Calendar } from "lucide-react";
+// Icons replaced with emojis
 import { formatCurrency, CurrencyCode } from "@/lib/currency";
 import { useT } from "@/lib/i18n";
 
@@ -25,7 +25,7 @@ const AnalyticsMetrics: React.FC<AnalyticsMetricsProps> = ({
       title: t('growthRate'),
       value: `${revenueGrowth >= 0 ? "+" : ""}${revenueGrowth.toFixed(1)}%`,
       subtitle: t('compareToLastPeriod'),
-      icon: revenueGrowth >= 0 ? TrendingUp : TrendingDown,
+      emoji: revenueGrowth >= 0 ? '📈' : '📉',
       iconColor: revenueGrowth >= 0 ? 'text-green-600' : 'text-red-600',
       variant: 'muted' as const,
     },
@@ -33,7 +33,7 @@ const AnalyticsMetrics: React.FC<AnalyticsMetricsProps> = ({
       title: t('averageProjectValue'),
       value: formatCurrency(avgProjectValue, userCurrency),
       subtitle: t('projects'),
-      icon: Target,
+      emoji: '🎯',
       iconColor: 'text-blue-600',
       variant: 'muted' as const,
     },
@@ -41,7 +41,7 @@ const AnalyticsMetrics: React.FC<AnalyticsMetricsProps> = ({
       title: t('completionRate'),
       value: `${completionRate.toFixed(1)}%`,
       subtitle: t('completedMilestones'),
-      icon: Calendar,
+      emoji: '📅',
       iconColor: 'text-purple-600',
       variant: 'muted' as const,
     },
@@ -53,7 +53,7 @@ const AnalyticsMetrics: React.FC<AnalyticsMetricsProps> = ({
         <div key={index} className="stat-card">
           <div className="flex items-center space-x-3">
             <div className="metric-icon">
-              <metric.icon className={`w-4 h-4 ${metric.iconColor}`} />
+              <span className="text-xl">{metric.emoji}</span>
             </div>
             <div className="min-w-0 flex-1">
               <p className="stat-label truncate">{metric.title}</p>
