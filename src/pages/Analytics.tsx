@@ -3,9 +3,11 @@ import React from 'react';
 import Layout from '@/components/Layout';
 import { useDashboard } from '@/hooks/useDashboard';
 import { useDashboardAnalytics } from '@/hooks/useDashboardAnalytics';
+import { useAdvancedAnalytics } from '@/hooks/analytics';
 import AnalyticsHeader from '@/components/Analytics/AnalyticsHeader';
 import AnalyticsMetrics from '@/components/Analytics/AnalyticsMetrics';
 import AnalyticsCharts from '@/components/Analytics/AnalyticsCharts';
+import AdvancedAnalyticsLayout from '@/components/Analytics/AdvancedAnalyticsLayout';
 import { useT } from '@/lib/i18n';
 
 const Analytics = () => {
@@ -19,6 +21,7 @@ const Analytics = () => {
   } = useDashboard();
   
   const analyticsData = useDashboardAnalytics(projects);
+  const advancedAnalyticsData = useAdvancedAnalytics(projects);
 
   if (loading) {
     return (
@@ -44,6 +47,12 @@ const Analytics = () => {
         
         <AnalyticsCharts
           data={analyticsData}
+          userCurrency={userCurrency.currency}
+        />
+        
+        {/* Advanced Analytics */}
+        <AdvancedAnalyticsLayout
+          data={advancedAnalyticsData}
           userCurrency={userCurrency.currency}
         />
       </div>
