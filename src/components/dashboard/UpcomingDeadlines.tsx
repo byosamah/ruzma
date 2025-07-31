@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 // Replaced icons with emojis
@@ -6,64 +5,60 @@ import { useLanguageNavigation } from '@/hooks/useLanguageNavigation';
 import { useUpcomingDeadlines } from '@/hooks/useUpcomingDeadlines';
 import { DatabaseProject } from '@/hooks/projectTypes';
 import { useT } from '@/lib/i18n';
-
 interface UpcomingDeadlinesProps {
   projects: DatabaseProject[];
 }
-
-export const UpcomingDeadlines: React.FC<UpcomingDeadlinesProps> = ({ projects }) => {
+export const UpcomingDeadlines: React.FC<UpcomingDeadlinesProps> = ({
+  projects
+}) => {
   const t = useT();
-  const { navigate } = useLanguageNavigation();
-  const { stats } = useUpcomingDeadlines(projects);
-
+  const {
+    navigate
+  } = useLanguageNavigation();
+  const {
+    stats
+  } = useUpcomingDeadlines(projects);
   const getDisplayContent = () => {
     if (stats.total === 0) {
       return {
         emoji: '✅',
         title: t('noUpcomingDeadlines'),
-        subtitle: t('allProjectsOnTrack'),
+        subtitle: t('allProjectsOnTrack')
       };
     }
-
     if (stats.overdue > 0) {
       return {
         emoji: '⚠️',
         title: `${stats.overdue} ${t('overdue')}`,
-        subtitle: t('needsAttention'),
+        subtitle: t('needsAttention')
       };
     }
-
     if (stats.dueSoon > 0) {
       return {
         emoji: '⏰',
         title: `${stats.dueSoon} ${t('dueSoon')}`,
-        subtitle: t('within7Days'),
+        subtitle: t('within7Days')
       };
     }
-
     if (stats.nextDeadline) {
       const daysText = stats.nextDeadline.daysRemaining === 1 ? t('tomorrow') : `${stats.nextDeadline.daysRemaining} ${t('daysLeft')}`;
       return {
         emoji: '📅',
         title: daysText,
-        subtitle: stats.nextDeadline.projectName,
+        subtitle: stats.nextDeadline.projectName
       };
     }
-
     return {
       emoji: '📅',
       title: t('noDeadlines'),
-      subtitle: t('noProjectDeadlines'),
+      subtitle: t('noProjectDeadlines')
     };
   };
-
   const content = getDisplayContent();
-
-  return (
-    <Card className="border-0 shadow-none bg-gray-50">
+  return <Card className="border-0 shadow-none bg-gray-50">
       <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-3">
         <CardTitle className="text-sm font-medium text-gray-600">{t('upcomingDeadlines')}</CardTitle>
-        <span className="text-2xl text-gray-400">📅</span>
+        
       </CardHeader>
       <CardContent className="pb-4">
         <div className="space-y-3">
@@ -80,6 +75,5 @@ export const UpcomingDeadlines: React.FC<UpcomingDeadlinesProps> = ({ projects }
           </div>
         </div>
       </CardContent>
-    </Card>
-  );
+    </Card>;
 };
