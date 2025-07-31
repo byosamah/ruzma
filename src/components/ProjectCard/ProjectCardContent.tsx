@@ -2,7 +2,7 @@
 import React from 'react';
 import { CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-// Icons replaced with emojis
+import { Calendar, Clock, Coins } from 'lucide-react';
 import { formatCurrency, CurrencyCode } from '@/lib/currency';
 import { DatabaseProject } from '@/hooks/projectTypes';
 import { ProjectStats } from './types';
@@ -37,7 +37,7 @@ const ProjectCardContent: React.FC<ProjectCardContentProps> = ({
       
       {(project.start_date || project.end_date) && (
         <div className="flex items-center gap-1.5 text-xs sm:text-xs text-slate-500">
-          <span className="text-sm flex-shrink-0">📅</span>
+          <Calendar className="w-3 h-3 flex-shrink-0" />
           <span className="truncate">
             {project.start_date && formatDate(project.start_date)}
             {project.start_date && project.end_date && ' - '}
@@ -48,12 +48,12 @@ const ProjectCardContent: React.FC<ProjectCardContentProps> = ({
       
       <div className="flex flex-wrap items-center gap-3 text-xs sm:text-xs">
         <div className="flex items-center gap-1 text-slate-600">
-          <span className="text-sm flex-shrink-0">⏰</span>
+          <Clock className="w-3 h-3 flex-shrink-0" />
           <span className="whitespace-nowrap">{stats.completedMilestones}/{stats.totalMilestones} {t('milestones')}</span>
         </div>
         
         <div className="flex items-center gap-1 text-slate-600">
-          <span className="text-sm flex-shrink-0">💰</span>
+          <Coins className="w-3 h-3 flex-shrink-0" />
           <span className="whitespace-nowrap">{formatCurrency(stats.totalValue, currency)}</span>
         </div>
       </div>
