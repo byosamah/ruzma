@@ -42,8 +42,7 @@ const handler = async (req: Request): Promise<Response> => {
           price,
           start_date,
           end_date
-        ),
-        profiles!inner(currency)
+        )
       `)
       .eq('id', projectId)
       .single();
@@ -52,6 +51,13 @@ const handler = async (req: Request): Promise<Response> => {
       console.error('Error fetching project:', projectError);
       throw new Error('Project not found');
     }
+
+    // Get user profile for currency information
+    const { data: profile, error: profileError } = await supabaseClient
+      .from('profiles')
+      .select('currency')
+      .eq('id', project.user_id)
+      .single();
 
     // Update project with contract sent timestamp
     const { error: updateError } = await supabaseClient
@@ -68,7 +74,7 @@ const handler = async (req: Request): Promise<Response> => {
     }
 
     // Get user's preferred currency
-    const userCurrency = project.freelancer_currency || project.profiles?.currency || 'USD';
+    const userCurrency = project.freelancer_currency || profile?.currency || 'USD';
     
     // Currency formatting function
     const formatCurrency = (amount: number, currency: string) => {
