@@ -21,8 +21,8 @@ const SignUp = () => {
   // Show loading while checking auth state
   if (authLoading || !authChecked) {
     return (
-      <div className="min-h-screen bg-auth-background flex items-center justify-center">
-        <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-brand-yellow"></div>
+      <div className="min-h-screen bg-white flex items-center justify-center">
+        <div className="animate-spin rounded-full h-8 w-8 border-2 border-gray-300 border-t-gray-900"></div>
       </div>
     );
   }
@@ -33,7 +33,7 @@ const SignUp = () => {
   }
 
   return (
-    <div className="relative min-h-screen">
+    <div className="min-h-screen bg-white flex items-center justify-center px-4 sm:px-6 lg:px-8 relative">
       {/* Language Switcher - Top Right/Left based on direction */}
       <div className="absolute top-4 right-4 rtl:right-auto rtl:left-4 z-10">
         <LanguageSelector 
@@ -42,7 +42,9 @@ const SignUp = () => {
         />
       </div>
       
-      <SignUpContainer />
+      <div className="w-full max-w-md space-y-6 sm:space-y-8">
+        <SignUpContainer />
+      </div>
     </div>
   );
 };

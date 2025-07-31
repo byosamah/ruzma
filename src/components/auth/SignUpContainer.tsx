@@ -26,27 +26,30 @@ const SignUpContainer: React.FC = () => {
   } = useSignUpForm();
 
   return (
-    <div className="min-h-screen bg-auth-background flex flex-col items-center justify-center p-4 sm:p-6 lg:p-8">
-      <div className="absolute top-8 sm:top-12 lg:top-16">
+    <>
+      {/* Header - matches Login */}
+      <div className="text-center space-y-4">
         <Link to="/">
-          <img src="/lovable-uploads/bca9fbc0-5ee9-455b-91b3-b7eff1f56169.png" alt="Ruzma Logo" className="h-8 sm:h-10" />
+          <img src="/lovable-uploads/bca9fbc0-5ee9-455b-91b3-b7eff1f56169.png" alt="Ruzma Logo" className="h-10 mx-auto" />
         </Link>
+        <div className="space-y-2">
+          <h1 className="text-2xl font-semibold text-gray-900">{t('welcomeToRuzma')}</h1>
+          <p className="text-gray-600">{t('signUpSubtitle')}</p>
+        </div>
       </div>
 
-      <Card className="w-full max-w-md shadow-lg bg-white">
-        <CardHeader className="text-center space-y-2 sm:space-y-3">
-          <CardTitle className="text-xl sm:text-2xl font-bold text-slate-800">{t('welcomeToRuzma')}</CardTitle>
-          <p className="text-sm sm:text-base text-slate-600">{t('signUpSubtitle')}</p>
-        </CardHeader>
-        <CardContent className="p-4 sm:p-6">
-          <div className="flex bg-slate-100 rounded-md p-1 mb-4 sm:mb-6">
-            <Button asChild variant="ghost" className="w-1/2 text-slate-500 text-sm">
-              <Link to="/login">{t('signIn')}</Link>
-            </Button>
-            <Button variant="ghost" className="w-1/2 bg-white shadow-sm text-brand-navy font-semibold text-sm">{t('signUp')}</Button>
-          </div>
+      {/* Auth Toggle - matches Login */}
+      <div className="flex bg-gray-100 rounded-lg p-1">
+        <Button asChild variant="ghost" className="w-1/2 text-gray-600 font-medium">
+          <Link to="/login">{t('signIn')}</Link>
+        </Button>
+        <Button variant="ghost" className="w-1/2 bg-white shadow-sm text-gray-900 font-medium">{t('signUp')}</Button>
+      </div>
 
-          <form onSubmit={handleSubmit} className="space-y-3 sm:space-y-4">
+      {/* Form - matches Login structure */}
+      <Card className="border-0 shadow-none">
+        <CardContent className="p-0">
+          <form onSubmit={handleSubmit} className="space-y-5">
             <FormField
               id="name"
               name="name"
@@ -55,7 +58,7 @@ const SignUpContainer: React.FC = () => {
               value={formData.name}
               onChange={handleFormDataChange}
               error={errors.name}
-              icon={User}
+              emoji="👤"
               required
             />
 
@@ -68,7 +71,7 @@ const SignUpContainer: React.FC = () => {
               value={formData.email}
               onChange={handleFormDataChange}
               error={errors.email}
-              icon={Mail}
+              emoji="📧"
               required
             />
 
@@ -107,7 +110,7 @@ const SignUpContainer: React.FC = () => {
 
             <Button 
               type="submit" 
-              className="w-full bg-brand-yellow text-brand-black hover:bg-brand-yellow/90 h-10 sm:h-11 text-sm sm:text-base font-medium mt-4 sm:mt-6" 
+              className="w-full h-11 bg-gray-900 text-white hover:bg-gray-800 font-medium rounded-lg" 
               disabled={isLoading}
             >
               {isLoading ? t('creatingAccount') : t('createAccount')}
@@ -116,10 +119,11 @@ const SignUpContainer: React.FC = () => {
         </CardContent>
       </Card>
       
-      <div className="absolute bottom-6 sm:bottom-8 text-xs sm:text-sm text-slate-600 text-center px-4">
+      {/* Footer - matches Login */}
+      <div className="text-center text-sm text-gray-600">
         {t('footerRights', { year: new Date().getFullYear().toString() })}
       </div>
-    </div>
+    </>
   );
 };
 
