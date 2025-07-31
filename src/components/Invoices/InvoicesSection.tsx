@@ -33,7 +33,7 @@ const InvoicesSection: React.FC<InvoicesSectionProps> = ({
 
   return (
     <Card className="border-0 shadow-none bg-white">
-      <CardContent className="p-6 space-y-6">
+      <CardContent className="p-4 sm:p-6 space-y-4 sm:space-y-6">
         <div className="flex items-center justify-between">
           <h2 className="text-lg font-medium text-gray-900">{t('allInvoices')}</h2>
         </div>
