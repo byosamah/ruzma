@@ -62,6 +62,12 @@ const CreateProject: React.FC<CreateProjectProps> = ({ user, profile }) => {
         await saveTemplate({
           name: data.name,
           brief: data.brief,
+          contract_required: data.contractRequired,
+          payment_proof_required: data.paymentProofRequired,
+          contract_terms: data.contractTerms,
+          payment_terms: data.paymentTerms,
+          project_scope: data.projectScope,
+          revision_policy: data.revisionPolicy,
           milestones: data.milestones as any
         });
         toast.success('Template saved successfully!');

@@ -58,12 +58,12 @@ export const useCreateProjectFormData = (templateData?: any) => {
       name: templateData?.name || '',
       brief: templateData?.brief || '',
       clientEmail: templateData?.clientEmail || '',
-      paymentProofRequired: templateData?.paymentProofRequired || false,
-      contractRequired: templateData?.contractRequired ?? false,
-      contractTerms: templateData?.contractTerms || '',
-      paymentTerms: templateData?.paymentTerms || '',
-      projectScope: templateData?.projectScope || '',
-      revisionPolicy: templateData?.revisionPolicy || '',
+      paymentProofRequired: templateData?.payment_proof_required || false,
+      contractRequired: templateData?.contract_required ?? false,
+      contractTerms: templateData?.contract_terms || getDefaultContractTerms(),
+      paymentTerms: templateData?.payment_terms || getDefaultPaymentTerms(),
+      projectScope: templateData?.project_scope || getDefaultProjectScope(),
+      revisionPolicy: templateData?.revision_policy || getDefaultRevisionPolicy(),
       milestones: templateData?.milestones?.map((milestone: any) => ({
         title: milestone.title || '',
         description: milestone.description || '',
@@ -100,6 +100,12 @@ export const useCreateProjectFormData = (templateData?: any) => {
     form.setValue('name', template.name || '');
     form.setValue('brief', template.brief || '');
     form.setValue('clientEmail', template.clientEmail || '');
+    form.setValue('paymentProofRequired', template.payment_proof_required || false);
+    form.setValue('contractRequired', template.contract_required || false);
+    form.setValue('contractTerms', template.contract_terms || getDefaultContractTerms());
+    form.setValue('paymentTerms', template.payment_terms || getDefaultPaymentTerms());
+    form.setValue('projectScope', template.project_scope || getDefaultProjectScope());
+    form.setValue('revisionPolicy', template.revision_policy || getDefaultRevisionPolicy());
     form.setValue('milestones', templateMilestones);
   }, [form]);
 

@@ -294,28 +294,46 @@ export type Database = {
       project_templates: {
         Row: {
           brief: string | null
+          contract_required: boolean
+          contract_terms: string | null
           created_at: string
           id: string
           milestones: Json
           name: string
+          payment_proof_required: boolean
+          payment_terms: string | null
+          project_scope: string | null
+          revision_policy: string | null
           updated_at: string
           user_id: string
         }
         Insert: {
           brief?: string | null
+          contract_required?: boolean
+          contract_terms?: string | null
           created_at?: string
           id?: string
           milestones: Json
           name: string
+          payment_proof_required?: boolean
+          payment_terms?: string | null
+          project_scope?: string | null
+          revision_policy?: string | null
           updated_at?: string
           user_id: string
         }
         Update: {
           brief?: string | null
+          contract_required?: boolean
+          contract_terms?: string | null
           created_at?: string
           id?: string
           milestones?: Json
           name?: string
+          payment_proof_required?: boolean
+          payment_terms?: string | null
+          project_scope?: string | null
+          revision_policy?: string | null
           updated_at?: string
           user_id?: string
         }

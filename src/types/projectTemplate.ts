@@ -3,6 +3,12 @@ export interface ProjectTemplate {
   id: string;
   name: string;
   brief: string;
+  contract_required?: boolean;
+  payment_proof_required?: boolean;
+  contract_terms?: string;
+  payment_terms?: string;
+  project_scope?: string;
+  revision_policy?: string;
   milestones: {
     title: string;
     description: string;

@@ -9,6 +9,12 @@ export interface ProjectTemplate {
   user_id: string;
   name: string;
   brief: string;
+  contract_required?: boolean;
+  payment_proof_required?: boolean;
+  contract_terms?: string;
+  payment_terms?: string;
+  project_scope?: string;
+  revision_policy?: string;
   milestones: {
     title: string;
     description: string;
@@ -59,6 +65,12 @@ export const useProjectTemplates = (user: User | null) => {
   const saveTemplate = async (templateData: {
     name: string;
     brief: string;
+    contract_required?: boolean;
+    payment_proof_required?: boolean;
+    contract_terms?: string;
+    payment_terms?: string;
+    project_scope?: string;
+    revision_policy?: string;
     milestones: Array<{
       title: string;
       description: string;
@@ -77,6 +89,12 @@ export const useProjectTemplates = (user: User | null) => {
           user_id: user.id,
           name: templateData.name,
           brief: templateData.brief,
+          contract_required: templateData.contract_required || false,
+          payment_proof_required: templateData.payment_proof_required || false,
+          contract_terms: templateData.contract_terms,
+          payment_terms: templateData.payment_terms,
+          project_scope: templateData.project_scope,
+          revision_policy: templateData.revision_policy,
           milestones: templateData.milestones,
         });
       if (error) throw error;
