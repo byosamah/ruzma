@@ -17,6 +17,7 @@ export class ProjectService {
   private user: User | null;
 
   constructor(user: User | null) {
+    console.log('ProjectService constructor called with user:', !!user);
     this.user = user;
   }
 
