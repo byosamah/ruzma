@@ -90,29 +90,6 @@ export const secureSignIn = async (email: string, password: string) => {
   }
 };
 
-// Rate limiting utility for sensitive operations
-export const createRateLimiter = (maxAttempts: number, windowMs: number) => {
-  const attempts = new Map<string, number[]>();
-  
-  return (identifier: string): boolean => {
-    const now = Date.now();
-    const userAttempts = attempts.get(identifier) || [];
-    
-    // Remove old attempts outside the window
-    const validAttempts = userAttempts.filter(time => now - time < windowMs);
-    
-    if (validAttempts.length >= maxAttempts) {
-      return false; // Rate limited
-    }
-    
-    // Add current attempt
-    validAttempts.push(now);
-    attempts.set(identifier, validAttempts);
-    
-    return true; // Allowed
-  };
-};
-
 // Security event logging
 export const logSecurityEvent = (event: string, details: Record<string, any> = {}) => {
   console.log(`SECURITY_EVENT: ${event}`, {

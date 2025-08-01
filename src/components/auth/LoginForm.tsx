@@ -1,16 +1,14 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent } from '@/components/ui/card';
 import { Eye, EyeOff } from 'lucide-react';
-import { toast } from 'sonner';
 import { Checkbox } from '@/components/ui/checkbox';
-import { supabase } from '@/integrations/supabase/client';
+import { useAuthManager } from '@/hooks/useAuthManager';
 import { useT } from '@/lib/i18n';
-import { trackLogin } from '@/lib/analytics';
 
 interface LoginFormProps {
   rememberMe: boolean;
@@ -19,95 +17,31 @@ interface LoginFormProps {
 
 const LoginForm = ({ rememberMe, setRememberMe }: LoginFormProps) => {
   const t = useT();
-  const [formData, setFormData] = useState({
-    email: '',
-    password: ''
-  });
+  const {
+    loginData,
+    updateLoginField,
+    initializeRememberedEmail,
+    isLoading,
+    signIn,
+  } = useAuthManager();
+
   const [showPassword, setShowPassword] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
-  const navigate = useNavigate();
-  const location = useLocation();
+
+  useEffect(() => {
+    if (rememberMe) {
+      initializeRememberedEmail();
+    }
+  }, [rememberMe, initializeRememberedEmail]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log('Login form submitted');
-    setIsLoading(true);
-
-    // Persist "Remember Me" choice for UI behavior
-    if (rememberMe) {
-      localStorage.setItem('rememberMe', 'true');
-      localStorage.setItem('rememberedEmail', formData.email);
-    } else {
-      localStorage.removeItem('rememberMe');
-      localStorage.removeItem('rememberedEmail');
-    }
-
-    try {
-      // Use the consistent default Supabase client
-      // Clean up any existing sessions first
-      try {
-        Object.keys(localStorage).forEach(key => {
-          if (key.startsWith('supabase.auth.') || key.includes('sb-')) {
-            localStorage.removeItem(key);
-          }
-        });
-        Object.keys(sessionStorage).forEach(key => {
-          if (key.startsWith('supabase.auth.') || key.includes('sb-')) {
-            sessionStorage.removeItem(key);
-          }
-        });
-        await supabase.auth.signOut({ scope: 'global' });
-      } catch (cleanupError) {
-        console.log('Cleanup error (non-fatal):', cleanupError);
-      }
-
-      const { data, error } = await supabase.auth.signInWithPassword({
-        email: formData.email,
-        password: formData.password,
-      });
-
-      if (error) {
-        throw error;
-      }
-
-      if (data.user) {
-        // Track successful login
-        trackLogin('email');
-        
-        toast.success(t('signInSuccess'));
-        const redirectTo = location.state?.from?.pathname || '/dashboard';
-        console.log('Login successful, redirecting to:', redirectTo);
-        
-        // If "Remember Me" is false, set up session cleanup on browser close
-        if (!rememberMe) {
-          // Store a flag to indicate session should be temporary
-          sessionStorage.setItem('temporarySession', 'true');
-        }
-        
-        window.location.href = redirectTo;
-      }
-    } catch (error: any) {
-      console.error('Login error:', error);
-      toast.error(error.message || t('loginFailed'));
-    } finally {
-      setIsLoading(false);
-    }
+    await signIn(rememberMe);
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setFormData(prev => ({
-      ...prev,
-      [e.target.name]: e.target.value
-    }));
+    const { name, value } = e.target;
+    updateLoginField(name as keyof typeof loginData, value);
   };
-
-  // Auto-fill email if remembered
-  React.useEffect(() => {
-    const rememberedEmail = localStorage.getItem('rememberedEmail');
-    if (rememberMe && rememberedEmail) {
-      setFormData(prev => ({ ...prev, email: rememberedEmail }));
-    }
-  }, [rememberMe]);
 
   return (
     <Card className="border-0 shadow-none">
@@ -122,7 +56,7 @@ const LoginForm = ({ rememberMe, setRememberMe }: LoginFormProps) => {
               name="email"
               type="email"
               placeholder={t('emailPlaceholder')}
-              value={formData.email}
+              value={loginData.email}
               onChange={handleChange}
               required
               className="h-11 border-gray-200 focus:border-gray-400 focus:ring-0"
@@ -147,7 +81,7 @@ const LoginForm = ({ rememberMe, setRememberMe }: LoginFormProps) => {
                 name="password"
                 type={showPassword ? 'text' : 'password'}
                 placeholder={t('passwordPlaceholder')}
-                value={formData.password}
+                value={loginData.password}
                 onChange={handleChange}
                 required
                 className="h-11 border-gray-200 focus:border-gray-400 focus:ring-0 pr-10 rtl:pl-10 rtl:pr-3"

@@ -7,23 +7,33 @@ import { FormField } from './FormField';
 import { PasswordField } from './PasswordField';
 import { CountrySelect } from '@/components/ui/country-select';
 import { User, Mail } from 'lucide-react';
-import { useSignUpForm } from '@/hooks/auth/useSignUpForm';
+import { useAuthManager } from '@/hooks/useAuthManager';
 import { useT } from '@/lib/i18n';
 
 const SignUpContainer: React.FC = () => {
   const t = useT();
   const {
-    formData,
+    signUpData,
+    updateSignUpField,
+    handleCountryChange,
     errors,
+    isLoading,
     showPassword,
     showConfirmPassword,
-    isLoading,
-    handleFormDataChange,
-    handleCountryChange,
-    handleSubmit,
-    handleTogglePassword,
-    handleToggleConfirmPassword,
-  } = useSignUpForm();
+    togglePassword,
+    toggleConfirmPassword,
+    signUp,
+  } = useAuthManager();
+
+  const handleFormDataChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    updateSignUpField(name as keyof typeof signUpData, value);
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    await signUp();
+  };
 
   return (
     <>
@@ -55,7 +65,7 @@ const SignUpContainer: React.FC = () => {
               name="name"
               label={t('fullNameLabel')}
               placeholder={t('fullNamePlaceholder')}
-              value={formData.name}
+              value={signUpData.name}
               onChange={handleFormDataChange}
               error={errors.name}
               emoji="👤"
@@ -68,7 +78,7 @@ const SignUpContainer: React.FC = () => {
               type="email"
               label={t('emailLabel')}
               placeholder={t('emailPlaceholder')}
-              value={formData.email}
+              value={signUpData.email}
               onChange={handleFormDataChange}
               error={errors.email}
               emoji="📧"
@@ -76,7 +86,7 @@ const SignUpContainer: React.FC = () => {
             />
 
             <CountrySelect
-              value={formData.country || ''}
+              value={signUpData.country || ''}
               onChange={handleCountryChange}
               error={errors.country}
               required
@@ -87,11 +97,11 @@ const SignUpContainer: React.FC = () => {
               name="password"
               label={t('passwordLabel')}
               placeholder={t('passwordPlaceholder')}
-              value={formData.password}
+              value={signUpData.password}
               onChange={handleFormDataChange}
               error={errors.password}
               showPassword={showPassword}
-              onTogglePassword={handleTogglePassword}
+              onTogglePassword={togglePassword}
               required
             />
 
@@ -100,11 +110,11 @@ const SignUpContainer: React.FC = () => {
               name="confirmPassword"
               label={t('confirmPasswordLabel')}
               placeholder={t('confirmPasswordPlaceholder')}
-              value={formData.confirmPassword}
+              value={signUpData.confirmPassword}
               onChange={handleFormDataChange}
               error={errors.confirmPassword}
               showPassword={showConfirmPassword}
-              onTogglePassword={handleToggleConfirmPassword}
+              onTogglePassword={toggleConfirmPassword}
               required
             />
 
