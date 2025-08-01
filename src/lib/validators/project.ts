@@ -1,5 +1,6 @@
 
 import { z } from 'zod';
+import { validateAmount } from '@/lib/validation';
 
 export const createProjectFormSchema = z.object({
   name: z.string().min(1, 'Project name is required'),

@@ -1,4 +1,7 @@
 
+// Re-export core functions from consolidated formatters module
+export { formatCurrency, getCurrencySymbol, validateCurrency, parseAmount } from '@/lib/formatters';
+
 export const CURRENCIES = {
   USD: { 
     symbol: { en: '$', ar: '$' }, 
@@ -99,29 +102,7 @@ export const CURRENCIES = {
 
 export type CurrencyCode = keyof typeof CURRENCIES;
 
-export const formatCurrency = (amount: number, currency: CurrencyCode = 'USD', language: 'en' | 'ar' = 'en'): string => {
-  // Add safety check for undefined currency
-  if (!currency || !CURRENCIES[currency]) {
-    console.warn('Invalid currency code:', currency, 'defaulting to USD');
-    currency = 'USD';
-  }
-  
-  const { symbol, decimals } = CURRENCIES[currency];
-  const currencySymbol = symbol[language];
-  const formattedAmount = amount.toLocaleString(undefined, {
-    minimumFractionDigits: decimals,
-    maximumFractionDigits: decimals
-  });
-  return `${currencySymbol}${formattedAmount}`;
-};
-
-export const getCurrencySymbol = (currency: CurrencyCode = 'USD', language: 'en' | 'ar' = 'en'): string => {
-  if (!currency || !CURRENCIES[currency]) {
-    console.warn('Invalid currency code:', currency, 'defaulting to USD');
-    currency = 'USD';
-  }
-  return CURRENCIES[currency].symbol[language];
-};
+// Legacy implementations moved to formatters module
 
 // Country-Currency mapping utilities
 export const getCurrencyByCountry = (countryCode: string): CurrencyCode => {

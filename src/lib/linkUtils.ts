@@ -1,4 +1,15 @@
 
+// Re-export from consolidated formatters module
+export { 
+  createClientProjectLink, 
+  createContractApprovalLink, 
+  isValidUrl, 
+  normalizeUrl, 
+  extractDomain, 
+  isValidDeliverableLink, 
+  formatDeliverableLink 
+} from '@/lib/formatters';
+
 export interface DeliverableLink {
   url: string;
   title: string;

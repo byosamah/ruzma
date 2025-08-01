@@ -1,4 +1,7 @@
 
+// Re-export from consolidated formatters module
+export { formatProjectDate } from '@/lib/formatters';
+
 interface Milestone {
   start_date?: string;
   end_date?: string;

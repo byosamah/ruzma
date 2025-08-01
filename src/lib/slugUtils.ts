@@ -1,7 +1,10 @@
 
+// Re-export from consolidated formatters module
+export { generateSlug, generateUniqueSlug, validateSlug, slugToTitle } from '@/lib/formatters';
+
 import { supabase } from '@/integrations/supabase/client';
 
-export const generateSlug = (text: string): string => {
+export const generateSlugLegacy = (text: string): string => {
   return text
     .toLowerCase()
     .trim()
