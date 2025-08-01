@@ -7,7 +7,7 @@ import { generateSlug, ensureUniqueSlug } from '@/lib/slugUtils';
 import * as analytics from '@/lib/analytics';
 import { securityMonitor } from '@/lib/securityMonitoring';
 import { sendPaymentNotification } from '@/services/emailNotifications';
-import { trackProjectCreated, trackMilestoneApproved, trackPaymentProofUploaded, trackDeliverableUploaded } from '@/lib/analytics';
+import { trackProjectCreated, trackMilestoneApproved, trackPaymentProofUploaded, trackDeliverableUploaded, trackMilestoneCreated } from '@/lib/analytics';
 import { toast } from 'sonner';
 
 export interface ProjectOperationData extends CreateProjectFormData {
@@ -148,7 +148,8 @@ export class ProjectService {
     });
 
     // Track project creation
-    analytics.trackProjectCreated(project.id, sanitizedName, data.milestones.length);
+    trackProjectCreated(project.id, data.milestones.length === 0);
+    trackMilestoneCreated(project.id, data.milestones.length);
 
     // Send contract approval email if required
     if (data.contractRequired && sanitizedClientEmail) {
@@ -162,7 +163,8 @@ export class ProjectService {
 
     return {
       ...project,
-      milestones
+      milestones,
+      contract_status: project.contract_status as 'pending' | 'approved' | 'rejected' | undefined
     } as DatabaseProject;
   }
 
@@ -259,9 +261,12 @@ export class ProjectService {
     }
 
     // Track project update
-    analytics.trackProjectCreated(data.id, sanitizedName, data.milestones.length);
+    trackProjectCreated(data.id, false);
 
-    return updatedProject as DatabaseProject;
+    return {
+      ...updatedProject,
+      contract_status: updatedProject.contract_status as 'pending' | 'approved' | 'rejected' | undefined
+    } as DatabaseProject;
   }
 
   async deleteProject(projectId: string): Promise<boolean> {
@@ -303,7 +308,7 @@ export class ProjectService {
       });
 
       // Track project deletion
-      analytics.trackProjectCreated(projectId, project.name, 0);
+      trackProjectCreated(projectId, false);
 
       return true;
     } catch (error) {
