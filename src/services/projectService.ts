@@ -149,7 +149,9 @@ export class ProjectService {
 
     // Track project creation
     trackProjectCreated(project.id, data.milestones.length === 0);
-    trackMilestoneCreated(project.id, data.milestones.length);
+    if (data.milestones.length > 0) {
+      trackMilestoneCreated(project.id, data.milestones.length);
+    }
 
     // Send contract approval email if required
     if (data.contractRequired && sanitizedClientEmail) {
@@ -260,7 +262,7 @@ export class ProjectService {
       throw new Error('Failed to fetch updated project');
     }
 
-    // Track project update
+    // Track project update (using project created event for consistency)
     trackProjectCreated(data.id, false);
 
     return {
@@ -307,7 +309,7 @@ export class ProjectService {
         _count_change: -1
       });
 
-      // Track project deletion
+      // Track project deletion (using project created event for consistency)
       trackProjectCreated(projectId, false);
 
       return true;
