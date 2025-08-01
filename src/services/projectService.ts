@@ -55,15 +55,20 @@ export class ProjectService {
       throw new Error('Too many project creation attempts. Please try again later.');
     }
 
-    // Check project count vs limit
-    const { count: projectCount } = await supabase
-      .from('projects')
-      .select('*', { count: 'exact', head: true })
-      .eq('user_id', this.user.id);
+    // Check user project limits using database function
+    const { data: canCreate, error: limitError } = await supabase
+      .rpc('check_user_limits', { 
+        _user_id: this.user.id, 
+        _action: 'project' 
+      });
 
-    const limit = 3; // Default project limit
-    if (projectCount !== null && projectCount >= limit) {
-      throw new Error(`You have reached your project limit of ${limit}. Please upgrade your plan to create more projects.`);
+    if (limitError) {
+      console.error('Error checking user limits:', limitError);
+      throw new Error('Unable to verify project limits. Please try again.');
+    }
+
+    if (!canCreate) {
+      throw new Error('You have reached your project limit. Please upgrade your plan to create more projects.');
     }
 
     // Handle client lookup/creation
@@ -111,7 +116,7 @@ export class ProjectService {
     await supabase.rpc('update_project_count', { _user_id: this.user.id, _count_change: 1 });
 
     // Analytics tracking
-    analytics.trackProjectCreated(project.id, projectCount === 0);
+    analytics.trackProjectCreated(project.id, false);
 
     // Send contract approval email if needed
     if (data.contractRequired && sanitizedClientEmail) {
