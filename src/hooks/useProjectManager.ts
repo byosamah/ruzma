@@ -1,0 +1,257 @@
+import { useEffect, useState } from 'react';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { User } from '@supabase/supabase-js';
+import { useLanguageNavigation } from '@/hooks/useLanguageNavigation';
+import { createProjectFormSchema, CreateProjectFormData } from '@/lib/validators/project';
+import { ProjectService, ProjectOperationData } from '@/services/projectService';
+import { ProjectTemplate } from '@/types/projectTemplate';
+import { DatabaseProject } from '@/hooks/projectTypes';
+import { toast } from 'sonner';
+import { useT } from '@/lib/i18n';
+
+export interface UseProjectManagerOptions {
+  mode: 'create' | 'edit';
+  user: User | null;
+  projectId?: string;
+  templateData?: ProjectTemplate;
+  existingProject?: DatabaseProject;
+}
+
+export const useProjectManager = (options: UseProjectManagerOptions) => {
+  const { mode, user, projectId, templateData, existingProject } = options;
+  const { navigate } = useLanguageNavigation();
+  const t = useT();
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [saveAsTemplate, setSaveAsTemplate] = useState(false);
+
+  // Initialize the project service
+  const projectService = new ProjectService(user);
+
+  // Helper function to format data for form
+  const formatDataForForm = (data?: ProjectTemplate | DatabaseProject) => {
+    if (!data) {
+      return {
+        name: '',
+        brief: '',
+        clientEmail: '',
+        paymentProofRequired: false,
+        contractRequired: false,
+        contractTerms: '',
+        paymentTerms: '',
+        projectScope: '',
+        revisionPolicy: '',
+        milestones: [
+          {
+            title: '',
+            description: '',
+            price: 0,
+            start_date: '',
+            end_date: '',
+          },
+        ],
+      };
+    }
+
+    // Handle both template and project data
+    const isProject = 'slug' in data;
+    
+    return {
+      name: data.name || '',
+      brief: data.brief || '',
+      clientEmail: isProject ? (data as DatabaseProject).client_email || '' : '',
+      paymentProofRequired: data.payment_proof_required || false,
+      contractRequired: data.contract_required || false,
+      contractTerms: data.contract_terms || '',
+      paymentTerms: data.payment_terms || '',
+      projectScope: data.project_scope || '',
+      revisionPolicy: data.revision_policy || '',
+      milestones: (data.milestones as any[])?.map((milestone: any) => ({
+        title: milestone.title || '',
+        description: milestone.description || '',
+        price: milestone.price || 0,
+        start_date: milestone.start_date || '',
+        end_date: milestone.end_date || '',
+      })) || [
+        {
+          title: '',
+          description: '',
+          price: 0,
+          start_date: '',
+          end_date: '',
+        },
+      ],
+    };
+  };
+
+  // Initialize form with appropriate data
+  const form = useForm<CreateProjectFormData>({
+    resolver: zodResolver(createProjectFormSchema),
+    defaultValues: formatDataForForm(mode === 'edit' ? existingProject : templateData),
+  });
+
+  // Update form when data changes
+  useEffect(() => {
+    const dataToLoad = mode === 'edit' ? existingProject : templateData;
+    if (dataToLoad) {
+      const formattedData = formatDataForForm(dataToLoad);
+      form.reset(formattedData);
+    }
+  }, [templateData, existingProject, form, mode]);
+
+  // Milestone management
+  const addMilestone = () => {
+    const currentMilestones = form.getValues('milestones');
+    form.setValue('milestones', [
+      ...currentMilestones,
+      {
+        title: '',
+        description: '',
+        price: 0,
+        start_date: '',
+        end_date: '',
+      },
+    ]);
+  };
+
+  const removeMilestone = (index: number) => {
+    const currentMilestones = form.getValues('milestones');
+    if (currentMilestones.length > 1) {
+      form.setValue('milestones', currentMilestones.filter((_, i) => i !== index));
+    }
+  };
+
+  const loadFromTemplate = (template: ProjectTemplate) => {
+    const formattedData = formatDataForForm(template);
+    form.reset(formattedData);
+  };
+
+  // Main submit handler
+  const handleSubmit = async (data: CreateProjectFormData) => {
+    if (!user) {
+      toast.error('You must be logged in');
+      return;
+    }
+
+    setIsSubmitting(true);
+    
+    try {
+      // Prepare project data
+      const projectData: ProjectOperationData = {
+        ...data,
+        ...(mode === 'edit' && existingProject && {
+          id: existingProject.id,
+          slug: existingProject.slug,
+        }),
+      };
+
+      // Save project
+      const result = await projectService.saveProject(projectData, mode);
+      
+      if (!result) {
+        throw new Error(`Failed to ${mode} project`);
+      }
+
+      // Save as template if requested (only for create mode)
+      if (mode === 'create' && saveAsTemplate) {
+        await projectService.saveAsTemplate({
+          id: '', // Will be generated by Supabase
+          name: `${data.name} Template`,
+          brief: data.brief,
+          contract_required: data.contractRequired,
+          payment_proof_required: data.paymentProofRequired,
+          contract_terms: data.contractTerms,
+          payment_terms: data.paymentTerms,
+          project_scope: data.projectScope,
+          revision_policy: data.revisionPolicy,
+          milestones: data.milestones.map(m => ({
+            title: m.title,
+            description: m.description,
+            price: m.price,
+            start_date: m.start_date || '',
+            end_date: m.end_date || '',
+          })),
+        });
+        toast.success('Template saved successfully');
+      }
+
+      // Show success message
+      toast.success(
+        mode === 'create' 
+          ? 'Project created successfully' 
+          : 'Project updated successfully'
+      );
+
+      // Navigate to appropriate page
+      if (mode === 'create') {
+        navigate(`/project/${result.slug}`);
+      } else {
+        navigate('/projects');
+      }
+
+    } catch (error: any) {
+      console.error(`Error ${mode === 'create' ? 'creating' : 'updating'} project:`, error);
+      toast.error(error.message || 'An error occurred');
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  // Template operations
+  const [templates, setTemplates] = useState<ProjectTemplate[]>([]);
+  const [templatesLoading, setTemplatesLoading] = useState(false);
+
+  const fetchTemplates = async () => {
+    setTemplatesLoading(true);
+    try {
+      const fetchedTemplates = await projectService.getTemplates();
+      setTemplates(fetchedTemplates);
+    } catch (error) {
+      console.error('Error fetching templates:', error);
+      toast.error('An error occurred');
+    } finally {
+      setTemplatesLoading(false);
+    }
+  };
+
+  const deleteTemplate = async (templateId: string) => {
+    try {
+      await projectService.deleteTemplate(templateId);
+      await fetchTemplates(); // Refresh templates
+      toast.success('Template deleted successfully');
+    } catch (error: any) {
+      console.error('Error deleting template:', error);
+      toast.error(error.message || 'An error occurred');
+    }
+  };
+
+  // Load templates on mount if user exists
+  useEffect(() => {
+    if (user) {
+      fetchTemplates();
+    }
+  }, [user]);
+
+  return {
+    // Form management
+    form,
+    isSubmitting,
+    handleSubmit: form.handleSubmit(handleSubmit),
+    
+    // Milestone management
+    addMilestone,
+    removeMilestone,
+    loadFromTemplate,
+    
+    // Template operations
+    templates,
+    templatesLoading,
+    fetchTemplates,
+    deleteTemplate,
+    saveAsTemplate,
+    setSaveAsTemplate,
+    
+    // Mode
+    mode,
+  };
+};

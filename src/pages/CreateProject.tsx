@@ -14,8 +14,7 @@ import SaveAsTemplateCheckbox from '@/components/CreateProject/SaveAsTemplateChe
 import PaymentProofSettings from '@/components/CreateProject/PaymentProofSettings';
 import FormActions from '@/components/CreateProject/FormActions';
 import { ContractTermsSection } from '@/components/CreateProject/ContractTermsSection';
-import { useCreateProjectForm } from '@/hooks/useCreateProjectForm';
-import { useProjectTemplates } from '@/hooks/useProjectTemplates';
+import { useProjectManager } from '@/hooks/useProjectManager';
 
 interface CreateProjectProps {
   user: User;
@@ -24,7 +23,7 @@ interface CreateProjectProps {
 
 const CreateProject: React.FC<CreateProjectProps> = ({ user, profile }) => {
   const t = useT();
-  const [saveAsTemplate, setSaveAsTemplate] = useState(false);
+  
   const { navigate } = useLanguageNavigation();
   const location = useLocation();
 
@@ -35,16 +34,15 @@ const CreateProject: React.FC<CreateProjectProps> = ({ user, profile }) => {
     addMilestone,
     removeMilestone,
     loadFromTemplate,
-    handleSubmit
-  } = useCreateProjectForm(templateData);
-  const {
-    saveTemplate
-  } = useProjectTemplates(user);
-  const {
-    formState: {
-      isSubmitting
-    }
-  } = form;
+    handleSubmit,
+    isSubmitting,
+    saveAsTemplate: managerSaveAsTemplate,
+    setSaveAsTemplate: setManagerSaveAsTemplate,
+  } = useProjectManager({ 
+    mode: 'create', 
+    user, 
+    templateData 
+  });
 
   // No need for authentication logic - handled by ProtectedRoute
 
@@ -53,34 +51,8 @@ const CreateProject: React.FC<CreateProjectProps> = ({ user, profile }) => {
     navigate('/');
   };
 
-  const onSubmit = async (data: any) => {
-    if (!user) return;
-
-    // Save as template if requested
-    if (saveAsTemplate && data.name) {
-      try {
-        await saveTemplate({
-          name: data.name,
-          brief: data.brief,
-          contract_required: data.contractRequired,
-          payment_proof_required: data.paymentProofRequired,
-          contract_terms: data.contractTerms,
-          payment_terms: data.paymentTerms,
-          project_scope: data.projectScope,
-          revision_policy: data.revisionPolicy,
-          milestones: data.milestones as any
-        });
-        toast.success('Template saved successfully!');
-      } catch (error) {
-        console.error('Error saving template:', error);
-        toast.error('Failed to save template');
-      }
-    }
-    await handleSubmit(data);
-  };
-
   const handleSaveAsTemplateChange = (checked: boolean | "indeterminate") => {
-    setSaveAsTemplate(checked === true);
+    setManagerSaveAsTemplate(checked === true);
   };
 
   return (
@@ -99,12 +71,12 @@ const CreateProject: React.FC<CreateProjectProps> = ({ user, profile }) => {
 
           {/* Form */}
           <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 sm:space-y-6">
+            <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-6">
               <ProjectDetailsForm user={user} />
               <PaymentProofSettings />
               <MilestonesList user={user} profile={profile} />
               <ContractTermsSection form={form} />
-              <SaveAsTemplateCheckbox checked={saveAsTemplate} onCheckedChange={handleSaveAsTemplateChange} />
+              <SaveAsTemplateCheckbox checked={managerSaveAsTemplate} onCheckedChange={handleSaveAsTemplateChange} />
               <FormActions isSubmitting={isSubmitting} onCancel={() => navigate('/dashboard')} />
             </form>
           </Form>
