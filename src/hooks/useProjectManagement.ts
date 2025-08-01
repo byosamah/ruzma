@@ -5,11 +5,7 @@ import { useProjects } from './useProjects';
 import { DatabaseProject } from './projectTypes';
 import { useDashboard } from './useDashboard';
 import { useUserCurrency } from './useUserCurrency';
-import { updateMilestoneStatus as updateMilestoneStatusAction } from './milestone-actions/updateStatus';
-import { uploadPaymentProofAction } from './milestone-actions/uploadPaymentProof';
-import { updateDeliverableLinkAction } from './milestone-actions/updateDeliverableLink';
-import { updateMilestoneStatusGeneral } from './milestone-actions/updateMilestoneStatus';
-import { updateRevisionDataAction, addRevisionRequestAction } from './milestone-actions/updateRevisionData';
+import { useMilestoneManager } from './useMilestoneManager';
 import { parseRevisionData, addRevisionRequest, stringifyRevisionData } from '@/lib/revisionUtils';
 
 export const useProjectManagement = (slug: string | undefined) => {
@@ -18,46 +14,37 @@ export const useProjectManagement = (slug: string | undefined) => {
   const [project, setProject] = useState<DatabaseProject | null>(null);
   const userCurrency = useUserCurrency(profile);
 
-  // Milestone actions - directly implemented here
+  // Milestone manager
+  const milestoneManager = useMilestoneManager({ 
+    user, 
+    onRefresh: fetchProjects 
+  });
+
+  // Milestone actions using the manager
   const updateMilestoneStatus = async (
     milestoneId: string,
     status: 'approved' | 'rejected'
   ) => {
-    const success = await updateMilestoneStatusAction(user, projects, milestoneId, status);
-    if (success) {
-      await fetchProjects();
-    }
+    await milestoneManager.updateMilestoneStatus(projects, milestoneId, status);
   };
 
   const uploadPaymentProof = async (milestoneId: string, file: File) => {
-    const success = await uploadPaymentProofAction(milestoneId, file);
-    if (success) {
-      await fetchProjects();
-    }
+    await milestoneManager.uploadPaymentProof(milestoneId, file);
   };
 
   const updateDeliverableLink = async (milestoneId: string, link: string) => {
-    const success = await updateDeliverableLinkAction(user, milestoneId, link);
-    if (success) {
-      await fetchProjects();
-    }
+    await milestoneManager.updateDeliverableLink(milestoneId, link);
   };
 
   const updateMilestoneStatusGeneric = async (
     milestoneId: string,
     status: 'pending' | 'payment_submitted' | 'approved' | 'rejected'
   ) => {
-    const success = await updateMilestoneStatusGeneral(user, milestoneId, status);
-    if (success) {
-      await fetchProjects();
-    }
+    await milestoneManager.updateMilestoneStatusGeneral(milestoneId, status);
   };
 
   const updateRevisionData = async (milestoneId: string, newDeliverableLink: string) => {
-    const success = await updateRevisionDataAction(user, milestoneId, newDeliverableLink);
-    if (success) {
-      await fetchProjects();
-    }
+    await milestoneManager.updateRevisionData(milestoneId, newDeliverableLink);
   };
 
   const addRevisionRequestClient = async (milestoneId: string, feedback: string, images: string[]) => {
@@ -75,10 +62,7 @@ export const useProjectManagement = (slug: string | undefined) => {
     const updatedRevisionData = addRevisionRequest(currentRevisionData, feedback, images);
     const newDeliverableLink = stringifyRevisionData(milestone.deliverable_link, updatedRevisionData);
     
-    const success = await addRevisionRequestAction(user, milestoneId, newDeliverableLink);
-    if (success) {
-      await fetchProjects();
-    }
+    await milestoneManager.addRevisionRequest(milestoneId, newDeliverableLink);
   };
 
   useEffect(() => {
