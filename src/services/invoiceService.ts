@@ -1,6 +1,10 @@
 import { supabase } from '@/integrations/supabase/client';
 import { Invoice, InvoiceStatus } from '@/hooks/invoices/types';
 import { InvoiceFormData } from '@/components/CreateInvoice/types';
+import { generateInvoicePDF, generateInvoicePDFBlob } from '@/lib/pdfGenerator';
+import { trackInvoiceCreated } from '@/lib/analytics';
+import { SharedInvoiceData } from '@/lib/shared/invoice/types';
+import { toast } from 'sonner';
 
 export interface DatabaseInvoice {
   id: string;
@@ -38,6 +42,170 @@ const convertFromInvoice = (invoice: Invoice, userId: string, invoiceData?: Invo
   invoice_data: invoiceData ? JSON.stringify(invoiceData) : null
 });
 
+// PDF Data Builder utility
+const buildInvoicePDFData = async (invoice: Invoice): Promise<SharedInvoiceData> => {
+  console.log('Building PDF data for invoice:', invoice.id);
+  
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) {
+    throw new Error('User not authenticated');
+  }
+
+  // Fetch user profile and branding
+  const [profileResult, brandingResult] = await Promise.all([
+    supabase.from('profiles').select('full_name').eq('id', user.id).single(),
+    supabase.from('freelancer_branding').select('*').eq('user_id', user.id).single()
+  ]);
+
+  const profile = profileResult.data;
+  const branding = brandingResult.data;
+
+  if (!profile) {
+    throw new Error('User profile not found');
+  }
+
+  const originalData = parseInvoiceData(invoice.invoiceData);
+  const lineItems = getLineItems(originalData, invoice);
+
+  const invoicePDFData: SharedInvoiceData = {
+    invoice: {
+      id: invoice.id,
+      transactionId: invoice.transactionId,
+      amount: invoice.amount,
+      date: invoice.date,
+      projectName: invoice.projectName
+    },
+    billedTo: {
+      name: originalData?.billedTo?.name || 'Client',
+      address: originalData?.billedTo?.address || 'Client Address'
+    },
+    payTo: {
+      name: branding?.freelancer_name || profile.full_name || 'Freelancer',
+      address: branding?.freelancer_bio || 'Freelancer Address'
+    },
+    lineItems,
+    currency: originalData?.currency || 'USD',
+    logoUrl: branding?.logo_url || null,
+    purchaseOrder: originalData?.purchaseOrder || '',
+    paymentTerms: originalData?.paymentTerms || 'Net 30',
+    tax: originalData?.tax || 0,
+    invoiceDate: originalData?.invoiceDate ? new Date(originalData.invoiceDate) : invoice.date,
+    dueDate: originalData?.dueDate ? new Date(originalData.dueDate) : new Date(Date.now() + 30 * 24 * 60 * 60 * 1000)
+  };
+
+  validatePDFData(invoicePDFData);
+  return invoicePDFData;
+};
+
+const parseInvoiceData = (invoiceData: any) => {
+  if (!invoiceData) return null;
+  if (typeof invoiceData === 'string') {
+    try {
+      return JSON.parse(invoiceData);
+    } catch (error) {
+      console.error('Error parsing invoice data:', error);
+      return null;
+    }
+  }
+  return invoiceData;
+};
+
+const getLineItems = (originalData: any, invoice: Invoice) => {
+  if (originalData?.lineItems && Array.isArray(originalData.lineItems)) {
+    return originalData.lineItems;
+  }
+  return [{
+    description: invoice.projectName,
+    quantity: 1,
+    amount: invoice.amount
+  }];
+};
+
+const validatePDFData = (invoicePDFData: SharedInvoiceData) => {
+  if (!invoicePDFData.billedTo.name) {
+    throw new Error('Billing information is incomplete');
+  }
+  if (!invoicePDFData.lineItems || invoicePDFData.lineItems.length === 0) {
+    throw new Error('No line items found');
+  }
+};
+
+// Email sender utility
+const convertBlobToBase64 = async (blob: Blob): Promise<string> => {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => {
+      const result = reader.result as string;
+      const base64 = result.split(',')[1];
+      resolve(base64);
+    };
+    reader.onerror = reject;
+    reader.readAsDataURL(blob);
+  });
+};
+
+const sendInvoiceToClient = async (invoice: Invoice, invoicePDFData: SharedInvoiceData) => {
+  let clientEmail = '';
+  
+  // Try to get client email from project
+  if (invoice.projectId) {
+    try {
+      const { data: project } = await supabase
+        .from('projects')
+        .select('client_email')
+        .eq('id', invoice.projectId)
+        .single();
+      
+      if (project?.client_email) {
+        clientEmail = project.client_email;
+      }
+    } catch (error) {
+      console.warn('Could not fetch client email from project:', error);
+    }
+  }
+
+  // Fallback: try to parse from invoice data
+  if (!clientEmail) {
+    const originalData = parseInvoiceData(invoice.invoiceData);
+    clientEmail = originalData?.selectedClientEmail || '';
+  }
+
+  if (!clientEmail) {
+    throw new Error('Client email not found. Please ensure the client has an email address.');
+  }
+
+  // Generate PDF - convert to the expected format
+  const invoicePDFDataForPDF = {
+    ...invoicePDFData,
+    invoice: {
+      ...invoicePDFData.invoice,
+      status: invoice.status,
+      projectId: invoice.projectId,
+      invoiceData: invoice.invoiceData
+    }
+  };
+  const pdfBlob = await generateInvoicePDFBlob(invoicePDFDataForPDF);
+  const pdfBase64 = await convertBlobToBase64(pdfBlob);
+
+  // Send email via edge function
+  const { data, error } = await supabase.functions.invoke('send-invoice-with-frontend-pdf', {
+    body: {
+      invoiceId: invoice.id,
+      clientEmail,
+      clientName: invoicePDFData.billedTo.name,
+      pdfBase64,
+      filename: `Invoice-${invoice.transactionId}.pdf`
+    }
+  });
+
+  if (error) {
+    console.error('Error sending invoice:', error);
+    throw new Error(error.message || 'Failed to send invoice');
+  }
+
+  return { data, clientEmail };
+};
+
 export const invoiceService = {
   async getInvoices(userId: string): Promise<Invoice[]> {
     const { data, error } = await supabase
@@ -66,6 +234,13 @@ export const invoiceService = {
     if (error) {
       console.error('Error creating invoice:', error);
       throw error;
+    }
+
+    // Track invoice creation
+    try {
+      trackInvoiceCreated(invoice.transactionId, invoice.amount, invoiceData?.currency || 'USD');
+    } catch (error) {
+      console.error('Error tracking invoice creation:', error);
     }
 
     return convertToInvoice(data as DatabaseInvoice);
@@ -102,6 +277,55 @@ export const invoiceService = {
 
     if (error) {
       console.error('Error deleting invoice:', error);
+      throw error;
+    }
+  },
+
+  // Enhanced methods for PDF and email operations
+  async downloadInvoicePDF(invoice: Invoice): Promise<void> {
+    toast.loading('Generating PDF...', { id: 'pdf-generation' });
+    console.log('Starting PDF generation for invoice:', invoice);
+
+    try {
+      const invoicePDFData = await buildInvoicePDFData(invoice);
+      // Convert to the expected format for PDF generation
+      const invoicePDFDataForPDF = {
+        ...invoicePDFData,
+        invoice: {
+          ...invoicePDFData.invoice,
+          status: invoice.status,
+          projectId: invoice.projectId,
+          invoiceData: invoice.invoiceData
+        }
+      };
+      await generateInvoicePDF(invoicePDFDataForPDF);
+      
+      toast.success(`PDF downloaded successfully for ${invoice.transactionId}`, { id: 'pdf-generation' });
+    } catch (error) {
+      console.error('Error generating PDF:', error);
+      toast.error(`Failed to generate PDF: ${error.message}`, { id: 'pdf-generation' });
+      throw error;
+    }
+  },
+
+  async sendInvoiceToClient(invoice: Invoice): Promise<void> {
+    if (invoice.status === 'draft') {
+      toast.error('Cannot send a draft invoice. Please finalize it first.');
+      return;
+    }
+
+    toast.loading('Generating and sending invoice...', { id: 'sending-invoice' });
+    console.log('Sending invoice to client:', invoice.id);
+
+    try {
+      const invoicePDFData = await buildInvoicePDFData(invoice);
+      const result = await sendInvoiceToClient(invoice, invoicePDFData);
+
+      toast.success(`Invoice sent successfully to ${result.clientEmail}`, { id: 'sending-invoice' });
+      console.log('Invoice email sent successfully:', result.data);
+    } catch (error) {
+      console.error('Error sending invoice to client:', error);
+      toast.error(`Failed to send invoice: ${error.message}`, { id: 'sending-invoice' });
       throw error;
     }
   }
