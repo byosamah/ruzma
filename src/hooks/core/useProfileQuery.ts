@@ -1,7 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
 import { User } from '@supabase/supabase-js';
 import { supabase } from '@/integrations/supabase/client';
-import { logSecurityEvent } from '@/lib/authSecurity';
+import { logSecurityEvent } from '@/lib/security';
 
 interface UserProfile {
   id: string;

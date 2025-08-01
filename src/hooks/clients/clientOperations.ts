@@ -3,7 +3,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { User } from '@supabase/supabase-js';
 import { toast } from 'sonner';
 import { DatabaseClient, ClientWithProjectCount, CreateClientData, UpdateClientData } from '@/types/client';
-import { securityMonitor } from '@/lib/securityMonitoring';
+import { securityMonitor } from '@/lib/security';
 import { validateClientData, checkRateLimit } from './clientValidation';
 
 export const fetchClientsData = async (user: User | null): Promise<ClientWithProjectCount[]> => {

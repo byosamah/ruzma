@@ -1,5 +1,7 @@
 
-// Re-export core functions from consolidated formatters module
+// Legacy currency utilities - keeping existing functions for backward compatibility
+// Core formatting functions are now in @/lib/formatters/currency
+// Re-export the core functions for compatibility
 export { formatCurrency, getCurrencySymbol, validateCurrency, parseAmount } from '@/lib/formatters';
 
 export const CURRENCIES = {
