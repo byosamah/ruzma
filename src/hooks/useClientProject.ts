@@ -27,8 +27,8 @@ export const useClientProject = (token?: string | null, isHybrid?: boolean) => {
     setError(null);
 
     try {
-        const projectService = new ProjectService(null);
-        const data = await projectService.getClientProject(token, isHybrid);
+      const projectService = new ProjectService(null);
+      const data = await projectService.getClientProject(token, isHybrid);
       setProject(data);
       
       // Check if contract approval is needed
@@ -52,16 +52,17 @@ export const useClientProject = (token?: string | null, isHybrid?: boolean) => {
   }, [token, isHybrid]);
 
   const uploadPaymentProof = async (milestoneId: string, file: File) => {
-    if (!token) {
-      throw new Error('Missing access token');
+    if (!token || !projectId) {
+      throw new Error('Missing access token or project ID');
     }
 
     try {
-      const result = await clientProjectService.uploadPaymentProof(projectId!, token, milestoneId, file);
+      const projectService = new ProjectService(null);
+      const result = await projectService.uploadClientPaymentProof(projectId, token, milestoneId, file);
       
       // Refetch project data to get updated milestone status
       if (result) {
-        const updatedProject = await clientProjectService.getProject(token, isHybrid);
+        const updatedProject = await projectService.getClientProject(token, isHybrid);
         setProject(updatedProject);
       }
       
@@ -89,7 +90,8 @@ export const useClientProject = (token?: string | null, isHybrid?: boolean) => {
     }
 
     try {
-      await clientProjectService.submitRevisionRequest(token, milestoneId, feedback, images);
+      const projectService = new ProjectService(null);
+      await projectService.submitRevisionRequest(token, milestoneId, feedback, images);
       // Reload project data to show updated revision count
       await loadProject();
       toast.success('Revision request submitted successfully');

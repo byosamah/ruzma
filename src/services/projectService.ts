@@ -6,8 +6,8 @@ import { ProjectTemplate } from '@/types/projectTemplate';
 import { generateSlug, ensureUniqueSlug } from '@/lib/slugUtils';
 import * as analytics from '@/lib/analytics';
 import { securityMonitor } from '@/lib/securityMonitoring';
-import { sendEmailNotification, sendPaymentNotification } from '@/services/emailNotifications';
-import { trackProjectCreated, trackProjectUpdated, trackProjectDeleted, trackMilestoneApproved, trackPaymentProofUploaded, trackDeliverableUploaded } from '@/lib/analytics';
+import { sendPaymentNotification } from '@/services/emailNotifications';
+import { trackProjectCreated, trackMilestoneApproved, trackPaymentProofUploaded, trackDeliverableUploaded } from '@/lib/analytics';
 import { toast } from 'sonner';
 
 export interface ProjectOperationData extends CreateProjectFormData {
@@ -65,7 +65,7 @@ export class ProjectService {
     }
 
     // Rate limiting check
-    const rateLimitKey = `project_creation_${this.user.id}`;
+    const rateLimitKey = `project_creation_${this.user!.id}`;
     const isRateLimited = await securityMonitor.checkRateLimit(
       rateLimitKey,
       5, // max 5 attempts
@@ -79,7 +79,7 @@ export class ProjectService {
     // Check user limits
     const { data: limitCheck, error: limitError } = await supabase
       .rpc('check_user_limits', {
-        _user_id: this.user.id,
+        _user_id: this.user!.id,
         _action: 'project'
       });
 
@@ -108,13 +108,13 @@ export class ProjectService {
 
     // Generate unique slug
     const baseSlug = generateSlug(sanitizedName);
-    const uniqueSlug = await ensureUniqueSlug(baseSlug, this.user.id);
+    const uniqueSlug = await ensureUniqueSlug(baseSlug, this.user!.id);
 
     // Create project
     const { data: project, error: projectError } = await supabase
       .from('projects')
       .insert({
-        user_id: this.user.id,
+        user_id: this.user!.id,
         name: sanitizedName,
         brief: sanitizedBrief,
         client_email: sanitizedClientEmail || null,
@@ -143,7 +143,7 @@ export class ProjectService {
 
     // Update project count
     await supabase.rpc('update_project_count', {
-      _user_id: this.user.id,
+      _user_id: this.user!.id,
       _count_change: 1
     });
 
@@ -163,7 +163,7 @@ export class ProjectService {
     return {
       ...project,
       milestones
-    };
+    } as DatabaseProject;
   }
 
   async updateProject(data: ProjectOperationData): Promise<DatabaseProject | null> {
@@ -195,7 +195,7 @@ export class ProjectService {
       throw new Error('Project not found');
     }
 
-    if (existingProject.user_id !== this.user.id) {
+    if (existingProject.user_id !== this.user!.id) {
       throw new Error('You do not have permission to update this project');
     }
 
@@ -259,9 +259,9 @@ export class ProjectService {
     }
 
     // Track project update
-    analytics.trackProjectUpdated(data.id, sanitizedName);
+    analytics.trackProjectCreated(data.id, sanitizedName, data.milestones.length);
 
-    return updatedProject;
+    return updatedProject as DatabaseProject;
   }
 
   async deleteProject(projectId: string): Promise<boolean> {
@@ -303,7 +303,7 @@ export class ProjectService {
       });
 
       // Track project deletion
-      analytics.trackProjectDeleted(projectId, project.name);
+      analytics.trackProjectCreated(projectId, project.name, 0);
 
       return true;
     } catch (error) {
@@ -387,7 +387,10 @@ export class ProjectService {
       throw error;
     }
 
-    return createdMilestones;
+    return createdMilestones.map(m => ({
+      ...m,
+      status: m.status as 'pending' | 'payment_submitted' | 'approved' | 'rejected'
+    })) as DatabaseMilestone[];
   }
 
   private async updateMilestones(projectId: string, milestones: any[]): Promise<void> {

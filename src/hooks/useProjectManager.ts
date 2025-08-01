@@ -1,3 +1,4 @@
+
 import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -10,8 +11,6 @@ import { DatabaseProject } from '@/hooks/projectTypes';
 import { toast } from 'sonner';
 import { useT } from '@/lib/i18n';
 import { supabase } from '@/integrations/supabase/client';
-import { DatabaseProject } from '@/hooks/projectTypes';
-import { DatabaseProject } from '@/hooks/projectTypes';
 
 export interface UseProjectManagerOptions {
   mode: 'create' | 'edit';
