@@ -6,7 +6,7 @@ import Layout from '@/components/Layout';
 import { supabase } from '@/integrations/supabase/client';
 import { User } from '@supabase/supabase-js';
 import { useT } from '@/lib/i18n';
-import { useProjectTemplates } from '@/hooks/useProjectTemplates';
+import { useProjectManager } from '@/hooks/useProjectManager';
 import { useUserCurrency } from '@/hooks/useUserCurrency';
 import { useLanguageNavigation } from '@/hooks/useLanguageNavigation';
 const ProjectTemplates = () => {

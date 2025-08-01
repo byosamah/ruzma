@@ -9,6 +9,9 @@ import { ProjectTemplate } from '@/types/projectTemplate';
 import { DatabaseProject } from '@/hooks/projectTypes';
 import { toast } from 'sonner';
 import { useT } from '@/lib/i18n';
+import { supabase } from '@/integrations/supabase/client';
+import { DatabaseProject } from '@/hooks/projectTypes';
+import { DatabaseProject } from '@/hooks/projectTypes';
 
 export interface UseProjectManagerOptions {
   mode: 'create' | 'edit';
@@ -124,6 +127,123 @@ export const useProjectManager = (options: UseProjectManagerOptions) => {
   const loadFromTemplate = (template: ProjectTemplate) => {
     const formattedData = formatDataForForm(template);
     form.reset(formattedData);
+  };
+
+  // ==================== MILESTONE MANAGEMENT ====================
+  
+  const updateMilestoneStatus = async (
+    projects: DatabaseProject[],
+    milestoneId: string,
+    status: 'approved' | 'rejected'
+  ): Promise<boolean> => {
+    return await projectService.updateMilestoneStatus(projects, milestoneId, status);
+  };
+
+  const updateMilestoneStatusGeneral = async (
+    milestoneId: string,
+    status: 'pending' | 'payment_submitted' | 'approved' | 'rejected'
+  ): Promise<boolean> => {
+    return await projectService.updateMilestoneStatusGeneral(milestoneId, status);
+  };
+
+  const uploadPaymentProof = async (milestoneId: string, file: File): Promise<boolean> => {
+    return await projectService.uploadPaymentProof(milestoneId, file);
+  };
+
+  const uploadDeliverable = async (milestoneId: string, file: File): Promise<boolean> => {
+    return await projectService.uploadDeliverable(milestoneId, file);
+  };
+
+  const downloadDeliverable = async (
+    projects: DatabaseProject[],
+    milestoneId: string,
+    paymentProofRequired: boolean = true
+  ): Promise<boolean> => {
+    return await projectService.downloadDeliverable(projects, milestoneId, paymentProofRequired);
+  };
+
+  const updateDeliverableLink = async (milestoneId: string, link: string): Promise<boolean> => {
+    return await projectService.updateDeliverableLink(milestoneId, link);
+  };
+
+  const updateRevisionData = async (milestoneId: string, newDeliverableLink: string): Promise<boolean> => {
+    return await projectService.updateRevisionData(milestoneId, newDeliverableLink);
+  };
+
+  const addRevisionRequest = async (milestoneId: string, newDeliverableLink: string): Promise<boolean> => {
+    return await projectService.addRevisionRequest(milestoneId, newDeliverableLink);
+  };
+
+  // Client-specific revision request handler
+  const addRevisionRequestClient = async (
+    milestoneId: string,
+    feedback: string,
+    images: string[]
+  ): Promise<void> => {
+    try {
+      const { error } = await supabase.functions.invoke('submit-revision-request', {
+        body: {
+          milestoneId,
+          feedback,
+          images
+        }
+      });
+
+      if (error) {
+        throw error;
+      }
+    } catch (error) {
+      console.error('Error submitting revision request:', error);
+      throw error;
+    }
+  };
+
+  // ==================== TEMPLATE MANAGEMENT ====================
+  
+  const saveTemplate = async (templateData: {
+    name: string;
+    brief: string;
+    contract_required?: boolean;
+    payment_proof_required?: boolean;
+    contract_terms?: string;
+    payment_terms?: string;
+    project_scope?: string;
+    revision_policy?: string;
+    milestones: Array<{
+      title: string;
+      description: string;
+      price: number;
+    }>;
+  }): Promise<boolean> => {
+    if (!user) {
+      toast.error('You must be logged in to save a template');
+      return false;
+    }
+
+    try {
+      const { error } = await supabase
+        .from('project_templates')
+        .insert({
+          user_id: user.id,
+          name: templateData.name,
+          brief: templateData.brief,
+          contract_required: templateData.contract_required || false,
+          payment_proof_required: templateData.payment_proof_required || false,
+          contract_terms: templateData.contract_terms,
+          payment_terms: templateData.payment_terms,
+          project_scope: templateData.project_scope,
+          revision_policy: templateData.revision_policy,
+          milestones: templateData.milestones,
+        });
+      if (error) throw error;
+      toast.success('Template saved successfully');
+      await fetchTemplates();
+      return true;
+    } catch (error) {
+      console.error('Error saving template:', error);
+      toast.error('Failed to save template');
+      return false;
+    }
   };
 
   // Main submit handler
@@ -248,8 +368,20 @@ export const useProjectManager = (options: UseProjectManagerOptions) => {
     templatesLoading,
     fetchTemplates,
     deleteTemplate,
+    saveTemplate,
     saveAsTemplate,
     setSaveAsTemplate,
+    
+    // Milestone operations
+    updateMilestoneStatus,
+    updateMilestoneStatusGeneral,
+    uploadPaymentProof,
+    uploadDeliverable,
+    downloadDeliverable,
+    updateDeliverableLink,
+    updateRevisionData,
+    addRevisionRequest,
+    addRevisionRequestClient,
     
     // Mode
     mode,

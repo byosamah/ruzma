@@ -4,33 +4,35 @@ import { DatabaseProject, DatabaseMilestone } from './projectTypes';
 import { ProjectService } from '@/services/projectService';
 import { useUserProjects } from './projects/useUserProjects';
 import { useUserProfile } from './core/useUserProfile';
-import { useMilestoneManager } from './useMilestoneManager';
 
 export const useProjects = (user: User | null) => {
   const { projects, loading, fetchProjects } = useUserProjects(user);
   const { profile: userProfile, fetchUserProfile } = useUserProfile(user, [projects.length]);
   const projectService = new ProjectService(user);
 
-  // Milestone manager
-  const milestoneManager = useMilestoneManager({ 
-    user, 
-    onRefresh: fetchProjects 
-  });
-
-  // Milestone actions using the manager
+  // Milestone actions using the project service
   const updateMilestoneStatus = async (
     milestoneId: string,
     status: 'approved' | 'rejected'
   ) => {
-    await milestoneManager.updateMilestoneStatus(projects, milestoneId, status);
+    const result = await projectService.updateMilestoneStatus(projects, milestoneId, status);
+    if (result) {
+      fetchProjects();
+    }
   };
 
   const uploadPaymentProof = async (milestoneId: string, file: File) => {
-    await milestoneManager.uploadPaymentProof(milestoneId, file);
+    const result = await projectService.uploadPaymentProof(milestoneId, file);
+    if (result) {
+      fetchProjects();
+    }
   };
 
   const updateDeliverableLink = async (milestoneId: string, link: string) => {
-    await milestoneManager.updateDeliverableLink(milestoneId, link);
+    const result = await projectService.updateDeliverableLink(milestoneId, link);
+    if (result) {
+      fetchProjects();
+    }
   };
 
   return {

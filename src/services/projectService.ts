@@ -6,12 +6,23 @@ import { ProjectTemplate } from '@/types/projectTemplate';
 import { generateSlug, ensureUniqueSlug } from '@/lib/slugUtils';
 import * as analytics from '@/lib/analytics';
 import { securityMonitor } from '@/lib/securityMonitoring';
+import { sendEmailNotification, sendPaymentNotification } from '@/services/emailNotifications';
+import { trackProjectCreated, trackProjectUpdated, trackProjectDeleted, trackMilestoneApproved, trackPaymentProofUploaded, trackDeliverableUploaded } from '@/lib/analytics';
 import { toast } from 'sonner';
 
 export interface ProjectOperationData extends CreateProjectFormData {
   id?: string; // For edit operations
   slug?: string; // For edit operations
 }
+
+// Sanitize filename to remove invalid characters for Supabase Storage
+const sanitizeFilename = (filename: string): string => {
+  return filename
+    .replace(/[^a-zA-Z0-9.-]/g, '_') // Replace invalid characters with underscores
+    .replace(/_+/g, '_') // Replace multiple underscores with single
+    .replace(/^_|_$/g, '') // Remove leading/trailing underscores
+    .substring(0, 100); // Limit length
+};
 
 export class ProjectService {
   private user: User | null;
@@ -49,40 +60,55 @@ export class ProjectService {
       throw new Error('Project name and brief are required');
     }
 
+    if (data.milestones.length === 0) {
+      throw new Error('At least one milestone is required');
+    }
+
     // Rate limiting check
     const rateLimitKey = `project_creation_${this.user.id}`;
-    if (!securityMonitor.checkRateLimit(rateLimitKey, 10, 3600000)) {
+    const isRateLimited = await securityMonitor.checkRateLimit(
+      rateLimitKey,
+      5, // max 5 attempts
+      3600 // per hour
+    );
+
+    if (isRateLimited) {
       throw new Error('Too many project creation attempts. Please try again later.');
     }
 
-    // Check user project limits using database function
-    const { data: canCreate, error: limitError } = await supabase
-      .rpc('check_user_limits', { 
-        _user_id: this.user.id, 
-        _action: 'project' 
+    // Check user limits
+    const { data: limitCheck, error: limitError } = await supabase
+      .rpc('check_user_limits', {
+        _user_id: this.user.id,
+        _action: 'project'
       });
 
     if (limitError) {
       console.error('Error checking user limits:', limitError);
-      throw new Error('Unable to verify project limits. Please try again.');
+      throw new Error('Failed to verify project limits');
     }
 
-    if (!canCreate) {
-      throw new Error('You have reached your project limit. Please upgrade your plan to create more projects.');
+    if (!limitCheck) {
+      throw new Error('Project limit reached. Please upgrade your plan to create more projects.');
     }
 
     // Handle client lookup/creation
-    let clientData = null;
+    let clientId = null;
     if (sanitizedClientEmail) {
-      clientData = await this.handleClientLookup(sanitizedClientEmail);
+      try {
+        clientId = await this.handleClientLookup(sanitizedClientEmail);
+      } catch (error) {
+        console.error('Client lookup failed:', error);
+        // Continue without client if lookup fails
+      }
     }
 
     // Calculate project dates
-    const projectDates = this.calculateProjectDates(data.milestones);
-    
+    const { startDate, endDate } = this.calculateProjectDates(data.milestones);
+
     // Generate unique slug
     const baseSlug = generateSlug(sanitizedName);
-    const slug = await ensureUniqueSlug(baseSlug, this.user.id);
+    const uniqueSlug = await ensureUniqueSlug(baseSlug, this.user.id);
 
     // Create project
     const { data: project, error: projectError } = await supabase
@@ -92,38 +118,52 @@ export class ProjectService {
         name: sanitizedName,
         brief: sanitizedBrief,
         client_email: sanitizedClientEmail || null,
-        slug,
-        start_date: projectDates.startDate,
-        end_date: projectDates.endDate,
+        client_id: clientId,
+        slug: uniqueSlug,
+        start_date: startDate,
+        end_date: endDate,
         payment_proof_required: data.paymentProofRequired || false,
         contract_required: data.contractRequired || false,
         contract_terms: data.contractTerms || null,
         payment_terms: data.paymentTerms || null,
         project_scope: data.projectScope || null,
         revision_policy: data.revisionPolicy || null,
+        freelancer_currency: 'USD'
       })
       .select()
       .single();
 
     if (projectError) {
-      throw new Error(`Failed to create project: ${projectError.message}`);
+      console.error('Error creating project:', projectError);
+      throw new Error('Failed to create project');
     }
 
     // Create milestones
     const milestones = await this.createMilestones(project.id, data.milestones);
 
     // Update project count
-    await supabase.rpc('update_project_count', { _user_id: this.user.id, _count_change: 1 });
+    await supabase.rpc('update_project_count', {
+      _user_id: this.user.id,
+      _count_change: 1
+    });
 
-    // Analytics tracking
-    analytics.trackProjectCreated(project.id, false);
+    // Track project creation
+    analytics.trackProjectCreated(project.id, sanitizedName, data.milestones.length);
 
-    // Send contract approval email if needed
+    // Send contract approval email if required
     if (data.contractRequired && sanitizedClientEmail) {
-      await this.sendContractApprovalEmail(project.id);
+      try {
+        await this.sendContractApprovalEmail(project.id);
+      } catch (emailError) {
+        console.error('Failed to send contract approval email:', emailError);
+        // Don't fail project creation if email fails
+      }
     }
 
-    return { ...project, milestones } as DatabaseProject;
+    return {
+      ...project,
+      milestones
+    };
   }
 
   async updateProject(data: ProjectOperationData): Promise<DatabaseProject | null> {
@@ -131,33 +171,80 @@ export class ProjectService {
       throw new Error('Project ID is required for updates');
     }
 
+    // Validation
+    const sanitizedName = data.name.trim();
+    const sanitizedBrief = data.brief.trim();
+    const sanitizedClientEmail = data.clientEmail?.trim() || '';
+
+    if (!sanitizedName || !sanitizedBrief) {
+      throw new Error('Project name and brief are required');
+    }
+
+    if (data.milestones.length === 0) {
+      throw new Error('At least one milestone is required');
+    }
+
+    // Verify ownership
+    const { data: existingProject, error: fetchError } = await supabase
+      .from('projects')
+      .select('user_id')
+      .eq('id', data.id)
+      .single();
+
+    if (fetchError || !existingProject) {
+      throw new Error('Project not found');
+    }
+
+    if (existingProject.user_id !== this.user.id) {
+      throw new Error('You do not have permission to update this project');
+    }
+
+    // Handle client lookup/creation
+    let clientId = null;
+    if (sanitizedClientEmail) {
+      try {
+        clientId = await this.handleClientLookup(sanitizedClientEmail);
+      } catch (error) {
+        console.error('Client lookup failed:', error);
+        // Continue without client if lookup fails
+      }
+    }
+
+    // Calculate project dates
+    const { startDate, endDate } = this.calculateProjectDates(data.milestones);
+
     // Update project
-    const { data: project, error: projectError } = await supabase
+    const { data: project, error: updateError } = await supabase
       .from('projects')
       .update({
-        name: data.name.trim(),
-        brief: data.brief.trim(),
-        client_email: data.clientEmail?.trim() || null,
+        name: sanitizedName,
+        brief: sanitizedBrief,
+        client_email: sanitizedClientEmail || null,
+        client_id: clientId,
+        start_date: startDate,
+        end_date: endDate,
         payment_proof_required: data.paymentProofRequired || false,
+        contract_required: data.contractRequired || false,
         contract_terms: data.contractTerms || null,
         payment_terms: data.paymentTerms || null,
         project_scope: data.projectScope || null,
         revision_policy: data.revisionPolicy || null,
+        updated_at: new Date().toISOString()
       })
       .eq('id', data.id)
-      .eq('user_id', this.user!.id)
       .select()
       .single();
 
-    if (projectError) {
-      throw new Error(`Failed to update project: ${projectError.message}`);
+    if (updateError) {
+      console.error('Error updating project:', updateError);
+      throw new Error('Failed to update project');
     }
 
     // Update milestones
     await this.updateMilestones(data.id, data.milestones);
 
-    // Get updated project with milestones
-    const { data: updatedProject } = await supabase
+    // Fetch updated project with milestones
+    const { data: updatedProject, error: fetchUpdatedError } = await supabase
       .from('projects')
       .select(`
         *,
@@ -166,9 +253,15 @@ export class ProjectService {
       .eq('id', data.id)
       .single();
 
-    analytics.trackProjectCreated(data.id!, false);
+    if (fetchUpdatedError) {
+      console.error('Error fetching updated project:', fetchUpdatedError);
+      throw new Error('Failed to fetch updated project');
+    }
 
-    return updatedProject as DatabaseProject;
+    // Track project update
+    analytics.trackProjectUpdated(data.id, sanitizedName);
+
+    return updatedProject;
   }
 
   async deleteProject(projectId: string): Promise<boolean> {
@@ -177,128 +270,155 @@ export class ProjectService {
     }
 
     try {
-      // Delete project and its milestones (cascade delete should handle milestones)
-      const { error } = await supabase
+      // Verify ownership
+      const { data: project, error: fetchError } = await supabase
+        .from('projects')
+        .select('user_id, name')
+        .eq('id', projectId)
+        .single();
+
+      if (fetchError || !project) {
+        throw new Error('Project not found');
+      }
+
+      if (project.user_id !== this.user.id) {
+        throw new Error('You do not have permission to delete this project');
+      }
+
+      // Delete the project (milestones will be deleted via cascade)
+      const { error: deleteError } = await supabase
         .from('projects')
         .delete()
-        .eq('id', projectId)
-        .eq('user_id', this.user.id);
+        .eq('id', projectId);
 
-      if (error) {
-        throw new Error(`Failed to delete project: ${error.message}`);
+      if (deleteError) {
+        console.error('Error deleting project:', deleteError);
+        throw new Error('Failed to delete project');
       }
 
       // Update project count
-      await supabase.rpc('update_project_count', { _user_id: this.user.id, _count_change: -1 });
+      await supabase.rpc('update_project_count', {
+        _user_id: this.user.id,
+        _count_change: -1
+      });
 
-      analytics.trackProjectCreated(projectId, false);
+      // Track project deletion
+      analytics.trackProjectDeleted(projectId, project.name);
+
       return true;
     } catch (error) {
       console.error('Error deleting project:', error);
-      return false;
+      throw error;
     }
   }
 
-  private async handleClientLookup(email: string) {
-    const { data: existingClient } = await supabase
+  private async handleClientLookup(email: string): Promise<any> {
+    // Check if client already exists
+    const { data: existingClient, error: clientError } = await supabase
       .from('clients')
-      .select('*')
+      .select('id')
       .eq('email', email)
       .eq('user_id', this.user!.id)
+      .maybeSingle();
+
+    if (clientError) {
+      throw clientError;
+    }
+
+    if (existingClient) {
+      return existingClient.id;
+    }
+
+    // Create new client
+    const { data: newClient, error: createError } = await supabase
+      .from('clients')
+      .insert({
+        user_id: this.user!.id,
+        email: email,
+        name: email.split('@')[0] // Use email prefix as default name
+      })
+      .select('id')
       .single();
 
-    if (!existingClient) {
-      const { data: newClient, error } = await supabase
-        .from('clients')
-        .insert({
-          user_id: this.user!.id,
-          email: email,
-          name: email.split('@')[0],
-        })
-        .select()
-        .single();
-
-      if (error) {
-        console.error('Error creating client:', error);
-        return null;
-      }
-      return newClient;
+    if (createError) {
+      throw createError;
     }
-    return existingClient;
+
+    return newClient.id;
   }
 
-  private calculateProjectDates(milestones: any[]) {
+  private calculateProjectDates(milestones: any[]): { startDate: string | null; endDate: string | null } {
     const validDates = milestones
       .flatMap(m => [m.start_date, m.end_date])
       .filter(date => date && date.trim() !== '')
       .map(date => new Date(date))
       .filter(date => !isNaN(date.getTime()));
 
-    const startDate = validDates.length > 0 ? 
-      validDates.reduce((min, date) => date < min ? date : min).toISOString().split('T')[0] : 
-      null;
-    
-    const endDate = validDates.length > 0 ? 
-      validDates.reduce((max, date) => date > max ? date : max).toISOString().split('T')[0] : 
-      null;
+    if (validDates.length === 0) {
+      return { startDate: null, endDate: null };
+    }
 
-    return { startDate, endDate };
+    const startDate = new Date(Math.min(...validDates.map(d => d.getTime())));
+    const endDate = new Date(Math.max(...validDates.map(d => d.getTime())));
+
+    return {
+      startDate: startDate.toISOString().split('T')[0],
+      endDate: endDate.toISOString().split('T')[0]
+    };
   }
 
   private async createMilestones(projectId: string, milestones: any[]): Promise<DatabaseMilestone[]> {
-    const milestoneInserts = milestones.map(milestone => ({
+    const milestonesToCreate = milestones.map(milestone => ({
       project_id: projectId,
       title: milestone.title.trim(),
       description: milestone.description.trim(),
-      price: Number(milestone.price) || 0,
+      price: milestone.price || 0,
       start_date: milestone.start_date || null,
       end_date: milestone.end_date || null,
+      status: 'pending' as const
     }));
 
     const { data: createdMilestones, error } = await supabase
       .from('milestones')
-      .insert(milestoneInserts)
+      .insert(milestonesToCreate)
       .select();
 
     if (error) {
-      throw new Error(`Failed to create milestones: ${error.message}`);
+      throw error;
     }
 
-    // Track milestone creation
-    createdMilestones.forEach(milestone => {
-      analytics.trackMilestoneCreated(projectId, createdMilestones.length);
-    });
-
-    return createdMilestones as DatabaseMilestone[];
+    return createdMilestones;
   }
 
   private async updateMilestones(projectId: string, milestones: any[]): Promise<void> {
     // Delete existing milestones
-    await supabase
+    const { error: deleteError } = await supabase
       .from('milestones')
       .delete()
       .eq('project_id', projectId);
 
-    // Create new milestones
-    if (milestones.length > 0) {
-      await this.createMilestones(projectId, milestones);
+    if (deleteError) {
+      throw deleteError;
     }
+
+    // Create new milestones
+    await this.createMilestones(projectId, milestones);
   }
 
   private async sendContractApprovalEmail(projectId: string): Promise<void> {
-    try {
-      await supabase.functions.invoke('send-contract-approval', {
-        body: { projectId }
-      });
-    } catch (error) {
-      console.error('Error sending contract approval email:', error);
+    const { error } = await supabase.functions.invoke('send-contract-approval', {
+      body: { projectId }
+    });
+
+    if (error) {
+      throw error;
     }
   }
 
   // Template operations
   async saveAsTemplate(templateData: ProjectTemplate): Promise<void> {
     if (!this.user) {
-      throw new Error('User not authenticated');
+      throw new Error('You must be logged in to save a template');
     }
 
     const { error } = await supabase
@@ -307,8 +427,8 @@ export class ProjectService {
         user_id: this.user.id,
         name: templateData.name,
         brief: templateData.brief,
-        contract_required: templateData.contract_required,
-        payment_proof_required: templateData.payment_proof_required,
+        contract_required: templateData.contract_required || false,
+        payment_proof_required: templateData.payment_proof_required || false,
         contract_terms: templateData.contract_terms,
         payment_terms: templateData.payment_terms,
         project_scope: templateData.project_scope,
@@ -317,14 +437,14 @@ export class ProjectService {
       });
 
     if (error) {
-      throw new Error(`Failed to save template: ${error.message}`);
+      throw error;
     }
-
-    analytics.trackTemplateUsed('', templateData.name);
   }
 
   async getTemplates(): Promise<ProjectTemplate[]> {
-    if (!this.user) return [];
+    if (!this.user) {
+      throw new Error('You must be logged in to fetch templates');
+    }
 
     const { data, error } = await supabase
       .from('project_templates')
@@ -333,16 +453,19 @@ export class ProjectService {
       .order('created_at', { ascending: false });
 
     if (error) {
-      console.error('Error fetching templates:', error);
-      return [];
+      throw error;
     }
 
-    return (data || []) as ProjectTemplate[];
+    // Parse milestones jsonb field
+    return (data || []).map((t: any) => ({
+      ...t,
+      milestones: Array.isArray(t.milestones) ? t.milestones : [],
+    }));
   }
 
   async deleteTemplate(templateId: string): Promise<void> {
     if (!this.user) {
-      throw new Error('User not authenticated');
+      throw new Error('You must be logged in to delete a template');
     }
 
     const { error } = await supabase
@@ -352,9 +475,615 @@ export class ProjectService {
       .eq('user_id', this.user.id);
 
     if (error) {
-      throw new Error(`Failed to delete template: ${error.message}`);
+      throw error;
+    }
+  }
+
+  // ==================== MILESTONE OPERATIONS ====================
+  
+  // Status Management
+  async updateMilestoneStatus(
+    projects: DatabaseProject[],
+    milestoneId: string,
+    status: 'approved' | 'rejected'
+  ): Promise<boolean> {
+    if (!this.user) {
+      toast.error('You must be logged in to update milestone status');
+      return false;
     }
 
-    analytics.trackTemplateUsed(templateId, '');
+    try {
+      // First, get the milestone and project details
+      const { data: milestone, error: milestoneError } = await supabase
+        .from('milestones')
+        .select(`
+          *,
+          projects!inner (
+            id,
+            name,
+            client_email,
+            client_access_token,
+            user_id
+          )
+        `)
+        .eq('id', milestoneId)
+        .single();
+
+      if (milestoneError || !milestone) {
+        console.error('Error fetching milestone:', milestoneError);
+        toast.error('Failed to fetch milestone details');
+        return false;
+      }
+
+      // Verify user owns this project
+      if (milestone.projects.user_id !== this.user.id) {
+        toast.error('You do not have permission to update this milestone');
+        return false;
+      }
+
+      // Update the milestone status
+      const { error: updateError } = await supabase
+        .from('milestones')
+        .update({ 
+          status,
+          updated_at: new Date().toISOString()
+        })
+        .eq('id', milestoneId);
+
+      if (updateError) {
+        console.error('Error updating milestone status:', updateError);
+        toast.error('Failed to update milestone status');
+        return false;
+      }
+
+      // Track milestone approval
+      if (status === 'approved') {
+        trackMilestoneApproved(milestoneId, milestone.projects.id, milestone.price);
+      }
+
+      // Send email notification if client email exists
+      if (milestone.projects.client_email) {
+        try {
+          await sendPaymentNotification({
+            clientEmail: milestone.projects.client_email,
+            projectName: milestone.projects.name,
+            projectId: milestone.projects.id,
+            clientToken: milestone.projects.client_access_token,
+            isApproved: status === 'approved',
+            milestoneName: milestone.title,
+          });
+          
+          console.log('Email notification sent successfully');
+        } catch (emailError) {
+          console.error('Failed to send email notification:', emailError);
+          // Don't fail the status update if email fails
+          toast.error('Status updated but failed to send email notification');
+        }
+      }
+
+      const statusText = status === 'approved' ? 'approved' : 'rejected';
+      toast.success(`Payment proof ${statusText} successfully`);
+      return true;
+    } catch (error) {
+      console.error('Error updating milestone status:', error);
+      toast.error('Failed to update milestone status');
+      return false;
+    }
+  }
+
+  async updateMilestoneStatusGeneral(
+    milestoneId: string,
+    status: 'pending' | 'payment_submitted' | 'approved' | 'rejected'
+  ): Promise<boolean> {
+    if (!this.user) {
+      toast.error('You must be logged in to update milestone status');
+      return false;
+    }
+
+    try {
+      console.log('Updating milestone status:', milestoneId, 'to', status);
+
+      // First verify the user owns this milestone
+      const { data: milestone, error: fetchError } = await supabase
+        .from('milestones')
+        .select(`
+          *,
+          projects!inner (
+            user_id
+          )
+        `)
+        .eq('id', milestoneId)
+        .single();
+
+      if (fetchError || !milestone) {
+        console.error('Error fetching milestone:', fetchError);
+        toast.error('Failed to fetch milestone details');
+        return false;
+      }
+
+      // Verify user owns this project
+      if (milestone.projects.user_id !== this.user.id) {
+        toast.error('You do not have permission to update this milestone');
+        return false;
+      }
+
+      // Update the milestone status
+      const { error: updateError } = await supabase
+        .from('milestones')
+        .update({ 
+          status,
+          updated_at: new Date().toISOString()
+        })
+        .eq('id', milestoneId);
+
+      if (updateError) {
+        console.error('Error updating milestone status:', updateError);
+        toast.error('Failed to update milestone status');
+        return false;
+      }
+
+      console.log('Milestone status updated successfully');
+      toast.success('Status updated successfully');
+      return true;
+    } catch (error) {
+      console.error('Error updating milestone status:', error);
+      toast.error('Failed to update milestone status');
+      return false;
+    }
+  }
+
+  // File Operations
+  async uploadPaymentProof(milestoneId: string, file: File): Promise<boolean> {
+    try {
+      console.log('Starting payment proof upload (via edge function):', {
+        milestoneId,
+        fileName: file.name,
+        fileSize: file.size,
+        fileType: file.type
+      });
+
+      if (!this.user) {
+        toast.error('You must be logged in to upload payment proof');
+        return false;
+      }
+
+      // Check storage limits before uploading
+      const { data: limitCheck, error: limitError } = await supabase
+        .rpc('check_user_limits', {
+          _user_id: this.user.id,
+          _action: 'storage',
+          _size: file.size
+        });
+
+      if (limitError) {
+        console.error('Error checking storage limits:', limitError);
+        toast.error('Failed to check storage limits');
+        return false;
+      }
+
+      if (!limitCheck) {
+        toast.error('Storage limit reached. Please upgrade your plan or delete some files to free up space.');
+        return false;
+      }
+
+      const fileExt = file.name.split('.').pop();
+      const fileName = `${milestoneId}-${Date.now()}.${fileExt}`;
+      const filePath = `${milestoneId}/${fileName}`;
+
+      const { error: uploadError } = await supabase.storage
+        .from('payment-proofs')
+        .upload(filePath, file, {
+          cacheControl: '3600',
+          upsert: false
+        });
+
+      if (uploadError) {
+        console.error('Storage upload error:', uploadError);
+        toast.error(`Failed to upload file: ${uploadError.message}`);
+        return false;
+      }
+
+      const { data: urlData } = supabase.storage
+        .from('payment-proofs')
+        .getPublicUrl(filePath);
+
+      if (!urlData?.publicUrl) {
+        console.error('Failed to get public URL');
+        toast.error('Failed to get file URL');
+        return false;
+      }
+
+      const publicUrl = urlData.publicUrl;
+      console.log('Generated public URL:', publicUrl);
+
+      const { data: edgeData, error: edgeError } = await supabase.functions.invoke('submit-payment-proof', {
+        body: {
+          milestoneId,
+          paymentProofUrl: publicUrl,
+        },
+      });
+
+      if (edgeError || (edgeData && edgeData.error)) {
+        console.error("Edge Function error:", edgeError, edgeData?.error || "");
+        await supabase.storage.from('payment-proofs').remove([filePath]);
+        toast.error(edgeData?.error || edgeError?.message || 'Payment proof submission failed.');
+        return false;
+      }
+
+      // Get project ID for tracking
+      const { data: milestone } = await supabase
+        .from('milestones')
+        .select('project_id')
+        .eq('id', milestoneId)
+        .single();
+
+      if (milestone) {
+        trackPaymentProofUploaded(milestoneId, milestone.project_id);
+      }
+
+      // Update storage usage
+      const { error: storageUpdateError } = await supabase
+        .rpc('update_user_storage', {
+          _user_id: this.user.id,
+          _size_change: file.size
+        });
+
+      if (storageUpdateError) {
+        console.error('Error updating storage usage:', storageUpdateError);
+      }
+
+      toast.success('Payment proof submitted successfully!');
+      return true;
+
+    } catch (error) {
+      console.error('Unexpected error during payment proof upload:', error);
+      toast.error('Failed to upload payment proof');
+      return false;
+    }
+  }
+
+  async uploadDeliverable(milestoneId: string, file: File): Promise<boolean> {
+    if (!this.user) {
+      toast.error('You must be logged in to upload deliverables');
+      return false;
+    }
+
+    try {
+      console.log('Starting deliverable upload for milestone:', milestoneId);
+
+      // Check storage limits before uploading
+      const { data: limitCheck, error: limitError } = await supabase
+        .rpc('check_user_limits', {
+          _user_id: this.user.id,
+          _action: 'storage',
+          _size: file.size
+        });
+
+      if (limitError) {
+        console.error('Error checking storage limits:', limitError);
+        toast.error('Failed to check storage limits');
+        return false;
+      }
+
+      if (!limitCheck) {
+        toast.error('Storage limit reached. Please upgrade your plan or delete some files to free up space.');
+        return false;
+      }
+
+      // Sanitize the filename to avoid invalid key errors
+      const sanitizedFileName = sanitizeFilename(file.name);
+      const fileName = `${Date.now()}-${sanitizedFileName}`;
+      const filePath = `${this.user.id}/${milestoneId}/${fileName}`;
+
+      console.log('Sanitized file path:', filePath);
+
+      const { error: uploadError } = await supabase.storage
+        .from('deliverables')
+        .upload(filePath, file, {
+          upsert: false,
+          contentType: file.type
+        });
+
+      if (uploadError) {
+        console.error('Error uploading file to storage:', uploadError);
+        toast.error('Failed to upload file');
+        return false;
+      }
+
+      const { data: { publicUrl } } = supabase.storage
+        .from('deliverables')
+        .getPublicUrl(filePath);
+
+      const { error: updateError } = await supabase
+        .from('milestones')
+        .update({
+          deliverable_url: publicUrl,
+          deliverable_name: file.name, // Keep original filename for display
+          deliverable_size: file.size,
+          updated_at: new Date().toISOString()
+        })
+        .eq('id', milestoneId);
+
+      if (updateError) {
+        console.error('Error updating milestone with deliverable:', updateError);
+        await supabase.storage.from('deliverables').remove([filePath]);
+        toast.error('Failed to save deliverable information');
+        return false;
+      }
+
+      // Get project ID for tracking
+      const { data: milestone } = await supabase
+        .from('milestones')
+        .select('project_id')
+        .eq('id', milestoneId)
+        .single();
+
+      if (milestone) {
+        trackDeliverableUploaded(milestoneId, milestone.project_id, file.size);
+      }
+
+      // Update storage usage
+      const { error: storageUpdateError } = await supabase
+        .rpc('update_user_storage', {
+          _user_id: this.user.id,
+          _size_change: file.size
+        });
+
+      if (storageUpdateError) {
+        console.error('Error updating storage usage:', storageUpdateError);
+      }
+      
+      toast.success('Deliverable uploaded successfully!');
+      return true;
+    } catch (error) {
+      console.error('Error uploading deliverable:', error);
+      toast.error('Failed to upload deliverable');
+      return false;
+    }
+  }
+
+  async downloadDeliverable(
+    projects: DatabaseProject[],
+    milestoneId: string,
+    paymentProofRequired: boolean = true
+  ): Promise<boolean> {
+    try {
+      const milestone = projects
+        .flatMap(p => p.milestones)
+        .find(m => m.id === milestoneId);
+
+      if (!milestone || !milestone.deliverable_name || !milestone.deliverable_url) {
+        toast.error('Deliverable not found');
+        return false;
+      }
+
+      // Only check payment approval if payment proof is required
+      if (paymentProofRequired && milestone.status !== 'approved') {
+        toast.error('Payment must be approved before downloading');
+        return false;
+      }
+      
+      let filePath = '';
+      try {
+        if (milestone.deliverable_url.includes('/object/public/deliverables/')) {
+          filePath = milestone.deliverable_url.split('/object/public/deliverables/')[1];
+        } else if (milestone.deliverable_url.includes('/storage/v1/object/public/deliverables/')) {
+          const urlParts = milestone.deliverable_url.split('/storage/v1/object/public/deliverables/');
+          if (urlParts.length > 1) {
+            filePath = decodeURIComponent(urlParts[1]);
+          }
+        } else {
+          filePath = milestone.deliverable_url;
+        }
+      } catch (e) {
+        console.error('Error extracting file path:', e);
+        toast.error('Could not locate file path for download');
+        return false;
+      }
+
+      if (!filePath) {
+        toast.error('Invalid file path');
+        return false;
+      }
+
+      const { data, error } = await supabase
+        .storage
+        .from('deliverables')
+        .createSignedUrl(filePath, 60);
+
+      if (error) {
+        console.error('Error generating signed URL:', error);
+        toast.error(`Download failed: ${error.message}`);
+        return false;
+      }
+
+      if (!data?.signedUrl) {
+        toast.error('Could not generate download link');
+        return false;
+      }
+
+      const link = document.createElement('a');
+      link.href = data.signedUrl;
+      link.download = milestone.deliverable_name;
+      link.target = '_blank';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+
+      toast.success(`Downloaded ${milestone.deliverable_name}`);
+      return true;
+    } catch (error) {
+      console.error('Error downloading deliverable:', error);
+      toast.error('Failed to download deliverable');
+      return false;
+    }
+  }
+
+  // Link Management
+  async updateDeliverableLink(milestoneId: string, link: string): Promise<boolean> {
+    if (!this.user) {
+      toast.error('You must be logged in to update deliverable links');
+      return false;
+    }
+
+    try {
+      console.log('Updating deliverable link for milestone:', milestoneId);
+
+      const { error: updateError } = await supabase
+        .from('milestones')
+        .update({
+          deliverable_link: link || null,
+          updated_at: new Date().toISOString()
+        })
+        .eq('id', milestoneId);
+
+      if (updateError) {
+        console.error('Error updating milestone with deliverable link:', updateError);
+        toast.error('Failed to update deliverable link');
+        return false;
+      }
+
+      console.log('Deliverable link updated successfully');
+      return true;
+    } catch (error) {
+      console.error('Error updating deliverable link:', error);
+      toast.error('Failed to update deliverable link');
+      return false;
+    }
+  }
+
+  // Revision Management
+  async updateRevisionData(milestoneId: string, newDeliverableLink: string): Promise<boolean> {
+    if (!this.user) {
+      toast.error('You must be logged in to update revision data');
+      return false;
+    }
+
+    try {
+      console.log('Updating revision data for milestone:', milestoneId);
+
+      const { error: updateError } = await supabase
+        .from('milestones')
+        .update({
+          deliverable_link: newDeliverableLink,
+          updated_at: new Date().toISOString()
+        })
+        .eq('id', milestoneId);
+
+      if (updateError) {
+        console.error('Error updating milestone with revision data:', updateError);
+        toast.error('Failed to update revision data');
+        return false;
+      }
+
+      console.log('Revision data updated successfully');
+      return true;
+    } catch (error) {
+      console.error('Error updating revision data:', error);
+      toast.error('Failed to update revision data');
+      return false;
+    }
+  }
+
+  async addRevisionRequest(milestoneId: string, newDeliverableLink: string): Promise<boolean> {
+    if (!this.user) {
+      toast.error('You must be logged in to add revision requests');
+      return false;
+    }
+
+    try {
+      console.log('Adding revision request for milestone:', milestoneId);
+
+      const { error: updateError } = await supabase
+        .from('milestones')
+        .update({
+          deliverable_link: newDeliverableLink,
+          updated_at: new Date().toISOString()
+        })
+        .eq('id', milestoneId);
+
+      if (updateError) {
+        console.error('Error updating milestone with revision request:', updateError);
+        toast.error('Failed to add revision request');
+        return false;
+      }
+
+      console.log('Revision request added successfully');
+      return true;
+    } catch (error) {
+      console.error('Error adding revision request:', error);
+      toast.error('Failed to add revision request');
+      return false;
+    }
+  }
+
+  // ==================== CLIENT PROJECT OPERATIONS ====================
+  
+  async getClientProject(token: string, isHybrid?: boolean): Promise<DatabaseProject> {
+    try {
+      const { data, error } = await supabase.functions.invoke('get-client-project', {
+        body: { token, isHybrid }
+      });
+
+      if (error) {
+        console.error('Edge function error:', error);
+        throw new Error(error.message || 'Failed to fetch project');
+      }
+
+      if (!data?.project) {
+        throw new Error('Project not found');
+      }
+
+      return data.project;
+    } catch (error: any) {
+      console.error('Error fetching client project:', error);
+      throw error;
+    }
+  }
+
+  async uploadClientPaymentProof(projectId: string, token: string, milestoneId: string, file: File): Promise<boolean> {
+    try {
+      const formData = new FormData();
+      formData.append('milestoneId', milestoneId);
+      formData.append('file', file);
+      formData.append('token', token);
+
+      const { data, error } = await supabase.functions.invoke('upload-client-payment-proof', {
+        body: formData
+      });
+
+      if (error) {
+        console.error('Error uploading payment proof:', error);
+        throw new Error('Failed to upload payment proof');
+      }
+
+      return true;
+    } catch (error: any) {
+      console.error('Error uploading client payment proof:', error);
+      throw error;
+    }
+  }
+
+  async submitRevisionRequest(token: string, milestoneId: string, feedback: string, images: string[]): Promise<any> {
+    try {
+      const { data, error } = await supabase.functions.invoke('submit-revision-request', {
+        body: {
+          token,
+          milestoneId,
+          feedback,
+          images
+        }
+      });
+
+      if (error) {
+        console.error('Error submitting revision request:', error);
+        throw new Error('Failed to submit revision request');
+      }
+
+      return data;
+    } catch (error: any) {
+      console.error('Error submitting revision request:', error);
+      throw error;
+    }
   }
 }

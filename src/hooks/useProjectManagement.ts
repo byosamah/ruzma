@@ -5,8 +5,9 @@ import { useProjects } from './useProjects';
 import { DatabaseProject } from './projectTypes';
 import { useDashboard } from './useDashboard';
 import { useUserCurrency } from './useUserCurrency';
-import { useMilestoneManager } from './useMilestoneManager';
+
 import { parseRevisionData, addRevisionRequest, stringifyRevisionData } from '@/lib/revisionUtils';
+import { ProjectService } from '@/services/projectService';
 
 export const useProjectManagement = (slug: string | undefined) => {
   const { user, profile } = useDashboard();
@@ -14,37 +15,54 @@ export const useProjectManagement = (slug: string | undefined) => {
   const [project, setProject] = useState<DatabaseProject | null>(null);
   const userCurrency = useUserCurrency(profile);
 
-  // Milestone manager
-  const milestoneManager = useMilestoneManager({ 
-    user, 
-    onRefresh: fetchProjects 
-  });
+  // Get project service from useProjects hook
+  const { createProject, updateProject, deleteProject } = useProjects(user);
 
-  // Milestone actions using the manager
+  // Milestone actions using the project service directly
   const updateMilestoneStatus = async (
     milestoneId: string,
     status: 'approved' | 'rejected'
   ) => {
-    await milestoneManager.updateMilestoneStatus(projects, milestoneId, status);
+    const projectService = new ProjectService(user);
+    const result = await projectService.updateMilestoneStatus(projects, milestoneId, status);
+    if (result) {
+      fetchProjects();
+    }
   };
 
   const uploadPaymentProof = async (milestoneId: string, file: File) => {
-    await milestoneManager.uploadPaymentProof(milestoneId, file);
+    const projectService = new ProjectService(user);
+    const result = await projectService.uploadPaymentProof(milestoneId, file);
+    if (result) {
+      fetchProjects();
+    }
   };
 
   const updateDeliverableLink = async (milestoneId: string, link: string) => {
-    await milestoneManager.updateDeliverableLink(milestoneId, link);
+    const projectService = new ProjectService(user);
+    const result = await projectService.updateDeliverableLink(milestoneId, link);
+    if (result) {
+      fetchProjects();
+    }
   };
 
   const updateMilestoneStatusGeneric = async (
     milestoneId: string,
     status: 'pending' | 'payment_submitted' | 'approved' | 'rejected'
   ) => {
-    await milestoneManager.updateMilestoneStatusGeneral(milestoneId, status);
+    const projectService = new ProjectService(user);
+    const result = await projectService.updateMilestoneStatusGeneral(milestoneId, status);
+    if (result) {
+      fetchProjects();
+    }
   };
 
   const updateRevisionData = async (milestoneId: string, newDeliverableLink: string) => {
-    await milestoneManager.updateRevisionData(milestoneId, newDeliverableLink);
+    const projectService = new ProjectService(user);
+    const result = await projectService.updateRevisionData(milestoneId, newDeliverableLink);
+    if (result) {
+      fetchProjects();
+    }
   };
 
   const addRevisionRequestClient = async (milestoneId: string, feedback: string, images: string[]) => {
@@ -62,7 +80,11 @@ export const useProjectManagement = (slug: string | undefined) => {
     const updatedRevisionData = addRevisionRequest(currentRevisionData, feedback, images);
     const newDeliverableLink = stringifyRevisionData(milestone.deliverable_link, updatedRevisionData);
     
-    await milestoneManager.addRevisionRequest(milestoneId, newDeliverableLink);
+    const projectService = new ProjectService(user);
+    const result = await projectService.addRevisionRequest(milestoneId, newDeliverableLink);
+    if (result) {
+      fetchProjects();
+    }
   };
 
   useEffect(() => {

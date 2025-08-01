@@ -1,7 +1,7 @@
 
 import { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-import { clientProjectService } from '@/services/clientProjectService';
+import { ProjectService } from '@/services/projectService';
 import { DatabaseProject } from '@/hooks/projectTypes';
 import { trackClientProjectAccess } from '@/lib/analytics';
 import { useUserCurrency } from '@/hooks/useUserCurrency';
@@ -27,7 +27,8 @@ export const useClientProject = (token?: string | null, isHybrid?: boolean) => {
     setError(null);
 
     try {
-      const data = await clientProjectService.getProject(token, isHybrid);
+        const projectService = new ProjectService(null);
+        const data = await projectService.getClientProject(token, isHybrid);
       setProject(data);
       
       // Check if contract approval is needed
