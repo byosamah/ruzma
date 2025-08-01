@@ -38,7 +38,7 @@ export class ProjectService {
     }
   }
 
-  private async createProject(data: ProjectOperationData): Promise<DatabaseProject | null> {
+  async createProject(data: ProjectOperationData): Promise<DatabaseProject | null> {
     // Validation and sanitization
     const sanitizedName = data.name.trim();
     const sanitizedBrief = data.brief.trim();
@@ -120,7 +120,7 @@ export class ProjectService {
     return { ...project, milestones } as DatabaseProject;
   }
 
-  private async updateProject(data: ProjectOperationData): Promise<DatabaseProject | null> {
+  async updateProject(data: ProjectOperationData): Promise<DatabaseProject | null> {
     if (!data.id) {
       throw new Error('Project ID is required for updates');
     }
@@ -163,6 +163,34 @@ export class ProjectService {
     analytics.trackProjectCreated(data.id!, false);
 
     return updatedProject as DatabaseProject;
+  }
+
+  async deleteProject(projectId: string): Promise<boolean> {
+    if (!this.user) {
+      throw new Error('User not authenticated');
+    }
+
+    try {
+      // Delete project and its milestones (cascade delete should handle milestones)
+      const { error } = await supabase
+        .from('projects')
+        .delete()
+        .eq('id', projectId)
+        .eq('user_id', this.user.id);
+
+      if (error) {
+        throw new Error(`Failed to delete project: ${error.message}`);
+      }
+
+      // Update project count
+      await supabase.rpc('update_project_count', { _user_id: this.user.id, _count_change: -1 });
+
+      analytics.trackProjectCreated(projectId, false);
+      return true;
+    } catch (error) {
+      console.error('Error deleting project:', error);
+      return false;
+    }
   }
 
   private async handleClientLookup(email: string) {

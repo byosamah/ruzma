@@ -1,7 +1,7 @@
 
 import { User } from '@supabase/supabase-js';
 import { DatabaseProject, DatabaseMilestone } from './projectTypes';
-import { useProjectCRUD } from './projects/useProjectCRUD';
+import { ProjectService } from '@/services/projectService';
 import { useUserProjects } from './projects/useUserProjects';
 import { useUserProfile } from './core/useUserProfile';
 import { updateMilestoneStatus as updateMilestoneStatusAction } from './milestone-actions/updateStatus';
@@ -11,9 +11,7 @@ import { updateDeliverableLinkAction } from './milestone-actions/updateDeliverab
 export const useProjects = (user: User | null) => {
   const { projects, loading, fetchProjects } = useUserProjects(user);
   const { profile: userProfile, fetchUserProfile } = useUserProfile(user, [projects.length]);
-
-  // Import project CRUD actions directly
-  const { createProject, updateProject, deleteProject } = useProjectCRUD(user);
+  const projectService = new ProjectService(user);
 
   // Milestone actions - directly implemented here instead of separate hook
   const updateMilestoneStatus = async (
@@ -46,9 +44,9 @@ export const useProjects = (user: User | null) => {
     userProfile,
     fetchProjects,
     fetchUserProfile,
-    createProject,
-    updateProject,
-    deleteProject,
+    createProject: projectService.createProject.bind(projectService),
+    updateProject: projectService.updateProject.bind(projectService),
+    deleteProject: projectService.deleteProject.bind(projectService),
     updateMilestoneStatus,
     uploadPaymentProof,
     updateDeliverableLink,

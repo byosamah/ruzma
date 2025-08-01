@@ -3,13 +3,13 @@ import { useAuth } from '@/hooks/core/useAuth';
 import { useDashboardDataQuery } from '@/hooks/dashboard/useDashboardDataQuery';
 import { useDashboardHandlers } from '@/hooks/dashboard/useDashboardHandlers';
 import { useDashboardStats } from '@/hooks/dashboard/useDashboardStats';
-import { useProjectCRUD } from '@/hooks/projects/useProjectCRUD';
+import { ProjectService } from '@/services/projectService';
 import { useUserCurrency } from '@/hooks/useUserCurrency';
 
 export const useDashboard = () => {
   const { user, loading: authLoading } = useAuth();
   const { data, isLoading: dataLoading, refetch } = useDashboardDataQuery(user);
-  const { deleteProject } = useProjectCRUD(user);
+  const projectService = new ProjectService(user);
   const userCurrency = useUserCurrency(data?.profile);
   const stats = useDashboardStats(data?.projects || []);
 
@@ -18,7 +18,7 @@ export const useDashboard = () => {
     handleSignOut,
     handleEditProject,
     handleDeleteProject,
-  } = useDashboardHandlers(data?.profile, user, deleteProject, refetch);
+  } = useDashboardHandlers(data?.profile, user, projectService.deleteProject.bind(projectService), refetch);
 
   const loading = authLoading || dataLoading;
 
