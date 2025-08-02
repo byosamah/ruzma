@@ -30,6 +30,9 @@ import ClientProjectError from "@/components/ProjectClient/ClientProjectError";
 import BrandedLogo from "@/components/ui/BrandedLogo";
 import BrandedProgress from "@/components/ui/BrandedProgress";
 import ErrorBoundary from "@/components/ErrorBoundary";
+import ProjectTimelineCard from "@/components/ProjectClient/enhanced/ProjectTimelineCard";
+import ContractTermsSection from "@/components/ProjectClient/enhanced/ContractTermsSection";
+import FreelancerContactCard from "@/components/ProjectClient/enhanced/FreelancerContactCard";
 
 const ClientProjectNew = () => {
   const { token } = useParams<{ token: string }>();
@@ -243,6 +246,21 @@ const ClientProjectNew = () => {
             </div>
           </div>
         </motion.section>
+
+        {/* Phase 1: Enhanced Project Information */}
+        {/* Project Timeline */}
+        <ProjectTimelineCard project={project} />
+
+        {/* Freelancer Contact Information */}
+        {project.freelancer_profile && (
+          <FreelancerContactCard 
+            freelancer={project.freelancer_profile} 
+            branding={branding}
+          />
+        )}
+
+        {/* Contract Terms and Documentation */}
+        <ContractTermsSection project={project} />
 
         {/* Next Action Card */}
         {nextActionMilestone && (

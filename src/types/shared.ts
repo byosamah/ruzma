@@ -44,6 +44,7 @@ export interface DatabaseProject {
   milestones: DatabaseMilestone[];
   freelancer_currency?: string;
   currency?: string;
+  freelancer_profile?: UserProfile;
 }
 
 export interface UserProfile {
