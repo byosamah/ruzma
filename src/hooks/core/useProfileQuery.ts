@@ -24,11 +24,33 @@ const fetchProfile = async (userId: string): Promise<UserProfile | null> => {
     .from('profiles')
     .select('*')
     .eq('id', userId)
-    .single();
+    .maybeSingle(); // Use maybeSingle instead of single to handle missing profiles
 
   if (error) {
     logSecurityEvent('profile_fetch_error', { userId, error: error.message });
     throw error;
+  }
+
+  if (!profileData) {
+    // Create profile if it doesn't exist
+    const { data: newProfile, error: createError } = await supabase
+      .from('profiles')
+      .insert({
+        id: userId,
+        user_type: 'free',
+        project_count: 0,
+        storage_used: 0
+      })
+      .select()
+      .single();
+    
+    if (createError) {
+      logSecurityEvent('profile_create_error', { userId, error: createError.message });
+      throw createError;
+    }
+    
+    logSecurityEvent('profile_created', { userId });
+    return newProfile;
   }
 
   logSecurityEvent('profile_fetched', { userId });
