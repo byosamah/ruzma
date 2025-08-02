@@ -42,7 +42,7 @@ export const getSubscriptionPlans = (currency: CurrencyCode = 'USD', language: '
       name: translate('pro', language),
       price: Math.round(349 * rate * 100) / 100,
       originalPrice: Math.round(450 * rate * 100) / 100,
-      interval: 'month',
+      interval: 'lifetime' as any,
       features: [
         `🔓 ${translate('accessForever', language)}`,
         `✅ ${translate('unlimitedProjectsBenefit', language)}`,

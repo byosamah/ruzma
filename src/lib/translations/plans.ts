@@ -78,6 +78,7 @@ export const plansTranslations = {
     freeProjectLimit: "Free plan is limited to 1 project",
     viewUpgradeOptions: "View Upgrade Options",
     cancel: "Cancel",
+    oneTimePayment: "One-time payment",
   },
   ar: {
     choosePlan: "اختر خطتك",
@@ -158,5 +159,6 @@ export const plansTranslations = {
     freeProjectLimit: "الخطة المجانية محدودة بمشروع واحد",
     viewUpgradeOptions: "عرض خيارات الترقية",
     cancel: "إلغاء",
+    oneTimePayment: "دفعة واحدة",
   },
 };
