@@ -18,7 +18,7 @@ export const SubscriptionPlans: React.FC = () => {
   const [user, setUser] = useState<User | null>(null);
   const [userProfile, setUserProfile] = useState<any>(null);
   const [profileLoading, setProfileLoading] = useState(true);
-  const { currency } = useUserCurrency(user);
+  const { currency } = useUserCurrency(userProfile);
 
   useEffect(() => {
     const fetchUserAndProfile = async () => {
@@ -29,7 +29,7 @@ export const SubscriptionPlans: React.FC = () => {
         if (user) {
           const { data: profile } = await supabase
             .from('profiles')
-            .select('user_type, subscription_status')
+            .select('user_type, subscription_status, currency')
             .eq('id', user.id)
             .single();
           

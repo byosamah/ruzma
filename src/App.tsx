@@ -5,6 +5,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { LanguageProvider } from "@/contexts/LanguageContext";
 import { InvoiceProvider } from "@/contexts/InvoiceContext";
+import { CurrencyProvider } from "@/contexts/CurrencyContext";
 import ProtectedRoute from "@/components/ProtectedRoute";
 import { LanguageLayout } from "@/components/LanguageLayout";
 import { RedirectWithParams } from "@/components/RedirectWithParams";
@@ -33,10 +34,11 @@ function App() {
     <QueryClientProvider client={queryClient}>
       <BrowserRouter>
         <LanguageProvider>
-          <TooltipProvider>
-            <Toaster />
-            <InvoiceProvider>
-              <Routes>
+          <CurrencyProvider>
+            <TooltipProvider>
+              <Toaster />
+              <InvoiceProvider>
+                <Routes>
                   {/* Root redirect - handled by LanguageProvider */}
                   <Route path="/" element={<Navigate to="/en/dashboard" replace />} />
                   
@@ -158,8 +160,9 @@ function App() {
                   {/* 404 route */}
                   <Route path="*" element={<LazyRoutes.NotFound />} />
                 </Routes>
-            </InvoiceProvider>
-          </TooltipProvider>
+              </InvoiceProvider>
+            </TooltipProvider>
+          </CurrencyProvider>
         </LanguageProvider>
       </BrowserRouter>
     </QueryClientProvider>

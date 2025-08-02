@@ -5,10 +5,12 @@ import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import { trackBrandingUpdated, trackError } from '@/lib/analytics';
 import { brandingService } from '@/services/brandingService';
+import { useCurrency } from '@/contexts/CurrencyContext';
 
 export const useProfileActions = (user: User | null) => {
   const [isUpdating, setIsUpdating] = useState(false);
   const [isSaved, setIsSaved] = useState(false);
+  const { updateCurrency: updateCurrencyContext } = useCurrency();
 
   const updateBranding = async (brandingData: any) => {
     if (!user) return false;
@@ -62,6 +64,11 @@ export const useProfileActions = (user: User | null) => {
         .eq('id', user.id);
 
       if (profileError) throw profileError;
+
+      // Update currency in context if changed
+      if (profileData.currency) {
+        await updateCurrencyContext(profileData.currency);
+      }
 
       // Update branding data
       const brandingError = await brandingService.updateBranding(user.id, {
