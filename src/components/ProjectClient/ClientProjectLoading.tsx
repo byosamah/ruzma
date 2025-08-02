@@ -5,7 +5,7 @@ import { PageSpinner } from '@/components/shared/LoadingStates';
 
 const ClientProjectLoading: React.FC = () => {
   const t = useT();
-  return <PageSpinner text={t('loadingProject')} />;
+  return <PageSpinner message={t('loadingProject')} />;
 };
 
 export default ClientProjectLoading;

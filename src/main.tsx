@@ -8,12 +8,8 @@ import './index.css';
 // Make React available globally for JSX
 (window as any).React = React;
 
-// Initialize service container
-import { supabase } from '@/integrations/supabase/client';
-import { ServiceContainer } from '@/lib/services';
-
-// Initialize services before app renders
-ServiceContainer.initialize(supabase);
+// Initialize Supabase client
+import '@/integrations/supabase/client';
 
 const rootElement = document.getElementById("root");
 if (!rootElement) {

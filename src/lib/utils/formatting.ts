@@ -246,7 +246,11 @@ export const formatList = (
   if (items.length === 1) return items[0];
   
   try {
-    return new Intl.ListFormat(locale, { type }).format(items);
+    // Check if Intl.ListFormat is available
+    if ('ListFormat' in Intl) {
+      return new (Intl as any).ListFormat(locale, { type }).format(items);
+    }
+    throw new Error('ListFormat not supported');
   } catch {
     // Fallback for unsupported locales
     const last = items[items.length - 1];

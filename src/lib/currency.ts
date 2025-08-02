@@ -1,189 +1,70 @@
+/**
+ * Simple currency utilities
+ */
 
-// Legacy currency utilities - keeping existing functions for backward compatibility
-// Core formatting functions are now in @/lib/formatters/currency
-// Re-export the core functions for compatibility
-export { formatCurrency, getCurrencySymbol, validateCurrency, parseAmount } from '@/lib/formatters';
-
-export const CURRENCIES = {
-  USD: { 
-    symbol: { en: '$', ar: '$' }, 
-    name: 'US Dollar',
-    decimals: 2
-  },
-  EUR: { 
-    symbol: { en: '€', ar: '€' }, 
-    name: 'Euro',
-    decimals: 2
-  },
-  GBP: { 
-    symbol: { en: '£', ar: '£' }, 
-    name: 'British Pound',
-    decimals: 2
-  },
-  SAR: { 
-    symbol: { en: 'SAR', ar: 'ر.س' }, 
-    name: 'Saudi Riyal',
-    decimals: 2
-  },
-  AED: { 
-    symbol: { en: 'AED', ar: 'د.إ' }, 
-    name: 'UAE Dirham',
-    decimals: 2
-  },
-  JOD: { 
-    symbol: { en: 'JOD', ar: 'د.ا' }, 
-    name: 'Jordanian Dinar',
-    decimals: 3
-  },
-  EGP: { 
-    symbol: { en: 'EGP', ar: 'ج.م' }, 
-    name: 'Egyptian Pound',
-    decimals: 2
-  },
-  KWD: { 
-    symbol: { en: 'KWD', ar: 'د.ك' }, 
-    name: 'Kuwaiti Dinar',
-    decimals: 3
-  },
-  QAR: { 
-    symbol: { en: 'QAR', ar: 'ر.ق' }, 
-    name: 'Qatari Riyal',
-    decimals: 2
-  },
-  BHD: { 
-    symbol: { en: 'BHD', ar: 'د.ب' }, 
-    name: 'Bahraini Dinar',
-    decimals: 3
-  },
-  OMR: { 
-    symbol: { en: 'OMR', ar: 'ر.ع' }, 
-    name: 'Omani Rial',
-    decimals: 3
-  },
-  LBP: { 
-    symbol: { en: 'LBP', ar: 'ل.ل' }, 
-    name: 'Lebanese Pound',
-    decimals: 2
-  },
-  MAD: { 
-    symbol: { en: 'MAD', ar: 'د.م' }, 
-    name: 'Moroccan Dirham',
-    decimals: 2
-  },
-  TND: { 
-    symbol: { en: 'TND', ar: 'د.ت' }, 
-    name: 'Tunisian Dinar',
-    decimals: 3
-  },
-  DZD: { 
-    symbol: { en: 'DZD', ar: 'د.ج' }, 
-    name: 'Algerian Dinar',
-    decimals: 2
-  },
-  CAD: { 
-    symbol: { en: 'CAD', ar: 'CAD' }, 
-    name: 'Canadian Dollar',
-    decimals: 2
-  },
-  AUD: { 
-    symbol: { en: 'AUD', ar: 'AUD' }, 
-    name: 'Australian Dollar',
-    decimals: 2
-  },
-  CHF: { 
-    symbol: { en: 'CHF', ar: 'CHF' }, 
-    name: 'Swiss Franc',
-    decimals: 2
-  },
-  JPY: { 
-    symbol: { en: '¥', ar: '¥' }, 
-    name: 'Japanese Yen',
-    decimals: 0
+export const formatCurrency = (amount: number, currency: string = 'USD', locale: string = 'en-US'): string => {
+  try {
+    return new Intl.NumberFormat(locale, {
+      style: 'currency',
+      currency: currency,
+    }).format(amount);
+  } catch (error) {
+    return `${currency} ${amount.toFixed(2)}`;
   }
-} as const;
-
-export type CurrencyCode = keyof typeof CURRENCIES;
-
-// Legacy implementations moved to formatters module
-
-// Country-Currency mapping utilities
-export const getCurrencyByCountry = (countryCode: string): CurrencyCode => {
-  // Map countries to their primary currencies
-  const countryToCurrency: Record<string, CurrencyCode> = {
-    'SA': 'SAR',
-    'JO': 'JOD', 
-    'AE': 'AED',
-    'EG': 'EGP',
-    'KW': 'KWD',
-    'QA': 'QAR',
-    'BH': 'BHD',
-    'OM': 'OMR',
-    'LB': 'LBP',
-    'MA': 'MAD',
-    'TN': 'TND',
-    'DZ': 'DZD',
-    'US': 'USD',
-    'GB': 'GBP',
-    'CA': 'CAD',
-    'AU': 'AUD',
-    'DE': 'EUR',
-    'FR': 'EUR',
-    'CH': 'CHF',
-    'JP': 'JPY'
-  };
-  
-  return countryToCurrency[countryCode] || 'USD';
 };
 
-export const getPossibleCountriesByCurrency = (currency: CurrencyCode): string[] => {
-  const currencyToCountries: Record<CurrencyCode, string[]> = {
-    'SAR': ['SA'],
-    'JOD': ['JO'],
-    'AED': ['AE'],
-    'EGP': ['EG'],
-    'KWD': ['KW'],
-    'QAR': ['QA'],
-    'BHD': ['BH'],
-    'OMR': ['OM'],
-    'LBP': ['LB'],
-    'MAD': ['MA'],
-    'TND': ['TN'],
-    'DZD': ['DZ'],
-    'USD': ['US'],
-    'GBP': ['GB'],
-    'CAD': ['CA'],
-    'AUD': ['AU'],
-    'EUR': ['DE', 'FR'],
-    'CHF': ['CH'],
-    'JPY': ['JP']
+export const getCurrencySymbol = (currency: string, locale: string = 'en-US'): string => {
+  try {
+    const formatter = new Intl.NumberFormat(locale, {
+      style: 'currency',
+      currency: currency,
+    });
+    return formatter.formatToParts(0).find(part => part.type === 'currency')?.value || currency;
+  } catch (error) {
+    const symbols: Record<string, string> = {
+      USD: '$',
+      EUR: '€',
+      GBP: '£',
+      JPY: '¥',
+      CAD: 'C$',
+      AUD: 'A$',
+    };
+    return symbols[currency] || currency;
+  }
+};
+
+export const CURRENCIES = [
+  { code: 'USD' as const, name: 'US Dollar', symbol: '$' },
+  { code: 'EUR' as const, name: 'Euro', symbol: '€' },
+  { code: 'GBP' as const, name: 'British Pound', symbol: '£' },
+  { code: 'JPY' as const, name: 'Japanese Yen', symbol: '¥' },
+  { code: 'CAD' as const, name: 'Canadian Dollar', symbol: 'C$' },
+  { code: 'AUD' as const, name: 'Australian Dollar', symbol: 'A$' },
+  { code: 'SAR' as const, name: 'Saudi Riyal', symbol: '﷼' },
+  { code: 'AED' as const, name: 'UAE Dirham', symbol: 'د.إ' },
+];
+
+export const getAllCurrencies = () => CURRENCIES;
+
+export const getPopularCurrencies = () => CURRENCIES.slice(0, 6);
+
+export const searchCurrencies = (query: string) => 
+  CURRENCIES.filter(currency => 
+    currency.code.toLowerCase().includes(query.toLowerCase()) ||
+    currency.name.toLowerCase().includes(query.toLowerCase())
+  );
+
+export const getPossibleCountriesByCurrency = (currency: string) => {
+  const currencyToCountries: Record<string, string[]> = {
+    USD: ['US', 'United States'],
+    EUR: ['DE', 'FR', 'IT', 'ES', 'Germany', 'France', 'Italy', 'Spain'],
+    GBP: ['GB', 'United Kingdom'],
+    JPY: ['JP', 'Japan'],
+    CAD: ['CA', 'Canada'],
+    AUD: ['AU', 'Australia'],
+    SAR: ['SA', 'Saudi Arabia'],
   };
-  
   return currencyToCountries[currency] || [];
 };
 
-export const getCountryByCurrency = (currency: CurrencyCode): string | undefined => {
-  const countries = getPossibleCountriesByCurrency(currency);
-  return countries.length === 1 ? countries[0] : undefined;
-};
-
-// Currency search utilities
-export const getPopularCurrencies = (): CurrencyCode[] => {
-  return ['USD', 'EUR', 'SAR', 'AED', 'GBP', 'JOD', 'EGP'];
-};
-
-export const getAllCurrencies = (): CurrencyCode[] => {
-  return Object.keys(CURRENCIES) as CurrencyCode[];
-};
-
-export const searchCurrencies = (query: string, language: 'en' | 'ar' = 'en'): CurrencyCode[] => {
-  if (!query) return getPopularCurrencies();
-  
-  const searchQuery = query.toLowerCase();
-  return Object.entries(CURRENCIES)
-    .filter(([code, currency]) => 
-      code.toLowerCase().includes(searchQuery) ||
-      currency.name.toLowerCase().includes(searchQuery) ||
-      currency.symbol[language].toLowerCase().includes(searchQuery)
-    )
-    .map(([code, _]) => code as CurrencyCode);
-};
+export type CurrencyCode = 'USD' | 'EUR' | 'GBP' | 'JPY' | 'CAD' | 'AUD' | 'SAR' | 'AED';

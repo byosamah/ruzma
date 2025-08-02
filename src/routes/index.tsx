@@ -160,6 +160,6 @@ export const routes = {
  */
 export const preloadCriticalRoutes = () => {
   // Preload commonly accessed routes
-  Dashboard.preload?.();
-  Projects.preload?.();
+  // Dashboard.preload?.();
+  // Projects.preload?.();
 };

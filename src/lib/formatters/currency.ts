@@ -1,74 +1,55 @@
-// Comprehensive currency utilities
-export const formatCurrency = (amount: number, currency: string = 'USD', language?: 'en' | 'ar'): string => {
-  return new Intl.NumberFormat('en-US', {
-    style: 'currency',
-    currency: currency.toUpperCase(),
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2,
-  }).format(amount);
+/**
+ * Currency formatting utilities
+ */
+
+import { formatAmountWithSymbol, getCurrencySymbol, getCurrencyDecimals } from '@/lib/utils/currency';
+
+/**
+ * Format currency amount
+ */
+export const formatCurrency = (
+  amount: number,
+  currency: string = 'USD',
+  options?: {
+    includeCode?: boolean;
+    minimumFractionDigits?: number;
+    maximumFractionDigits?: number;
+  }
+): string => {
+  const { includeCode = false } = options || {};
+  return formatAmountWithSymbol(amount, currency, includeCode);
 };
 
-export const getCurrencySymbol = (currency: string, language?: 'en' | 'ar'): string => {
-  const symbols: Record<string, string> = {
-    USD: '$',
-    EUR: '€',
-    GBP: '£',
-    JPY: '¥',
-    CAD: 'C$',
-    AUD: 'A$',
-    CHF: '₣',
-    CNY: '¥',
-    SEK: 'kr',
-    NZD: 'NZ$',
-    MXN: '$',
-    SGD: 'S$',
-    HKD: 'HK$',
-    NOK: 'kr',
-    TRY: '₺',
-    RUB: '₽',
-    INR: '₹',
-    BRL: 'R$',
-    ZAR: 'R',
-    KRW: '₩',
-    PLN: 'zł',
-    CZK: 'Kč',
-    HUF: 'Ft',
-    ILS: '₪',
-    CLP: '$',
-    PHP: '₱',
-    AED: 'د.إ',
-    COP: '$',
-    SAR: '﷼',
-    MYR: 'RM',
-    RON: 'lei',
-    THB: '฿',
-    BGN: 'лв',
-    HRK: 'kn',
-    IDR: 'Rp',
-    ISK: 'kr',
-    UAH: '₴'
-  };
-  
-  return symbols[currency.toUpperCase()] || currency.toUpperCase();
+/**
+ * Format currency amount with locale support
+ */
+export const formatCurrencyLocale = (
+  amount: number,
+  locale: string = 'en-US',
+  currency: string = 'USD'
+): string => {
+  try {
+    return new Intl.NumberFormat(locale, {
+      style: 'currency',
+      currency: currency,
+      minimumFractionDigits: getCurrencyDecimals(currency),
+      maximumFractionDigits: getCurrencyDecimals(currency)
+    }).format(amount);
+  } catch (error) {
+    // Fallback to custom formatting
+    return formatAmountWithSymbol(amount, currency);
+  }
 };
 
-export const validateCurrency = (currency: string): boolean => {
-  const validCurrencies = [
-    'USD', 'EUR', 'GBP', 'JPY', 'CAD', 'AUD', 'CHF', 'CNY', 'SEK', 'NZD',
-    'MXN', 'SGD', 'HKD', 'NOK', 'TRY', 'RUB', 'INR', 'BRL', 'ZAR', 'KRW',
-    'PLN', 'CZK', 'HUF', 'ILS', 'CLP', 'PHP', 'AED', 'COP', 'SAR', 'MYR',
-    'RON', 'THB', 'BGN', 'HRK', 'IDR', 'ISK', 'UAH'
-  ];
-  
-  return validCurrencies.includes(currency.toUpperCase());
-};
-
-export const parseAmount = (value: string | number): number => {
-  if (typeof value === 'number') return value;
-  
-  // Remove currency symbols and formatting
-  const cleaned = value.replace(/[$€£¥₹₽₺₪₩₵₡₦₨₪₫₡₵₦₨₪₫₡]/g, '')
-                      .replace(/[,\s]/g, '');
-  
-  return parseFloat(cleaned) || 0;
+/**
+ * Format currency amount for display
+ */
+export const displayCurrency = (
+  amount: number | null | undefined,
+  currency: string = 'USD'
+): string => {
+  if (amount === null || amount === undefined || isNaN(amount)) {
+    return `${getCurrencySymbol(currency)}0.00`;
+  }
+  return formatAmountWithSymbol(amount, currency);
 };

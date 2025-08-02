@@ -10,7 +10,7 @@ import { Calendar } from '@/components/ui/calendar';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { CalendarIcon, Loader2 } from 'lucide-react';
 import { format } from 'date-fns';
-import { formatCurrency, getCurrencySymbol } from '@/lib/utils/currency';
+import { getCurrencySymbol } from '@/lib/utils/currency';
 
 /**
  * Form context
