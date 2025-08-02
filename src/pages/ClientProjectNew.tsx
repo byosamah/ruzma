@@ -7,6 +7,7 @@ import { useBrandingSystem, useBrandStyles } from '@/hooks/useBrandingSystem';
 import { parseClientToken } from '@/lib/clientUrlUtils';
 import { formatCurrency, CurrencyCode } from '@/lib/currency';
 import { useT } from '@/lib/i18n';
+import { parseDeliverableLinks } from '@/lib/linkUtils';
 import { 
   Shield, 
   Clock, 
@@ -408,17 +409,24 @@ const ClientProjectNew = () => {
                       <h5 className="font-medium text-gray-900 mb-3">Available Actions</h5>
                       <div className="space-y-2">
                         
-                        {/* Download Deliverable */}
+                        {/* View Deliverables */}
                         {milestone.deliverable_link && (
-                          <a
-                            href={milestone.deliverable_link}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="flex items-center space-x-2 p-3 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors"
-                          >
-                            <Download className="w-4 h-4 text-blue-600" />
-                            <span className="text-sm font-medium text-gray-900">Download Deliverable</span>
-                          </a>
+                          <>
+                            {parseDeliverableLinks(milestone.deliverable_link).map((link, linkIndex) => (
+                              <a
+                                key={linkIndex}
+                                href={link.url}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="flex items-center space-x-2 p-3 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors"
+                              >
+                                <ArrowRight className="w-4 h-4 text-blue-600" />
+                                <span className="text-sm font-medium text-gray-900">
+                                  {link.title || 'View Deliverable'}
+                                </span>
+                              </a>
+                            ))}
+                          </>
                         )}
 
                         {/* Payment Upload */}
@@ -463,10 +471,14 @@ const ClientProjectNew = () => {
                             <span>Milestone completed and approved</span>
                           </p>
                         )}
-                        {milestone.status === 'completed' && (
+                        {milestone.status === 'completed' && milestone.deliverable_link && (
                           <p className="flex items-center space-x-2 text-blue-600">
-                            <Download className="w-4 h-4" />
-                            <span>Deliverable ready for review</span>
+                            <ArrowRight className="w-4 h-4" />
+                            <span>
+                              {parseDeliverableLinks(milestone.deliverable_link).length > 1
+                                ? `${parseDeliverableLinks(milestone.deliverable_link).length} deliverable links available`
+                                : 'Deliverable link available'}
+                            </span>
                           </p>
                         )}
                         {milestone.status === 'pending_payment' && (
