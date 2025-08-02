@@ -82,10 +82,7 @@ const BrandedLogo: React.FC<BrandedLogoProps> = ({
       return (
         <div className={cn(
           config.container,
-          'rounded-full flex items-center justify-center text-white font-bold',
-          branding?.primary_color 
-            ? `bg-[${branding.primary_color}]`
-            : 'bg-primary'
+          'rounded-full flex items-center justify-center text-white font-bold bg-primary'
         )}>
           <span className={config.text}>
             {initials}
@@ -99,10 +96,7 @@ const BrandedLogo: React.FC<BrandedLogoProps> = ({
     return (
       <div className={cn(
         config.container,
-        'rounded-full flex items-center justify-center',
-        branding?.primary_color 
-          ? `bg-[${branding.primary_color}]/10 text-[${branding.primary_color}]`
-          : 'bg-primary/10 text-primary'
+        'rounded-full flex items-center justify-center bg-primary/10 text-primary'
       )}>
         <IconComponent className={config.icon} />
       </div>

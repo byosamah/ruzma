@@ -91,16 +91,8 @@ const RevisionRequestModal: React.FC<RevisionRequestModalProps> = ({
             : 'border-gray-100'
         }`}>
           <div className="flex items-center space-x-3">
-            <div className={`p-2 rounded-lg ${
-              branding?.primary_color 
-                ? `bg-[${branding.primary_color}]/10`
-                : 'bg-amber-100'
-            }`}>
-              <MessageSquare className={`w-5 h-5 ${
-                branding?.primary_color 
-                  ? `text-[${branding.primary_color}]`
-                  : 'text-amber-600'
-              }`} />
+            <div className="p-2 rounded-lg bg-primary/10">
+              <MessageSquare className="w-5 h-5 text-primary" />
             </div>
             <div>
               <h2 className="text-xl font-semibold text-gray-900">Request Revision</h2>
@@ -227,11 +219,7 @@ const RevisionRequestModal: React.FC<RevisionRequestModalProps> = ({
             </button>
             <button
               onClick={handleSubmit}
-              className={`flex-1 px-4 py-2 text-white rounded-lg transition-colors disabled:opacity-50 flex items-center justify-center ${
-                branding?.primary_color 
-                  ? `bg-[${branding.primary_color}] hover:bg-[${branding.primary_color}]/90`
-                  : 'bg-emerald-600 hover:bg-emerald-700'
-              }`}
+              className="flex-1 px-4 py-2 bg-primary text-primary-content rounded-lg hover:bg-primary/90 transition-colors disabled:opacity-50 flex items-center justify-center"
               disabled={!feedback.trim() || submitting}
             >
               {submitting ? (

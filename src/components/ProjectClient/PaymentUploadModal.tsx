@@ -93,19 +93,11 @@ const PaymentUploadModal: React.FC<PaymentUploadModalProps> = ({
         exit={{ scale: 0.9, opacity: 0 }}
       >
         {/* Branded Header */}
-        <div className={`flex items-center justify-between p-6 border-b ${
-          branding?.primary_color 
-            ? `border-[${branding.primary_color}]/20 bg-gradient-to-r from-[${branding.primary_color}]/5 to-transparent`
-            : 'border-gray-100'
-        }`}>
+        <div className="flex items-center justify-between p-6 border-b border-primary/20 bg-gradient-to-r from-primary/5 to-transparent">
           <div>
             <h2 className="text-xl font-semibold text-gray-900">Upload Payment Proof</h2>
             <p className="text-sm text-gray-600 mt-1">{milestoneTitle}</p>
-            <p className={`text-lg font-bold mt-2 ${
-              branding?.primary_color 
-                ? `text-[${branding.primary_color}]`
-                : 'text-emerald-600'
-            }`}>
+            <p className="text-lg font-bold mt-2 text-primary">
               {milestonePrice}
             </p>
           </div>

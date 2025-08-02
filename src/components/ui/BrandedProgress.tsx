@@ -100,12 +100,7 @@ const BrandedProgress: React.FC<BrandedProgressProps> = ({
         {/* Center icon */}
         <div className="absolute inset-0 flex items-center justify-center">
           <CheckCircle2 
-            className={cn(
-              config.icon,
-              branding?.primary_color 
-                ? `text-[${branding.primary_color}]`
-                : 'text-primary'
-            )} 
+            className={cn(config.icon, 'text-primary')} 
           />
         </div>
       </div>

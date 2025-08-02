@@ -29,6 +29,7 @@ import ClientProjectLoading from "@/components/ProjectClient/ClientProjectLoadin
 import ClientProjectError from "@/components/ProjectClient/ClientProjectError";
 import BrandedLogo from "@/components/ui/BrandedLogo";
 import BrandedProgress from "@/components/ui/BrandedProgress";
+import ErrorBoundary from "@/components/ErrorBoundary";
 
 const ClientProjectNew = () => {
   const { token } = useParams<{ token: string }>();
@@ -88,7 +89,7 @@ const ClientProjectNew = () => {
   // Get next action milestone
   const nextActionMilestone = project.milestones.find(m => 
     m.status === 'pending_payment' || 
-    (m.status === 'completed' && !m.payment_proof_url && project.payment_proof_required)
+    (m.status === 'completed' && !m.payment_proof_url)
   );
 
   // Helper functions
@@ -161,7 +162,8 @@ const ClientProjectNew = () => {
   }
 
   return (
-    <div className="min-h-screen bg-white">
+    <ErrorBoundary>
+      <div className="min-h-screen bg-white">
       {/* Minimal Header */}
       <motion.header 
         className="sticky top-0 z-50 bg-white/95 backdrop-blur-sm border-b border-gray-100"
@@ -211,16 +213,8 @@ const ClientProjectNew = () => {
           {/* Key Stats */}
           <div className="grid grid-cols-2 md:grid-cols-3 gap-4 max-w-2xl mx-auto">
             <div className="bg-gray-50 rounded-lg p-4">
-              <div className={`flex items-center justify-center w-8 h-8 rounded-full mx-auto mb-2 ${
-                branding?.primary_color 
-                  ? `bg-[${branding.primary_color}]/10`
-                  : 'bg-emerald-100'
-              }`}>
-                <Wallet className={`w-4 h-4 ${
-                  branding?.primary_color 
-                    ? `text-[${branding.primary_color}]`
-                    : 'text-emerald-600'
-                }`} />
+              <div className="flex items-center justify-center w-8 h-8 bg-primary/10 rounded-full mx-auto mb-2">
+                <Wallet className="w-4 h-4 text-primary" />
               </div>
               <p className="text-2xl font-bold text-gray-900">
                 {formatCurrency(totalValue, displayCurrency)}
@@ -258,17 +252,9 @@ const ClientProjectNew = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2 }}
           >
-            <div className={`bg-gradient-to-r rounded-lg p-6 border ${
-              branding?.primary_color 
-                ? `from-[${branding.primary_color}]/5 to-[${branding.primary_color}]/10 border-[${branding.primary_color}]/20`
-                : 'from-emerald-50 to-blue-50 border-emerald-200'
-            }`}>
+            <div className="bg-gradient-to-r from-primary/5 to-primary/10 border border-primary/20 rounded-lg p-6">
               <div className="flex items-start space-x-4">
-                <div className={`flex-shrink-0 w-10 h-10 rounded-full flex items-center justify-center ${
-                  branding?.primary_color 
-                    ? `bg-[${branding.primary_color}] text-white`
-                    : 'bg-emerald-500 text-white'
-                }`}>
+                <div className="flex-shrink-0 w-10 h-10 bg-primary text-primary-content rounded-full flex items-center justify-center">
                   <ArrowRight className="w-5 h-5" />
                 </div>
                 <div className="flex-1">
@@ -281,11 +267,7 @@ const ClientProjectNew = () => {
                       : 'Upload your payment proof to confirm payment.'}
                   </p>
                   <button 
-                    className={`btn ${
-                      branding?.primary_color 
-                        ? `bg-[${branding.primary_color}] hover:bg-[${brandSystem.primary[600]}] text-white border-[${branding.primary_color}]`
-                        : 'btn-primary'
-                    }`}
+                    className="btn btn-primary"
                     onClick={() => {
                       if (nextActionMilestone.status === 'pending_payment') {
                         setExpandedMilestone(nextActionMilestone.id);
@@ -299,11 +281,7 @@ const ClientProjectNew = () => {
                   </button>
                 </div>
                 <div className="text-right">
-                  <p className={`text-2xl font-bold ${
-                    branding?.primary_color 
-                      ? `text-[${branding.primary_color}]`
-                      : 'text-emerald-600'
-                  }`}>
+                  <p className="text-2xl font-bold text-primary">
                     {formatCurrency(nextActionMilestone.price, displayCurrency)}
                   </p>
                 </div>
@@ -334,18 +312,13 @@ const ClientProjectNew = () => {
                 <div className="flex items-center justify-between">
                   <div className="flex items-center space-x-4">
                     <div className={`w-10 h-10 rounded-full flex items-center justify-center ${
-                      milestone.status === 'approved' 
-                        ? (branding?.primary_color ? `bg-[${branding.primary_color}]/10` : 'bg-emerald-100')
-                        : milestone.status === 'completed' ? 'bg-blue-100' :
-                        milestone.status === 'pending_payment' ? 'bg-amber-100' :
-                        'bg-gray-100'
+                      milestone.status === 'approved' ? 'bg-primary/10' :
+                      milestone.status === 'completed' ? 'bg-blue-100' :
+                      milestone.status === 'pending_payment' ? 'bg-amber-100' :
+                      'bg-gray-100'
                     }`}>
                       {milestone.status === 'approved' ? (
-                        <CheckCircle2 className={`w-5 h-5 ${
-                          branding?.primary_color 
-                            ? `text-[${branding.primary_color}]`
-                            : 'text-emerald-600'
-                        }`} />
+                        <CheckCircle2 className="w-5 h-5 text-primary" />
                       ) : milestone.status === 'completed' ? (
                         <Upload className="w-5 h-5 text-blue-600" />
                       ) : milestone.status === 'pending_payment' ? (
@@ -366,11 +339,10 @@ const ClientProjectNew = () => {
                         {formatCurrency(milestone.price, displayCurrency)}
                       </p>
                       <p className={`text-sm font-medium ${
-                        milestone.status === 'approved' 
-                          ? (branding?.primary_color ? `text-[${branding.primary_color}]` : 'text-emerald-600')
-                          : milestone.status === 'completed' ? 'text-blue-600' :
-                          milestone.status === 'pending_payment' ? 'text-amber-600' :
-                          'text-gray-500'
+                        milestone.status === 'approved' ? 'text-primary' :
+                        milestone.status === 'completed' ? 'text-blue-600' :
+                        milestone.status === 'pending_payment' ? 'text-amber-600' :
+                        'text-gray-500'
                       }`}>
                         {milestone.status === 'approved' ? 'Approved' :
                          milestone.status === 'completed' ? 'Delivered' :
@@ -430,16 +402,12 @@ const ClientProjectNew = () => {
                         )}
 
                         {/* Payment Upload */}
-                        {milestone.status === 'completed' && !milestone.payment_proof_url && project.payment_proof_required && (
+                        {milestone.status === 'completed' && !milestone.payment_proof_url && (
                           <button
                             onClick={() => openPaymentUpload(milestone)}
                             className="flex items-center space-x-2 p-3 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors w-full text-left"
                           >
-                            <Upload className={`w-4 h-4 ${
-                              branding?.primary_color 
-                                ? `text-[${branding.primary_color}]`
-                                : 'text-emerald-600'
-                            }`} />
+                            <Upload className="w-4 h-4 text-primary" />
                             <span className="text-sm font-medium text-gray-900">Upload Payment Proof</span>
                           </button>
                         )}
@@ -462,11 +430,7 @@ const ClientProjectNew = () => {
                       <h5 className="font-medium text-gray-900 mb-3">Status Information</h5>
                       <div className="text-sm text-gray-600 space-y-2">
                         {milestone.status === 'approved' && (
-                          <p className={`flex items-center space-x-2 ${
-                            branding?.primary_color 
-                              ? `text-[${branding.primary_color}]`
-                              : 'text-emerald-600'
-                          }`}>
+                          <p className="flex items-center space-x-2 text-primary">
                             <CheckCircle2 className="w-4 h-4" />
                             <span>Milestone completed and approved</span>
                           </p>
@@ -488,11 +452,7 @@ const ClientProjectNew = () => {
                           </p>
                         )}
                         {milestone.payment_proof_url && (
-                          <p className={`flex items-center space-x-2 ${
-                            branding?.primary_color 
-                              ? `text-[${branding.primary_color}]`
-                              : 'text-emerald-600'
-                          }`}>
+                          <p className="flex items-center space-x-2 text-primary">
                             <Shield className="w-4 h-4" />
                             <span>Payment proof uploaded</span>
                           </p>
@@ -539,11 +499,7 @@ const ClientProjectNew = () => {
           transition={{ delay: 0.5, type: "spring" }}
         >
           <button 
-            className={`btn btn-circle w-14 h-14 shadow-lg ${
-              branding?.primary_color 
-                ? `bg-[${branding.primary_color}] hover:bg-[${brandSystem.primary[600]}] text-white border-[${branding.primary_color}]`
-                : 'btn-primary'
-            }`}
+            className="btn btn-primary btn-circle w-14 h-14 shadow-lg"
             onClick={() => {
               if (nextActionMilestone.status === 'pending_payment') {
                 setExpandedMilestone(nextActionMilestone.id);
@@ -578,7 +534,8 @@ const ClientProjectNew = () => {
         milestoneTitle={revisionModal.title}
         branding={branding}
       />
-    </div>
+      </div>
+    </ErrorBoundary>
   );
 };
 
