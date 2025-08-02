@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import { useParams } from 'react-router-dom';
 import { useClientProject } from '@/hooks/useClientProject';
 import { useClientBranding } from '@/hooks/useClientBranding';
+import { useBrandingSystem, useBrandStyles } from '@/hooks/useBrandingSystem';
 import { parseClientToken } from '@/lib/clientUrlUtils';
 import { formatCurrency, CurrencyCode } from '@/lib/currency';
 import { useT } from '@/lib/i18n';
@@ -25,6 +26,8 @@ import PaymentUploadModal from "@/components/ProjectClient/PaymentUploadModal";
 import RevisionRequestModal from "@/components/ProjectClient/RevisionRequestModal";
 import ClientProjectLoading from "@/components/ProjectClient/ClientProjectLoading";
 import ClientProjectError from "@/components/ProjectClient/ClientProjectError";
+import BrandedLogo from "@/components/ui/BrandedLogo";
+import BrandedProgress from "@/components/ui/BrandedProgress";
 
 const ClientProjectNew = () => {
   const { token } = useParams<{ token: string }>();
@@ -61,6 +64,10 @@ const ClientProjectNew = () => {
     branding,
     isLoading: brandingLoading,
   } = useClientBranding(project?.user_id);
+
+  // Initialize branding system
+  const { brandSystem } = useBrandingSystem(branding);
+  const brandStyles = useBrandStyles(branding);
 
   if (isLoading || brandingLoading) {
     return <ClientProjectLoading />;
@@ -162,58 +169,21 @@ const ClientProjectNew = () => {
       >
         <div className="max-w-4xl mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-3">
-              {branding?.logo_url ? (
-                <img 
-                  src={branding.logo_url} 
-                  alt={branding.business_name || 'Logo'} 
-                  className="w-8 h-8 rounded-full object-cover"
-                />
-              ) : (
-                <div className="w-8 h-8 bg-emerald-100 rounded-full flex items-center justify-center">
-                  <Star className="w-4 h-4 text-emerald-600" />
-                </div>
-              )}
-              <div>
-                <h1 className="font-semibold text-gray-900 text-lg">
-                  {branding?.business_name || project.name}
-                </h1>
-                <p className="text-sm text-gray-600">Client Portal</p>
-              </div>
-            </div>
+            <BrandedLogo 
+              branding={branding}
+              size="md"
+              showName={true}
+              className="flex-1"
+            />
             
-            {/* Progress Indicator */}
-            <div className="flex items-center space-x-2">
-              <div className="text-right">
-                <p className="text-sm font-medium text-gray-900">
-                  {completedMilestones}/{totalMilestones} Complete
-                </p>
-                <p className="text-xs text-gray-500">{Math.round(progressPercentage)}%</p>
-              </div>
-              <div className="w-12 h-12 relative">
-                <svg className="w-12 h-12 transform -rotate-90" viewBox="0 0 36 36">
-                  <path
-                    className="text-gray-200"
-                    stroke="currentColor"
-                    strokeWidth="3"
-                    fill="none"
-                    d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
-                  />
-                  <path
-                    className="text-emerald-500"
-                    stroke="currentColor"
-                    strokeWidth="3"
-                    strokeDasharray={`${progressPercentage}, 100`}
-                    strokeLinecap="round"
-                    fill="none"
-                    d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
-                  />
-                </svg>
-                <div className="absolute inset-0 flex items-center justify-center">
-                  <CheckCircle2 className="w-4 h-4 text-emerald-500" />
-                </div>
-              </div>
-            </div>
+            {/* Branded Progress Indicator */}
+            <BrandedProgress 
+              progress={progressPercentage}
+              total={totalMilestones}
+              completed={completedMilestones}
+              branding={branding}
+              size="md"
+            />
           </div>
         </div>
       </motion.header>
@@ -240,8 +210,16 @@ const ClientProjectNew = () => {
           {/* Key Stats */}
           <div className="grid grid-cols-2 md:grid-cols-3 gap-4 max-w-2xl mx-auto">
             <div className="bg-gray-50 rounded-lg p-4">
-              <div className="flex items-center justify-center w-8 h-8 bg-emerald-100 rounded-full mx-auto mb-2">
-                <Wallet className="w-4 h-4 text-emerald-600" />
+              <div className={`flex items-center justify-center w-8 h-8 rounded-full mx-auto mb-2 ${
+                branding?.primary_color 
+                  ? `bg-[${branding.primary_color}]/10`
+                  : 'bg-emerald-100'
+              }`}>
+                <Wallet className={`w-4 h-4 ${
+                  branding?.primary_color 
+                    ? `text-[${branding.primary_color}]`
+                    : 'text-emerald-600'
+                }`} />
               </div>
               <p className="text-2xl font-bold text-gray-900">
                 {formatCurrency(totalValue, displayCurrency)}
@@ -279,10 +257,18 @@ const ClientProjectNew = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2 }}
           >
-            <div className="bg-gradient-to-r from-emerald-50 to-blue-50 border border-emerald-200 rounded-lg p-6">
+            <div className={`bg-gradient-to-r rounded-lg p-6 border ${
+              branding?.primary_color 
+                ? `from-[${branding.primary_color}]/5 to-[${branding.primary_color}]/10 border-[${branding.primary_color}]/20`
+                : 'from-emerald-50 to-blue-50 border-emerald-200'
+            }`}>
               <div className="flex items-start space-x-4">
-                <div className="flex-shrink-0 w-10 h-10 bg-emerald-500 rounded-full flex items-center justify-center">
-                  <ArrowRight className="w-5 h-5 text-white" />
+                <div className={`flex-shrink-0 w-10 h-10 rounded-full flex items-center justify-center ${
+                  branding?.primary_color 
+                    ? `bg-[${branding.primary_color}] text-white`
+                    : 'bg-emerald-500 text-white'
+                }`}>
+                  <ArrowRight className="w-5 h-5" />
                 </div>
                 <div className="flex-1">
                   <h3 className="font-semibold text-gray-900 text-lg mb-2">
@@ -294,7 +280,11 @@ const ClientProjectNew = () => {
                       : 'Upload your payment proof to confirm payment.'}
                   </p>
                   <button 
-                    className="btn btn-primary"
+                    className={`btn ${
+                      branding?.primary_color 
+                        ? `bg-[${branding.primary_color}] hover:bg-[${brandSystem.primary[600]}] text-white border-[${branding.primary_color}]`
+                        : 'btn-primary'
+                    }`}
                     onClick={() => {
                       if (nextActionMilestone.status === 'pending_payment') {
                         setExpandedMilestone(nextActionMilestone.id);
@@ -308,7 +298,11 @@ const ClientProjectNew = () => {
                   </button>
                 </div>
                 <div className="text-right">
-                  <p className="text-2xl font-bold text-emerald-600">
+                  <p className={`text-2xl font-bold ${
+                    branding?.primary_color 
+                      ? `text-[${branding.primary_color}]`
+                      : 'text-emerald-600'
+                  }`}>
                     {formatCurrency(nextActionMilestone.price, displayCurrency)}
                   </p>
                 </div>
@@ -339,13 +333,18 @@ const ClientProjectNew = () => {
                 <div className="flex items-center justify-between">
                   <div className="flex items-center space-x-4">
                     <div className={`w-10 h-10 rounded-full flex items-center justify-center ${
-                      milestone.status === 'approved' ? 'bg-emerald-100' :
-                      milestone.status === 'completed' ? 'bg-blue-100' :
-                      milestone.status === 'pending_payment' ? 'bg-amber-100' :
-                      'bg-gray-100'
+                      milestone.status === 'approved' 
+                        ? (branding?.primary_color ? `bg-[${branding.primary_color}]/10` : 'bg-emerald-100')
+                        : milestone.status === 'completed' ? 'bg-blue-100' :
+                        milestone.status === 'pending_payment' ? 'bg-amber-100' :
+                        'bg-gray-100'
                     }`}>
                       {milestone.status === 'approved' ? (
-                        <CheckCircle2 className="w-5 h-5 text-emerald-600" />
+                        <CheckCircle2 className={`w-5 h-5 ${
+                          branding?.primary_color 
+                            ? `text-[${branding.primary_color}]`
+                            : 'text-emerald-600'
+                        }`} />
                       ) : milestone.status === 'completed' ? (
                         <Upload className="w-5 h-5 text-blue-600" />
                       ) : milestone.status === 'pending_payment' ? (
@@ -366,10 +365,11 @@ const ClientProjectNew = () => {
                         {formatCurrency(milestone.price, displayCurrency)}
                       </p>
                       <p className={`text-sm font-medium ${
-                        milestone.status === 'approved' ? 'text-emerald-600' :
-                        milestone.status === 'completed' ? 'text-blue-600' :
-                        milestone.status === 'pending_payment' ? 'text-amber-600' :
-                        'text-gray-500'
+                        milestone.status === 'approved' 
+                          ? (branding?.primary_color ? `text-[${branding.primary_color}]` : 'text-emerald-600')
+                          : milestone.status === 'completed' ? 'text-blue-600' :
+                          milestone.status === 'pending_payment' ? 'text-amber-600' :
+                          'text-gray-500'
                       }`}>
                         {milestone.status === 'approved' ? 'Approved' :
                          milestone.status === 'completed' ? 'Delivered' :
@@ -427,7 +427,11 @@ const ClientProjectNew = () => {
                             onClick={() => openPaymentUpload(milestone)}
                             className="flex items-center space-x-2 p-3 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors w-full text-left"
                           >
-                            <Upload className="w-4 h-4 text-emerald-600" />
+                            <Upload className={`w-4 h-4 ${
+                              branding?.primary_color 
+                                ? `text-[${branding.primary_color}]`
+                                : 'text-emerald-600'
+                            }`} />
                             <span className="text-sm font-medium text-gray-900">Upload Payment Proof</span>
                           </button>
                         )}
@@ -450,7 +454,11 @@ const ClientProjectNew = () => {
                       <h5 className="font-medium text-gray-900 mb-3">Status Information</h5>
                       <div className="text-sm text-gray-600 space-y-2">
                         {milestone.status === 'approved' && (
-                          <p className="flex items-center space-x-2 text-emerald-600">
+                          <p className={`flex items-center space-x-2 ${
+                            branding?.primary_color 
+                              ? `text-[${branding.primary_color}]`
+                              : 'text-emerald-600'
+                          }`}>
                             <CheckCircle2 className="w-4 h-4" />
                             <span>Milestone completed and approved</span>
                           </p>
@@ -468,7 +476,11 @@ const ClientProjectNew = () => {
                           </p>
                         )}
                         {milestone.payment_proof_url && (
-                          <p className="flex items-center space-x-2 text-emerald-600">
+                          <p className={`flex items-center space-x-2 ${
+                            branding?.primary_color 
+                              ? `text-[${branding.primary_color}]`
+                              : 'text-emerald-600'
+                          }`}>
                             <Shield className="w-4 h-4" />
                             <span>Payment proof uploaded</span>
                           </p>
@@ -515,7 +527,11 @@ const ClientProjectNew = () => {
           transition={{ delay: 0.5, type: "spring" }}
         >
           <button 
-            className="btn btn-primary btn-circle w-14 h-14 shadow-lg"
+            className={`btn btn-circle w-14 h-14 shadow-lg ${
+              branding?.primary_color 
+                ? `bg-[${branding.primary_color}] hover:bg-[${brandSystem.primary[600]}] text-white border-[${branding.primary_color}]`
+                : 'btn-primary'
+            }`}
             onClick={() => {
               if (nextActionMilestone.status === 'pending_payment') {
                 setExpandedMilestone(nextActionMilestone.id);
@@ -540,6 +556,7 @@ const ClientProjectNew = () => {
         onUpload={(file) => handlePaymentUpload(paymentUploadModal.milestoneId, file)}
         milestoneTitle={paymentUploadModal.title}
         milestonePrice={paymentUploadModal.price}
+        branding={branding}
       />
 
       <RevisionRequestModal
@@ -547,6 +564,7 @@ const ClientProjectNew = () => {
         onClose={closeRevisionRequest}
         onSubmit={(feedback, images) => handleRevisionRequest(revisionModal.milestoneId, feedback, images)}
         milestoneTitle={revisionModal.title}
+        branding={branding}
       />
     </div>
   );

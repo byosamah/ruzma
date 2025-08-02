@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Upload, X, CheckCircle2, AlertCircle } from 'lucide-react';
 import { useT } from '@/lib/i18n';
+import { FreelancerBranding } from '@/types/branding';
+import { useBrandStyles } from '@/hooks/useBrandingSystem';
 
 interface PaymentUploadModalProps {
   isOpen: boolean;
@@ -9,6 +11,7 @@ interface PaymentUploadModalProps {
   onUpload: (file: File) => Promise<boolean>;
   milestoneTitle: string;
   milestonePrice: string;
+  branding?: FreelancerBranding | null;
 }
 
 const PaymentUploadModal: React.FC<PaymentUploadModalProps> = ({
@@ -17,8 +20,10 @@ const PaymentUploadModal: React.FC<PaymentUploadModalProps> = ({
   onUpload,
   milestoneTitle,
   milestonePrice,
+  branding,
 }) => {
   const t = useT();
+  const brandStyles = useBrandStyles(branding);
   const [uploading, setUploading] = useState(false);
   const [uploadSuccess, setUploadSuccess] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -87,11 +92,22 @@ const PaymentUploadModal: React.FC<PaymentUploadModalProps> = ({
         animate={{ scale: 1, opacity: 1 }}
         exit={{ scale: 0.9, opacity: 0 }}
       >
-        {/* Header */}
-        <div className="flex items-center justify-between p-6 border-b border-gray-100">
+        {/* Branded Header */}
+        <div className={`flex items-center justify-between p-6 border-b ${
+          branding?.primary_color 
+            ? `border-[${branding.primary_color}]/20 bg-gradient-to-r from-[${branding.primary_color}]/5 to-transparent`
+            : 'border-gray-100'
+        }`}>
           <div>
             <h2 className="text-xl font-semibold text-gray-900">Upload Payment Proof</h2>
             <p className="text-sm text-gray-600 mt-1">{milestoneTitle}</p>
+            <p className={`text-lg font-bold mt-2 ${
+              branding?.primary_color 
+                ? `text-[${branding.primary_color}]`
+                : 'text-emerald-600'
+            }`}>
+              {milestonePrice}
+            </p>
           </div>
           <button
             onClick={onClose}

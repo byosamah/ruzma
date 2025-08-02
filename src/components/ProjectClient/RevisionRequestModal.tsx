@@ -2,12 +2,15 @@ import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { MessageSquare, X, Send, Image, Trash2 } from 'lucide-react';
 import { useT } from '@/lib/i18n';
+import { FreelancerBranding } from '@/types/branding';
+import { useBrandStyles } from '@/hooks/useBrandingSystem';
 
 interface RevisionRequestModalProps {
   isOpen: boolean;
   onClose: () => void;
   onSubmit: (feedback: string, images: string[]) => Promise<void>;
   milestoneTitle: string;
+  branding?: FreelancerBranding | null;
 }
 
 const RevisionRequestModal: React.FC<RevisionRequestModalProps> = ({
@@ -15,8 +18,10 @@ const RevisionRequestModal: React.FC<RevisionRequestModalProps> = ({
   onClose,
   onSubmit,
   milestoneTitle,
+  branding,
 }) => {
   const t = useT();
+  const brandStyles = useBrandStyles(branding);
   const [feedback, setFeedback] = useState('');
   const [images, setImages] = useState<string[]>([]);
   const [submitting, setSubmitting] = useState(false);
@@ -79,11 +84,28 @@ const RevisionRequestModal: React.FC<RevisionRequestModalProps> = ({
         animate={{ scale: 1, opacity: 1 }}
         exit={{ scale: 0.9, opacity: 0 }}
       >
-        {/* Header */}
-        <div className="flex items-center justify-between p-6 border-b border-gray-100">
-          <div>
-            <h2 className="text-xl font-semibold text-gray-900">Request Revision</h2>
-            <p className="text-sm text-gray-600 mt-1">{milestoneTitle}</p>
+        {/* Branded Header */}
+        <div className={`flex items-center justify-between p-6 border-b ${
+          branding?.primary_color 
+            ? `border-[${branding.primary_color}]/20 bg-gradient-to-r from-[${branding.primary_color}]/5 to-transparent`
+            : 'border-gray-100'
+        }`}>
+          <div className="flex items-center space-x-3">
+            <div className={`p-2 rounded-lg ${
+              branding?.primary_color 
+                ? `bg-[${branding.primary_color}]/10`
+                : 'bg-amber-100'
+            }`}>
+              <MessageSquare className={`w-5 h-5 ${
+                branding?.primary_color 
+                  ? `text-[${branding.primary_color}]`
+                  : 'text-amber-600'
+              }`} />
+            </div>
+            <div>
+              <h2 className="text-xl font-semibold text-gray-900">Request Revision</h2>
+              <p className="text-sm text-gray-600 mt-1">{milestoneTitle}</p>
+            </div>
           </div>
           <button
             onClick={onClose}
@@ -205,7 +227,11 @@ const RevisionRequestModal: React.FC<RevisionRequestModalProps> = ({
             </button>
             <button
               onClick={handleSubmit}
-              className="flex-1 px-4 py-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition-colors disabled:opacity-50 flex items-center justify-center"
+              className={`flex-1 px-4 py-2 text-white rounded-lg transition-colors disabled:opacity-50 flex items-center justify-center ${
+                branding?.primary_color 
+                  ? `bg-[${branding.primary_color}] hover:bg-[${branding.primary_color}]/90`
+                  : 'bg-emerald-600 hover:bg-emerald-700'
+              }`}
               disabled={!feedback.trim() || submitting}
             >
               {submitting ? (
