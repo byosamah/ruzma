@@ -37,8 +37,15 @@ jobs:
         env:
           SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
         run: |
-          # Deploy functions directly without linking (requires access token)
-          supabase functions deploy all --project-ref ${{ secrets.SUPABASE_PROJECT_ID }}
+          # Deploy each function individually
+          cd supabase/functions
+          for func in */; do
+            if [ -d "$func" ] && [ -f "${func}index.ts" ]; then
+              func_name=$(basename "$func")
+              echo "Deploying function: $func_name"
+              supabase functions deploy "$func_name" --project-ref ${{ secrets.SUPABASE_PROJECT_ID }}
+            fi
+          done
 
       - name: Link project for DB operations (optional)
         env:
