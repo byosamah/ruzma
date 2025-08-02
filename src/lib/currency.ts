@@ -42,7 +42,9 @@ export const CURRENCIES = [
   { code: 'AUD' as const, name: 'Australian Dollar', symbol: 'A$' },
   { code: 'SAR' as const, name: 'Saudi Riyal', symbol: '﷼' },
   { code: 'AED' as const, name: 'UAE Dirham', symbol: 'د.إ' },
-];
+  { code: 'JOD' as const, name: 'Jordanian Dinar', symbol: 'JD' },
+  { code: 'EGP' as const, name: 'Egyptian Pound', symbol: 'E£' },
+] as const;
 
 export const getAllCurrencies = () => CURRENCIES;
 
@@ -67,4 +69,5 @@ export const getPossibleCountriesByCurrency = (currency: string) => {
   return currencyToCountries[currency] || [];
 };
 
-export type CurrencyCode = 'USD' | 'EUR' | 'GBP' | 'JPY' | 'CAD' | 'AUD' | 'SAR' | 'AED';
+export type CurrencyCode = typeof CURRENCIES[number]['code'];
+export type Currency = typeof CURRENCIES[number];

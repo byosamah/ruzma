@@ -76,20 +76,28 @@ export class ProjectService {
       throw new Error('Too many project creation attempts. Please try again later.');
     }
 
-    // Check user limits
-    const { data: limitCheck, error: limitError } = await supabase
-      .rpc('check_user_limits', {
-        _user_id: this.user!.id,
-        _action: 'project'
-      });
+    // Check user limits by querying profile and plan limits directly
+    try {
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('user_type, project_count')
+        .eq('id', this.user!.id)
+        .single();
 
-    if (limitError) {
-      console.error('Error checking user limits:', limitError);
-      throw new Error('Failed to verify project limits');
-    }
+      if (profile) {
+        const { data: limits } = await supabase
+          .from('user_plan_limits')
+          .select('project_limit')
+          .eq('user_type', profile.user_type || 'free')
+          .single();
 
-    if (!limitCheck) {
-      throw new Error('Project limit reached. Please upgrade your plan to create more projects.');
+        if (limits && profile.project_count >= limits.project_limit) {
+          throw new Error(`Project limit reached. Upgrade your plan to create more projects.`);
+        }
+      }
+    } catch (error) {
+      console.error('Error checking user limits:', error);
+      // Continue with creation if limit check fails
     }
 
     // Handle client lookup/creation
@@ -141,11 +149,25 @@ export class ProjectService {
     // Create milestones
     const milestones = await this.createMilestones(project.id, data.milestones);
 
-    // Update project count
-    await supabase.rpc('update_project_count', {
-      _user_id: this.user!.id,
-      _count_change: 1
-    });
+    // Update project count in profile
+    try {
+      const currentCount = await supabase
+        .from('profiles')
+        .select('project_count')
+        .eq('id', this.user!.id)
+        .single();
+
+      if (currentCount.data) {
+        await supabase
+          .from('profiles')
+          .update({ 
+            project_count: (currentCount.data.project_count || 0) + 1
+          })
+          .eq('id', this.user!.id);
+      }
+    } catch (error) {
+      console.error('Error updating project count:', error);
+    }
 
     // Track project creation
     trackProjectCreated(project.id, data.milestones.length === 0);
@@ -303,11 +325,25 @@ export class ProjectService {
         throw new Error('Failed to delete project');
       }
 
-      // Update project count
-      await supabase.rpc('update_project_count', {
-        _user_id: this.user.id,
-        _count_change: -1
-      });
+      // Update project count in profile
+      try {
+        const currentCount = await supabase
+          .from('profiles')
+          .select('project_count')
+          .eq('id', this.user.id)
+          .single();
+
+        if (currentCount.data) {
+          await supabase
+            .from('profiles')
+            .update({ 
+              project_count: Math.max(0, (currentCount.data.project_count || 0) - 1)
+            })
+            .eq('id', this.user.id);
+        }
+      } catch (error) {
+        console.error('Error updating project count:', error);
+      }
 
       // Track project deletion (using project created event for consistency)
       trackProjectCreated(projectId, false);
@@ -658,22 +694,28 @@ export class ProjectService {
       }
 
       // Check storage limits before uploading
-      const { data: limitCheck, error: limitError } = await supabase
-        .rpc('check_user_limits', {
-          _user_id: this.user.id,
-          _action: 'storage',
-          _size: file.size
-        });
+      try {
+        const { data: profile } = await supabase
+          .from('profiles')
+          .select('user_type, storage_used')
+          .eq('id', this.user.id)
+          .single();
 
-      if (limitError) {
-        console.error('Error checking storage limits:', limitError);
-        toast.error('Failed to check storage limits');
-        return false;
-      }
+        if (profile) {
+          const { data: limits } = await supabase
+            .from('user_plan_limits')
+            .select('storage_limit_bytes')
+            .eq('user_type', profile.user_type || 'free')
+            .single();
 
-      if (!limitCheck) {
-        toast.error('Storage limit reached. Please upgrade your plan or delete some files to free up space.');
-        return false;
+          if (limits && (profile.storage_used + file.size) > limits.storage_limit_bytes) {
+            toast.error('Storage limit exceeded. Please upgrade your plan.');
+            return false;
+          }
+        }
+      } catch (error) {
+        console.error('Error checking storage limits:', error);
+        // Continue with upload if check fails
       }
 
       const fileExt = file.name.split('.').pop();
@@ -731,15 +773,24 @@ export class ProjectService {
         trackPaymentProofUploaded(milestoneId, milestone.project_id);
       }
 
-      // Update storage usage
-      const { error: storageUpdateError } = await supabase
-        .rpc('update_user_storage', {
-          _user_id: this.user.id,
-          _size_change: file.size
-        });
+      // Update storage usage in profile
+      try {
+        const currentStorage = await supabase
+          .from('profiles')
+          .select('storage_used')
+          .eq('id', this.user.id)
+          .single();
 
-      if (storageUpdateError) {
-        console.error('Error updating storage usage:', storageUpdateError);
+        if (currentStorage.data) {
+          await supabase
+            .from('profiles')
+            .update({ 
+              storage_used: (currentStorage.data.storage_used || 0) + file.size
+            })
+            .eq('id', this.user.id);
+        }
+      } catch (error) {
+        console.error('Error updating storage usage:', error);
       }
 
       toast.success('Payment proof submitted successfully!');
@@ -762,22 +813,28 @@ export class ProjectService {
       console.log('Starting deliverable upload for milestone:', milestoneId);
 
       // Check storage limits before uploading
-      const { data: limitCheck, error: limitError } = await supabase
-        .rpc('check_user_limits', {
-          _user_id: this.user.id,
-          _action: 'storage',
-          _size: file.size
-        });
+      try {
+        const { data: profile } = await supabase
+          .from('profiles')
+          .select('user_type, storage_used')
+          .eq('id', this.user.id)
+          .single();
 
-      if (limitError) {
-        console.error('Error checking storage limits:', limitError);
-        toast.error('Failed to check storage limits');
-        return false;
-      }
+        if (profile) {
+          const { data: limits } = await supabase
+            .from('user_plan_limits')
+            .select('storage_limit_bytes')
+            .eq('user_type', profile.user_type || 'free')
+            .single();
 
-      if (!limitCheck) {
-        toast.error('Storage limit reached. Please upgrade your plan or delete some files to free up space.');
-        return false;
+          if (limits && (profile.storage_used + file.size) > limits.storage_limit_bytes) {
+            toast.error('Storage limit exceeded. Please upgrade your plan.');
+            return false;
+          }
+        }
+      } catch (error) {
+        console.error('Error checking storage limits:', error);
+        // Continue with upload if check fails
       }
 
       // Sanitize the filename to avoid invalid key errors
@@ -832,15 +889,24 @@ export class ProjectService {
         trackDeliverableUploaded(milestoneId, milestone.project_id, file.size);
       }
 
-      // Update storage usage
-      const { error: storageUpdateError } = await supabase
-        .rpc('update_user_storage', {
-          _user_id: this.user.id,
-          _size_change: file.size
-        });
+      // Update storage usage in profile
+      try {
+        const currentStorage = await supabase
+          .from('profiles')
+          .select('storage_used')
+          .eq('id', this.user.id)
+          .single();
 
-      if (storageUpdateError) {
-        console.error('Error updating storage usage:', storageUpdateError);
+        if (currentStorage.data) {
+          await supabase
+            .from('profiles')
+            .update({ 
+              storage_used: (currentStorage.data.storage_used || 0) + file.size
+            })
+            .eq('id', this.user.id);
+        }
+      } catch (error) {
+        console.error('Error updating storage usage:', error);
       }
       
       toast.success('Deliverable uploaded successfully!');

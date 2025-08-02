@@ -1,4 +1,3 @@
-
 import { supabase } from '@/integrations/supabase/client';
 
 interface UserLimits {
@@ -8,8 +7,12 @@ interface UserLimits {
 
 export const getUserLimits = async (userType: string = 'free'): Promise<UserLimits> => {
   try {
+    // Since get_user_limits function doesn't exist, query the table directly
     const { data, error } = await supabase
-      .rpc('get_user_limits', { _user_type: userType });
+      .from('user_plan_limits')
+      .select('project_limit, storage_limit_bytes')
+      .eq('user_type', userType)
+      .single();
 
     if (error) {
       console.error('Error fetching user limits:', error);
@@ -17,10 +20,10 @@ export const getUserLimits = async (userType: string = 'free'): Promise<UserLimi
       return getFallbackLimits(userType);
     }
 
-    if (data && data.length > 0) {
+    if (data) {
       return {
-        project_limit: data[0].project_limit,
-        storage_limit_bytes: data[0].storage_limit_bytes
+        project_limit: data.project_limit,
+        storage_limit_bytes: data.storage_limit_bytes
       };
     }
 

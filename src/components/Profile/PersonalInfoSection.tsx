@@ -125,7 +125,6 @@ export const PersonalInfoSection = ({
           onChange={onCurrencyChange}
           placeholder={t('selectCurrencyPlaceholder')}
           showSearch={true}
-          showCountryFlags={true}
           className="border-gray-300 border"
         />
       </div>
