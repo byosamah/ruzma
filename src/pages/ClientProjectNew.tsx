@@ -33,6 +33,12 @@ import ErrorBoundary from "@/components/ErrorBoundary";
 import ProjectTimelineCard from "@/components/ProjectClient/enhanced/ProjectTimelineCard";
 import ContractTermsSection from "@/components/ProjectClient/enhanced/ContractTermsSection";
 import FreelancerContactCard from "@/components/ProjectClient/enhanced/FreelancerContactCard";
+import ProgressAnalyticsCard from "@/components/ProjectClient/enhanced/ProgressAnalyticsCard";
+import CommunicationHubCard from "@/components/ProjectClient/enhanced/CommunicationHubCard";
+import PaymentStatusCard from "@/components/ProjectClient/enhanced/PaymentStatusCard";
+import TimelineVisualization from "@/components/ProjectClient/enhanced/TimelineVisualization";
+import MobileActionsBar from "@/components/ProjectClient/enhanced/MobileActionsBar";
+import ProjectSummaryCard from "@/components/ProjectClient/enhanced/ProjectSummaryCard";
 
 const ClientProjectNew = () => {
   const { token } = useParams<{ token: string }>();
@@ -197,55 +203,11 @@ const ClientProjectNew = () => {
       {/* Main Content */}
       <main className="max-w-4xl mx-auto px-4 py-8">
         
-        {/* Project Overview Hero */}
-        <motion.section 
-          className="text-center mb-12"
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.1 }}
-        >
-          <h2 className="text-3xl font-bold text-gray-900 mb-4">
-            {project.name}
-          </h2>
-          {project.brief && (
-            <p className="text-lg text-gray-600 mb-6 max-w-2xl mx-auto">
-              {project.brief}
-            </p>
-          )}
-          
-          {/* Key Stats */}
-          <div className="grid grid-cols-2 md:grid-cols-3 gap-4 max-w-2xl mx-auto">
-            <div className="bg-gray-50 rounded-lg p-4">
-              <div className="flex items-center justify-center w-8 h-8 bg-primary/10 rounded-full mx-auto mb-2">
-                <Wallet className="w-4 h-4 text-primary" />
-              </div>
-              <p className="text-2xl font-bold text-gray-900">
-                {formatCurrency(totalValue, displayCurrency)}
-              </p>
-              <p className="text-sm text-gray-600">Total Value</p>
-            </div>
-            
-            <div className="bg-gray-50 rounded-lg p-4">
-              <div className="flex items-center justify-center w-8 h-8 bg-blue-100 rounded-full mx-auto mb-2">
-                <TrendingUp className="w-4 h-4 text-blue-600" />
-              </div>
-              <p className="text-2xl font-bold text-gray-900">
-                {Math.round(progressPercentage)}%
-              </p>
-              <p className="text-sm text-gray-600">Progress</p>
-            </div>
-            
-            <div className="bg-gray-50 rounded-lg p-4 col-span-2 md:col-span-1">
-              <div className="flex items-center justify-center w-8 h-8 bg-purple-100 rounded-full mx-auto mb-2">
-                <CheckCircle2 className="w-4 h-4 text-purple-600" />
-              </div>
-              <p className="text-2xl font-bold text-gray-900">
-                {completedMilestones}/{totalMilestones}
-              </p>
-              <p className="text-sm text-gray-600">Milestones</p>
-            </div>
-          </div>
-        </motion.section>
+        {/* Enhanced Project Summary */}
+        <ProjectSummaryCard 
+          project={project}
+          currency={displayCurrency}
+        />
 
         {/* Phase 1: Enhanced Project Information */}
         {/* Project Timeline */}
@@ -261,6 +223,36 @@ const ClientProjectNew = () => {
 
         {/* Contract Terms and Documentation */}
         <ContractTermsSection project={project} />
+
+        {/* Phase 2: Progress Analytics & Communication */}
+        {/* Progress Analytics */}
+        <ProgressAnalyticsCard 
+          project={project} 
+          currency={displayCurrency}
+        />
+
+        {/* Payment Status & History */}
+        <PaymentStatusCard 
+          project={project} 
+          currency={displayCurrency}
+        />
+
+        {/* Communication Hub */}
+        {project.freelancer_profile && (
+          <div data-section="communication">
+            <CommunicationHubCard 
+              freelancer={project.freelancer_profile}
+              projectId={project.id}
+              branding={branding}
+            />
+          </div>
+        )}
+
+        {/* Phase 4: Advanced Timeline & Analytics */}
+        <TimelineVisualization 
+          project={project}
+          currency={displayCurrency}
+        />
 
         {/* Next Action Card */}
         {nextActionMilestone && (
@@ -550,6 +542,14 @@ const ClientProjectNew = () => {
         onClose={closeRevisionRequest}
         onSubmit={(feedback, images) => handleRevisionRequest(revisionModal.milestoneId, feedback, images)}
         milestoneTitle={revisionModal.title}
+        branding={branding}
+      />
+
+      {/* Phase 5: Mobile Enhancements */}
+      <MobileActionsBar 
+        project={project}
+        onPaymentUpload={openPaymentUpload}
+        onRevisionRequest={openRevisionRequest}
         branding={branding}
       />
       </div>
