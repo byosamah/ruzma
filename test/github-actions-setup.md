@@ -12,8 +12,9 @@ Add these secrets to your GitHub repository (`Settings > Secrets and variables >
 ### 2. SUPABASE_PROJECT_ID
 - Your project ID: `***REMOVED***` (from supabase/config.toml)
 
-### 3. SUPABASE_DB_PASSWORD (Optional)
-- Your database password (only needed if you plan to run `db push` operations)
+### 3. SUPABASE_DB_PASSWORD (Required)
+- Your database password (required for project linking and database operations)
+- Find this in your Supabase Dashboard > Settings > Database
 
 ## Workflow Configuration
 
