@@ -63,7 +63,7 @@ export const Clients = createLazyComponent(
 );
 
 export const ClientProject = createLazyComponent(
-  () => import('@/pages/ClientProject'),
+  () => import('@/pages/ClientProjectNew'),
   { fallback: defaultFallbacks.page }
 );
 

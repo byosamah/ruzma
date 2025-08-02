@@ -159,7 +159,7 @@ const handler = async (req: Request): Promise<Response> => {
     console.log('Found project:', projectWithCurrency.name);
 
     return new Response(
-      JSON.stringify(projectWithCurrency),
+      JSON.stringify({ project: projectWithCurrency }),
       { 
         status: 200, 
         headers: { "Content-Type": "application/json", ...corsHeaders } 

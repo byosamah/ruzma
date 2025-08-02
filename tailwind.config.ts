@@ -161,5 +161,36 @@ export default {
 			}
 		}
 	},
-	plugins: [require("tailwindcss-animate")],
+	plugins: [require("tailwindcss-animate"), require("daisyui")],
+	daisyui: {
+		themes: [
+			{
+				light: {
+					"primary": "#10B981", // emerald-500 for conversion
+					"primary-content": "#ffffff", 
+					"secondary": "#6B7280", // gray-500
+					"secondary-content": "#ffffff",
+					"accent": "#10B981", // same as primary 
+					"accent-content": "#ffffff",
+					"neutral": "#374151", // gray-700
+					"neutral-content": "#ffffff",
+					"base-100": "#ffffff", // white background
+					"base-200": "#F9FAFB", // gray-50
+					"base-300": "#F3F4F6", // gray-100
+					"base-content": "#111827", // gray-900 for text
+					"info": "#3B82F6", // blue-500
+					"info-content": "#ffffff",
+					"success": "#10B981", // emerald-500
+					"success-content": "#ffffff",
+					"warning": "#F59E0B", // amber-500
+					"warning-content": "#ffffff",
+					"error": "#EF4444", // red-500
+					"error-content": "#ffffff",
+				},
+			},
+		],
+		base: true,
+		styled: true,
+		utils: true,
+	},
 } satisfies Config;
