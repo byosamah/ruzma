@@ -116,7 +116,7 @@ export class SecurityMonitor {
 
     if (!data || now - data.lastReset > windowMs) {
       this.rateLimitData.set(identifier, { count: 1, lastReset: now });
-      return true;
+      return false; // Not rate limited - first attempt in window
     }
 
     if (data.count >= maxAttempts) {
@@ -126,11 +126,11 @@ export class SecurityMonitor {
         windowMs,
         maxAttempts
       });
-      return false;
+      return true; // Rate limited - exceeded max attempts
     }
 
     data.count++;
-    return true;
+    return false; // Not rate limited - under max attempts
   }
 
   // Cleanup old rate limit data
