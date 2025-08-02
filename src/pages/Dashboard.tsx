@@ -15,6 +15,7 @@ import { Button } from '@/components/ui/button';
 import { useT } from '@/lib/i18n';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 import { useIsMobile } from '@/hooks/use-mobile';
+import { UpgradeLimitModal } from '@/components/shared/UpgradeLimitModal';
 
 const Dashboard = () => {
   const { navigate } = useLanguageNavigation();
@@ -34,6 +35,7 @@ const Dashboard = () => {
   } = useDashboard();
   
   const usage = useUsageTracking(profile, projects);
+  const [showUpgradeModal, setShowUpgradeModal] = React.useState(false);
   
   // Generate SEO data
   const seoData = useDashboardSEO(displayName, stats, userCurrency.currency, projects);
@@ -46,6 +48,9 @@ const Dashboard = () => {
       const userType = profile?.user_type || 'free';
       if (userType === 'pro') {
         navigate('/contact');
+      } else if (userType === 'free' || userType === 'plus') {
+        // Show upgrade modal for free and plus users
+        setShowUpgradeModal(true);
       }
     }
   };
@@ -183,6 +188,14 @@ const Dashboard = () => {
           </div>
         </main>
       </div>
+      
+      {/* Upgrade Modal */}
+      <UpgradeLimitModal 
+        isOpen={showUpgradeModal}
+        onClose={() => setShowUpgradeModal(false)}
+        limitType="project"
+        currentPlan={profile?.user_type || 'free'}
+      />
     </Layout>
   );
 };
