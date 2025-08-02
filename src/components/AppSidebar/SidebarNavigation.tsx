@@ -72,7 +72,7 @@ const SidebarNavigation = () => {
                   className={`flex items-center ${isCollapsed ? 'justify-center w-full' : 'gap-3'}`}
                 >
                   <item.icon className="w-5 h-5 flex-shrink-0" />
-                  {!isCollapsed && <span className="truncate">{item.title}</span>}
+                  {!isCollapsed && <span className="truncate capitalize">{item.title}</span>}
                 </button>
               </SidebarMenuButton>
             </SidebarMenuItem>
