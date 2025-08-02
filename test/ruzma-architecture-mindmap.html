@@ -1,0 +1,1155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ruzma System Architecture - Interactive Mind Map</title>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            margin: 0;
+            padding: 0;
+            background: #f5f5f5;
+            overflow: hidden;
+        }
+
+        #mindmap {
+            width: 100vw;
+            height: 100vh;
+            cursor: grab;
+        }
+
+        #mindmap.grabbing {
+            cursor: grabbing;
+        }
+
+        .node {
+            cursor: pointer;
+        }
+
+        .node circle {
+            stroke-width: 3px;
+            filter: url(#drop-shadow);
+            transition: all 0.3s ease;
+        }
+
+        .node:hover circle {
+            stroke-width: 5px;
+            transform: scale(1.1);
+        }
+
+        .node text {
+            font-size: 12px;
+            text-anchor: middle;
+            dominant-baseline: central;
+            pointer-events: none;
+            fill: white;
+            font-weight: 600;
+        }
+
+        .link {
+            fill: none;
+            stroke: #999;
+            stroke-opacity: 0.6;
+            stroke-width: 2px;
+        }
+
+        .link.primary {
+            stroke-width: 4px;
+            stroke: #666;
+        }
+
+        #tooltip {
+            position: absolute;
+            text-align: left;
+            padding: 12px;
+            font-size: 14px;
+            background: rgba(0, 0, 0, 0.9);
+            color: white;
+            border-radius: 8px;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.3s;
+            max-width: 400px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+        }
+
+        #controls {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            z-index: 100;
+        }
+
+        #controls h3 {
+            margin: 0 0 15px 0;
+            font-size: 18px;
+        }
+
+        .control-group {
+            margin-bottom: 15px;
+        }
+
+        .control-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        button {
+            background: #4B72E5;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            margin-right: 8px;
+            transition: background 0.3s;
+        }
+
+        button:hover {
+            background: #3d5fc4;
+        }
+
+        #search {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 14px;
+        }
+
+        #legend {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        #legend h4 {
+            margin: 0 0 10px 0;
+            font-size: 16px;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+
+        .legend-color {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            margin-right: 10px;
+        }
+
+        #info-panel {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            width: 350px;
+            max-height: 80vh;
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            overflow-y: auto;
+            display: none;
+        }
+
+        #info-panel h3 {
+            margin: 0 0 15px 0;
+            color: #333;
+        }
+
+        #info-panel .info-section {
+            margin-bottom: 15px;
+        }
+
+        #info-panel .info-section h4 {
+            margin: 0 0 8px 0;
+            color: #666;
+            font-size: 14px;
+            text-transform: uppercase;
+        }
+
+        #info-panel .close-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: #999;
+        }
+
+        .highlight {
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.5; }
+            100% { opacity: 1; }
+        }
+    </style>
+</head>
+<body>
+    <div id="mindmap"></div>
+    
+    <div id="controls">
+        <h3>System Navigation</h3>
+        <div class="control-group">
+            <label>Search Components:</label>
+            <input type="text" id="search" placeholder="Type to search...">
+        </div>
+        <div class="control-group">
+            <button onclick="resetZoom()">Reset View</button>
+            <button onclick="expandAll()">Expand All</button>
+            <button onclick="collapseAll()">Collapse All</button>
+        </div>
+        <div class="control-group">
+            <label>Filter by Type:</label>
+            <button onclick="filterByType('all')">All</button>
+            <button onclick="filterByType('page')">Pages</button>
+            <button onclick="filterByType('service')">Services</button>
+            <button onclick="filterByType('database')">Database</button>
+        </div>
+    </div>
+
+    <div id="legend">
+        <h4>Component Types</h4>
+        <div class="legend-item">
+            <div class="legend-color" style="background: #4B72E5;"></div>
+            <span>Pages/UI Components</span>
+        </div>
+        <div class="legend-item">
+            <div class="legend-color" style="background: #48BB78;"></div>
+            <span>Services/Backend</span>
+        </div>
+        <div class="legend-item">
+            <div class="legend-color" style="background: #F6AD55;"></div>
+            <span>Database Tables</span>
+        </div>
+        <div class="legend-item">
+            <div class="legend-color" style="background: #ED8936;"></div>
+            <span>External Integrations</span>
+        </div>
+        <div class="legend-item">
+            <div class="legend-color" style="background: #E53E3E;"></div>
+            <span>Security/Auth</span>
+        </div>
+        <div class="legend-item">
+            <div class="legend-color" style="background: #9F7AEA;"></div>
+            <span>Scheduled Jobs</span>
+        </div>
+        <div class="legend-item">
+            <div class="legend-color" style="background: #718096;"></div>
+            <span>Configuration</span>
+        </div>
+    </div>
+
+    <div id="info-panel">
+        <button class="close-btn" onclick="closeInfoPanel()">×</button>
+        <h3 id="info-title"></h3>
+        <div id="info-content"></div>
+    </div>
+
+    <div id="tooltip"></div>
+
+    <script>
+        // Ruzma System Architecture Data
+        const systemData = {
+            name: "Ruzma SaaS Platform",
+            type: "root",
+            description: "Comprehensive freelancer management platform with multi-language support",
+            children: [
+                {
+                    name: "Frontend Pages",
+                    type: "page",
+                    description: "User-facing pages and interfaces",
+                    children: [
+                        {
+                            name: "Authentication",
+                            type: "page",
+                            description: "User authentication and authorization flows",
+                            children: [
+                                { name: "Login", type: "page", path: "/pages/Login.tsx", description: "User login with email/password" },
+                                { name: "SignUp", type: "page", path: "/pages/SignUp.tsx", description: "New user registration" },
+                                { name: "ForgotPassword", type: "page", path: "/pages/ForgotPassword.tsx", description: "Password reset request" },
+                                { name: "ResetPassword", type: "page", path: "/pages/ResetPassword.tsx", description: "Password reset confirmation" }
+                            ]
+                        },
+                        {
+                            name: "Dashboard",
+                            type: "page",
+                            path: "/pages/Dashboard.tsx",
+                            description: "Main dashboard with analytics and overview",
+                            dependencies: ["profiles", "projects", "milestones", "notifications"],
+                            features: ["Real-time stats", "Project overview", "Upcoming deadlines", "Revenue tracking"]
+                        },
+                        {
+                            name: "Project Management",
+                            type: "page",
+                            description: "Project creation and management",
+                            children: [
+                                { 
+                                    name: "Projects List", 
+                                    type: "page", 
+                                    path: "/pages/Projects.tsx", 
+                                    description: "View all projects",
+                                    dependencies: ["projects", "clients", "milestones"]
+                                },
+                                { 
+                                    name: "Create Project", 
+                                    type: "page", 
+                                    path: "/pages/CreateProject.tsx", 
+                                    description: "New project creation",
+                                    features: ["Client selection", "Milestone creation", "Contract setup", "Template usage"]
+                                },
+                                { 
+                                    name: "Edit Project", 
+                                    type: "page", 
+                                    path: "/pages/EditProject.tsx", 
+                                    description: "Modify existing projects" 
+                                },
+                                { 
+                                    name: "Project Management", 
+                                    type: "page", 
+                                    path: "/pages/ProjectManagement.tsx", 
+                                    description: "Detailed project view and milestone tracking",
+                                    features: ["Milestone status", "File deliverables", "Payment tracking", "Client communication"]
+                                },
+                                { 
+                                    name: "Project Templates", 
+                                    type: "page", 
+                                    path: "/pages/ProjectTemplates.tsx", 
+                                    description: "Reusable project templates",
+                                    dependencies: ["project_templates"]
+                                }
+                            ]
+                        },
+                        {
+                            name: "Client Management",
+                            type: "page",
+                            description: "Client relationship management",
+                            children: [
+                                { 
+                                    name: "Clients List", 
+                                    type: "page", 
+                                    path: "/pages/Clients.tsx", 
+                                    description: "Manage all clients",
+                                    dependencies: ["clients", "projects"]
+                                },
+                                { 
+                                    name: "Client Portal", 
+                                    type: "page", 
+                                    path: "/pages/ClientProject.tsx", 
+                                    description: "Client-facing project view",
+                                    features: ["Token-based access", "Project progress", "File downloads", "Payment proof upload"],
+                                    security: "Token-based authentication"
+                                },
+                                { 
+                                    name: "Contract Approval", 
+                                    type: "page", 
+                                    path: "/pages/ContractApproval.tsx", 
+                                    description: "Client contract approval flow",
+                                    security: "Token-based authentication"
+                                }
+                            ]
+                        },
+                        {
+                            name: "Financial Management",
+                            type: "page",
+                            description: "Invoicing and payment tracking",
+                            children: [
+                                { 
+                                    name: "Invoices", 
+                                    type: "page", 
+                                    path: "/pages/Invoices.tsx", 
+                                    description: "Invoice list and management",
+                                    dependencies: ["invoices"]
+                                },
+                                { 
+                                    name: "Create Invoice", 
+                                    type: "page", 
+                                    path: "/pages/CreateInvoice.tsx", 
+                                    description: "Generate new invoices",
+                                    features: ["PDF generation", "Multi-currency", "Tax calculation"]
+                                },
+                                { 
+                                    name: "Analytics", 
+                                    type: "page", 
+                                    path: "/pages/Analytics.tsx", 
+                                    description: "Financial analytics and reporting",
+                                    features: ["Revenue charts", "Client analytics", "Project profitability", "Time tracking"]
+                                }
+                            ]
+                        },
+                        {
+                            name: "User Management",
+                            type: "page",
+                            description: "User profile and settings",
+                            children: [
+                                { 
+                                    name: "Profile", 
+                                    type: "page", 
+                                    path: "/pages/Profile.tsx", 
+                                    description: "User profile settings",
+                                    dependencies: ["profiles", "freelancer_branding"],
+                                    features: ["Profile picture", "Notification settings", "Currency preferences"]
+                                },
+                                { 
+                                    name: "Subscription Plans", 
+                                    type: "page", 
+                                    path: "/pages/Plans.tsx", 
+                                    description: "Subscription management",
+                                    dependencies: ["subscriptions", "user_plan_limits"],
+                                    integrations: ["LemonSqueezy"]
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    name: "Backend Services",
+                    type: "service",
+                    description: "Core business logic and API services",
+                    children: [
+                        {
+                            name: "Authentication Service",
+                            type: "service",
+                            path: "/services/api/authService.ts",
+                            description: "Handle user authentication",
+                            dependencies: ["auth.users", "profiles"],
+                            security: "Supabase Auth with RLS"
+                        },
+                        {
+                            name: "Project Service",
+                            type: "service",
+                            path: "/services/projectService.ts",
+                            description: "Project CRUD operations",
+                            dependencies: ["projects", "milestones", "clients"],
+                            features: ["Slug generation", "Contract management", "Client notifications"]
+                        },
+                        {
+                            name: "Invoice Service",
+                            type: "service",
+                            path: "/services/invoiceService.ts",
+                            description: "Invoice generation and management",
+                            dependencies: ["invoices", "projects"],
+                            features: ["PDF generation", "Multi-currency support"]
+                        },
+                        {
+                            name: "Client Link Service",
+                            type: "service",
+                            path: "/services/clientLinkService.ts",
+                            description: "Generate secure client access links",
+                            security: "UUID token generation"
+                        },
+                        {
+                            name: "Email Notifications",
+                            type: "service",
+                            path: "/services/emailNotifications.ts",
+                            description: "Email notification system",
+                            integrations: ["SMTP/Email provider"],
+                            features: ["Project updates", "Payment reminders", "Contract notifications"]
+                        },
+                        {
+                            name: "User Limits Service",
+                            type: "service",
+                            path: "/services/userLimitsService.ts",
+                            description: "Enforce plan-based limits",
+                            dependencies: ["user_plan_limits", "profiles"],
+                            features: ["Project limits", "Storage limits", "Feature restrictions"]
+                        },
+                        {
+                            name: "Branding Service",
+                            type: "service",
+                            path: "/services/brandingService.ts",
+                            description: "Freelancer branding customization",
+                            dependencies: ["freelancer_branding"],
+                            storage: ["branding-logos"]
+                        },
+                        {
+                            name: "Profile Service",
+                            type: "service",
+                            path: "/services/profileService.ts",
+                            description: "User profile management",
+                            dependencies: ["profiles"],
+                            storage: ["profile-pictures"]
+                        }
+                    ]
+                },
+                {
+                    name: "Database Schema",
+                    type: "database",
+                    description: "PostgreSQL database with RLS",
+                    children: [
+                        {
+                            name: "Core Tables",
+                            type: "database",
+                            description: "Primary data tables",
+                            children: [
+                                {
+                                    name: "projects",
+                                    type: "database",
+                                    description: "Main project entity",
+                                    columns: ["id", "user_id", "name", "brief", "client_id", "slug", "dates", "contract_status"],
+                                    relationships: ["auth.users", "clients", "milestones"],
+                                    indexes: ["user_id", "slug", "client_id", "client_access_token"]
+                                },
+                                {
+                                    name: "milestones",
+                                    type: "database",
+                                    description: "Project deliverables",
+                                    columns: ["id", "project_id", "title", "description", "price", "status", "deliverables"],
+                                    relationships: ["projects"],
+                                    indexes: ["project_id"]
+                                },
+                                {
+                                    name: "profiles",
+                                    type: "database",
+                                    description: "Extended user profiles",
+                                    columns: ["id", "full_name", "email", "currency", "country", "user_type", "limits"],
+                                    relationships: ["auth.users"],
+                                    features: ["75+ currency support", "Notification preferences"]
+                                },
+                                {
+                                    name: "clients",
+                                    type: "database",
+                                    description: "Client management",
+                                    columns: ["id", "user_id", "name", "email"],
+                                    relationships: ["auth.users", "projects"],
+                                    indexes: ["user_id", "email"]
+                                }
+                            ]
+                        },
+                        {
+                            name: "Feature Tables",
+                            type: "database",
+                            description: "Feature-specific tables",
+                            children: [
+                                {
+                                    name: "invoices",
+                                    type: "database",
+                                    description: "Invoice records",
+                                    columns: ["id", "user_id", "transaction_id", "amount", "project_name", "status", "invoice_data"],
+                                    relationships: ["auth.users", "projects"],
+                                    indexes: ["user_id", "transaction_id"]
+                                },
+                                {
+                                    name: "project_templates",
+                                    type: "database",
+                                    description: "Reusable templates",
+                                    columns: ["id", "user_id", "name", "milestones", "contract_settings"],
+                                    relationships: ["auth.users"]
+                                },
+                                {
+                                    name: "notifications",
+                                    type: "database",
+                                    description: "System notifications",
+                                    columns: ["id", "user_id", "type", "message", "is_read", "related_project_id"],
+                                    relationships: ["auth.users", "projects"]
+                                },
+                                {
+                                    name: "freelancer_branding",
+                                    type: "database",
+                                    description: "Brand customization",
+                                    columns: ["id", "user_id", "logo_url", "colors", "freelancer_info"],
+                                    relationships: ["auth.users"]
+                                }
+                            ]
+                        },
+                        {
+                            name: "System Tables",
+                            type: "database",
+                            description: "System configuration",
+                            children: [
+                                {
+                                    name: "subscriptions",
+                                    type: "database",
+                                    description: "User subscriptions",
+                                    columns: ["id", "user_id", "lemon_squeezy_id", "variant_id", "status"],
+                                    relationships: ["auth.users"],
+                                    integrations: ["LemonSqueezy"]
+                                },
+                                {
+                                    name: "user_plan_limits",
+                                    type: "database",
+                                    description: "Plan configurations",
+                                    columns: ["id", "user_type", "project_limit", "storage_limit_bytes"],
+                                    values: ["Free: 1 project, 500MB", "Plus: Unlimited, 10GB", "Pro: Unlimited, 50GB"]
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    name: "Storage Buckets",
+                    type: "storage",
+                    description: "Supabase Storage buckets",
+                    children: [
+                        {
+                            name: "deliverables",
+                            type: "storage",
+                            description: "Project file deliverables",
+                            access: "Public",
+                            used_by: ["milestones", "ClientProject"]
+                        },
+                        {
+                            name: "payment-proofs",
+                            type: "storage",
+                            description: "Payment proof images",
+                            access: "Public",
+                            used_by: ["milestones", "ClientProject"]
+                        },
+                        {
+                            name: "branding-logos",
+                            type: "storage",
+                            description: "Freelancer logos",
+                            access: "Public",
+                            used_by: ["freelancer_branding", "ClientProject"]
+                        },
+                        {
+                            name: "profile-pictures",
+                            type: "storage",
+                            description: "User avatars",
+                            access: "Public",
+                            used_by: ["profiles", "Profile"]
+                        }
+                    ]
+                },
+                {
+                    name: "External Integrations",
+                    type: "external",
+                    description: "Third-party services",
+                    children: [
+                        {
+                            name: "Supabase",
+                            type: "external",
+                            description: "Backend as a Service",
+                            features: ["Authentication", "Database", "Storage", "Real-time", "Edge Functions"],
+                            security: "Row Level Security (RLS)"
+                        },
+                        {
+                            name: "LemonSqueezy",
+                            type: "external",
+                            description: "Payment processing",
+                            features: ["Subscription management", "Payment processing", "Webhooks"],
+                            used_by: ["Plans", "subscriptions"]
+                        },
+                        {
+                            name: "Email Provider",
+                            type: "external",
+                            description: "Email delivery service",
+                            features: ["Transactional emails", "Notification delivery"],
+                            used_by: ["emailNotifications"]
+                        }
+                    ]
+                },
+                {
+                    name: "Security & Auth",
+                    type: "security",
+                    description: "Security infrastructure",
+                    children: [
+                        {
+                            name: "Supabase Auth",
+                            type: "security",
+                            description: "Authentication system",
+                            features: ["Email/password auth", "Magic links", "Password reset", "Session management"]
+                        },
+                        {
+                            name: "Row Level Security",
+                            type: "security",
+                            description: "Database access control",
+                            features: ["User isolation", "Multi-tenancy", "Service role access"],
+                            applied_to: ["All database tables"]
+                        },
+                        {
+                            name: "Token-based Access",
+                            type: "security",
+                            description: "Client portal security",
+                            features: ["UUID tokens", "Contract approval tokens", "No authentication required"],
+                            used_by: ["ClientProject", "ContractApproval"]
+                        }
+                    ]
+                },
+                {
+                    name: "Scheduled Jobs",
+                    type: "scheduled",
+                    description: "Background processes",
+                    children: [
+                        {
+                            name: "check_deadlines_and_limits",
+                            type: "scheduled",
+                            description: "Daily deadline and limit checker",
+                            schedule: "Daily at 9:00 AM",
+                            features: ["Deadline warnings", "Storage limit checks", "Project limit checks"],
+                            dependencies: ["notifications", "profiles", "milestones"]
+                        },
+                        {
+                            name: "Storage Usage Sync",
+                            type: "scheduled",
+                            description: "Update user storage usage",
+                            trigger: "On file upload/delete",
+                            dependencies: ["profiles", "storage buckets"]
+                        }
+                    ]
+                },
+                {
+                    name: "Configuration",
+                    type: "config",
+                    description: "System configuration",
+                    children: [
+                        {
+                            name: "Environment Variables",
+                            type: "config",
+                            description: "System environment config",
+                            values: ["VITE_SUPABASE_URL", "VITE_SUPABASE_ANON_KEY", "API endpoints"]
+                        },
+                        {
+                            name: "Multi-language Support",
+                            type: "config",
+                            description: "i18n configuration",
+                            languages: ["English", "Arabic"],
+                            features: ["RTL support", "Dynamic routing", "Translation system"]
+                        },
+                        {
+                            name: "Currency Support",
+                            type: "config",
+                            description: "Multi-currency configuration",
+                            currencies: "75+ supported currencies",
+                            features: ["User preference", "Invoice generation", "Analytics"]
+                        }
+                    ]
+                }
+            ]
+        };
+
+        // Color scheme
+        const colorScheme = {
+            root: "#333",
+            page: "#4B72E5",
+            service: "#48BB78",
+            database: "#F6AD55",
+            storage: "#F6AD55",
+            external: "#ED8936",
+            security: "#E53E3E",
+            scheduled: "#9F7AEA",
+            config: "#718096"
+        };
+
+        // Initialize D3 visualization
+        const width = window.innerWidth;
+        const height = window.innerHeight;
+        const centerX = width / 2;
+        const centerY = height / 2;
+
+        // Create SVG
+        const svg = d3.select("#mindmap")
+            .append("svg")
+            .attr("width", width)
+            .attr("height", height);
+
+        // Add drop shadow filter
+        const defs = svg.append("defs");
+        const filter = defs.append("filter")
+            .attr("id", "drop-shadow")
+            .attr("x", "-50%")
+            .attr("y", "-50%")
+            .attr("width", "200%")
+            .attr("height", "200%");
+
+        filter.append("feGaussianBlur")
+            .attr("in", "SourceAlpha")
+            .attr("stdDeviation", 3);
+
+        filter.append("feOffset")
+            .attr("dx", 0)
+            .attr("dy", 2);
+
+        filter.append("feComponentTransfer")
+            .append("feFuncA")
+            .attr("type", "linear")
+            .attr("slope", 0.2);
+
+        const feMerge = filter.append("feMerge");
+        feMerge.append("feMergeNode");
+        feMerge.append("feMergeNode")
+            .attr("in", "SourceGraphic");
+
+        // Create zoom behavior
+        const zoom = d3.zoom()
+            .scaleExtent([0.1, 4])
+            .on("zoom", (event) => {
+                g.attr("transform", event.transform);
+            });
+
+        svg.call(zoom);
+
+        // Create main group
+        const g = svg.append("g");
+
+        // Create hierarchical layout
+        const treeLayout = d3.tree()
+            .size([2 * Math.PI, Math.min(width, height) / 2 - 200])
+            .separation((a, b) => (a.parent == b.parent ? 1 : 2) / a.depth);
+
+        // Create hierarchy
+        const root = d3.hierarchy(systemData);
+        treeLayout(root);
+
+        // Create links
+        const link = g.selectAll(".link")
+            .data(root.links())
+            .enter().append("path")
+            .attr("class", d => d.source.depth === 0 ? "link primary" : "link")
+            .attr("d", d3.linkRadial()
+                .angle(d => d.x)
+                .radius(d => d.y));
+
+        // Create nodes
+        const node = g.selectAll(".node")
+            .data(root.descendants())
+            .enter().append("g")
+            .attr("class", "node")
+            .attr("transform", d => `
+                rotate(${d.x * 180 / Math.PI - 90})
+                translate(${d.y},0)
+            `);
+
+        // Add circles to nodes
+        node.append("circle")
+            .attr("r", d => {
+                if (d.depth === 0) return 50;
+                if (d.depth === 1) return 35;
+                if (d.depth === 2) return 25;
+                return 20;
+            })
+            .style("fill", d => colorScheme[d.data.type] || "#999")
+            .style("stroke", d => d3.color(colorScheme[d.data.type] || "#999").darker());
+
+        // Add text to nodes
+        node.append("text")
+            .attr("dy", "0.31em")
+            .attr("x", d => d.x < Math.PI === !d.children ? 6 : -6)
+            .attr("text-anchor", d => d.x < Math.PI === !d.children ? "start" : "end")
+            .attr("transform", d => d.x >= Math.PI ? "rotate(180)" : null)
+            .text(d => {
+                const name = d.data.name;
+                return name.length > 20 ? name.substring(0, 20) + "..." : name;
+            })
+            .style("font-size", d => {
+                if (d.depth === 0) return "16px";
+                if (d.depth === 1) return "14px";
+                return "12px";
+            });
+
+        // Center the visualization
+        g.attr("transform", `translate(${centerX},${centerY})`);
+
+        // Add interactivity
+        const tooltip = d3.select("#tooltip");
+
+        node.on("mouseover", function(event, d) {
+            tooltip.transition()
+                .duration(200)
+                .style("opacity", .9);
+
+            let content = `<strong>${d.data.name}</strong><br/>`;
+            content += `Type: ${d.data.type}<br/>`;
+            if (d.data.description) {
+                content += `${d.data.description}<br/>`;
+            }
+            if (d.data.path) {
+                content += `Path: ${d.data.path}<br/>`;
+            }
+            if (d.data.dependencies) {
+                content += `Dependencies: ${d.data.dependencies.join(", ")}<br/>`;
+            }
+            if (d.data.features) {
+                content += `Features: ${d.data.features.join(", ")}<br/>`;
+            }
+
+            tooltip.html(content)
+                .style("left", (event.pageX + 10) + "px")
+                .style("top", (event.pageY - 28) + "px");
+        })
+        .on("mouseout", function(d) {
+            tooltip.transition()
+                .duration(500)
+                .style("opacity", 0);
+        })
+        .on("click", function(event, d) {
+            showInfoPanel(d.data);
+        });
+
+        // Collapse/expand functionality
+        node.each(function(d) {
+            d.data._children = d.data.children;
+        });
+
+        function update(source) {
+            const duration = 750;
+            
+            // Update tree layout
+            treeLayout(root);
+            
+            // Update links
+            const linkUpdate = g.selectAll(".link")
+                .data(root.links());
+
+            linkUpdate.enter().append("path")
+                .attr("class", "link")
+                .merge(linkUpdate)
+                .transition()
+                .duration(duration)
+                .attr("d", d3.linkRadial()
+                    .angle(d => d.x)
+                    .radius(d => d.y));
+
+            linkUpdate.exit().remove();
+
+            // Update nodes
+            const nodeUpdate = g.selectAll(".node")
+                .data(root.descendants());
+
+            const nodeEnter = nodeUpdate.enter().append("g")
+                .attr("class", "node");
+
+            nodeEnter.append("circle")
+                .attr("r", 0)
+                .style("fill", d => colorScheme[d.data.type] || "#999");
+
+            nodeEnter.append("text");
+
+            const nodeUpdateMerge = nodeEnter.merge(nodeUpdate);
+
+            nodeUpdateMerge.transition()
+                .duration(duration)
+                .attr("transform", d => `
+                    rotate(${d.x * 180 / Math.PI - 90})
+                    translate(${d.y},0)
+                `);
+
+            nodeUpdateMerge.select("circle")
+                .transition()
+                .duration(duration)
+                .attr("r", d => {
+                    if (d.depth === 0) return 50;
+                    if (d.depth === 1) return 35;
+                    if (d.depth === 2) return 25;
+                    return 20;
+                });
+
+            nodeUpdate.exit()
+                .transition()
+                .duration(duration)
+                .remove()
+                .select("circle")
+                .attr("r", 0);
+        }
+
+        // Control functions
+        function resetZoom() {
+            svg.transition()
+                .duration(750)
+                .call(zoom.transform, d3.zoomIdentity);
+        }
+
+        function expandAll() {
+            root.each(d => {
+                if (d.data._children) {
+                    d.data.children = d.data._children;
+                    d.data._children = null;
+                }
+            });
+            update(root);
+        }
+
+        function collapseAll() {
+            root.each(d => {
+                if (d.data.children && d.depth > 0) {
+                    d.data._children = d.data.children;
+                    d.data.children = null;
+                }
+            });
+            update(root);
+        }
+
+        function filterByType(type) {
+            node.style("opacity", d => {
+                if (type === "all") return 1;
+                return d.data.type === type ? 1 : 0.2;
+            });
+            
+            link.style("opacity", d => {
+                if (type === "all") return 0.6;
+                return (d.source.data.type === type || d.target.data.type === type) ? 0.6 : 0.1;
+            });
+        }
+
+        // Search functionality
+        document.getElementById("search").addEventListener("input", function(e) {
+            const searchTerm = e.target.value.toLowerCase();
+            
+            node.classed("highlight", false);
+            
+            if (searchTerm) {
+                node.classed("highlight", d => {
+                    return d.data.name.toLowerCase().includes(searchTerm) ||
+                           (d.data.description && d.data.description.toLowerCase().includes(searchTerm));
+                });
+            }
+        });
+
+        // Info panel functions
+        function showInfoPanel(data) {
+            const panel = document.getElementById("info-panel");
+            const title = document.getElementById("info-title");
+            const content = document.getElementById("info-content");
+            
+            title.textContent = data.name;
+            
+            let html = "";
+            
+            if (data.type) {
+                html += `<div class="info-section">
+                    <h4>Type</h4>
+                    <p>${data.type}</p>
+                </div>`;
+            }
+            
+            if (data.description) {
+                html += `<div class="info-section">
+                    <h4>Description</h4>
+                    <p>${data.description}</p>
+                </div>`;
+            }
+            
+            if (data.path) {
+                html += `<div class="info-section">
+                    <h4>File Path</h4>
+                    <p><code>${data.path}</code></p>
+                </div>`;
+            }
+            
+            if (data.dependencies) {
+                html += `<div class="info-section">
+                    <h4>Dependencies</h4>
+                    <ul>`;
+                data.dependencies.forEach(dep => {
+                    html += `<li>${dep}</li>`;
+                });
+                html += `</ul></div>`;
+            }
+            
+            if (data.features) {
+                html += `<div class="info-section">
+                    <h4>Features</h4>
+                    <ul>`;
+                data.features.forEach(feature => {
+                    html += `<li>${feature}</li>`;
+                });
+                html += `</ul></div>`;
+            }
+            
+            if (data.security) {
+                html += `<div class="info-section">
+                    <h4>Security</h4>
+                    <p>${data.security}</p>
+                </div>`;
+            }
+            
+            if (data.integrations) {
+                html += `<div class="info-section">
+                    <h4>Integrations</h4>
+                    <ul>`;
+                data.integrations.forEach(integration => {
+                    html += `<li>${integration}</li>`;
+                });
+                html += `</ul></div>`;
+            }
+            
+            if (data.columns) {
+                html += `<div class="info-section">
+                    <h4>Columns</h4>
+                    <p>${data.columns.join(", ")}</p>
+                </div>`;
+            }
+            
+            if (data.relationships) {
+                html += `<div class="info-section">
+                    <h4>Relationships</h4>
+                    <p>${data.relationships.join(", ")}</p>
+                </div>`;
+            }
+            
+            if (data.indexes) {
+                html += `<div class="info-section">
+                    <h4>Indexes</h4>
+                    <p>${data.indexes.join(", ")}</p>
+                </div>`;
+            }
+            
+            content.innerHTML = html;
+            panel.style.display = "block";
+        }
+
+        function closeInfoPanel() {
+            document.getElementById("info-panel").style.display = "none";
+        }
+
+        // Make the mindmap draggable
+        let isDragging = false;
+        let startX, startY;
+
+        svg.on("mousedown", function(event) {
+            if (event.target === svg.node()) {
+                isDragging = true;
+                startX = event.clientX;
+                startY = event.clientY;
+                d3.select("#mindmap").classed("grabbing", true);
+            }
+        });
+
+        svg.on("mousemove", function(event) {
+            if (isDragging) {
+                const dx = event.clientX - startX;
+                const dy = event.clientY - startY;
+                const currentTransform = d3.zoomTransform(svg.node());
+                svg.call(zoom.transform, d3.zoomIdentity
+                    .translate(currentTransform.x + dx, currentTransform.y + dy)
+                    .scale(currentTransform.k));
+                startX = event.clientX;
+                startY = event.clientY;
+            }
+        });
+
+        svg.on("mouseup", function() {
+            isDragging = false;
+            d3.select("#mindmap").classed("grabbing", false);
+        });
+
+        svg.on("mouseleave", function() {
+            isDragging = false;
+            d3.select("#mindmap").classed("grabbing", false);
+        });
+    </script>
+</body>
+</html>

@@ -39,8 +39,10 @@
     "cmdk": "^1.0.0",
     "date-fns": "^3.6.0",
     "html2canvas": "^1.4.1",
+    "immer": "^10.1.1",
     "jspdf": "^3.0.1",
     "lucide-react": "^0.462.0",
+    "nanoid": "^5.1.5",
     "next-themes": "^0.3.0",
     "react": "^18.3.1",
     "react-day-picker": "^8.10.1",
@@ -54,7 +56,8 @@
     "sonner": "^1.5.0",
     "tailwind-merge": "^2.5.2",
     "tailwindcss-animate": "^1.0.7",
-    "zod": "^3.23.8"
+    "zod": "^3.23.8",
+    "zustand": "^5.0.7"
   },
   "devDependencies": {
     "@eslint/js": "^9.9.0",
@@ -71,6 +74,7 @@
     "lovable-tagger": "^1.1.7",
     "postcss": "^8.4.47",
     "tailwindcss": "^3.4.11",
+    "terser": "^5.43.1",
     "typescript": "^5.5.3",
     "typescript-eslint": "^8.0.1",
     "vite": "^5.4.1"
