@@ -11,6 +11,10 @@ export const cleanupAuthState = () => {
       }
     });
     
+    // Clear remembered email and other app-specific auth data
+    localStorage.removeItem('rememberedEmail');
+    localStorage.removeItem('rememberMe');
+    
     // Remove from sessionStorage if in use
     if (typeof sessionStorage !== 'undefined') {
       Object.keys(sessionStorage).forEach((key) => {

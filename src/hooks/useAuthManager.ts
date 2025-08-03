@@ -229,6 +229,12 @@ export const useAuthManager = () => {
     }
   };
 
+  // Clear remembered email
+  const clearRememberedEmail = () => {
+    localStorage.removeItem('rememberedEmail');
+    setLoginData(prev => ({ ...prev, email: '' }));
+  };
+
   return {
     // Sign up state
     signUpData,
@@ -243,6 +249,7 @@ export const useAuthManager = () => {
     loginData,
     updateLoginField,
     initializeRememberedEmail,
+    clearRememberedEmail,
     
     // Shared state
     isLoading,
