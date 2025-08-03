@@ -23,99 +23,15 @@ const ResetPassword = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    const validateResetToken = async () => {
-      console.log('Current URL:', window.location.href);
-      console.log('Current hash:', window.location.hash);
-      console.log('Current search:', window.location.search);
+    let timeoutId: NodeJS.Timeout;
 
-      try {
-        // First, check if we have a valid session (Supabase may have already set it)
-        const { data: { session }, error: sessionError } = await supabase.auth.getSession();
-        console.log('Current session:', session, 'error:', sessionError);
-
-        if (session && session.user) {
-          console.log('User has valid session, allowing password reset');
-          setHasValidToken(true);
-          setError(null);
-          return;
-        }
-
-        // If no session, try to get it from URL hash (Supabase redirects with tokens in hash)
-        const hash = window.location.hash;
-        if (hash) {
-          console.log('Found hash parameters:', hash);
-          const params = new URLSearchParams(hash.substring(1));
-          const accessToken = params.get('access_token');
-          const refreshToken = params.get('refresh_token');
-          const type = params.get('type');
-
-          console.log('Hash params - type:', type, 'accessToken:', !!accessToken, 'refreshToken:', !!refreshToken);
-
-          if (accessToken && refreshToken && type === 'recovery') {
-            console.log('Setting session with tokens from hash');
-            const { data, error } = await supabase.auth.setSession({
-              access_token: accessToken,
-              refresh_token: refreshToken,
-            });
-
-            if (error) {
-              console.error('Error setting session from hash:', error);
-              throw new Error('Invalid or expired password reset link. Please request a new one.');
-            }
-
-            console.log('Session set successfully from hash:', data);
-            setHasValidToken(true);
-            setError(null);
-            return;
-          }
-        }
-
-        // Check URL search params as fallback
-        const searchParams = new URLSearchParams(window.location.search);
-        const accessToken = searchParams.get('access_token');
-        const refreshToken = searchParams.get('refresh_token');
-        const type = searchParams.get('type');
-
-        console.log('Search params - type:', type, 'accessToken:', !!accessToken, 'refreshToken:', !!refreshToken);
-
-        if (accessToken && refreshToken && type === 'recovery') {
-          console.log('Setting session with tokens from search params');
-          const { data, error } = await supabase.auth.setSession({
-            access_token: accessToken,
-            refresh_token: refreshToken,
-          });
-
-          if (error) {
-            console.error('Error setting session from search params:', error);
-            throw new Error('Invalid or expired password reset link. Please request a new one.');
-          }
-
-          console.log('Session set successfully from search params:', data);
-          setHasValidToken(true);
-          setError(null);
-          return;
-        }
-
-        // If we reach here, no valid session or tokens were found
-        console.log('No valid session or tokens found');
-        throw new Error('Invalid or expired password reset link. Please request a new one.');
-
-      } catch (error: any) {
-        console.error('Token validation error:', error);
-        setError(error.message || 'Invalid or expired password reset link. Please request a new one.');
-        setHasValidToken(false);
-      } finally {
-        setIsValidatingToken(false);
-      }
-    };
-
-    // Set up auth state listener to handle automatic session updates
+    // Set up auth state listener first to catch any session changes
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
       console.log('Auth state changed:', event, session);
       
-      if (event === 'TOKEN_REFRESHED' || event === 'SIGNED_IN') {
+      if (event === 'SIGNED_IN' || event === 'TOKEN_REFRESHED') {
         if (session && session.user) {
-          console.log('Session updated via auth state change');
+          console.log('Session established via auth state change');
           setHasValidToken(true);
           setError(null);
           setIsValidatingToken(false);
@@ -123,12 +39,63 @@ const ResetPassword = () => {
       }
     });
 
+    const validateResetToken = async () => {
+      console.log('Current URL:', window.location.href);
+      console.log('Current hash:', window.location.hash);
+      console.log('Current search:', window.location.search);
+
+      // Small delay to allow Supabase to process any redirect tokens
+      await new Promise(resolve => setTimeout(resolve, 100));
+
+      try {
+        // Check if we have a valid session
+        const { data: { session }, error: sessionError } = await supabase.auth.getSession();
+        console.log('Current session:', session, 'error:', sessionError);
+
+        if (session && session.user) {
+          console.log('User has valid session, allowing password reset');
+          setHasValidToken(true);
+          setError(null);
+          setIsValidatingToken(false);
+          return;
+        }
+
+        // For password reset, we need to wait a bit for Supabase to handle the redirect
+        // Try checking session again after a short delay
+        timeoutId = setTimeout(async () => {
+          const { data: { session: delayedSession } } = await supabase.auth.getSession();
+          console.log('Delayed session check:', delayedSession);
+          
+          if (delayedSession && delayedSession.user) {
+            console.log('Session found after delay');
+            setHasValidToken(true);
+            setError(null);
+            setIsValidatingToken(false);
+          } else {
+            console.log('No valid session found after delay');
+            setError('Invalid or expired password reset link. Please request a new one.');
+            setHasValidToken(false);
+            setIsValidatingToken(false);
+          }
+        }, 1000);
+
+      } catch (error: any) {
+        console.error('Token validation error:', error);
+        setError(error.message || 'Invalid or expired password reset link. Please request a new one.');
+        setHasValidToken(false);
+        setIsValidatingToken(false);
+      }
+    };
+
     // Start validation
     validateResetToken();
 
-    // Cleanup subscription on unmount
+    // Cleanup subscription and timeout on unmount
     return () => {
       subscription.unsubscribe();
+      if (timeoutId) {
+        clearTimeout(timeoutId);
+      }
     };
   }, []);
 
