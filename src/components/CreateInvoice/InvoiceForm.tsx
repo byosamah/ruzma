@@ -74,9 +74,16 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({ invoiceData, setInvoiceData }
       return;
     }
 
-    // Only populate if we haven't already populated this project OR if coming from URL
-    if (invoiceData.projectId === targetProjectId && invoiceData.lineItems.length > 0 && !projectIdFromUrl) {
-      console.log('❌ Project already populated, skipping');
+    // Populate if:
+    // 1. Coming from URL with projectId (always populate)
+    // 2. Project was manually selected and we haven't populated it yet
+    // 3. Project changed (different from current)
+    const shouldPopulate = projectIdFromUrl || 
+                          (invoiceData.projectId === targetProjectId && invoiceData.lineItems.length === 0) ||
+                          (invoiceData.projectId !== targetProjectId);
+    
+    if (!shouldPopulate) {
+      console.log('❌ Auto-population conditions not met, skipping');
       return;
     }
 
