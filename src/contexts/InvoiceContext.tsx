@@ -4,6 +4,7 @@ import { Invoice, InvoiceStatus } from '@/hooks/useInvoices';
 import { InvoiceFormData } from '@/components/CreateInvoice/types';
 import { invoiceService } from '@/services/invoiceService';
 import { useAuth } from '@/hooks/core/useAuth';
+import { useProjects } from '@/hooks/useProjects';
 import { toast } from 'sonner';
 
 interface InvoiceContextType {
@@ -32,6 +33,9 @@ export const InvoiceProvider: React.FC<{ children: ReactNode }> = ({ children })
     console.log('Auth not available in current context');
   }
 
+  // Get projects data to access project names
+  const { projects } = useProjects(user);
+
   const generateInvoiceId = () => {
     const year = new Date().getFullYear();
     const nextNumber = invoices.length + 1;
@@ -45,11 +49,15 @@ export const InvoiceProvider: React.FC<{ children: ReactNode }> = ({ children })
   };
 
   const convertFormDataToInvoice = (formData: InvoiceFormData, status: InvoiceStatus): Invoice => {
+    // Find the selected project to get its actual name
+    const selectedProject = projects.find(project => project.id === formData.projectId);
+    const projectName = selectedProject?.name || 'Unnamed Project';
+    
     return {
       id: crypto.randomUUID(),
       transactionId: generateTransactionId(),
       amount: formData.total,
-      projectName: formData.billedTo.name || 'Unnamed Project',
+      projectName,
       date: formData.invoiceDate,
       status: status,
       projectId: formData.projectId || crypto.randomUUID()
