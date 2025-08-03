@@ -30,7 +30,8 @@ const LoginForm = ({ rememberMe, setRememberMe }: LoginFormProps) => {
   const [showPassword, setShowPassword] = useState(false);
 
   useEffect(() => {
-    if (rememberMe) {
+    // Only initialize remembered email once when rememberMe is first enabled
+    if (rememberMe && !loginData.email) {
       initializeRememberedEmail();
     }
   }, [rememberMe, initializeRememberedEmail]);
@@ -53,30 +54,16 @@ const LoginForm = ({ rememberMe, setRememberMe }: LoginFormProps) => {
             <Label htmlFor="email" className="text-sm font-medium text-gray-700">
               {t('emailLabel')}
             </Label>
-            <div className="relative">
-              <Input
-                id="email"
-                name="email"
-                type="email"
-                placeholder={t('emailPlaceholder')}
-                value={loginData.email}
-                onChange={handleChange}
-                required
-                className="h-11 border-gray-200 focus:border-gray-400 focus:ring-0 pr-10 rtl:pl-10 rtl:pr-3"
-              />
-              {loginData.email && (
-                <Button
-                  type="button"
-                  variant="ghost"
-                  size="sm"
-                  className="absolute right-0 rtl:left-0 rtl:right-auto top-0 h-full px-3 hover:bg-transparent"
-                  onClick={clearRememberedEmail}
-                  title="Clear email"
-                >
-                  <X className="h-4 w-4 text-gray-400 hover:text-gray-600" />
-                </Button>
-              )}
-            </div>
+            <Input
+              id="email"
+              name="email"
+              type="email"
+              placeholder={t('emailPlaceholder')}
+              value={loginData.email}
+              onChange={handleChange}
+              required
+              className="h-11 border-gray-200 focus:border-gray-400 focus:ring-0"
+            />
           </div>
           
           <div className="space-y-2">
