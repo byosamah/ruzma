@@ -22,13 +22,19 @@ const handler = async (req: Request): Promise<Response> => {
       Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
     );
 
-    const resend = new Resend(Deno.env.get('RESEND_API_KEY'));
+    const resendApiKey = Deno.env.get('RESEND_API_KEY');
+    if (!resendApiKey) {
+      console.error('RESEND_API_KEY is not configured');
+      throw new Error('Email service is not properly configured. Please contact support.');
+    }
+    
+    const resend = new Resend(resendApiKey);
 
     const { projectId }: ContractApprovalRequest = await req.json();
 
     console.log('Processing contract approval request for project:', projectId);
 
-    // Get project details with milestones and user profile for currency
+    // Get project details with milestones
     const { data: project, error: projectError } = await supabaseClient
       .from('projects')
       .select(`
@@ -40,8 +46,7 @@ const handler = async (req: Request): Promise<Response> => {
           price,
           start_date,
           end_date
-        ),
-        profiles!user_id(full_name, currency)
+        )
       `)
       .eq('id', projectId)
       .single();
@@ -51,12 +56,24 @@ const handler = async (req: Request): Promise<Response> => {
       throw new Error('Project not found');
     }
 
+    // Get user profile separately to avoid foreign key issues
+    const { data: profile, error: profileError } = await supabaseClient
+      .from('profiles')
+      .select('full_name, currency')
+      .eq('id', project.user_id)
+      .single();
+
+    if (profileError) {
+      console.error('Error fetching profile:', profileError);
+      // Continue with default values if profile fetch fails
+    }
+
     if (!project.client_email) {
       throw new Error('Project does not have a client email');
     }
 
     const clientEmail = project.client_email;
-    const freelancerName = project.profiles?.full_name || 'Your freelancer';
+    const freelancerName = profile?.full_name || 'Your freelancer';
 
     // Update project with contract sent timestamp
     const { error: updateError } = await supabaseClient
@@ -73,7 +90,7 @@ const handler = async (req: Request): Promise<Response> => {
     }
 
     // Get user's preferred currency
-    const userCurrency = project.freelancer_currency || project.profiles?.currency || 'USD';
+    const userCurrency = project.freelancer_currency || profile?.currency || 'USD';
     
     // Currency formatting function
     const formatCurrency = (amount: number, currency: string) => {
