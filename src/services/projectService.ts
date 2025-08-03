@@ -76,19 +76,35 @@ export class ProjectService {
       throw new Error('Too many project creation attempts. Please try again later.');
     }
 
-    // Check user limits
-    const { data: limitCheck, error: limitError } = await supabase
-      .rpc('check_user_limits', {
-        _user_id: this.user!.id,
-        _action: 'project'
-      });
+    // Check user limits using the user profile data
+    const { data: userProfile, error: profileError } = await supabase
+      .from('profiles')
+      .select('user_type, project_count')
+      .eq('id', this.user!.id)
+      .maybeSingle();
 
-    if (limitError) {
-      console.error('Error checking user limits:', limitError);
-      throw new Error('Failed to verify project limits');
+    if (profileError) {
+      console.error('Error fetching user profile:', profileError);
+      throw new Error('Failed to verify user profile');
     }
 
-    if (!limitCheck) {
+    if (!userProfile) {
+      throw new Error('User profile not found');
+    }
+
+    // Check project limits based on user type
+    const userType = userProfile.user_type || 'free';
+    const currentProjectCount = userProfile.project_count || 0;
+    
+    let projectLimit = 1; // Default for free
+    if (userType === 'plus' || userType === 'pro') {
+      projectLimit = 999999; // Unlimited
+    }
+
+    const isUnlimited = projectLimit >= 999999;
+    const canCreateProject = isUnlimited || currentProjectCount < projectLimit;
+
+    if (!canCreateProject) {
       throw new Error('Project limit reached. Please upgrade your plan to create more projects.');
     }
 
