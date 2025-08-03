@@ -96,17 +96,39 @@ export class ClientService extends BaseService {
     try {
       securityMonitor.monitorDataAccess('clients', 'fetch_all');
 
-      // Use a raw SQL query to properly count related projects
-      const { data: clients, error } = await this.supabase.rpc('get_clients_with_project_count', {
-        user_id_param: user.id
-      });
+      // Get clients and manually count projects
+      const { data: clients, error: clientsError } = await this.supabase
+        .from('clients')
+        .select('*')
+        .eq('user_id', user.id)
+        .order('created_at', { ascending: false });
 
-      if (error) {
-        throw error;
+      if (clientsError) {
+        throw clientsError;
       }
 
-      this.logOperation('clients_fetched', { count: clients?.length || 0 });
-      return clients || [];
+      // Get project counts for each client
+      const clientsWithCount: ClientWithProjectCount[] = [];
+      
+      for (const client of clients || []) {
+        const { count, error: countError } = await this.supabase
+          .from('projects')
+          .select('*', { count: 'exact', head: true })
+          .eq('client_id', client.id)
+          .eq('user_id', user.id);
+
+        if (countError) {
+          console.warn('Error counting projects for client:', client.id, countError);
+        }
+
+        clientsWithCount.push({
+          ...client,
+          project_count: count || 0
+        });
+      }
+
+      this.logOperation('clients_fetched', { count: clientsWithCount.length });
+      return clientsWithCount;
     } catch (error) {
       return this.handleError(error, 'getAllClients');
     }

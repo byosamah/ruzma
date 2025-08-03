@@ -519,6 +519,18 @@ export type Database = {
         Args: { input_text: string }
         Returns: string
       }
+      get_clients_with_project_count: {
+        Args: { user_id_param: string }
+        Returns: {
+          id: string
+          user_id: string
+          name: string
+          email: string
+          created_at: string
+          updated_at: string
+          project_count: number
+        }[]
+      }
       get_user_limits: {
         Args: { _user_type: string }
         Returns: {
