@@ -155,13 +155,13 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({ invoiceData, setInvoiceData }
     
     console.log('Final dates:', { invoiceDate, dueDate });
     
-    // Update invoice data
+    // Update invoice data - prioritize user's preferred currency
     const newInvoiceData = {
       ...invoiceData,
       projectId: targetProjectId,
       invoiceDate,
       dueDate,
-      currency: selectedProject.currency || selectedProject.freelancer_currency || invoiceData.currency,
+      // Keep the user's preferred currency instead of overriding with project currency
       billedTo: {
         ...invoiceData.billedTo,
         name: clientName || selectedProject.client_email || ''

@@ -6,9 +6,9 @@ import { Button } from '@/components/ui/button';
 import { CURRENCIES } from '@/lib/currency';
 import { InvoiceFormData } from './types';
 import { useAuth } from '@/hooks/core/useAuth';
+import { useUserProfile } from '@/hooks/core/useUserProfile';
 import { useUserCurrency } from '@/hooks/useUserCurrency';
 import { useT } from '@/lib/i18n';
-// Icons replaced with emojis
 
 interface CurrencySelectionProps {
   invoiceData: InvoiceFormData;
@@ -21,7 +21,8 @@ const CurrencySelection: React.FC<CurrencySelectionProps> = ({
 }) => {
   const t = useT();
   const { user } = useAuth();
-  const { currency: userCurrency } = useUserCurrency(user);
+  const { profile } = useUserProfile(user);
+  const { currency: userCurrency } = useUserCurrency(profile);
 
   // Set the user's preferred currency when component mounts only
   useEffect(() => {
