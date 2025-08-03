@@ -292,7 +292,18 @@ export class ProjectService {
         throw new Error('You do not have permission to delete this project');
       }
 
-      // Delete the project (milestones will be deleted via cascade)
+      // First delete all milestones associated with this project
+      const { error: milestonesDeleteError } = await supabase
+        .from('milestones')
+        .delete()
+        .eq('project_id', projectId);
+
+      if (milestonesDeleteError) {
+        console.error('Error deleting milestones:', milestonesDeleteError);
+        throw new Error('Failed to delete project milestones');
+      }
+
+      // Now delete the project
       const { error: deleteError } = await supabase
         .from('projects')
         .delete()
