@@ -24,7 +24,7 @@ const ForgotPassword = () => {
       console.log('Sending password reset email to:', email);
       
       const { error } = await supabase.auth.resetPasswordForEmail(email, {
-        redirectTo: 'https://hub.ruzma.co/reset-password',
+        redirectTo: 'https://hub.ruzma.co/en/reset-password',
       });
 
       if (error) {
