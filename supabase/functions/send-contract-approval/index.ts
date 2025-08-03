@@ -100,9 +100,16 @@ const handler = async (req: Request): Promise<Response> => {
       throw new Error('Failed to update project status');
     }
 
-    // Get user's preferred currency and language
+    // Get user's preferred currency and language with better fallback logic
     const userCurrency = project.freelancer_currency || profile?.currency || 'USD';
     const userLanguage = profile?.country === 'SA' || profile?.country === 'AE' ? 'ar' : 'en';
+    
+    console.log('Currency resolution:', {
+      project_freelancer_currency: project.freelancer_currency,
+      profile_currency: profile?.currency,
+      final_currency: userCurrency,
+      user_language: userLanguage
+    });
 
     // Calculate total project value
     const totalValue = project.milestones.reduce((sum: number, milestone: any) => sum + Number(milestone.price), 0);

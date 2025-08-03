@@ -8,6 +8,7 @@ import { InvoiceFormData } from './types';
 import { useAuth } from '@/hooks/core/useAuth';
 import { useUserProfile } from '@/hooks/core/useUserProfile';
 import { useUserCurrency } from '@/hooks/useUserCurrency';
+import { ServiceRegistry } from '@/services/core/ServiceRegistry';
 import { useT } from '@/lib/i18n';
 
 interface CurrencySelectionProps {
@@ -22,7 +23,7 @@ const CurrencySelection: React.FC<CurrencySelectionProps> = ({
   const t = useT();
   const { user } = useAuth();
   const { profile } = useUserProfile(user);
-  const { currency: userCurrency } = useUserCurrency(profile);
+  const { currency: userCurrency, currencyService } = useUserCurrency(profile);
 
   // Set the user's preferred currency when component mounts only
   useEffect(() => {

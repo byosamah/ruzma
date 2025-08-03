@@ -14,6 +14,7 @@ import { UserService } from './core/UserService';
 import { EmailService } from './core/EmailService';
 import { ClientService } from './core/ClientService';
 import { ContractService } from './core/ContractService';
+import { CurrencyService } from './core/CurrencyService';
 
 export interface ProjectOperationData extends CreateProjectFormData {
   id?: string; // For edit operations
@@ -35,6 +36,7 @@ export class ProjectService {
   private emailService: EmailService;
   private clientService: ClientService;
   private contractService: ContractService;
+  private currencyService: CurrencyService;
 
   constructor(user: User | null) {
     console.log('ProjectService constructor called with user:', !!user);
@@ -44,6 +46,7 @@ export class ProjectService {
     this.emailService = registry.getEmailService(user);
     this.clientService = registry.getClientService(user);
     this.contractService = new ContractService(user);
+    this.currencyService = new CurrencyService(user);
   }
 
   // Unified method for create, edit, and template operations
@@ -115,6 +118,9 @@ export class ProjectService {
     const baseSlug = generateSlug(sanitizedName);
     const uniqueSlug = await ensureUniqueSlug(baseSlug, this.user!.id);
 
+    // Get user's preferred currency
+    const userCurrency = await this.currencyService.getUserCurrency();
+
     // Create project
     const { data: project, error: projectError } = await supabase
       .from('projects')
@@ -134,7 +140,7 @@ export class ProjectService {
         payment_terms: data.paymentTerms || null,
         project_scope: data.projectScope || null,
         revision_policy: data.revisionPolicy || null,
-        freelancer_currency: 'USD'
+        freelancer_currency: userCurrency
       })
       .select()
       .single();

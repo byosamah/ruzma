@@ -2,6 +2,7 @@ import { User } from '@supabase/supabase-js';
 import { UserService } from './UserService';
 import { EmailService } from './EmailService';
 import { ClientService } from './ClientService';
+import { CurrencyService } from './CurrencyService';
 import { ProjectService } from '../projectService';
 
 export class ServiceRegistry {
@@ -37,6 +38,14 @@ export class ServiceRegistry {
     const key = `clientService_${user?.id || 'anonymous'}`;
     if (!this.services.has(key)) {
       this.services.set(key, new ClientService(user));
+    }
+    return this.services.get(key);
+  }
+
+  getCurrencyService(user: User | null): CurrencyService {
+    const key = `currencyService_${user?.id || 'anonymous'}`;
+    if (!this.services.has(key)) {
+      this.services.set(key, new CurrencyService(user));
     }
     return this.services.get(key);
   }
