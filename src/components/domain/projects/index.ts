@@ -24,9 +24,4 @@ export { default as ProjectDetailsForm } from '../../CreateProject/ProjectDetail
 export { default as SaveAsTemplateCheckbox } from '../../CreateProject/SaveAsTemplateCheckbox';
 
 
-// Edit Project
-export { MilestoneItemEditor } from '../../EditProject/MilestoneItemEditor';
-export { default as EditProjectDetailsForm } from '../../EditProject/EditProjectDetailsForm';
-export { default as EditPaymentProofSettings } from '../../EditProject/EditPaymentProofSettings';
-export { default as EditMilestonesList } from '../../EditProject/EditMilestonesList';
-export { default as EditFormActions } from '../../EditProject/EditFormActions';
+// Edit Project components removed - now using shared Create Project components
