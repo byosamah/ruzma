@@ -1024,11 +1024,11 @@ export class ProjectService {
         throw new Error(error.message || 'Failed to fetch project');
       }
 
-      if (!data?.project) {
+      if (!data) {
         throw new Error('Project not found');
       }
 
-      return data.project;
+      return data;
     } catch (error: any) {
       console.error('Error fetching client project:', error);
       throw error;
