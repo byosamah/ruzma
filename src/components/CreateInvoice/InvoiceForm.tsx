@@ -74,16 +74,20 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({ invoiceData, setInvoiceData }
       return;
     }
 
+    // Check if line items are just the default empty ones
+    const hasOnlyDefaultItems = invoiceData.lineItems.length === 1 && 
+                                invoiceData.lineItems[0].description === '' && 
+                                invoiceData.lineItems[0].amount === 0;
+    
     // Populate if:
     // 1. Coming from URL with projectId (always populate)
-    // 2. Project was manually selected and we haven't populated it yet
-    // 3. Project changed (different from current)
-    const shouldPopulate = projectIdFromUrl || 
-                          (invoiceData.projectId === targetProjectId && invoiceData.lineItems.length === 0) ||
-                          (invoiceData.projectId !== targetProjectId);
+    // 2. Project was manually selected and we have only default/empty line items
+    const shouldPopulate = projectIdFromUrl || hasOnlyDefaultItems;
     
     if (!shouldPopulate) {
       console.log('❌ Auto-population conditions not met, skipping');
+      console.log('  - projectIdFromUrl:', projectIdFromUrl);
+      console.log('  - hasOnlyDefaultItems:', hasOnlyDefaultItems);
       return;
     }
 
