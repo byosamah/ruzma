@@ -5,7 +5,7 @@ import { DatabaseProject, DatabaseMilestone } from '@/hooks/projectTypes';
 import { ProjectTemplate } from '@/types/projectTemplate';
 import { generateSlug, ensureUniqueSlug } from '@/lib/slugUtils';
 import * as analytics from '@/lib/analytics';
-import { securityMonitor } from '@/lib/security';
+import { securityMonitor } from '@/lib/securityMonitoring';
 import { sendPaymentNotification } from '@/services/emailNotifications';
 import { trackProjectCreated, trackMilestoneApproved, trackPaymentProofUploaded, trackDeliverableUploaded, trackMilestoneCreated } from '@/lib/analytics';
 import { toast } from 'sonner';

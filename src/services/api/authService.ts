@@ -1,6 +1,6 @@
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
-import { cleanupAuthState, logSecurityEvent, secureSignOut, secureSignIn } from '@/lib/security';
+import { cleanupAuthState, logSecurityEvent, secureSignOut, secureSignIn } from '@/lib/authSecurity';
 import { validateSignUpForm } from '@/utils/signUpValidation';
 
 interface SignUpData {

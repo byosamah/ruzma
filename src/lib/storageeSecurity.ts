@@ -1,7 +1,7 @@
 
 import { supabase } from '@/integrations/supabase/client';
-import { logSecurityEvent } from '@/lib/security';
-import { validateFileUploadSecurity, sanitizeFilename } from '@/lib/security';
+import { logSecurityEvent } from './authSecurity';
+import { validateFileUpload, sanitizeFilename } from './clientSecurity';
 
 export interface SecureUploadResult {
   success: boolean;
@@ -18,7 +18,7 @@ export const secureFileUpload = async (
 ): Promise<SecureUploadResult> => {
   try {
     // Validate file first
-    const validation = validateFileUploadSecurity(file);
+    const validation = validateFileUpload(file);
     if (!validation.isValid) {
       return { success: false, error: validation.error };
     }

@@ -1,3 +1,4 @@
+
 import { supabase } from '@/integrations/supabase/client';
 
 // Comprehensive auth state cleanup to prevent limbo states
@@ -97,10 +98,4 @@ export const logSecurityEvent = (event: string, details: Record<string, any> = {
     url: window.location.href,
     ...details
   });
-};
-
-// Simple sign out helper
-export const handleSignOut = async (navigate: (path: string) => void) => {
-  await supabase.auth.signOut();
-  navigate('/');
 };

@@ -1,6 +1,4 @@
 
-import { validateEmail } from '@/lib/validation';
-
 interface FormData {
   name: string;
   email: string;
@@ -19,11 +17,8 @@ export const validateSignUpForm = (formData: FormData): Record<string, string> =
   
   if (!formData.email.trim()) {
     newErrors.email = 'Email is required';
-  } else {
-    const emailValidation = validateEmail(formData.email);
-    if (!emailValidation.isValid) {
-      newErrors.email = emailValidation.error || 'Please enter a valid email';
-    }
+  } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
+    newErrors.email = 'Please enter a valid email';
   }
   
   if (!formData.password) {

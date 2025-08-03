@@ -1,7 +1,7 @@
 
 import { useCallback } from 'react';
 import { useLanguageNavigation } from '@/hooks/useLanguageNavigation';
-import { secureSignOut, logSecurityEvent } from '@/lib/security';
+import { secureSignOut, logSecurityEvent } from '@/lib/authSecurity';
 import { toast } from 'sonner';
 
 export const useDashboardActions = (

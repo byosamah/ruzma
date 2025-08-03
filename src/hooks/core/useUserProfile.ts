@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { User } from '@supabase/supabase-js';
 import { toast } from 'sonner';
-import { logSecurityEvent } from '@/lib/security';
+import { logSecurityEvent } from '@/lib/authSecurity';
 
 interface UserProfile {
   id: string;
