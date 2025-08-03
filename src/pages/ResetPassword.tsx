@@ -23,37 +23,15 @@ const ResetPassword = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
+    let mounted = true;
     let timeoutId: NodeJS.Timeout;
-
-    // Function to extract tokens from URL hash fragment
-    const extractTokensFromHash = () => {
-      const hash = window.location.hash.substring(1); // Remove the # symbol
-      const params = new URLSearchParams(hash);
-      
-      return {
-        access_token: params.get('access_token'),
-        refresh_token: params.get('refresh_token'),
-        type: params.get('type')
-      };
-    };
-
-    // Function to extract tokens from URL search parameters
-    const extractTokensFromSearch = () => {
-      const params = new URLSearchParams(window.location.search);
-      
-      return {
-        access_token: params.get('access_token'),
-        refresh_token: params.get('refresh_token'),
-        type: params.get('type')
-      };
-    };
 
     // Set up auth state listener first to catch any session changes
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
-      console.log('Auth state changed:', event, session);
+      console.log('Auth state changed:', event, session?.user?.id);
       
-      if (event === 'SIGNED_IN' || event === 'TOKEN_REFRESHED') {
-        if (session && session.user) {
+      if (event === 'PASSWORD_RECOVERY' || event === 'SIGNED_IN' || event === 'TOKEN_REFRESHED') {
+        if (session && session.user && mounted) {
           console.log('Session established via auth state change');
           setHasValidToken(true);
           setError(null);
@@ -63,89 +41,130 @@ const ResetPassword = () => {
     });
 
     const validateResetToken = async () => {
-      console.log('Current URL:', window.location.href);
-      console.log('Current hash:', window.location.hash);
-      console.log('Current search:', window.location.search);
+      console.log('=== Password Reset Token Validation ===');
+      console.log('Full URL:', window.location.href);
+      console.log('Hash:', window.location.hash);
+      console.log('Search:', window.location.search);
 
       try {
-        // First, try to extract tokens from URL hash fragment
-        const hashTokens = extractTokensFromHash();
-        console.log('Hash tokens:', hashTokens);
+        // Extract tokens from URL hash fragment (format: #access_token=...&refresh_token=...)
+        const hashParams = new URLSearchParams(window.location.hash.substring(1));
+        const hashAccessToken = hashParams.get('access_token');
+        const hashRefreshToken = hashParams.get('refresh_token');
+        const hashType = hashParams.get('type');
 
-        // Also check URL search parameters
-        const searchTokens = extractTokensFromSearch();
-        console.log('Search tokens:', searchTokens);
+        // Extract from URL search parameters (format: ?token=...&type=recovery)
+        const searchParams = new URLSearchParams(window.location.search);
+        const searchAccessToken = searchParams.get('access_token');
+        const searchRefreshToken = searchParams.get('refresh_token');
+        const directToken = searchParams.get('token');
+        const tokenType = searchParams.get('type');
 
-        // Use tokens from hash if available, otherwise from search
-        const tokens = hashTokens.access_token ? hashTokens : searchTokens;
+        console.log('Token extraction results:', {
+          hashAccessToken: hashAccessToken ? 'present' : 'missing',
+          hashRefreshToken: hashRefreshToken ? 'present' : 'missing',
+          hashType,
+          searchAccessToken: searchAccessToken ? 'present' : 'missing', 
+          searchRefreshToken: searchRefreshToken ? 'present' : 'missing',
+          directToken: directToken ? 'present' : 'missing',
+          tokenType
+        });
 
-        // If we have tokens in the URL, try to establish a session with them
-        if (tokens.access_token && tokens.refresh_token && tokens.type === 'recovery') {
-          console.log('Found recovery tokens in URL, setting session...');
-          
+        // Method 1: Try setting session with access/refresh tokens
+        const finalAccessToken = hashAccessToken || searchAccessToken;
+        const finalRefreshToken = hashRefreshToken || searchRefreshToken;
+
+        if (finalAccessToken && finalRefreshToken) {
+          console.log('Attempting to set session with extracted tokens...');
           const { data, error } = await supabase.auth.setSession({
-            access_token: tokens.access_token,
-            refresh_token: tokens.refresh_token
+            access_token: finalAccessToken,
+            refresh_token: finalRefreshToken
           });
 
-          if (error) {
-            console.error('Error setting session with tokens:', error);
-            throw error;
+          if (!error && data.session && data.user) {
+            console.log('Successfully established session with tokens');
+            if (mounted) {
+              setHasValidToken(true);
+              setError(null);
+              setIsValidatingToken(false);
+            }
+            return;
+          } else {
+            console.log('Failed to set session with tokens:', error?.message);
           }
+        }
 
-          if (data.session && data.user) {
-            console.log('Session established with URL tokens');
+        // Method 2: Try exchanging direct recovery token
+        if (directToken && tokenType === 'recovery') {
+          console.log('Attempting to exchange recovery token...');
+          const { data, error } = await supabase.auth.exchangeCodeForSession(directToken);
+          
+          if (!error && data.session && data.user) {
+            console.log('Successfully exchanged recovery token');
+            if (mounted) {
+              setHasValidToken(true);
+              setError(null);
+              setIsValidatingToken(false);
+            }
+            return;
+          } else {
+            console.log('Failed to exchange recovery token:', error?.message);
+          }
+        }
+
+        // Method 3: Check for existing valid session
+        const { data: { session }, error: sessionError } = await supabase.auth.getSession();
+        console.log('Current session check:', session?.user?.id, sessionError?.message);
+
+        if (session && session.user) {
+          console.log('Found existing valid session');
+          if (mounted) {
             setHasValidToken(true);
             setError(null);
             setIsValidatingToken(false);
-            return;
           }
-        }
-
-        // Check if we have a valid session already
-        const { data: { session }, error: sessionError } = await supabase.auth.getSession();
-        console.log('Current session:', session, 'error:', sessionError);
-
-        if (session && session.user) {
-          console.log('User has valid session, allowing password reset');
-          setHasValidToken(true);
-          setError(null);
-          setIsValidatingToken(false);
           return;
         }
 
-        // For password reset, we need to wait a bit for Supabase to handle the redirect
-        // Try checking session again after a longer delay
+        // Method 4: Wait longer for Supabase redirect processing
+        console.log('No immediate tokens found, waiting for delayed session...');
         timeoutId = setTimeout(async () => {
+          if (!mounted) return;
+          
           const { data: { session: delayedSession } } = await supabase.auth.getSession();
-          console.log('Delayed session check:', delayedSession);
+          console.log('Delayed session check:', delayedSession?.user?.id);
           
           if (delayedSession && delayedSession.user) {
-            console.log('Session found after delay');
+            console.log('Found session after delay');
             setHasValidToken(true);
             setError(null);
             setIsValidatingToken(false);
           } else {
-            console.log('No valid session found after delay');
-            setError('Invalid or expired password reset link. Please request a new one.');
+            console.log('No valid session found - link may be invalid/expired');
+            setError('Invalid or expired reset link. The link may have already been used or has expired. Please request a new one.');
             setHasValidToken(false);
             setIsValidatingToken(false);
           }
-        }, 2000); // Increased timeout to 2 seconds
+        }, 3000); // Extended timeout for better reliability
 
       } catch (error: any) {
         console.error('Token validation error:', error);
-        setError(error.message || 'Invalid or expired password reset link. Please request a new one.');
-        setHasValidToken(false);
-        setIsValidatingToken(false);
+        if (mounted) {
+          setError(`Reset link validation failed: ${error.message || 'Please request a new reset link.'}`);
+          setHasValidToken(false);
+          setIsValidatingToken(false);
+        }
       }
     };
 
-    // Start validation
-    validateResetToken();
+    // Start validation with small delay to ensure page load
+    timeoutId = setTimeout(() => {
+      validateResetToken();
+    }, 100);
 
-    // Cleanup subscription and timeout on unmount
+    // Cleanup
     return () => {
+      mounted = false;
       subscription.unsubscribe();
       if (timeoutId) {
         clearTimeout(timeoutId);
