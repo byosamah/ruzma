@@ -29,13 +29,18 @@ export const fetchFreelancerInfo = async (supabase: any, userId: string) => {
       .single(),
     supabase
       .from('profiles')
-      .select('full_name')
+      .select('full_name, currency, country')
       .eq('id', userId)
       .single()
   ]);
 
   const branding = brandingResult.data;
   const profile = profileResult.data;
+  const freelancerName = branding?.freelancer_name || profile?.full_name || 'Your Freelancer';
 
-  return branding?.freelancer_name || profile?.full_name || 'Your Freelancer';
+  return {
+    freelancerName,
+    currency: profile?.currency || 'USD',
+    language: profile?.country === 'SA' || profile?.country === 'AE' ? 'ar' : 'en'
+  };
 };

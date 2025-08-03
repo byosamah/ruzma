@@ -1,6 +1,7 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.50.0';
 import { Resend } from "npm:resend@2.0.0";
+import { formatCurrency } from '../_shared/currency.ts';
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -56,15 +57,25 @@ const handler = async (req: Request): Promise<Response> => {
       throw new Error('Project not found');
     }
 
-    // Get user profile separately to avoid foreign key issues
-    const { data: profile, error: profileError } = await supabaseClient
-      .from('profiles')
-      .select('full_name, currency')
-      .eq('id', project.user_id)
-      .single();
+    // Get user profile and branding separately to avoid foreign key issues
+    const [profileResult, brandingResult] = await Promise.all([
+      supabaseClient
+        .from('profiles')
+        .select('full_name, currency, country')
+        .eq('id', project.user_id)
+        .single(),
+      supabaseClient
+        .from('freelancer_branding')
+        .select('freelancer_name')
+        .eq('user_id', project.user_id)
+        .single()
+    ]);
 
-    if (profileError) {
-      console.error('Error fetching profile:', profileError);
+    const profile = profileResult.data;
+    const branding = brandingResult.data;
+
+    if (profileResult.error) {
+      console.error('Error fetching profile:', profileResult.error);
       // Continue with default values if profile fetch fails
     }
 
@@ -73,7 +84,7 @@ const handler = async (req: Request): Promise<Response> => {
     }
 
     const clientEmail = project.client_email;
-    const freelancerName = profile?.full_name || 'Your freelancer';
+    const freelancerName = branding?.freelancer_name || profile?.full_name || 'Your freelancer';
 
     // Update project with contract sent timestamp
     const { error: updateError } = await supabaseClient
@@ -89,50 +100,9 @@ const handler = async (req: Request): Promise<Response> => {
       throw new Error('Failed to update project status');
     }
 
-    // Get user's preferred currency
+    // Get user's preferred currency and language
     const userCurrency = project.freelancer_currency || profile?.currency || 'USD';
-    
-    // Currency formatting function
-    const formatCurrency = (amount: number, currency: string) => {
-      const currencySymbols: { [key: string]: string } = {
-        'USD': '$',
-        'EUR': '€',
-        'GBP': '£',
-        'JPY': '¥',
-        'CAD': 'C$',
-        'AUD': 'A$',
-        'CHF': 'CHF',
-        'CNY': '¥',
-        'SEK': 'kr',
-        'NZD': 'NZ$',
-        'MXN': '$',
-        'SGD': 'S$',
-        'HKD': 'HK$',
-        'NOK': 'kr',
-        'TRY': '₺',
-        'RUB': '₽',
-        'INR': '₹',
-        'BRL': 'R$',
-        'ZAR': 'R',
-        'KRW': '₩',
-        'PLN': 'zł',
-        'THB': '฿',
-        'IDR': 'Rp',
-        'HUF': 'Ft',
-        'CZK': 'Kč',
-        'ILS': '₪',
-        'CLP': '$',
-        'PHP': '₱',
-        'AED': 'AED',
-        'COP': '$',
-        'SAR': 'SAR',
-        'MYR': 'RM',
-        'RON': 'lei'
-      };
-      
-      const symbol = currencySymbols[currency] || currency;
-      return `${symbol}${amount.toLocaleString()}`;
-    };
+    const userLanguage = profile?.country === 'SA' || profile?.country === 'AE' ? 'ar' : 'en';
 
     // Calculate total project value
     const totalValue = project.milestones.reduce((sum: number, milestone: any) => sum + Number(milestone.price), 0);
@@ -149,7 +119,7 @@ const handler = async (req: Request): Promise<Response> => {
 
     // Send contract approval email with freelancer name as sender
     const emailResponse = await resend.emails.send({
-      from: "Ruzma <notifications@ruzma.co>",
+      from: `${freelancerName} <notifications@ruzma.co>`,
       to: clientEmail,
       subject: `Contract Approval Required: ${project.name}`,
       html: `
@@ -184,7 +154,7 @@ const handler = async (req: Request): Promise<Response> => {
               </div>
               <div>
                 <strong style="color: #495057;">Total Value:</strong>
-                <span style="color: #28a745; font-size: 18px; font-weight: bold; margin-left: 10px;">${formatCurrency(totalValue, userCurrency)}</span>
+                <span style="color: #28a745; font-size: 18px; font-weight: bold; margin-left: 10px;">${formatCurrency(totalValue, userCurrency, userLanguage)}</span>
               </div>
               ${project.start_date ? `
               <div>
@@ -206,7 +176,7 @@ const handler = async (req: Request): Promise<Response> => {
                 <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 10px;">
                   <h4 style="margin: 0; color: #495057; font-size: 16px;">Milestone ${index + 1}: ${milestone.title}</h4>
                   <span style="background: #4B72E5; color: white; padding: 4px 12px; border-radius: 15px; font-size: 14px; font-weight: bold;">
-                    ${formatCurrency(Number(milestone.price), userCurrency)}
+                    ${formatCurrency(Number(milestone.price), userCurrency, userLanguage)}
                   </span>
                 </div>
                 <p style="margin: 10px 0; color: #6c757d; line-height: 1.5;">${milestone.description}</p>

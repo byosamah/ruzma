@@ -26,7 +26,7 @@ const sendEmailWithResend = async (
       'Content-Type': 'application/json',
     },
     body: JSON.stringify({
-      from: "Ruzma <notifications@ruzma.co>",
+      from: `${freelancerName} <notifications@ruzma.co>`,
       to: [clientEmail],
       subject,
       html,
@@ -95,14 +95,20 @@ const handler = async (req: Request): Promise<Response> => {
     // Initialize database and fetch data
     const supabase = initializeSupabase();
     const invoice = await fetchInvoice(supabase, invoiceId);
-    const freelancerName = await fetchFreelancerInfo(supabase, invoice.user_id);
+    const freelancerInfo = await fetchFreelancerInfo(supabase, invoice.user_id);
 
     // Build email content
-    const { subject, html } = buildInvoiceEmail(invoice, clientName, freelancerName);
+    const { subject, html } = buildInvoiceEmail(
+      invoice, 
+      clientName, 
+      freelancerInfo.freelancerName,
+      freelancerInfo.currency,
+      freelancerInfo.language
+    );
 
     // Send email
     const emailResult = await sendEmailWithResend(
-      freelancerName,
+      freelancerInfo.freelancerName,
       clientEmail,
       subject,
       html,
