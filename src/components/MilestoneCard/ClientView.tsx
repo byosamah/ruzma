@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
-import { Upload, Eye, FileText, ExternalLink, MessageSquare } from 'lucide-react';
+import { Upload, Eye, FileText, ExternalLink, MessageSquare, Lock } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useT } from '@/lib/i18n';
 import { parseDeliverableLinks } from '@/lib/linkUtils';
 import { parseRevisionData, canRequestRevision, getRemainingRevisions } from '@/lib/revisionUtils';
+import { canAccessDeliverables, getAccessDeniedMessage, shouldShowPaymentUpload } from '@/lib/deliverableAccess';
 import { Milestone } from './types';
 import RevisionRequestDialog from './RevisionRequestDialog';
 import RevisionDetailsModal from './RevisionDetailsModal';
@@ -13,13 +14,15 @@ interface ClientViewProps {
   onPaymentUpload?: (milestoneId: string, file: File) => void;
   onRevisionRequest?: (milestoneId: string, feedback: string, images: string[]) => void;
   token?: string; // Client access token
+  paymentProofRequired?: boolean;
 }
 
 const ClientView: React.FC<ClientViewProps> = ({
   milestone,
   onPaymentUpload,
   onRevisionRequest,
-  token
+  token,
+  paymentProofRequired = false
 }) => {
   const t = useT();
   const [showRevisionDialog, setShowRevisionDialog] = useState(false);
@@ -28,6 +31,8 @@ const ClientView: React.FC<ClientViewProps> = ({
   const revisionData = parseRevisionData(milestone);
   const canRequest = canRequestRevision(revisionData);
   const remainingRevisions = getRemainingRevisions(revisionData);
+  const hasDeliverableAccess = canAccessDeliverables(paymentProofRequired, milestone.status);
+  const showPaymentUpload = shouldShowPaymentUpload(paymentProofRequired, milestone.status);
 
   const handlePaymentUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
@@ -71,7 +76,7 @@ const ClientView: React.FC<ClientViewProps> = ({
       )}
 
       {/* Payment Upload Section */}
-      {(milestone.status === 'pending' || milestone.status === 'rejected') && (
+      {showPaymentUpload && (
         <div className="space-y-3">
           <h4 className="text-sm font-medium text-gray-700">Upload Payment Proof:</h4>
           <div className="border-2 border-dashed border-gray-300 rounded-lg p-4 text-center">
@@ -100,68 +105,91 @@ const ClientView: React.FC<ClientViewProps> = ({
       )}
 
       {/* Deliverable Links */}
-      {links.length > 0 && (
+      {links.length > 0 ? (
         <div className="space-y-3">
           <div className="flex items-center justify-between">
             <h4 className="text-sm font-medium text-gray-700">Deliverables:</h4>
-            <div className="flex gap-2">
-              {revisionData.requests.length > 0 && (
-                <Button
-                  variant="outline" 
-                  size="sm"
-                  onClick={() => setShowRevisionDetails(true)}
-                  className="gap-2 text-xs"
-                >
-                  <Eye className="w-3 h-3" />
-                  View Revision History ({revisionData.requests.length})
-                </Button>
-              )}
-              {onRevisionRequest && (
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => setShowRevisionDialog(true)}
-                  disabled={!canRequest}
-                  className="gap-2 text-xs"
-                >
-                  <MessageSquare className="w-3 h-3" />
-                  {canRequest ? 'Request Revision' : 'Revision Limit Reached'}
-                </Button>
-              )}
-            </div>
+            {hasDeliverableAccess && (
+              <div className="flex gap-2">
+                {revisionData.requests.length > 0 && (
+                  <Button
+                    variant="outline" 
+                    size="sm"
+                    onClick={() => setShowRevisionDetails(true)}
+                    className="gap-2 text-xs"
+                  >
+                    <Eye className="w-3 h-3" />
+                    View Revision History ({revisionData.requests.length})
+                  </Button>
+                )}
+                {onRevisionRequest && (
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => setShowRevisionDialog(true)}
+                    disabled={!canRequest}
+                    className="gap-2 text-xs"
+                  >
+                    <MessageSquare className="w-3 h-3" />
+                    {canRequest ? 'Request Revision' : 'Revision Limit Reached'}
+                  </Button>
+                )}
+              </div>
+            )}
           </div>
           
           {/* Revision Counter */}
-          {onRevisionRequest && (
+          {hasDeliverableAccess && onRevisionRequest && (
             <div className="text-xs text-muted-foreground">
               Revisions: {remainingRevisions === null ? 'Unlimited' : `${remainingRevisions} remaining`}
             </div>
           )}
           
-          <div className="space-y-2">
-            {links.map((link, index) => (
-              <div key={index} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg border">
-                <div className="flex items-center gap-3">
-                  <div className="p-2 bg-blue-100 rounded-lg">
-                    <FileText className="w-4 h-4 text-blue-600" />
+          {hasDeliverableAccess ? (
+            <div className="space-y-2">
+              {links.map((link, index) => (
+                <div key={index} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg border">
+                  <div className="flex items-center gap-3">
+                    <div className="p-2 bg-blue-100 rounded-lg">
+                      <FileText className="w-4 h-4 text-blue-600" />
+                    </div>
+                    <span className="text-sm font-medium">{link.title}</span>
                   </div>
-                  <span className="text-sm font-medium">{link.title}</span>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    asChild
+                    className="gap-2"
+                  >
+                    <a href={link.url} target="_blank" rel="noopener noreferrer">
+                      <ExternalLink className="w-4 h-4" />
+                      View
+                    </a>
+                  </Button>
                 </div>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  asChild
-                  className="gap-2"
-                >
-                  <a href={link.url} target="_blank" rel="noopener noreferrer">
-                    <ExternalLink className="w-4 h-4" />
-                    View
-                  </a>
-                </Button>
-              </div>
-            ))}
-          </div>
+              ))}
+            </div>
+          ) : (
+            <div className="p-4 bg-gray-50 rounded-lg border border-gray-200 text-center">
+              <Lock className="w-6 h-6 text-gray-400 mx-auto mb-2" />
+              <p className="text-sm text-gray-600">
+                {getAccessDeniedMessage(paymentProofRequired)}
+              </p>
+            </div>
+          )}
         </div>
+      ) : (
+        !hasDeliverableAccess && paymentProofRequired && (
+          <div className="space-y-3">
+            <h4 className="text-sm font-medium text-gray-700">Deliverables:</h4>
+            <div className="p-4 bg-gray-50 rounded-lg border border-gray-200 text-center">
+              <Lock className="w-6 h-6 text-gray-400 mx-auto mb-2" />
+              <p className="text-sm text-gray-600">
+                {getAccessDeniedMessage(paymentProofRequired)}
+              </p>
+            </div>
+          </div>
+        )
       )}
 
     {/* Revision Request Dialog */}

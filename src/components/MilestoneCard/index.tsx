@@ -55,6 +55,7 @@ const MilestoneCard: React.FC<MilestoneCardProps> = ({
             onPaymentUpload={onPaymentUpload}
             onRevisionRequest={onRevisionRequest}
             token={token}
+            paymentProofRequired={paymentProofRequired}
           />
         ) : (
           <FreelancerView
