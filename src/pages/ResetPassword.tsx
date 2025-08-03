@@ -25,6 +25,29 @@ const ResetPassword = () => {
   useEffect(() => {
     let timeoutId: NodeJS.Timeout;
 
+    // Function to extract tokens from URL hash fragment
+    const extractTokensFromHash = () => {
+      const hash = window.location.hash.substring(1); // Remove the # symbol
+      const params = new URLSearchParams(hash);
+      
+      return {
+        access_token: params.get('access_token'),
+        refresh_token: params.get('refresh_token'),
+        type: params.get('type')
+      };
+    };
+
+    // Function to extract tokens from URL search parameters
+    const extractTokensFromSearch = () => {
+      const params = new URLSearchParams(window.location.search);
+      
+      return {
+        access_token: params.get('access_token'),
+        refresh_token: params.get('refresh_token'),
+        type: params.get('type')
+      };
+    };
+
     // Set up auth state listener first to catch any session changes
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
       console.log('Auth state changed:', event, session);
@@ -44,11 +67,42 @@ const ResetPassword = () => {
       console.log('Current hash:', window.location.hash);
       console.log('Current search:', window.location.search);
 
-      // Small delay to allow Supabase to process any redirect tokens
-      await new Promise(resolve => setTimeout(resolve, 100));
-
       try {
-        // Check if we have a valid session
+        // First, try to extract tokens from URL hash fragment
+        const hashTokens = extractTokensFromHash();
+        console.log('Hash tokens:', hashTokens);
+
+        // Also check URL search parameters
+        const searchTokens = extractTokensFromSearch();
+        console.log('Search tokens:', searchTokens);
+
+        // Use tokens from hash if available, otherwise from search
+        const tokens = hashTokens.access_token ? hashTokens : searchTokens;
+
+        // If we have tokens in the URL, try to establish a session with them
+        if (tokens.access_token && tokens.refresh_token && tokens.type === 'recovery') {
+          console.log('Found recovery tokens in URL, setting session...');
+          
+          const { data, error } = await supabase.auth.setSession({
+            access_token: tokens.access_token,
+            refresh_token: tokens.refresh_token
+          });
+
+          if (error) {
+            console.error('Error setting session with tokens:', error);
+            throw error;
+          }
+
+          if (data.session && data.user) {
+            console.log('Session established with URL tokens');
+            setHasValidToken(true);
+            setError(null);
+            setIsValidatingToken(false);
+            return;
+          }
+        }
+
+        // Check if we have a valid session already
         const { data: { session }, error: sessionError } = await supabase.auth.getSession();
         console.log('Current session:', session, 'error:', sessionError);
 
@@ -61,7 +115,7 @@ const ResetPassword = () => {
         }
 
         // For password reset, we need to wait a bit for Supabase to handle the redirect
-        // Try checking session again after a short delay
+        // Try checking session again after a longer delay
         timeoutId = setTimeout(async () => {
           const { data: { session: delayedSession } } = await supabase.auth.getSession();
           console.log('Delayed session check:', delayedSession);
@@ -77,7 +131,7 @@ const ResetPassword = () => {
             setHasValidToken(false);
             setIsValidatingToken(false);
           }
-        }, 1000);
+        }, 2000); // Increased timeout to 2 seconds
 
       } catch (error: any) {
         console.error('Token validation error:', error);
