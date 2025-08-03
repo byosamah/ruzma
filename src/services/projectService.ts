@@ -13,6 +13,7 @@ import { ServiceRegistry } from './core/ServiceRegistry';
 import { UserService } from './core/UserService';
 import { EmailService } from './core/EmailService';
 import { ClientService } from './core/ClientService';
+import { ContractService } from './core/ContractService';
 
 export interface ProjectOperationData extends CreateProjectFormData {
   id?: string; // For edit operations
@@ -33,6 +34,7 @@ export class ProjectService {
   private userService: UserService;
   private emailService: EmailService;
   private clientService: ClientService;
+  private contractService: ContractService;
 
   constructor(user: User | null) {
     console.log('ProjectService constructor called with user:', !!user);
@@ -41,6 +43,7 @@ export class ProjectService {
     this.userService = registry.getUserService(user);
     this.emailService = registry.getEmailService(user);
     this.clientService = registry.getClientService(user);
+    this.contractService = new ContractService(user);
   }
 
   // Unified method for create, edit, and template operations
@@ -126,6 +129,7 @@ export class ProjectService {
         end_date: endDate,
         payment_proof_required: data.paymentProofRequired || false,
         contract_required: data.contractRequired || false,
+        contract_status: data.contractRequired ? 'pending' : null, // Set pending status if contract required
         contract_terms: data.contractTerms || null,
         payment_terms: data.paymentTerms || null,
         project_scope: data.projectScope || null,
@@ -155,7 +159,7 @@ export class ProjectService {
     // Send contract approval email if required
     if (data.contractRequired && sanitizedClientEmail) {
       try {
-        await this.sendContractApprovalEmail(project.id);
+        await this.contractService.sendContractApprovalEmail(project.id);
       } catch (emailError) {
         console.error('Failed to send contract approval email:', emailError);
         // Don't fail project creation if email fails
@@ -422,12 +426,6 @@ export class ProjectService {
     await this.createMilestones(projectId, milestones);
   }
 
-  private async sendContractApprovalEmail(projectId: string): Promise<void> {
-    await this.emailService.sendContractApproval({
-      projectId,
-      clientEmail: '' // Email service will fetch this internally
-    });
-  }
 
   // Template operations
   async saveAsTemplate(templateData: ProjectTemplate): Promise<void> {

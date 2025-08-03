@@ -32,7 +32,16 @@ export const useClientProject = (token?: string | null, isHybrid?: boolean) => {
       setProject(data);
       
       // Check if contract approval is needed
-      setNeedsContractApproval(data.contract_required && data.contract_status === 'pending');
+      // Only show contract approval modal if:
+      // 1. Contract is required
+      // 2. Contract status is 'pending' 
+      // 3. Contract has been sent (contract_sent_at is not null)
+      const needsApproval = Boolean(
+        data.contract_required && 
+        data.contract_status === 'pending' && 
+        data.contract_sent_at
+      );
+      setNeedsContractApproval(needsApproval);
       
       // Track client project access
       if (data.id) {

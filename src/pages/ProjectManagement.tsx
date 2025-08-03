@@ -9,6 +9,7 @@ import { useProjectManagement } from "@/hooks/useProjectManagement";
 import { useProjects } from "@/hooks/useProjects";
 import ProjectHeader from "@/components/ProjectManagement/ProjectHeader";
 import MilestoneList from "@/components/ProjectManagement/MilestoneList";
+import ContractStatusCard from "@/components/ProjectManagement/ContractStatusCard";
 import EditContractDialog from "@/components/CreateProject/EditContractDialog";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
@@ -136,6 +137,12 @@ const ProjectManagement: React.FC = () => {
             isResendingContract={isResendingContract}
           />
         </div>
+
+        {/* Contract Status */}
+        <ContractStatusCard 
+          project={project} 
+          onProjectUpdate={() => window.location.reload()} 
+        />
 
         {/* Project Stats */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
