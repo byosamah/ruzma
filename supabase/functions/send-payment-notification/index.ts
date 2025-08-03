@@ -1,6 +1,7 @@
 
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { Resend } from "npm:resend@2.0.0";
+import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.50.0';
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -15,6 +16,7 @@ interface EmailRequest {
   clientToken: string;
   isApproved: boolean;
   milestoneName: string;
+  userId?: string; // Add userId to get freelancer info
 }
 
 const handler = async (req: Request): Promise<Response> => {
@@ -23,7 +25,7 @@ const handler = async (req: Request): Promise<Response> => {
   }
 
   try {
-    // Initialize Resend with API key
+    // Initialize Resend and Supabase
     const resendApiKey = Deno.env.get("RESEND_API_KEY");
     if (!resendApiKey) {
       console.error("RESEND_API_KEY environment variable is not set");
@@ -31,13 +33,59 @@ const handler = async (req: Request): Promise<Response> => {
     }
 
     const resend = new Resend(resendApiKey);
+    const supabase = createClient(
+      Deno.env.get('SUPABASE_URL') ?? '',
+      Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
+    );
     
-    const { clientEmail, projectName, projectId, clientToken, isApproved, milestoneName }: EmailRequest = await req.json();
+    const { clientEmail, projectName, projectId, clientToken, isApproved, milestoneName, userId }: EmailRequest = await req.json();
 
-    console.log("Sending email with verified domain: notifications@ruzma.co");
+    console.log("Sending payment notification email");
     console.log("Recipient:", clientEmail);
     console.log("Project:", projectName);
-    console.log("Resend API Key configured:", !!resendApiKey);
+    console.log("User ID:", userId);
+
+    // Get freelancer information
+    let freelancerName = "Your freelancer";
+    if (projectId) {
+      try {
+        // First get the project to get user_id if not provided
+        let actualUserId = userId;
+        if (!actualUserId) {
+          const { data: project } = await supabase
+            .from('projects')
+            .select('user_id')
+            .eq('id', projectId)
+            .single();
+          actualUserId = project?.user_id;
+        }
+
+        if (actualUserId) {
+          // Get freelancer branding and profile
+          const [brandingResult, profileResult] = await Promise.all([
+            supabase
+              .from('freelancer_branding')
+              .select('freelancer_name')
+              .eq('user_id', actualUserId)
+              .single(),
+            supabase
+              .from('profiles')
+              .select('full_name')
+              .eq('id', actualUserId)
+              .single()
+          ]);
+
+          freelancerName = brandingResult.data?.freelancer_name || 
+                          profileResult.data?.full_name || 
+                          "Your freelancer";
+        }
+      } catch (error) {
+        console.error('Error fetching freelancer info:', error);
+        // Continue with default name
+      }
+    }
+
+    console.log("Using freelancer name:", freelancerName);
 
     // Generate the correct client project URL using the new domain
     const origin = req.headers.get('origin') || req.headers.get('referer');
@@ -84,10 +132,10 @@ const handler = async (req: Request): Promise<Response> => {
       `;
     }
 
-    console.log("About to send email with from address: notifications@ruzma.co");
+    console.log("About to send email from:", freelancerName);
     
     const emailResponse = await resend.emails.send({
-      from: "Ruzma <notifications@ruzma.co>",
+      from: `${freelancerName} <notifications@ruzma.co>`,
       to: [clientEmail],
       subject: subject,
       html: htmlContent,

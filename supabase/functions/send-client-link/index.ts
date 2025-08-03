@@ -52,7 +52,7 @@ const handler = async (req: Request): Promise<Response> => {
     const clientUrl = `https://hub.ruzma.co/client/project/${clientToken}`;
 
     const emailResponse = await resend.emails.send({
-      from: "Ruzma <notifications@ruzma.co>",
+      from: `${actualFreelancerName} <notifications@ruzma.co>`,
       to: [clientEmail],
       subject: `Your Project Dashboard - ${projectName}`,
       html: `
