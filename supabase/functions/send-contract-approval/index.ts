@@ -41,7 +41,7 @@ const handler = async (req: Request): Promise<Response> => {
           start_date,
           end_date
         ),
-        profiles!projects_user_id_fkey(full_name, currency)
+        profiles!user_id(full_name, currency)
       `)
       .eq('id', projectId)
       .single();
