@@ -9,6 +9,10 @@ import { securityMonitor } from '@/lib/securityMonitoring';
 import { sendPaymentNotification } from '@/services/emailNotifications';
 import { trackProjectCreated, trackMilestoneApproved, trackPaymentProofUploaded, trackDeliverableUploaded, trackMilestoneCreated } from '@/lib/analytics';
 import { toast } from 'sonner';
+import { ServiceRegistry } from './core/ServiceRegistry';
+import { UserService } from './core/UserService';
+import { EmailService } from './core/EmailService';
+import { ClientService } from './core/ClientService';
 
 export interface ProjectOperationData extends CreateProjectFormData {
   id?: string; // For edit operations
@@ -26,10 +30,17 @@ const sanitizeFilename = (filename: string): string => {
 
 export class ProjectService {
   private user: User | null;
+  private userService: UserService;
+  private emailService: EmailService;
+  private clientService: ClientService;
 
   constructor(user: User | null) {
     console.log('ProjectService constructor called with user:', !!user);
     this.user = user;
+    const registry = ServiceRegistry.getInstance();
+    this.userService = registry.getUserService(user);
+    this.emailService = registry.getEmailService(user);
+    this.clientService = registry.getClientService(user);
   }
 
   // Unified method for create, edit, and template operations
@@ -76,35 +87,10 @@ export class ProjectService {
       throw new Error('Too many project creation attempts. Please try again later.');
     }
 
-    // Check user limits using the user profile data
-    const { data: userProfile, error: profileError } = await supabase
-      .from('profiles')
-      .select('user_type, project_count')
-      .eq('id', this.user!.id)
-      .maybeSingle();
+    // Check user limits using the centralized UserService
+    const userLimits = await this.userService.getUserLimits();
 
-    if (profileError) {
-      console.error('Error fetching user profile:', profileError);
-      throw new Error('Failed to verify user profile');
-    }
-
-    if (!userProfile) {
-      throw new Error('User profile not found');
-    }
-
-    // Check project limits based on user type
-    const userType = userProfile.user_type || 'free';
-    const currentProjectCount = userProfile.project_count || 0;
-    
-    let projectLimit = 1; // Default for free
-    if (userType === 'plus' || userType === 'pro') {
-      projectLimit = 999999; // Unlimited
-    }
-
-    const isUnlimited = projectLimit >= 999999;
-    const canCreateProject = isUnlimited || currentProjectCount < projectLimit;
-
-    if (!canCreateProject) {
+    if (!userLimits.canCreateProject) {
       throw new Error('Project limit reached. Please upgrade your plan to create more projects.');
     }
 
@@ -157,11 +143,8 @@ export class ProjectService {
     // Create milestones
     const milestones = await this.createMilestones(project.id, data.milestones);
 
-    // Update project count
-    await supabase.rpc('update_project_count', {
-      _user_id: this.user!.id,
-      _count_change: 1
-    });
+    // Update project count using centralized UserService
+    await this.userService.updateProjectCount(1);
 
     // Track project creation
     trackProjectCreated(project.id, data.milestones.length === 0);
@@ -330,11 +313,8 @@ export class ProjectService {
         throw new Error('Failed to delete project');
       }
 
-      // Update project count
-      await supabase.rpc('update_project_count', {
-        _user_id: this.user.id,
-        _count_change: -1
-      });
+      // Update project count using centralized UserService
+      await this.userService.updateProjectCount(-1);
 
       // Track project deletion (using project created event for consistency)
       trackProjectCreated(projectId, false);
@@ -443,13 +423,10 @@ export class ProjectService {
   }
 
   private async sendContractApprovalEmail(projectId: string): Promise<void> {
-    const { error } = await supabase.functions.invoke('send-contract-approval', {
-      body: { projectId }
+    await this.emailService.sendContractApproval({
+      projectId,
+      clientEmail: '' // Email service will fetch this internally
     });
-
-    if (error) {
-      throw error;
-    }
   }
 
   // Template operations
