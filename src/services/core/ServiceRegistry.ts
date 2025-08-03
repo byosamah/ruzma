@@ -2,6 +2,7 @@ import { User } from '@supabase/supabase-js';
 import { UserService } from './UserService';
 import { EmailService } from './EmailService';
 import { ClientService } from './ClientService';
+import { ProjectService } from '../projectService';
 
 export class ServiceRegistry {
   private static instance: ServiceRegistry;
@@ -36,6 +37,14 @@ export class ServiceRegistry {
     const key = `clientService_${user?.id || 'anonymous'}`;
     if (!this.services.has(key)) {
       this.services.set(key, new ClientService(user));
+    }
+    return this.services.get(key);
+  }
+
+  getProjectService(user: User | null): ProjectService {
+    const key = `projectService_${user?.id || 'anonymous'}`;
+    if (!this.services.has(key)) {
+      this.services.set(key, new ProjectService(user));
     }
     return this.services.get(key);
   }

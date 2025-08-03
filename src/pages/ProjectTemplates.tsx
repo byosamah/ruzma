@@ -1,55 +1,20 @@
-
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import Layout from '@/components/Layout';
-import { supabase } from '@/integrations/supabase/client';
-import { User } from '@supabase/supabase-js';
 import { useT } from '@/lib/i18n';
-import { useProjectManager } from '@/hooks/useProjectManager';
-import { useUserCurrency } from '@/hooks/useUserCurrency';
+import { useTemplates, useTemplateOperations } from '@/hooks/templates';
+import { supabase } from '@/integrations/supabase/client';
 import { useLanguageNavigation } from '@/hooks/useLanguageNavigation';
+import ProtectedRoute from '@/components/ProtectedRoute';
 
-const ProjectTemplates = () => {
+const ProjectTemplatesContent = ({ user, profile }: { user: any; profile: any }) => {
   const t = useT();
   const { navigate } = useLanguageNavigation();
-  const [user, setUser] = useState<User | null>(null);
-  const [profile, setProfile] = useState<any>(null);
-  const [authLoading, setAuthLoading] = useState(true);
-
-  // Use the enhanced project manager for templates
-  const {
-    templates,
-    templatesLoading: loading,
-    deleteTemplate
-  } = useProjectManager({
-    mode: 'create',
-    user
-  });
-
-  // Get user's currency formatting function
-  const { formatCurrency } = useUserCurrency(user);
-
-  useEffect(() => {
-    const checkAuthAndLoadData = async () => {
-      setAuthLoading(true);
-      const { data: { user }, error: userError } = await supabase.auth.getUser();
-      if (userError || !user) {
-        console.log('No user found, redirecting to login');
-        navigate('/login');
-        return;
-      }
-      setUser(user);
-      const { data: profileData } = await supabase
-        .from('profiles')
-        .select('*')
-        .eq('id', user.id)
-        .maybeSingle();
-      setProfile(profileData);
-      setAuthLoading(false);
-    };
-    checkAuthAndLoadData();
-  }, [navigate]);
+  
+  // Use centralized template hooks
+  const { templates, loading, deleteTemplate } = useTemplates({ user });
+  const { createProjectFromTemplate, confirmDeleteTemplate } = useTemplateOperations();
 
   const handleSignOut = async () => {
     await supabase.auth.signOut();
@@ -57,27 +22,17 @@ const ProjectTemplates = () => {
   };
 
   const handleCreateFromTemplate = (template: any) => {
-    console.log('Creating project from template:', template);
-    // Navigate to create project with template data
-    navigate('/create-project', {
-      state: {
-        template: {
-          name: template.name,
-          brief: template.brief,
-          milestones: template.milestones
-        }
-      }
-    });
+    createProjectFromTemplate(template);
   };
 
   const handleDeleteTemplate = async (templateId: string) => {
-    if (!confirm(t('deleteTemplateConfirmation'))) return;
+    if (!confirmDeleteTemplate()) return;
     await deleteTemplate(templateId);
   };
 
-  if (authLoading || loading) {
+  if (loading) {
     return (
-      <Layout>
+      <Layout user={profile || user} onSignOut={handleSignOut}>
         <div className="flex items-center justify-center min-h-[400px]">
           <div className="text-center">
             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
@@ -159,6 +114,16 @@ const ProjectTemplates = () => {
         )}
       </div>
     </Layout>
+  );
+};
+
+const ProjectTemplates = () => {
+  return (
+    <ProtectedRoute>
+      {({ user, profile }) => (
+        <ProjectTemplatesContent user={user} profile={profile} />
+      )}
+    </ProtectedRoute>
   );
 };
 
