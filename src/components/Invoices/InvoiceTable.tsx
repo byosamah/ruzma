@@ -89,7 +89,7 @@ const InvoiceTable: React.FC<InvoiceTableProps> = ({
                   {formatCurrency(invoice.amount)}
                 </TableCell>
                 <TableCell className={`text-gray-700 ${isRTL ? 'text-right' : 'text-left'}`}>
-                  {invoice.projectName}
+                  {invoice.projectId}
                 </TableCell>
                 <TableCell className={`text-gray-500 text-sm ${isRTL ? 'text-right' : 'text-left'}`}>
                   {format(invoice.date, 'MMM dd, yyyy')}
@@ -143,7 +143,7 @@ const InvoiceTable: React.FC<InvoiceTableProps> = ({
             
             <div>
               <p className="text-xs text-gray-500 uppercase tracking-wide mb-1">{t('projectName')}</p>
-              <p className="text-gray-700 break-words">{invoice.projectName}</p>
+              <p className="text-gray-700 break-words font-mono text-sm">{invoice.projectId}</p>
             </div>
             
             <div>
