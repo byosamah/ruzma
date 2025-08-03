@@ -29,7 +29,18 @@ const ResetPassword = () => {
       console.log('Current search:', window.location.search);
 
       try {
-        // Check for tokens in URL hash (format: #access_token=...&refresh_token=...)
+        // First, check if we have a valid session (Supabase may have already set it)
+        const { data: { session }, error: sessionError } = await supabase.auth.getSession();
+        console.log('Current session:', session, 'error:', sessionError);
+
+        if (session && session.user) {
+          console.log('User has valid session, allowing password reset');
+          setHasValidToken(true);
+          setError(null);
+          return;
+        }
+
+        // If no session, try to get it from URL hash (Supabase redirects with tokens in hash)
         const hash = window.location.hash;
         if (hash) {
           console.log('Found hash parameters:', hash);
@@ -49,7 +60,7 @@ const ResetPassword = () => {
 
             if (error) {
               console.error('Error setting session from hash:', error);
-              throw new Error('Invalid or expired password reset link');
+              throw new Error('Invalid or expired password reset link. Please request a new one.');
             }
 
             console.log('Session set successfully from hash:', data);
@@ -59,7 +70,7 @@ const ResetPassword = () => {
           }
         }
 
-        // Check for tokens in URL search params (format: ?access_token=...&refresh_token=...)
+        // Check URL search params as fallback
         const searchParams = new URLSearchParams(window.location.search);
         const accessToken = searchParams.get('access_token');
         const refreshToken = searchParams.get('refresh_token');
@@ -76,7 +87,7 @@ const ResetPassword = () => {
 
           if (error) {
             console.error('Error setting session from search params:', error);
-            throw new Error('Invalid or expired password reset link');
+            throw new Error('Invalid or expired password reset link. Please request a new one.');
           }
 
           console.log('Session set successfully from search params:', data);
@@ -85,29 +96,40 @@ const ResetPassword = () => {
           return;
         }
 
-        // Check if user already has a valid session
-        const { data: { session }, error: sessionError } = await supabase.auth.getSession();
-        console.log('Current session:', session, 'error:', sessionError);
-
-        if (session && session.user) {
-          console.log('User has valid session, allowing password reset');
-          setHasValidToken(true);
-          setError(null);
-        } else {
-          console.log('No valid session or tokens found');
-          throw new Error('Invalid or expired password reset link. Please request a new one.');
-        }
+        // If we reach here, no valid session or tokens were found
+        console.log('No valid session or tokens found');
+        throw new Error('Invalid or expired password reset link. Please request a new one.');
 
       } catch (error: any) {
         console.error('Token validation error:', error);
-        setError(error.message || 'Invalid or expired password reset link');
+        setError(error.message || 'Invalid or expired password reset link. Please request a new one.');
         setHasValidToken(false);
       } finally {
         setIsValidatingToken(false);
       }
     };
 
+    // Set up auth state listener to handle automatic session updates
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      console.log('Auth state changed:', event, session);
+      
+      if (event === 'TOKEN_REFRESHED' || event === 'SIGNED_IN') {
+        if (session && session.user) {
+          console.log('Session updated via auth state change');
+          setHasValidToken(true);
+          setError(null);
+          setIsValidatingToken(false);
+        }
+      }
+    });
+
+    // Start validation
     validateResetToken();
+
+    // Cleanup subscription on unmount
+    return () => {
+      subscription.unsubscribe();
+    };
   }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
