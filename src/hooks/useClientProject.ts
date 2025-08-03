@@ -61,13 +61,13 @@ export const useClientProject = (token?: string | null, isHybrid?: boolean) => {
   }, [token, isHybrid]);
 
   const uploadPaymentProof = async (milestoneId: string, file: File) => {
-    if (!token || !projectId) {
+    if (!token || !project?.id) {
       throw new Error('Missing access token or project ID');
     }
 
     try {
       const projectService = new ProjectService(null);
-      const result = await projectService.uploadClientPaymentProof(projectId, token, milestoneId, file);
+      const result = await projectService.uploadClientPaymentProof(project.id, token, milestoneId, file);
       
       // Refetch project data to get updated milestone status
       if (result) {
