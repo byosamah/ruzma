@@ -74,28 +74,6 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({ invoiceData, setInvoiceData }
       return;
     }
 
-    // Check if line items are just the default empty ones
-    const hasOnlyDefaultItems = invoiceData.lineItems.length === 1 && 
-                                invoiceData.lineItems[0].description === '' && 
-                                invoiceData.lineItems[0].amount === 0;
-    
-    // Check if project has changed
-    const projectChanged = invoiceData.projectId && invoiceData.projectId !== targetProjectId;
-    
-    // Populate if:
-    // 1. Coming from URL with projectId (always populate)
-    // 2. Project was manually selected and we have only default/empty line items
-    // 3. Project changed (always repopulate when project changes)
-    const shouldPopulate = projectIdFromUrl || hasOnlyDefaultItems || projectChanged;
-    
-    if (!shouldPopulate) {
-      console.log('❌ Auto-population conditions not met, skipping');
-      console.log('  - projectIdFromUrl:', projectIdFromUrl);
-      console.log('  - hasOnlyDefaultItems:', hasOnlyDefaultItems);
-      console.log('  - projectChanged:', projectChanged);
-      return;
-    }
-
     const selectedProject = projects.find(p => p.id === targetProjectId);
     if (!selectedProject) {
       console.log('❌ Project not found:', targetProjectId);
@@ -182,7 +160,7 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({ invoiceData, setInvoiceData }
         ...invoiceData.billedTo,
         name: clientName || selectedProject.client_email || ''
       },
-      lineItems: milestoneLineItems,
+      lineItems: milestoneLineItems.length > 0 ? milestoneLineItems : invoiceData.lineItems,
       subtotal,
       total: subtotal + invoiceData.tax
     };
@@ -196,7 +174,7 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({ invoiceData, setInvoiceData }
     console.log('  - currency:', newInvoiceData.currency);
     setInvoiceData(newInvoiceData);
     console.log('=== END AUTO-POPULATION DEBUG ===');
-  }, [projectIdFromUrl, invoiceData.projectId, projects]);
+  }, [invoiceData.projectId, projects]);
 
   const {
     updateLineItem,
