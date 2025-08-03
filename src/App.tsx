@@ -13,6 +13,7 @@ import { Suspense, lazy } from "react";
 // Lazy load all route components
 const Login = lazy(() => import("./pages/Login"));
 const SignUp = lazy(() => import("./pages/SignUp"));
+const EmailConfirmation = lazy(() => import("./pages/EmailConfirmation"));
 const ForgotPassword = lazy(() => import("./pages/ForgotPassword"));
 const ResetPassword = lazy(() => import("./pages/ResetPassword"));
 const Dashboard = lazy(() => import("./pages/Dashboard"));
@@ -77,6 +78,11 @@ function App() {
                   <Route path="/:lang/signup" element={
                     <LanguageLayout>
                       <SignUp />
+                    </LanguageLayout>
+                  } />
+                  <Route path="/:lang/email-confirmation" element={
+                    <LanguageLayout>
+                      <EmailConfirmation />
                     </LanguageLayout>
                   } />
                   <Route path="/:lang/forgot-password" element={
@@ -162,6 +168,7 @@ function App() {
                   {/* Backward compatibility redirects */}
                   <Route path="/login" element={<Navigate to="/en/login" replace />} />
                   <Route path="/signup" element={<Navigate to="/en/signup" replace />} />
+                  <Route path="/email-confirmation" element={<Navigate to="/en/email-confirmation" replace />} />
                   <Route path="/forgot-password" element={<Navigate to="/en/forgot-password" replace />} />
                   <Route path="/reset-password" element={<Navigate to="/en/reset-password" replace />} />
                   <Route path="/contact" element={<Navigate to="/en/contact" replace />} />

@@ -1,0 +1,61 @@
+import React, { useEffect } from 'react';
+import { useNavigate, useLocation, useSearchParams } from 'react-router-dom';
+import { useAuth } from '@/hooks/core/useAuth';
+import EmailConfirmationContainer from '@/components/auth/EmailConfirmationContainer';
+import LanguageSelector from '@/components/LanguageSelector';
+
+const EmailConfirmation = () => {
+  const navigate = useNavigate();
+  const location = useLocation();
+  const [searchParams] = useSearchParams();
+  const { user, loading: authLoading, authChecked } = useAuth();
+
+  // Get email from search params or state
+  const email = searchParams.get('email') || location.state?.email || '';
+
+  // Redirect authenticated users to dashboard
+  useEffect(() => {
+    if (authChecked && user) {
+      const from = location.state?.from?.pathname || '/dashboard';
+      navigate(from, { replace: true });
+    }
+  }, [user, authChecked, navigate, location.state]);
+
+  // Show loading while checking auth state
+  if (authLoading || !authChecked) {
+    return (
+      <div className="min-h-screen bg-white flex items-center justify-center">
+        <div className="animate-spin rounded-full h-8 w-8 border-2 border-gray-300 border-t-gray-900"></div>
+      </div>
+    );
+  }
+
+  // Don't render if user is authenticated
+  if (user) {
+    return null;
+  }
+
+  // Redirect to signup if no email provided
+  if (!email) {
+    navigate('/signup', { replace: true });
+    return null;
+  }
+
+  return (
+    <div className="min-h-screen bg-white flex items-center justify-center px-4 sm:px-6 lg:px-8 relative">
+      {/* Language Switcher - Top Right/Left based on direction */}
+      <div className="absolute top-4 right-4 rtl:right-auto rtl:left-4 z-10">
+        <LanguageSelector 
+          className="border-gray-200 hover:border-gray-300 bg-white" 
+          showTextWhenCollapsed={true}
+        />
+      </div>
+      
+      <div className="w-full max-w-md space-y-6 sm:space-y-8">
+        <EmailConfirmationContainer email={email} />
+      </div>
+    </div>
+  );
+};
+
+export default EmailConfirmation;

@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { authService } from '@/services/api/authService';
 import { toast } from 'sonner';
 import { useLanguageNavigation } from '@/hooks/useLanguageNavigation';
+import { useT } from '@/lib/i18n';
 
 interface FormData {
   name: string;
@@ -19,6 +20,7 @@ interface LoginData {
 }
 
 export const useAuthManager = () => {
+  const t = useT();
   // Sign up form state
   const [signUpData, setSignUpData] = useState<FormData>({
     name: '',
@@ -123,7 +125,27 @@ export const useAuthManager = () => {
         country: signUpData.country || ''
       };
 
-      await authService.signUp(signUpPayload);
+      const { data } = await authService.signUp(signUpPayload);
+      
+      // Check if user needs email confirmation
+      if (data.user && !data.session) {
+        // Clear form data
+        setSignUpData({
+          name: '',
+          email: '',
+          password: '',
+          confirmPassword: '',
+          currency: 'USD',
+          country: ''
+        });
+        
+        // Navigate to email confirmation page with email
+        languageNavigate(`/email-confirmation?email=${encodeURIComponent(signUpPayload.email)}`, {
+          state: { email: signUpPayload.email }
+        });
+      } else {
+        toast.success(t('accountCreated') || 'Account created successfully!');
+      }
       return true;
     } catch (error) {
       console.error('Sign up failed:', error);
