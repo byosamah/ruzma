@@ -165,14 +165,14 @@ export class SecurityMonitor {
         maxAttempts,
         windowMs
       });
-      return true; // Rate limit exceeded, return true
+      return false; // Rate limit exceeded, return false (not allowed)
     }
     
     // Add current attempt
     validAttempts.push(now);
     this.rateLimitTracker.set(identifier, validAttempts);
     
-    return false; // Rate limit not exceeded, return false
+    return true; // Rate limit not exceeded, return true (allowed)
   }
 
   // Clean up old rate limit data periodically

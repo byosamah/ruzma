@@ -1,4 +1,4 @@
 // Client domain hooks - consolidated
 export { useClients } from '../../clients/useClients';
-export * from '../../clients/clientOperations';
+export { useClientService } from '../../clients/useClientService';
 export * from '../../clients/clientValidation';
