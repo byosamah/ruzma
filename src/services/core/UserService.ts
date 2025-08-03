@@ -75,8 +75,8 @@ export class UserService extends BaseService {
     try {
       const { error } = await this.supabase
         .rpc('update_project_count', {
-          _user_id: user.id,
-          _count_change: countChange
+          _count_change: countChange,
+          _user_id: user.id
         });
 
       if (error) {

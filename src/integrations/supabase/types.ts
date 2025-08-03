@@ -526,7 +526,7 @@ export type Database = {
         }[]
       }
       update_project_count: {
-        Args: { _user_id: string; _count_change: number }
+        Args: { _count_change: number; _user_id: string }
         Returns: undefined
       }
       update_user_storage: {
