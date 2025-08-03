@@ -32,21 +32,9 @@ const handler = async (req: Request): Promise<Response> => {
 
     const { projectId } = await req.json();
 
-    // Update contract_sent_at and status
-    const { error: updateError } = await supabaseClient
-      .from('projects')
-      .update({ 
-        contract_sent_at: new Date().toISOString(),
-        contract_status: 'pending'
-      })
-      .eq('id', projectId)
-      .eq('user_id', user.id);
+    console.log('Resending contract for project:', projectId);
 
-    if (updateError) {
-      throw new Error('Failed to update project status');
-    }
-
-    // Call send-contract-approval function
+    // Call send-contract-approval function directly
     const { data, error } = await supabaseClient.functions.invoke('send-contract-approval', {
       body: { projectId }
     });
