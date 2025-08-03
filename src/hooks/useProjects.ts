@@ -7,7 +7,7 @@ import { useUserProfile } from './core/useUserProfile';
 
 export const useProjects = (user: User | null) => {
   const { projects, loading, fetchProjects } = useUserProjects(user);
-  const { profile: userProfile, fetchUserProfile } = useUserProfile(user, [projects.length]);
+  const { profile: userProfile, fetchUserProfile } = useUserProfile(user);
   const projectService = new ProjectService(user);
 
   // Milestone actions using the project service

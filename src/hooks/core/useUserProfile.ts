@@ -16,7 +16,7 @@ interface UserProfile {
   updated_at?: string;
 }
 
-export const useUserProfile = (user: User | null, dependencies: any[] = []) => {
+export const useUserProfile = (user: User | null) => {
   const [profile, setProfile] = useState<UserProfile | null>(null);
   const [loading, setLoading] = useState(true);
 
@@ -55,7 +55,7 @@ export const useUserProfile = (user: User | null, dependencies: any[] = []) => {
 
   useEffect(() => {
     fetchUserProfile();
-  }, [user?.id, ...dependencies]);
+  }, [user?.id]);
 
   return {
     profile,

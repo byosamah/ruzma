@@ -12,6 +12,7 @@ import AddClientDialog from '@/components/Clients/AddClientDialog';
 import EditClientDialog from '@/components/Clients/EditClientDialog';
 import DeleteClientDialog from '@/components/Clients/DeleteClientDialog';
 import ClientDetailsDialog from '@/components/Clients/ClientDetailsDialog';
+import LoadingSpinner from '@/components/shared/LoadingSpinner';
 import { ClientWithProjectCount } from '@/types/client';
 import { useT } from '@/lib/i18n';
 
@@ -47,12 +48,16 @@ const Clients: React.FC = () => {
     return await deleteClient(clientId);
   };
 
-  // Show loading while auth is being checked
+  // Show loading while auth is being checked with better styling
   if (!authChecked || authLoading) {
     return (
       <Layout user={profile || user}>
-        <div className="flex items-center justify-center min-h-[50vh]">
-          <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-gray-900"></div>
+        <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6 lg:py-8">
+          <LoadingSpinner 
+            size="md" 
+            message="Checking authentication..." 
+            className="min-h-[40vh] justify-center"
+          />
         </div>
       </Layout>
     );
@@ -64,12 +69,17 @@ const Clients: React.FC = () => {
     return null;
   }
 
-  // Show loading for other data
-  if (profileLoading || clientsLoading) {
+  // Show loading only when actually loading data
+  if (clientsLoading) {
     return (
       <Layout user={profile || user}>
-        <div className="flex items-center justify-center min-h-[50vh]">
-          <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-gray-900"></div>
+        <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6 lg:py-8">
+          <ClientsHeader />
+          <LoadingSpinner 
+            size="md" 
+            message="Loading your clients..." 
+            className="min-h-[40vh] justify-center"
+          />
         </div>
       </Layout>
     );

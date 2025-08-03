@@ -30,29 +30,31 @@ export const fetchClientsData = async (user: User | null): Promise<ClientWithPro
       return [];
     }
 
-    // Then fetch project counts for each client
-    const clientsWithCount: ClientWithProjectCount[] = [];
-    
-    for (const client of clientsData || []) {
-      const { count, error: countError } = await supabase
-        .from('projects')
-        .select('*', { count: 'exact', head: true })
-        .eq('client_id', client.id)
-        .eq('user_id', user.id);
+    // Optimize project count fetching with a single query
+    const { data: projectCountData, error: countError } = await supabase
+      .from('projects')
+      .select('client_id')
+      .eq('user_id', user.id)
+      .in('client_id', (clientsData || []).map(c => c.id));
 
-      if (countError) {
-        console.error('Error counting projects for client:', client.id, countError);
-        clientsWithCount.push({
-          ...client,
-          project_count: 0
-        });
-      } else {
-        clientsWithCount.push({
-          ...client,
-          project_count: count || 0
-        });
-      }
+    if (countError) {
+      console.error('Error counting projects:', countError);
     }
+
+    // Create a map of client_id to project count
+    const projectCounts = new Map<string, number>();
+    if (projectCountData) {
+      projectCountData.forEach(project => {
+        const count = projectCounts.get(project.client_id) || 0;
+        projectCounts.set(project.client_id, count + 1);
+      });
+    }
+
+    // Map clients with their project counts
+    const clientsWithCount: ClientWithProjectCount[] = (clientsData || []).map(client => ({
+      ...client,
+      project_count: projectCounts.get(client.id) || 0
+    }));
 
     return clientsWithCount;
   } catch (error) {
