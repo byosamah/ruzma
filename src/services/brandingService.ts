@@ -1,6 +1,6 @@
 
 import { supabase } from '@/integrations/supabase/client';
-import { secureFileUpload } from '@/lib/storageeSecurity';
+
 
 export const brandingService = {
   async fetchBranding(userId: string) {
@@ -35,14 +35,31 @@ export const brandingService = {
 
   async uploadLogo(file: File, userId: string) {
     try {
-      const result = await secureFileUpload(
-        file,
-        'branding-logos',
-        userId,
-        userId
-      );
+      // Generate unique filename
+      const timestamp = Date.now();
+      const sanitizedName = file.name.replace(/[^a-zA-Z0-9.-]/g, '_');
+      const fileName = `${timestamp}_${sanitizedName}`;
+      const filePath = `${userId}/${fileName}`;
 
-      return result;
+      // Upload to Supabase Storage
+      const { data, error } = await supabase.storage
+        .from('branding-logos')
+        .upload(filePath, file, {
+          cacheControl: '3600',
+          upsert: false,
+        });
+
+      if (error) {
+        console.error('Upload error:', error);
+        return { success: false, error: 'Failed to upload logo' };
+      }
+
+      // Get public URL
+      const { data: urlData } = supabase.storage
+        .from('branding-logos')
+        .getPublicUrl(filePath);
+
+      return { success: true, url: urlData.publicUrl };
     } catch (error) {
       console.error('Error in brandingService.uploadLogo:', error);
       return { success: false, error: 'Failed to upload logo' };

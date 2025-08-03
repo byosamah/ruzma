@@ -523,7 +523,6 @@ export type Database = {
         Args: { _user_type: string }
         Returns: {
           project_limit: number
-          storage_limit_bytes: number
         }[]
       }
       update_project_count: {

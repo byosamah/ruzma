@@ -4,7 +4,6 @@ import { FreelancerBranding, BrandingFormData, defaultBranding } from '@/types/b
 import { User } from '@supabase/supabase-js';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
-import { secureFileUpload } from '@/lib/storageeSecurity';
 
 export const useBranding = (user: User | null) => {
   const [branding, setBranding] = useState<FreelancerBranding | null>(null);
@@ -97,19 +96,32 @@ export const useBranding = (user: User | null) => {
     if (!user) return null;
 
     try {
-      const result = await secureFileUpload(
-        file,
-        'branding-logos',
-        user.id,
-        user.id
-      );
+      // Generate unique filename
+      const timestamp = Date.now();
+      const sanitizedName = file.name.replace(/[^a-zA-Z0-9.-]/g, '_');
+      const fileName = `${timestamp}_${sanitizedName}`;
+      const filePath = `${user.id}/${fileName}`;
 
-      if (result.success && result.url) {
-        return result.url;
-      } else {
-        toast.error(result.error || 'Failed to upload logo');
+      // Upload to Supabase Storage
+      const { data, error } = await supabase.storage
+        .from('branding-logos')
+        .upload(filePath, file, {
+          cacheControl: '3600',
+          upsert: false,
+        });
+
+      if (error) {
+        console.error('Upload error:', error);
+        toast.error('Failed to upload logo');
         return null;
       }
+
+      // Get public URL
+      const { data: urlData } = supabase.storage
+        .from('branding-logos')
+        .getPublicUrl(filePath);
+
+      return urlData.publicUrl;
     } catch (error) {
       console.error('Error uploading logo:', error);
       toast.error('Failed to upload logo');

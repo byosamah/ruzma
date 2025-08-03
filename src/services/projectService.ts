@@ -742,16 +742,7 @@ export class ProjectService {
         trackPaymentProofUploaded(milestoneId, milestone.project_id);
       }
 
-      // Update storage usage
-      const { error: storageUpdateError } = await supabase
-        .rpc('update_user_storage', {
-          _user_id: this.user.id,
-          _size_change: file.size
-        });
-
-      if (storageUpdateError) {
-        console.error('Error updating storage usage:', storageUpdateError);
-      }
+      // Storage tracking removed - files can be uploaded without tracking usage
 
       toast.success('Payment proof submitted successfully!');
       return true;
@@ -843,16 +834,7 @@ export class ProjectService {
         trackDeliverableUploaded(milestoneId, milestone.project_id, file.size);
       }
 
-      // Update storage usage
-      const { error: storageUpdateError } = await supabase
-        .rpc('update_user_storage', {
-          _user_id: this.user.id,
-          _size_change: file.size
-        });
-
-      if (storageUpdateError) {
-        console.error('Error updating storage usage:', storageUpdateError);
-      }
+      // Storage tracking removed - files can be uploaded without tracking usage
       
       toast.success('Deliverable uploaded successfully!');
       return true;
