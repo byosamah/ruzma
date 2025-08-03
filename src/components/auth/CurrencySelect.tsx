@@ -41,15 +41,18 @@ export const CurrencySelect: React.FC<CurrencySelectProps> = ({
             <div className="p-2 text-xs font-medium text-gray-500 uppercase tracking-wide">
               {t('popular')}
             </div>
-            {CURRENCIES.slice(0, 6).map((currency) => (
-              <SelectItem key={currency.code} value={currency.code} className="hover:bg-gray-50">
-                <div className="flex items-center gap-2">
-                  <span className="font-medium">{currency.symbol}</span>
-                  <span>{currency.name}</span>
-                  <span className="text-xs text-gray-500">({currency.code})</span>
-                </div>
-              </SelectItem>
-            ))}
+            {popularCurrencies.map((code) => {
+              const { symbol, name } = CURRENCIES[code];
+              return (
+                <SelectItem key={code} value={code} className="hover:bg-gray-50">
+                  <div className="flex items-center gap-2">
+                    <span className="font-medium">{symbol[language]}</span>
+                    <span>{name}</span>
+                    <span className="text-xs text-gray-500">({code})</span>
+                  </div>
+                </SelectItem>
+              );
+            })}
             
             {otherCurrencies.length > 0 && (
               <>

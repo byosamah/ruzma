@@ -64,9 +64,9 @@ const CurrencySelection: React.FC<CurrencySelectionProps> = ({
               <SelectValue placeholder={t('selectCurrency')} />
             </SelectTrigger>
             <SelectContent>
-              {CURRENCIES.map((currency) => (
-                <SelectItem key={currency.code} value={currency.code}>
-                  {currency.symbol} - {currency.name}
+              {Object.entries(CURRENCIES).map(([code, currency]) => (
+                <SelectItem key={code} value={code}>
+                  {currency.symbol.en} - {currency.name}
                 </SelectItem>
               ))}
             </SelectContent>

@@ -52,14 +52,9 @@ export const SubscriptionCardHeader: React.FC<SubscriptionCardHeaderProps> = ({
             {formatCurrency(price, currency, language)}
           </span>
         </div>
-        {planId !== 'free' && interval !== 'lifetime' && (
+        {planId !== 'free' && (
           <p className="text-sm text-gray-500">
             /{interval === 'month' ? t('month') : t('year')}
-          </p>
-        )}
-        {interval === 'lifetime' && (
-          <p className="text-sm text-gray-500">
-            {t('oneTimePayment')}
           </p>
         )}
       </div>

@@ -20,17 +20,19 @@ export default defineConfig(({ mode }) => ({
     },
   },
   build: {
-    target: 'es2015',
-    minify: 'terser',
-    terserOptions: {
-      compress: {
-        drop_console: true,
-        drop_debugger: true
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          vendor: ['react', 'react-dom', 'react-router-dom'],
+          ui: ['@radix-ui/react-dialog', '@radix-ui/react-dropdown-menu', '@radix-ui/react-select'],
+          supabase: ['@supabase/supabase-js'],
+          charts: ['recharts'],
+          utils: ['date-fns', 'clsx', 'tailwind-merge']
+        }
       }
     },
-    reportCompressedSize: false,
-    chunkSizeWarningLimit: 1000,
-    sourcemap: false
+    target: 'esnext',
+    minify: 'esbuild'
   },
   optimizeDeps: {
     include: ['react', 'react-dom', '@supabase/supabase-js']

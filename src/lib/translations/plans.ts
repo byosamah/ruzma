@@ -69,16 +69,6 @@ export const plansTranslations = {
     // Trial notes
     freeTrialSevenDays: "Free trial for 7 days.",
     freeTrialFourteenDays: "Free trial for 14 days.",
-    // Upgrade modal
-    projectLimitReached: "Project Limit Reached",
-    storageLimitReached: "Storage Limit Reached", 
-    upgradeToCreateMoreProjects: "You've reached your plan's project limit. Upgrade to create unlimited projects.",
-    upgradeForMoreStorage: "You've reached your plan's storage limit. Upgrade for more storage space.",
-    upgradeToPlusOrPro: "Upgrade to Plus or Pro",
-    freeProjectLimit: "Free plan is limited to 1 project",
-    viewUpgradeOptions: "View Upgrade Options",
-    cancel: "Cancel",
-    oneTimePayment: "One-time payment",
   },
   ar: {
     choosePlan: "اختر خطتك",
@@ -150,15 +140,5 @@ export const plansTranslations = {
     // Trial notes
     freeTrialSevenDays: "تجربة مجانية لمدة 7 أيام.",
     freeTrialFourteenDays: "تجربة مجانية لمدة 14 يوماً.",
-    // Upgrade modal
-    projectLimitReached: "تم الوصول إلى حد المشاريع",
-    storageLimitReached: "تم الوصول إلى حد التخزين",
-    upgradeToCreateMoreProjects: "لقد وصلت إلى حد المشاريع في خطتك. قم بالترقية لإنشاء مشاريع غير محدودة.",
-    upgradeForMoreStorage: "لقد وصلت إلى حد التخزين في خطتك. قم بالترقية للحصول على مساحة تخزين أكبر.",
-    upgradeToPlusOrPro: "الترقية إلى بلس أو برو",
-    freeProjectLimit: "الخطة المجانية محدودة بمشروع واحد",
-    viewUpgradeOptions: "عرض خيارات الترقية",
-    cancel: "إلغاء",
-    oneTimePayment: "دفعة واحدة",
   },
 };

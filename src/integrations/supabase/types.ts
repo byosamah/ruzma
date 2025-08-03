@@ -10,7 +10,7 @@ export type Database = {
   // Allows to automatically instanciate createClient with right options
   // instead of createClient<Database, { PostgrestVersion: 'XX' }>(URL, KEY)
   __InternalSupabase: {
-    PostgrestVersion: "13.0.4"
+    PostgrestVersion: "12.2.3 (519615d)"
   }
   public: {
     Tables: {
@@ -499,7 +499,41 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      check_deadlines_and_limits: {
+        Args: Record<PropertyKey, never>
+        Returns: undefined
+      }
+      check_user_limits: {
+        Args: { _user_id: string; _action: string; _size?: number }
+        Returns: boolean
+      }
+      ensure_unique_slug: {
+        Args: {
+          base_slug: string
+          user_id_param: string
+          project_id_param?: string
+        }
+        Returns: string
+      }
+      generate_slug: {
+        Args: { input_text: string }
+        Returns: string
+      }
+      get_user_limits: {
+        Args: { _user_type: string }
+        Returns: {
+          project_limit: number
+          storage_limit_bytes: number
+        }[]
+      }
+      update_project_count: {
+        Args: { _user_id: string; _count_change: number }
+        Returns: undefined
+      }
+      update_user_storage: {
+        Args: { _user_id: string; _size_change: number }
+        Returns: undefined
+      }
     }
     Enums: {
       [_ in never]: never

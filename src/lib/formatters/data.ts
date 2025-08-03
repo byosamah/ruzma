@@ -25,20 +25,43 @@ export const calculatePercentage = (value: number, total: number): number => {
   return Math.round((value / total) * 100);
 };
 
-// Re-export from formatting utils to avoid duplication
-export { formatFileSize } from '@/lib/utils/formatting';
+export const formatFileSize = (bytes: number): string => {
+  if (bytes === 0) return '0 Bytes';
+  
+  const k = 1024;
+  const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+  const i = Math.floor(Math.log(bytes) / Math.log(k));
+  
+  return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+};
 
-// Re-export from formatting utils to avoid duplication
-export { truncate as truncateText } from '@/lib/utils/formatting';
+export const truncateText = (text: string, maxLength: number): string => {
+  if (text.length <= maxLength) return text;
+  return text.substring(0, maxLength - 3) + '...';
+};
 
-// Re-export from formatting utils to avoid duplication
-export { capitalize as capitalizeFirst } from '@/lib/utils/formatting';
+export const capitalizeFirst = (str: string): string => {
+  if (!str) return '';
+  return str.charAt(0).toUpperCase() + str.slice(1);
+};
 
-// Re-export from formatting utils to avoid duplication
-export { formatPhoneNumber } from '@/lib/utils/formatting';
+export const formatPhoneNumber = (phone: string): string => {
+  const cleaned = phone.replace(/\D/g, '');
+  const match = cleaned.match(/^(\d{3})(\d{3})(\d{4})$/);
+  
+  if (match) {
+    return `(${match[1]}) ${match[2]}-${match[3]}`;
+  }
+  
+  return phone;
+};
 
-// Re-export from formatting utils to avoid duplication
-export { stripHtml } from '@/lib/utils/formatting';
+export const stripHtml = (html: string): string => {
+  const tmp = document.createElement('div');
+  tmp.innerHTML = html;
+  return tmp.textContent || tmp.innerText || '';
+};
 
-// Re-export from formatting utils to avoid duplication
-export { formatNumber } from '@/lib/utils/formatting';
+export const formatNumber = (num: number): string => {
+  return new Intl.NumberFormat('en-US').format(num);
+};

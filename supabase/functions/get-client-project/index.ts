@@ -143,24 +143,23 @@ const handler = async (req: Request): Promise<Response> => {
       }
     }
 
-    // Get freelancer profile data
+    // Get freelancer currency from profiles table separately
     const { data: profileData } = await supabase
       .from('profiles')
-      .select('currency, full_name, email, avatar_url, company, website, bio')
+      .select('currency, full_name')
       .eq('id', project.user_id)
       .single();
 
-    // Add freelancer currency and profile from profile
+    // Add freelancer currency from profile
     const projectWithCurrency = {
       ...project,
-      freelancer_currency: profileData?.currency || null,
-      freelancer_profile: profileData || null
+      freelancer_currency: profileData?.currency || null
     };
 
     console.log('Found project:', projectWithCurrency.name);
 
     return new Response(
-      JSON.stringify({ project: projectWithCurrency }),
+      JSON.stringify(projectWithCurrency),
       { 
         status: 200, 
         headers: { "Content-Type": "application/json", ...corsHeaders } 

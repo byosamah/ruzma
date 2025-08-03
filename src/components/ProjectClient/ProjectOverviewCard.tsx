@@ -1,11 +1,10 @@
 
 import React from 'react';
-import { motion } from 'framer-motion';
 import { useT } from '@/lib/i18n';
 import { formatCurrency, CurrencyCode } from '@/lib/currency';
 import { format } from 'date-fns';
 import { FreelancerBranding } from '@/types/branding';
-import { Calendar, DollarSign, Target, TrendingUp } from 'lucide-react';
+import { StatCard } from '@/components/shared';
 
 interface ProjectOverviewCardProps {
   projectName: string;
@@ -44,156 +43,50 @@ const ProjectOverviewCard: React.FC<ProjectOverviewCardProps> = ({
     return t('noDateSet');
   };
 
-  const containerVariants = {
-    hidden: { opacity: 0 },
-    show: {
-      opacity: 1,
-      transition: {
-        staggerChildren: 0.1
-      }
-    }
-  };
-
-  const itemVariants = {
-    hidden: { opacity: 0, y: 20 },
-    show: { opacity: 1, y: 0 }
-  };
-
   return (
-    <motion.div 
-      className="space-y-6"
-      variants={containerVariants}
-      initial="hidden"
-      animate="show"
-    >
-      {/* Hero Project Card */}
-      <motion.div 
-        className="card bg-base-100 shadow-sm border border-base-300/50"
-        variants={itemVariants}
-      >
-        <div className="card-body p-6 sm:p-8">
-          <div className="text-center space-y-4">
-            <h2 className="text-3xl sm:text-4xl font-bold text-base-content">
-              {projectName}
-            </h2>
-            {projectBrief && (
-              <p className="text-base-content/70 text-lg max-w-3xl mx-auto leading-relaxed">
-                {projectBrief}
-              </p>
-            )}
-          </div>
-        </div>
-      </motion.div>
-
-      {/* Clean Stats Grid */}
-      <motion.div 
-        className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4"
-        variants={containerVariants}
-        initial="hidden"
-        animate="show"
-      >
-        {/* Total Value */}
-        <motion.div 
-          className="card bg-base-100 shadow-sm border border-base-300/50 hover:shadow-md transition-shadow"
-          variants={itemVariants}
-          whileHover={{ scale: 1.02 }}
-          transition={{ type: "spring", stiffness: 300, damping: 20 }}
-        >
-          <div className="card-body p-6 text-center">
-            <div className="flex justify-center mb-3">
-              <div className="p-3 bg-success/10 rounded-full">
-                <DollarSign className="w-6 h-6 text-success" />
-              </div>
-            </div>
-            <div className="stat-title text-xs font-medium text-base-content/60 uppercase tracking-wide">
-              {t('totalValue')}
-            </div>
-            <div className="stat-value text-2xl font-bold text-success">
-              {formatCurrency(totalValue, currency)}
-            </div>
-          </div>
-        </motion.div>
-
-        {/* Progress */}
-        <motion.div 
-          className="card bg-base-100 shadow-sm border border-base-300/50 hover:shadow-md transition-shadow"
-          variants={itemVariants}
-          whileHover={{ scale: 1.02 }}
-          transition={{ type: "spring", stiffness: 300, damping: 20 }}
-        >
-          <div className="card-body p-6 text-center">
-            <div className="flex justify-center mb-3">
-              <div className="p-3 bg-primary/10 rounded-full">
-                <Target className="w-6 h-6 text-primary" />
-              </div>
-            </div>
-            <div className="stat-title text-xs font-medium text-base-content/60 uppercase tracking-wide">
-              {t('progress')}
-            </div>
-            <div className="stat-value text-2xl font-bold text-primary">
-              {completedMilestones}/{totalMilestones}
-            </div>
-            <div className="stat-desc text-sm text-base-content/50">
-              {t('milestones')}
-            </div>
-          </div>
-        </motion.div>
-
-        {/* Completion Percentage */}
-        <motion.div 
-          className="card bg-base-100 shadow-sm border border-base-300/50 hover:shadow-md transition-shadow"
-          variants={itemVariants}
-          whileHover={{ scale: 1.02 }}
-          transition={{ type: "spring", stiffness: 300, damping: 20 }}
-        >
-          <div className="card-body p-6 text-center">
-            <div className="flex justify-center mb-3">
-              <div className="p-3 bg-info/10 rounded-full">
-                <TrendingUp className="w-6 h-6 text-info" />
-              </div>
-            </div>
-            <div className="stat-title text-xs font-medium text-base-content/60 uppercase tracking-wide">
-              {t('completed')}
-            </div>
-            <div className="stat-value text-2xl font-bold text-info">
-              {Math.round(progressPercentage)}%
-            </div>
-            {/* Progress bar */}
-            <div className="mt-2">
-              <progress 
-                className="progress progress-info w-full h-2" 
-                value={progressPercentage} 
-                max="100"
-              />
-            </div>
-          </div>
-        </motion.div>
-
-        {/* Timeline */}
-        {(startDate || endDate) && (
-          <motion.div 
-            className="card bg-base-100 shadow-sm border border-base-300/50 hover:shadow-md transition-shadow"
-            variants={itemVariants}
-            whileHover={{ scale: 1.02 }}
-            transition={{ type: "spring", stiffness: 300, damping: 20 }}
-          >
-            <div className="card-body p-6 text-center">
-              <div className="flex justify-center mb-3">
-                <div className="p-3 bg-warning/10 rounded-full">
-                  <Calendar className="w-6 h-6 text-warning" />
-                </div>
-              </div>
-              <div className="stat-title text-xs font-medium text-base-content/60 uppercase tracking-wide">
-                {t('timeline')}
-              </div>
-              <div className="stat-value text-base font-semibold text-warning">
-                {formatDateRange()}
-              </div>
-            </div>
-          </motion.div>
+    <div className="space-y-4 sm:space-y-6">
+      {/* Project Title and Brief */}
+      <div className="bg-white rounded-lg border border-gray-100 p-4 sm:p-6">
+        <h2 className="text-lg sm:text-xl font-medium text-gray-900 mb-2">
+          {projectName}
+        </h2>
+        {projectBrief && (
+          <p className="text-sm text-gray-600 leading-relaxed">
+            {projectBrief}
+          </p>
         )}
-      </motion.div>
-    </motion.div>
+      </div>
+
+      {/* Project Stats */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <StatCard
+          emoji="💰"
+          title={t('totalValue')}
+          value={formatCurrency(totalValue, currency)}
+        />
+
+        <StatCard
+          emoji="📊"
+          title={t('progress')}
+          value={`${completedMilestones}/${totalMilestones}`}
+          subtitle={t('milestones')}
+        />
+
+        <StatCard
+          emoji="✅"
+          title={t('completed')}
+          value={`${Math.round(progressPercentage)}%`}
+        />
+
+        {(startDate || endDate) && (
+          <StatCard
+            emoji="📅"
+            title={t('timeline')}
+            value={formatDateRange()}
+          />
+        )}
+      </div>
+    </div>
   );
 };
 

@@ -5,13 +5,39 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { LanguageProvider } from "@/contexts/LanguageContext";
 import { InvoiceProvider } from "@/contexts/InvoiceContext";
-import { CurrencyProvider } from "@/contexts/CurrencyContext";
 import ProtectedRoute from "@/components/ProtectedRoute";
 import { LanguageLayout } from "@/components/LanguageLayout";
 import { RedirectWithParams } from "@/components/RedirectWithParams";
-import { useEffect } from "react";
-import * as LazyRoutes from "./routes";
-import { preloadCriticalRoutes } from "./routes";
+import { Suspense, lazy } from "react";
+
+// Lazy load all route components
+const Login = lazy(() => import("./pages/Login"));
+const SignUp = lazy(() => import("./pages/SignUp"));
+const ForgotPassword = lazy(() => import("./pages/ForgotPassword"));
+const ResetPassword = lazy(() => import("./pages/ResetPassword"));
+const Dashboard = lazy(() => import("./pages/Dashboard"));
+const Projects = lazy(() => import("./pages/Projects"));
+const Analytics = lazy(() => import("./pages/Analytics"));
+const Profile = lazy(() => import("./pages/Profile"));
+const Plans = lazy(() => import("./pages/Plans"));
+const CreateProject = lazy(() => import("./pages/CreateProject"));
+const EditProject = lazy(() => import("./pages/EditProject"));
+const ProjectManagement = lazy(() => import("./pages/ProjectManagement"));
+const ProjectTemplates = lazy(() => import("./pages/ProjectTemplates"));
+const ClientProject = lazy(() => import("./pages/ClientProject"));
+const ContactUs = lazy(() => import("./pages/ContactUs"));
+const ContractApproval = lazy(() => import("./pages/ContractApproval"));
+const NotFound = lazy(() => import("./pages/NotFound"));
+const Invoices = lazy(() => import("./pages/Invoices"));
+const CreateInvoice = lazy(() => import("./pages/CreateInvoice"));
+const Clients = lazy(() => import("./pages/Clients"));
+
+// Loading component
+const PageLoader = () => (
+  <div className="min-h-screen flex items-center justify-center">
+    <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-primary"></div>
+  </div>
+);
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -25,116 +51,111 @@ const queryClient = new QueryClient({
 });
 
 function App() {
-  // Preload critical routes on app start
-  useEffect(() => {
-    preloadCriticalRoutes();
-  }, []);
-
   return (
     <QueryClientProvider client={queryClient}>
       <BrowserRouter>
         <LanguageProvider>
-          <CurrencyProvider>
-            <TooltipProvider>
-              <Toaster />
-              <InvoiceProvider>
+          <TooltipProvider>
+            <Toaster />
+            <InvoiceProvider>
+              <Suspense fallback={<PageLoader />}>
                 <Routes>
                   {/* Root redirect - handled by LanguageProvider */}
                   <Route path="/" element={<Navigate to="/en/dashboard" replace />} />
                   
                    {/* Language-agnostic routes */}
-                  <Route path="/client/:token" element={<LazyRoutes.ClientProject />} />
-                  <Route path="/client/project/:token" element={<LazyRoutes.ClientProject />} />
-                  <Route path="/contract/approve/:token" element={<LazyRoutes.ContractApproval />} />
+                  <Route path="/client/:token" element={<ClientProject />} />
+                  <Route path="/client/project/:token" element={<ClientProject />} />
+                  <Route path="/contract/approve/:token" element={<ContractApproval />} />
                   
                   {/* Language-specific auth routes */}
                   <Route path="/:lang/login" element={
                     <LanguageLayout>
-                      <LazyRoutes.Login />
+                      <Login />
                     </LanguageLayout>
                   } />
                   <Route path="/:lang/signup" element={
                     <LanguageLayout>
-                      <LazyRoutes.SignUp />
+                      <SignUp />
                     </LanguageLayout>
                   } />
                   <Route path="/:lang/forgot-password" element={
                     <LanguageLayout>
-                      <LazyRoutes.ForgotPassword />
+                      <ForgotPassword />
                     </LanguageLayout>
                   } />
                   <Route path="/:lang/reset-password" element={
                     <LanguageLayout>
-                      <LazyRoutes.ResetPassword />
+                      <ResetPassword />
                     </LanguageLayout>
                   } />
                   <Route path="/:lang/contact" element={
                     <LanguageLayout>
-                      <LazyRoutes.ContactUs />
+                      <ContactUs />
                     </LanguageLayout>
                   } />
                   
                   {/* Language-specific protected routes */}
                   <Route path="/:lang/dashboard" element={
                     <LanguageLayout>
-                      <ProtectedRoute><LazyRoutes.Dashboard /></ProtectedRoute>
+                      <ProtectedRoute><Dashboard /></ProtectedRoute>
                     </LanguageLayout>
                   } />
                   <Route path="/:lang/projects" element={
                     <LanguageLayout>
-                      <ProtectedRoute><LazyRoutes.Projects /></ProtectedRoute>
+                      <ProtectedRoute><Projects /></ProtectedRoute>
                     </LanguageLayout>
                   } />
                   <Route path="/:lang/clients" element={
                     <LanguageLayout>
-                      <ProtectedRoute><LazyRoutes.Clients /></ProtectedRoute>
+                      <ProtectedRoute><Clients /></ProtectedRoute>
                     </LanguageLayout>
                   } />
                   <Route path="/:lang/invoices" element={
                     <LanguageLayout>
-                      <ProtectedRoute><LazyRoutes.Invoices /></ProtectedRoute>
+                      <ProtectedRoute><Invoices /></ProtectedRoute>
                     </LanguageLayout>
                   } />
                   <Route path="/:lang/create-invoice" element={
                     <LanguageLayout>
-                      <ProtectedRoute><LazyRoutes.CreateInvoice /></ProtectedRoute>
+                      <ProtectedRoute><CreateInvoice /></ProtectedRoute>
                     </LanguageLayout>
                   } />
                   <Route path="/:lang/analytics" element={
                     <LanguageLayout>
-                      <ProtectedRoute><LazyRoutes.Analytics /></ProtectedRoute>
+                      <ProtectedRoute><Analytics /></ProtectedRoute>
                     </LanguageLayout>
                   } />
                   <Route path="/:lang/profile" element={
                     <LanguageLayout>
-                      <ProtectedRoute><LazyRoutes.Profile /></ProtectedRoute>
+                      <ProtectedRoute><Profile /></ProtectedRoute>
                     </LanguageLayout>
                   } />
                   <Route path="/:lang/plans" element={
                     <LanguageLayout>
-                      <ProtectedRoute><LazyRoutes.Plans /></ProtectedRoute>
+                      <ProtectedRoute><Plans /></ProtectedRoute>
                     </LanguageLayout>
                   } />
                   <Route path="/:lang/create-project" element={
                     <LanguageLayout>
                       <ProtectedRoute>
-                        {({ user, profile }) => <LazyRoutes.CreateProject user={user} profile={profile} />}
+                        {({ user, profile }) => <CreateProject user={user} profile={profile} />}
                       </ProtectedRoute>
                     </LanguageLayout>
                   } />
                   <Route path="/:lang/edit-project/:slug" element={
                     <LanguageLayout>
-                      <ProtectedRoute><LazyRoutes.EditProject /></ProtectedRoute>
+                      <ProtectedRoute><EditProject /></ProtectedRoute>
                     </LanguageLayout>
                   } />
                   <Route path="/:lang/project/:slug" element={
                     <LanguageLayout>
-                      <ProtectedRoute><LazyRoutes.ProjectManagement /></ProtectedRoute>
+                      <ProtectedRoute><ProjectManagement /></ProtectedRoute>
                     </LanguageLayout>
                   } />
                   <Route path="/:lang/templates" element={
                     <LanguageLayout>
-                      <ProtectedRoute><LazyRoutes.ProjectTemplates /></ProtectedRoute>
+                      <ProtectedRoute><ProjectTemplates /></ProtectedRoute>
                     </LanguageLayout>
                   } />
                   
@@ -158,11 +179,11 @@ function App() {
                   <Route path="/templates" element={<Navigate to="/en/templates" replace />} />
                   
                   {/* 404 route */}
-                  <Route path="*" element={<LazyRoutes.NotFound />} />
+                  <Route path="*" element={<NotFound />} />
                 </Routes>
-              </InvoiceProvider>
-            </TooltipProvider>
-          </CurrencyProvider>
+              </Suspense>
+            </InvoiceProvider>
+          </TooltipProvider>
         </LanguageProvider>
       </BrowserRouter>
     </QueryClientProvider>

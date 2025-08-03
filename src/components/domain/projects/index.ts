@@ -1,14 +1,32 @@
-/**
- * Project Domain Components
- * Organized by feature area to reduce circular dependencies and improve tree shaking
- */
+// Project domain components
+export { default as ProjectCard } from '../../ProjectCard';
+export { default as ProjectCardActions } from '../../ProjectCard/ProjectCardActions';
+export { default as ProjectCardActionsHeader } from '../../ProjectCard/ProjectCardActionsHeader';
+export { default as ProjectCardActionsFooter } from '../../ProjectCard/ProjectCardActionsFooter';
+export { default as StandardProjectCard } from '../../ProjectCard/StandardProjectCard';
+export { default as VerticalProjectCard } from '../../ProjectCard/VerticalProjectCard';
+export { default as ProjectCardContent } from '../../ProjectCard/ProjectCardContent';
 
-// Category-based exports
-export * from './cards';
-export * from './management';
-export * from './forms';
+// Project Management
+export { default as ProjectHeader } from '../../ProjectManagement/ProjectHeader';
+export { default as ProjectHeaderActions } from '../../ProjectManagement/ProjectHeaderActions';
+export { default as ProjectHeaderInfo } from '../../ProjectManagement/ProjectHeaderInfo';
+export { default as ProjectProgressBar } from '../../ProjectManagement/ProjectProgressBar';
+export { default as ProjectStats } from '../../ProjectManagement/ProjectStats';
+export { default as MilestoneList } from '../../ProjectManagement/MilestoneList';
 
-// Re-export most commonly used components for convenience
-export { ProjectCard, StandardProjectCard } from './cards';
-export { ProjectHeader, ProjectStats } from './management';
-export { ProjectDetailsForm, MilestonesList } from './forms';
+// Create Project
+export { default as ClientDropdown } from '../../CreateProject/ClientDropdown';
+export { default as FormActions } from '../../CreateProject/FormActions';
+export { default as MilestonesList } from '../../CreateProject/MilestonesList';
+export { default as PaymentProofSettings } from '../../CreateProject/PaymentProofSettings';
+export { default as ProjectDetailsForm } from '../../CreateProject/ProjectDetailsForm';
+export { default as SaveAsTemplateCheckbox } from '../../CreateProject/SaveAsTemplateCheckbox';
+
+
+// Edit Project
+export { MilestoneItemEditor } from '../../EditProject/MilestoneItemEditor';
+export { default as EditProjectDetailsForm } from '../../EditProject/EditProjectDetailsForm';
+export { default as EditPaymentProofSettings } from '../../EditProject/EditPaymentProofSettings';
+export { default as EditMilestonesList } from '../../EditProject/EditMilestonesList';
+export { default as EditFormActions } from '../../EditProject/EditFormActions';
