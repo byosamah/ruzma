@@ -1,5 +1,5 @@
 
-project_id = "***REMOVED***"
+project_id = "chxwfcfstzqvnkwnbbso"
 
 [functions.send-invoice-with-frontend-pdf]
 verify_jwt = true
