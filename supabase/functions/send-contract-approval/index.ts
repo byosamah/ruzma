@@ -149,7 +149,7 @@ const handler = async (req: Request): Promise<Response> => {
 
     // Send contract approval email with freelancer name as sender
     const emailResponse = await resend.emails.send({
-      from: `${freelancerName} <notifications@ruzma.co>`,
+      from: "Ruzma <notifications@ruzma.co>",
       to: clientEmail,
       subject: `Contract Approval Required: ${project.name}`,
       html: `

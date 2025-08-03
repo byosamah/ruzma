@@ -26,7 +26,7 @@ const sendEmailWithResend = async (
       'Content-Type': 'application/json',
     },
     body: JSON.stringify({
-      from: `${freelancerName} <notifications@ruzma.co>`,
+      from: "Ruzma <notifications@ruzma.co>",
       to: [clientEmail],
       subject,
       html,
