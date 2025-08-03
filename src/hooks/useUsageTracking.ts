@@ -7,7 +7,6 @@ import { useT } from '@/lib/i18n';
 
 interface UsageLimits {
   projects: { current: number; max: number; percentage: number; isUnlimited: boolean };
-  storage: { current: number; max: number; percentage: number; currentFormatted: string; maxFormatted: string };
   canCreateProject: boolean;
   shouldShowUpgrade: boolean;
   loading: boolean;
@@ -33,37 +32,16 @@ export const useUsageTracking = (
   return useMemo(() => {
     // Use actual project count from the projects array as the source of truth
     const currentProjects = projects.length;
-    const currentStorage = userProfile?.storage_used || 0;
 
     // Use dynamic limits from database or fallback to defaults while loading
     const planLimits = limits || {
       project_limit: userType === 'plus' || userType === 'pro' ? 999999 : 1,
-      storage_limit_bytes: userType === 'plus' ? 10737418240 : userType === 'pro' ? 53687091200 : 524288000
     };
     
     const isUnlimited = planLimits.project_limit >= 999999;
     const projectsPercentage = isUnlimited ? 0 : Math.round((currentProjects / planLimits.project_limit) * 100);
-    const storagePercentage = Math.round((currentStorage / planLimits.storage_limit_bytes) * 100);
-
-    const formatStorage = (bytes: number) => {
-      if (bytes >= 1073741824) { // 1GB
-        return `${(bytes / 1073741824).toFixed(1)} ${t('gb')}`;
-      } else {
-        return `${(bytes / 1048576).toFixed(0)} ${t('mb')}`;
-      }
-    };
 
     const canCreateProject = isUnlimited || currentProjects < planLimits.project_limit;
-
-    // Remove debug logging to improve performance
-    // console.log('Usage tracking debug:', {
-    //   currentProjects,
-    //   maxProjects: planLimits.project_limit,
-    //   profileProjectCount: userProfile?.project_count,
-    //   canCreateProject,
-    //   userType,
-    //   isUnlimited
-    // });
 
     return {
       projects: {
@@ -72,16 +50,9 @@ export const useUsageTracking = (
         percentage: projectsPercentage,
         isUnlimited,
       },
-      storage: {
-        current: currentStorage,
-        max: planLimits.storage_limit_bytes,
-        percentage: storagePercentage,
-        currentFormatted: formatStorage(currentStorage),
-        maxFormatted: formatStorage(planLimits.storage_limit_bytes),
-      },
       canCreateProject,
-      shouldShowUpgrade: (!isUnlimited && projectsPercentage >= 80) || storagePercentage >= 80,
+      shouldShowUpgrade: !isUnlimited && projectsPercentage >= 80,
       loading: isLoading,
     };
-  }, [userProfile, projects, limits, isLoading, userType, t]);
+  }, [userProfile, projects, limits, isLoading, userType]);
 };
