@@ -73,14 +73,41 @@ export class UserService extends BaseService {
     const user = this.ensureAuthenticated();
 
     try {
-      const { error } = await this.supabase
+      // First try using the RPC function
+      const { error: rpcError } = await this.supabase
         .rpc('update_project_count', {
           _count_change: countChange,
           _user_id: user.id
         });
 
-      if (error) {
-        throw error;
+      if (rpcError) {
+        console.warn('RPC function failed, falling back to direct update:', rpcError);
+        
+        // Fallback: Update the project count directly
+        const { data: currentProfile, error: fetchError } = await this.supabase
+          .from('profiles')
+          .select('project_count')
+          .eq('id', user.id)
+          .maybeSingle();
+
+        if (fetchError) {
+          throw fetchError;
+        }
+
+        const currentCount = currentProfile?.project_count || 0;
+        const newCount = Math.max(0, currentCount + countChange);
+
+        const { error: updateError } = await this.supabase
+          .from('profiles')
+          .update({
+            project_count: newCount,
+            updated_at: new Date().toISOString()
+          })
+          .eq('id', user.id);
+
+        if (updateError) {
+          throw updateError;
+        }
       }
 
       this.logOperation('project_count_updated', { countChange });
