@@ -96,23 +96,17 @@ export class ClientService extends BaseService {
     try {
       securityMonitor.monitorDataAccess('clients', 'fetch_all');
 
-      const { data: clients, error } = await this.supabase
-        .from('clients')
-        .select('*, projects(count)')
-        .eq('user_id', user.id)
-        .order('created_at', { ascending: false });
+      // Use a raw SQL query to properly count related projects
+      const { data: clients, error } = await this.supabase.rpc('get_clients_with_project_count', {
+        user_id_param: user.id
+      });
 
       if (error) {
         throw error;
       }
 
-      const clientsWithCount = clients?.map(client => ({
-        ...client,
-        project_count: Array.isArray(client.projects) ? client.projects.length : 0
-      })) || [];
-
-      this.logOperation('clients_fetched', { count: clientsWithCount.length });
-      return clientsWithCount;
+      this.logOperation('clients_fetched', { count: clients?.length || 0 });
+      return clients || [];
     } catch (error) {
       return this.handleError(error, 'getAllClients');
     }
