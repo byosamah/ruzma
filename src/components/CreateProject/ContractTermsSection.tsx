@@ -179,18 +179,15 @@ Not Included:
       name={fieldName}
       render={({ field }) => (
         <FormItem>
-          <div className={`flex items-center justify-between mb-2 ${language === 'ar' ? 'flex-row-reverse' : ''}`} style={language === 'ar' ? { direction: 'rtl' } : {}}>
-            <FormLabel className={`text-sm font-medium text-gray-700 ${language === 'ar' ? 'text-right' : 'text-left'}`}>{label}</FormLabel>
-            <div className={`flex items-center ${language === 'ar' ? 'flex-row-reverse gap-2' : 'gap-2'}`} style={language === 'ar' ? { direction: 'rtl' } : {}}>
-              <span className={`text-sm text-gray-500 ${language === 'ar' ? 'text-right mr-2' : 'text-left'}`}>
-                {t('useTemplate')}
-              </span>
-              <Switch
-                checked={useDefaults[fieldName]}
-                onCheckedChange={(checked) => handleToggleDefault(fieldName, defaultText)}
-                className={language === 'ar' ? 'rtl-switch' : ''}
-              />
+          <div className={`flex flex-col sm:flex-row sm:items-center p-3 sm:p-4 bg-gray-50 rounded-lg mb-3 sm:mb-4 space-y-2 sm:space-y-0 gap-4 ${language === 'ar' ? 'sm:flex-row-reverse' : ''}`}>
+            <div className={`flex-1 ${language === 'ar' ? 'text-right' : 'text-left'}`}>
+              <FormLabel className="text-sm font-medium text-gray-900">{label}</FormLabel>
+              <p className="text-sm text-gray-500">{t('useTemplate')}</p>
             </div>
+            <Switch
+              checked={useDefaults[fieldName]}
+              onCheckedChange={(checked) => handleToggleDefault(fieldName, defaultText)}
+            />
           </div>
           <FormControl>
             <Textarea
