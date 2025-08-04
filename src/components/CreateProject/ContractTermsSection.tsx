@@ -222,8 +222,8 @@ Not Included:
         </p>
 
         {/* Contract Required Toggle */}
-        <div className={`flex flex-col sm:flex-row sm:items-center sm:justify-between p-3 sm:p-4 bg-gray-50 rounded-lg mb-3 sm:mb-4 space-y-2 sm:space-y-0 ${language === 'ar' ? 'sm:flex-row-reverse' : ''}`}>
-          <div className={language === 'ar' ? 'text-right' : 'text-left'}>
+        <div className={`flex flex-col sm:flex-row sm:items-center p-3 sm:p-4 bg-gray-50 rounded-lg mb-3 sm:mb-4 space-y-2 sm:space-y-0 gap-4 ${language === 'ar' ? 'sm:flex-row-reverse' : ''}`}>
+          <div className={`flex-1 ${language === 'ar' ? 'text-right' : 'text-left'}`}>
             <h4 className="text-sm font-medium text-gray-900">{t('requireContractApproval')}</h4>
             <p className="text-sm text-gray-500">{t('requireContractDescription')}</p>
           </div>
@@ -253,8 +253,8 @@ Not Included:
         )}
 
         {contractRequired && (
-          <div className={`flex flex-col sm:flex-row sm:items-center sm:justify-between p-3 sm:p-4 bg-gray-50 rounded-lg space-y-2 sm:space-y-0 ${language === 'ar' ? 'sm:flex-row-reverse' : ''}`}>
-            <div className={language === 'ar' ? 'text-right' : 'text-left'}>
+          <div className={`flex flex-col sm:flex-row sm:items-center p-3 sm:p-4 bg-gray-50 rounded-lg space-y-2 sm:space-y-0 gap-4 ${language === 'ar' ? 'sm:flex-row-reverse' : ''}`}>
+            <div className={`flex-1 ${language === 'ar' ? 'text-right' : 'text-left'}`}>
               <h4 className="text-sm font-medium text-gray-900">{t('useTemplateForAll')}</h4>
               <p className="text-sm text-gray-500">{t('useTemplateDescription')}</p>
             </div>
