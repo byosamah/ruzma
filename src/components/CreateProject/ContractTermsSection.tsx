@@ -179,10 +179,10 @@ Not Included:
       name={fieldName}
       render={({ field }) => (
         <FormItem>
-          <div className={`flex items-center justify-between mb-2 ${language === 'ar' ? 'rtl:flex-row-reverse' : ''}`}>
-            <FormLabel className="text-sm font-medium text-gray-700">{label}</FormLabel>
-            <div className={`flex items-center gap-2 ${language === 'ar' ? 'rtl:flex-row-reverse' : ''}`}>
-              <span className="text-sm text-gray-500">
+          <div className={`flex items-center justify-between mb-2 ${language === 'ar' ? 'flex-row-reverse' : ''}`}>
+            <FormLabel className={`text-sm font-medium text-gray-700 ${language === 'ar' ? 'text-right' : 'text-left'}`}>{label}</FormLabel>
+            <div className={`flex items-center ${language === 'ar' ? 'flex-row-reverse gap-2' : 'gap-2'}`}>
+              <span className={`text-sm text-gray-500 ${language === 'ar' ? 'text-right' : 'text-left'}`}>
                 {t('useTemplate')}
               </span>
               <Switch
@@ -215,17 +215,17 @@ Not Included:
   return (
     <div className="bg-white rounded-lg border border-gray-200 overflow-hidden" dir={language === 'ar' ? 'rtl' : 'ltr'}>
       <div className="px-4 sm:px-6 py-3 sm:py-4 border-b border-gray-100">
-        <div className={`flex items-center gap-2 mb-2 ${language === 'ar' ? 'rtl:flex-row-reverse' : ''}`}>
+        <div className={`flex items-center gap-2 mb-2 ${language === 'ar' ? 'flex-row-reverse' : ''}`}>
           <span className="text-base sm:text-xl text-gray-600">📄</span>
-          <h3 className="text-sm font-medium text-gray-900">{t('contractTermsTitle')}</h3>
+          <h3 className={`text-sm font-medium text-gray-900 ${language === 'ar' ? 'text-right' : 'text-left'}`}>{t('contractTermsTitle')}</h3>
         </div>
-        <p className="text-sm text-gray-500 mb-3 sm:mb-4">
+        <p className={`text-sm text-gray-500 mb-3 sm:mb-4 ${language === 'ar' ? 'text-right' : 'text-left'}`}>
           {t('contractTermsDescription')}
         </p>
 
         {/* Contract Required Toggle */}
-        <div className={`flex flex-col sm:flex-row sm:items-center sm:justify-between p-3 sm:p-4 bg-gray-50 rounded-lg mb-3 sm:mb-4 space-y-2 sm:space-y-0 ${language === 'ar' ? 'rtl:flex-row-reverse' : ''}`}>
-          <div>
+        <div className={`flex flex-col sm:flex-row sm:items-center sm:justify-between p-3 sm:p-4 bg-gray-50 rounded-lg mb-3 sm:mb-4 space-y-2 sm:space-y-0 ${language === 'ar' ? 'sm:flex-row-reverse' : ''}`}>
+          <div className={language === 'ar' ? 'text-right' : 'text-left'}>
             <h4 className="text-sm font-medium text-gray-900">{t('requireContractApproval')}</h4>
             <p className="text-sm text-gray-500">{t('requireContractDescription')}</p>
           </div>
@@ -255,8 +255,8 @@ Not Included:
         )}
 
         {contractRequired && (
-          <div className={`flex flex-col sm:flex-row sm:items-center sm:justify-between p-3 sm:p-4 bg-gray-50 rounded-lg space-y-2 sm:space-y-0 ${language === 'ar' ? 'rtl:flex-row-reverse' : ''}`}>
-            <div>
+          <div className={`flex flex-col sm:flex-row sm:items-center sm:justify-between p-3 sm:p-4 bg-gray-50 rounded-lg space-y-2 sm:space-y-0 ${language === 'ar' ? 'sm:flex-row-reverse' : ''}`}>
+            <div className={language === 'ar' ? 'text-right' : 'text-left'}>
               <h4 className="text-sm font-medium text-gray-900">{t('useTemplateForAll')}</h4>
               <p className="text-sm text-gray-500">{t('useTemplateDescription')}</p>
             </div>
@@ -268,23 +268,23 @@ Not Included:
       {contractRequired && (
         <div className="p-4 sm:p-6 space-y-4 sm:space-y-6" dir={language === 'ar' ? 'rtl' : 'ltr'}>
           <Tabs defaultValue="contract" className="w-full">
-            <TabsList className={`grid w-full grid-cols-2 sm:grid-cols-4 h-auto ${language === 'ar' ? 'rtl:flex-row-reverse' : ''}`}>
-              <TabsTrigger value="contract" className={`flex items-center gap-1 text-xs sm:text-sm px-2 sm:px-3 py-2 ${language === 'ar' ? 'rtl:flex-row-reverse' : ''}`}>
+            <TabsList className={`grid w-full grid-cols-2 sm:grid-cols-4 h-auto ${language === 'ar' ? 'grid-flow-row-dense' : ''}`} dir={language === 'ar' ? 'rtl' : 'ltr'}>
+              <TabsTrigger value="contract" className={`flex items-center gap-1 text-xs sm:text-sm px-2 sm:px-3 py-2 ${language === 'ar' ? 'flex-row-reverse' : ''}`}>
                 <span className="text-sm sm:text-lg">📄</span>
                 <span className="hidden sm:inline">{t('contractTab')}</span>
                 <span className="sm:hidden">{t('contractTabShort')}</span>
               </TabsTrigger>
-              <TabsTrigger value="payment" className={`flex items-center gap-1 text-xs sm:text-sm px-2 sm:px-3 py-2 ${language === 'ar' ? 'rtl:flex-row-reverse' : ''}`}>
+              <TabsTrigger value="payment" className={`flex items-center gap-1 text-xs sm:text-sm px-2 sm:px-3 py-2 ${language === 'ar' ? 'flex-row-reverse' : ''}`}>
                 <span className="text-sm sm:text-lg">💰</span>
                 <span className="hidden sm:inline">{t('paymentTab')}</span>
                 <span className="sm:hidden">{t('paymentTabShort')}</span>
               </TabsTrigger>
-              <TabsTrigger value="scope" className={`flex items-center gap-1 text-xs sm:text-sm px-2 sm:px-3 py-2 ${language === 'ar' ? 'rtl:flex-row-reverse' : ''}`}>
+              <TabsTrigger value="scope" className={`flex items-center gap-1 text-xs sm:text-sm px-2 sm:px-3 py-2 ${language === 'ar' ? 'flex-row-reverse' : ''}`}>
                 <span className="text-sm sm:text-lg">🎯</span>
                 <span className="hidden sm:inline">{t('scopeTab')}</span>
                 <span className="sm:hidden">{t('scopeTab')}</span>
               </TabsTrigger>
-              <TabsTrigger value="revisions" className={`flex items-center gap-1 text-xs sm:text-sm px-2 sm:px-3 py-2 ${language === 'ar' ? 'rtl:flex-row-reverse' : ''}`}>
+              <TabsTrigger value="revisions" className={`flex items-center gap-1 text-xs sm:text-sm px-2 sm:px-3 py-2 ${language === 'ar' ? 'flex-row-reverse' : ''}`}>
                 <span className="text-sm sm:text-lg">🔄</span>
                 <span className="hidden sm:inline">{t('revisionsTab')}</span>
                 <span className="sm:hidden">{t('revisionsTabShort')}</span>
