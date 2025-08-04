@@ -91,7 +91,7 @@ const EditProject: React.FC = () => {
           <div className="text-center">
             <p className="text-slate-600 mb-4">{t('projectNotFoundAccessDenied')}</p>
             <button 
-              onClick={() => navigate('/dashboard')} 
+              onClick={() => navigate('/dashboard')}
               className="text-blue-600 hover:text-blue-800"
             >
               {t('returnToDashboard')}

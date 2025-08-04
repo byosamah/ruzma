@@ -12,6 +12,7 @@ export function useLanguageNavigation() {
    */
   const navigateWithLanguage = (path: string, options?: { replace?: boolean; state?: any }) => {
     const pathWithLanguage = addLanguageToPath(path, language);
+    console.log('Language navigation:', { path, language, pathWithLanguage });
     navigate(pathWithLanguage, options);
   };
 
