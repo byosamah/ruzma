@@ -33,6 +33,15 @@ const ClientLifetimeValue: React.FC<ClientLifetimeValueProps> = ({
     }
   };
 
+  const translateRiskLevel = (risk: string) => {
+    switch (risk) {
+      case 'high': return t('highRisk');
+      case 'medium': return t('mediumRisk');
+      case 'low': return t('lowRisk');
+      default: return risk;
+    }
+  };
+
   return (
     <Card className="card-flat" dir={t('topClientsByLifetimeValue') === 'أفضل العملاء حسب القيمة الإجمالية' ? 'rtl' : 'ltr'}>
       <CardHeader className="pb-4">
@@ -64,9 +73,9 @@ const ClientLifetimeValue: React.FC<ClientLifetimeValueProps> = ({
                     </div>
                     <div className="flex items-center gap-4 text-xs text-muted-foreground rtl:flex-row-reverse">
                       <span>{client.totalProjects} {t('projects')}</span>
-                      <span className={getRiskColor(client.riskLevel)}>
-                        {client.riskLevel} {t('risk')}
-                      </span>
+                       <span className={getRiskColor(client.riskLevel)}>
+                         {translateRiskLevel(client.riskLevel)} {t('risk')}
+                       </span>
                     </div>
                   </div>
                 </div>

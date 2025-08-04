@@ -25,6 +25,8 @@ const RevenueOptimization: React.FC<RevenueOptimizationProps> = ({
       'Profit Margin': t('profitMargin'),
       'Monthly Revenue': t('monthlyRevenue'),
       'Client Acquisition Rate': t('clientAcquisitionRate'),
+      'Monthly Revenue Growth': t('monthlyRevenueGrowth'),
+      'Average Project Margin': t('averageProjectMargin'),
     };
     return translations[metric] || metric;
   };
@@ -39,6 +41,8 @@ const RevenueOptimization: React.FC<RevenueOptimizationProps> = ({
       'Last Week': t('lastWeek'),
       'This Quarter': t('thisQuarter'),
       'Last Quarter': t('lastQuarter'),
+      'Month over Month': t('monthOverMonth'),
+      'Current Period': t('currentPeriod'),
     };
     return translations[period] || period;
   };
