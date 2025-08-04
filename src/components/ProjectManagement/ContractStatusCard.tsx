@@ -7,6 +7,7 @@ import { DatabaseProject } from '@/hooks/projectTypes';
 import { ContractService } from '@/services/core/ContractService';
 import { useAuth } from '@/hooks/core/useAuth';
 import { toast } from 'sonner';
+import { useT } from '@/lib/i18n';
 import EditContractDialog from '@/components/CreateProject/EditContractDialog';
 
 interface ContractStatusCardProps {
@@ -19,6 +20,7 @@ const ContractStatusCard: React.FC<ContractStatusCardProps> = ({
   onProjectUpdate 
 }) => {
   const { user } = useAuth();
+  const t = useT();
   const [isResending, setIsResending] = useState(false);
   const [showEditDialog, setShowEditDialog] = useState(false);
 
@@ -30,44 +32,44 @@ const ContractStatusCard: React.FC<ContractStatusCardProps> = ({
     switch (project.contract_status) {
       case 'approved':
         return {
-          label: 'Approved',
+          label: t('approved'),
           icon: CheckCircle,
           color: 'text-green-600',
           bgColor: 'bg-green-50',
-          description: `Contract approved on ${project.contract_approved_at ? new Date(project.contract_approved_at).toLocaleDateString() : 'N/A'}`
+          description: `${t('contractApprovedOn')} ${project.contract_approved_at ? new Date(project.contract_approved_at).toLocaleDateString() : 'N/A'}`
         };
       case 'rejected':
         return {
-          label: 'Rejected',
+          label: t('rejected'),
           icon: XCircle,
           color: 'text-red-600',
           bgColor: 'bg-red-50',
-          description: project.contract_rejection_reason || 'Contract was rejected by client'
+          description: project.contract_rejection_reason || t('contractRejectedBy')
         };
       case 'pending':
         return {
-          label: 'Pending Approval',
+          label: t('pendingApproval'),
           icon: Clock,
           color: 'text-orange-600',
           bgColor: 'bg-orange-50',
           description: project.contract_sent_at 
-            ? `Sent on ${new Date(project.contract_sent_at).toLocaleDateString()}`
-            : 'Contract not yet sent to client'
+            ? `${t('sentOn')} ${new Date(project.contract_sent_at).toLocaleDateString()}`
+            : t('contractNotSentYet')
         };
       default:
         return {
-          label: 'Not Sent',
+          label: t('notSent'),
           icon: Mail,
           color: 'text-gray-600',
           bgColor: 'bg-gray-50',
-          description: 'Contract has not been sent to client yet'
+          description: t('contractNotSentToClient')
         };
     }
   };
 
   const handleResendContract = async () => {
     if (!user) {
-      toast.error('You must be logged in to resend the contract');
+      toast.error(t('mustBeLoggedInToResend'));
       return;
     }
 
@@ -78,7 +80,7 @@ const ContractStatusCard: React.FC<ContractStatusCardProps> = ({
       onProjectUpdate?.();
     } catch (error: any) {
       console.error('Error resending contract:', error);
-      toast.error(error.message || 'Failed to resend contract');
+      toast.error(error.message || t('failedToResendContract'));
     } finally {
       setIsResending(false);
     }
@@ -96,7 +98,7 @@ const ContractStatusCard: React.FC<ContractStatusCardProps> = ({
       <Card>
         <CardHeader className="pb-3">
           <div className="flex items-center justify-between">
-            <CardTitle className="text-lg">Contract Status</CardTitle>
+            <CardTitle className="text-lg">{t('contractStatus')}</CardTitle>
             <Badge variant="outline" className={`${status.color} border-current`}>
               <StatusIcon className="w-3 h-3 mr-1" />
               {status.label}
@@ -110,7 +112,7 @@ const ContractStatusCard: React.FC<ContractStatusCardProps> = ({
             </p>
             {project.contract_rejection_reason && (
               <p className="text-sm text-gray-600 mt-2">
-                <strong>Feedback:</strong> {project.contract_rejection_reason}
+                <strong>{t('feedback')}:</strong> {project.contract_rejection_reason}
               </p>
             )}
           </div>
@@ -126,7 +128,7 @@ const ContractStatusCard: React.FC<ContractStatusCardProps> = ({
                   className="flex-1"
                 >
                   <Mail className="w-4 h-4 mr-2" />
-                  {isResending ? 'Sending...' : 'Resend Contract'}
+                  {isResending ? t('sending') : t('resendContract')}
                 </Button>
               )}
               
@@ -137,14 +139,14 @@ const ContractStatusCard: React.FC<ContractStatusCardProps> = ({
                 className="flex-1"
               >
                 <Edit className="w-4 h-4 mr-2" />
-                Edit Contract
+                {t('editContract')}
               </Button>
             </div>
           )}
 
           {!project.client_email && (
             <div className="text-sm text-amber-600 bg-amber-50 p-3 rounded-lg">
-              <strong>Note:</strong> No client email provided. Add a client email to send contract for approval.
+              {t('noteNoClientEmail')}
             </div>
           )}
         </CardContent>

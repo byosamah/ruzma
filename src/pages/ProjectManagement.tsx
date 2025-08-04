@@ -4,8 +4,9 @@ import { useParams, useNavigate } from "react-router-dom";
 import Layout from "@/components/Layout";
 import { Button } from "@/components/ui/button";
 import { CheckCircle2, Coins } from "lucide-react";
-import { useT } from "@/lib/i18n";
-import { useProjectManagement } from "@/hooks/useProjectManagement";
+import { useT } from '@/lib/i18n';
+import { useLanguage } from '@/contexts/LanguageContext';
+import { useProjectManagement } from '@/hooks/useProjectManagement';
 import { useProjects } from "@/hooks/useProjects";
 import ProjectHeader from "@/components/ProjectManagement/ProjectHeader";
 import MilestoneList from "@/components/ProjectManagement/MilestoneList";
@@ -16,6 +17,7 @@ import { toast } from "sonner";
 const ProjectManagement: React.FC = () => {
   const { slug } = useParams<{ slug: string; }>();
   const navigate = useNavigate();
+  const { language } = useLanguage();
   const t = useT();
   const {
     user,
@@ -65,10 +67,10 @@ const ProjectManagement: React.FC = () => {
 
       if (error) throw error;
       
-      toast.success('Contract resent successfully');
+      toast.success(t('contractResentSuccessfully'));
     } catch (error) {
       console.error('Error resending contract:', error);
-      toast.error('Failed to resend contract');
+      toast.error(t('failedToResendContract'));
     } finally {
       setIsResendingContract(false);
     }
@@ -122,7 +124,7 @@ const ProjectManagement: React.FC = () => {
 
   return (
     <Layout user={profile || user}>
-      <div className="max-w-5xl mx-auto space-y-8">
+      <div className="max-w-5xl mx-auto space-y-8" dir={language === 'ar' ? 'rtl' : 'ltr'}>
         {/* Project Header */}
         <div className="space-y-6">
           <ProjectHeader 

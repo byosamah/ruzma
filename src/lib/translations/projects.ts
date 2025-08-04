@@ -156,6 +156,37 @@ export const projectTranslations = {
     failedToSaveTemplate: "Failed to save template",
     errorOccurred: "An error occurred",
     mustBeLoggedInToSaveTemplate: "You must be logged in to save a template",
+    
+    // Project Management & Contract Status
+    contractStatus: "Contract Status",
+    approved: "Approved",
+    rejected: "Rejected", 
+    pendingApproval: "Pending Approval",
+    notSent: "Not Sent",
+    contractApprovedOn: "Contract approved on",
+    contractRejectedBy: "Contract was rejected by client",
+    sentOn: "Sent on",
+    contractNotSentYet: "Contract not yet sent to client",
+    contractNotSentToClient: "Contract has not been sent to client yet",
+    feedback: "Feedback",
+    resendContract: "Resend Contract",
+    editContract: "Edit Contract",
+    sending: "Sending...",
+    noteNoClientEmail: "Note: No client email provided. Add a client email to send contract for approval.",
+    contractResentSuccessfully: "Contract resent successfully",
+    failedToResendContract: "Failed to resend contract",
+    mustBeLoggedInToResend: "You must be logged in to resend the contract",
+    areYouSureDeleteProject: "Are you sure you want to delete this project?",
+    
+    // Common translations
+    clientLinkCopied: "Client link copied to clipboard",
+    clientLinkSent: "Client link sent successfully",
+    clientLinkSendFailed: "Failed to send client link",
+    noClientEmailFound: "No client email found",
+    sendingClientLink: "Sending client link...",
+    emailDomainVerificationRequired: "Email domain verification required",
+    createInvoice: "Create Invoice",
+    failedToCopyLink: "Failed to copy link",
   },
   ar: {
     loadingProject: "جاري تحميل المشروع...",
@@ -308,7 +339,42 @@ export const projectTranslations = {
     revisionPolicyTitle: "سياسة المراجعات",
     revisionPolicyPlaceholder: "أدخل سياسة المراجعات...",
 
-    // Default Contract Templates in Arabic
+    // Notification Messages
+    templateSavedSuccessfully: "تم حفظ القالب بنجاح",
+    failedToSaveTemplate: "فشل في حفظ القالب",
+    errorOccurred: "حدث خطأ",
+    mustBeLoggedInToSaveTemplate: "يجب أن تكون مسجل الدخول لحفظ قالب",
+    
+    // Project Management & Contract Status
+    contractStatus: "حالة العقد",
+    approved: "تمت الموافقة",
+    rejected: "مرفوض",
+    pendingApproval: "في انتظار الموافقة",
+    notSent: "لم يتم الإرسال",
+    contractApprovedOn: "تمت الموافقة على العقد في",
+    contractRejectedBy: "تم رفض العقد من قبل العميل",
+    sentOn: "أُرسل في",
+    contractNotSentYet: "لم يتم إرسال العقد للعميل بعد",
+    contractNotSentToClient: "لم يتم إرسال العقد للعميل بعد",
+    feedback: "التغذية الراجعة",
+    resendContract: "إعادة إرسال العقد",
+    editContract: "تعديل العقد",
+    sending: "جاري الإرسال...",
+    noteNoClientEmail: "ملاحظة: لم يتم توفير بريد إلكتروني للعميل. أضف بريد إلكتروني للعميل لإرسال العقد للموافقة.",
+    contractResentSuccessfully: "تم إعادة إرسال العقد بنجاح",
+    failedToResendContract: "فشل في إعادة إرسال العقد",
+    mustBeLoggedInToResend: "يجب أن تكون مسجل الدخول لإعادة إرسال العقد",
+    areYouSureDeleteProject: "هل أنت متأكد من أنك تريد حذف هذا المشروع؟",
+    
+    // Common translations
+    clientLinkCopied: "تم نسخ رابط العميل إلى الحافظة",
+    clientLinkSent: "تم إرسال رابط العميل بنجاح",
+    clientLinkSendFailed: "فشل في إرسال رابط العميل",
+    noClientEmailFound: "لم يتم العثور على بريد إلكتروني للعميل",
+    sendingClientLink: "جاري إرسال رابط العميل...",
+    emailDomainVerificationRequired: "مطلوب التحقق من نطاق البريد الإلكتروني",
+    createInvoice: "إنشاء فاتورة",
+    failedToCopyLink: "فشل في نسخ الرابط",
     defaultContractTermsAr: `الشروط والأحكام:
 
 1. نطاق العمل
@@ -354,11 +420,5 @@ export const projectTranslations = {
 - المراجعات الإضافية: 50 دولار في الساعة
 - التغييرات الرئيسية في النطاق تتطلب اتفاقية منفصلة
 - يجب أن تكون المراجعات محددة وقابلة للتنفيذ`,
-
-    // Notification Messages
-    templateSavedSuccessfully: "تم حفظ القالب بنجاح",
-    failedToSaveTemplate: "فشل في حفظ القالب",
-    errorOccurred: "حدث خطأ",
-    mustBeLoggedInToSaveTemplate: "يجب أن تكون مسجل الدخول لحفظ قالب",
   },
 };

@@ -7,7 +7,7 @@ import { DatabaseProject } from '@/hooks/projectTypes';
 import { toast } from 'sonner';
 import { sendClientLink } from '@/services/clientLinkService';
 import { supabase } from '@/integrations/supabase/client';
-import { useNavigate } from 'react-router-dom';
+import { useLanguageNavigation } from '@/hooks/useLanguageNavigation';
 
 interface ProjectHeaderActionsProps {
   project: DatabaseProject;
@@ -23,7 +23,7 @@ const ProjectHeaderActions: React.FC<ProjectHeaderActionsProps> = ({
   isMobile
 }) => {
   const t = useT();
-  const navigate = useNavigate();
+  const { navigate } = useLanguageNavigation();
 
   const handleViewProjectPage = () => {
     // Use the full client_access_token directly
@@ -38,7 +38,7 @@ const ProjectHeaderActions: React.FC<ProjectHeaderActionsProps> = ({
       await navigator.clipboard.writeText(clientUrl);
       toast.success(t('clientLinkCopied'));
     } catch (error) {
-      toast.error('Failed to copy link');
+      toast.error(t('failedToCopyLink'));
     }
   };
 
@@ -77,7 +77,7 @@ const ProjectHeaderActions: React.FC<ProjectHeaderActionsProps> = ({
   };
 
   const handleCreateInvoice = () => {
-    navigate(`/en/create-invoice?projectId=${project.id}`);
+    navigate(`/create-invoice?projectId=${project.id}`);
   };
 
   return (
