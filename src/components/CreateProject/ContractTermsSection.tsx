@@ -213,7 +213,7 @@ Not Included:
   return (
     <div className="bg-white rounded-lg border border-gray-200 overflow-hidden" dir={language === 'ar' ? 'rtl' : 'ltr'} style={{ direction: language === 'ar' ? 'rtl' : 'ltr' }}>
       <div className="px-4 sm:px-6 py-3 sm:py-4 border-b border-gray-100">
-        <div className={`flex items-center gap-2 mb-2 ${language === 'ar' ? 'flex-row-reverse' : ''}`}>
+        <div className={`flex items-center gap-2 mb-2 ${language === 'ar' ? 'flex-row-reverse justify-end' : ''}`}>
           <span className="text-base sm:text-xl text-gray-600">📄</span>
           <h3 className={`text-sm font-medium text-gray-900 ${language === 'ar' ? 'text-right' : 'text-left'}`}>{t('contractTermsTitle')}</h3>
         </div>
