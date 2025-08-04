@@ -1,5 +1,5 @@
 
-import { useNavigate } from 'react-router-dom';
+import { useLanguageNavigation } from '@/hooks/useLanguageNavigation';
 import { User } from '@supabase/supabase-js';
 import { useAuth } from '@/hooks/core/useAuth';
 import { useDashboardActions } from '@/hooks/dashboard/useDashboardActions';
@@ -7,7 +7,7 @@ import { useProfileInfo } from './profile/useProfileInfo';
 import { useProfileActions } from './profile/useProfileActions';
 
 export const useProfile = (user?: User | null) => {
-  const navigate = useNavigate();
+  const { navigate } = useLanguageNavigation();
   const { user: authUser } = useAuth();
   const { handleSignOut } = useDashboardActions(() => Promise.resolve(true));
   

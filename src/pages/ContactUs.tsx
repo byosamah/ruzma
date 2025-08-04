@@ -10,7 +10,7 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { toast } from 'sonner';
-import { useNavigate } from 'react-router-dom';
+import { useLanguageNavigation } from '@/hooks/useLanguageNavigation';
 // Icons replaced with emojis
 import { useT } from '@/lib/i18n';
 import { useDashboard } from '@/hooks/useDashboard';
@@ -26,7 +26,7 @@ const contactFormSchema = z.object({
 type ContactFormData = z.infer<typeof contactFormSchema>;
 
 const ContactUs = () => {
-  const navigate = useNavigate();
+  const { navigate } = useLanguageNavigation();
   const t = useT();
   const { user, handleSignOut } = useDashboard();
   
