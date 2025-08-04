@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button';
 import { useT } from '@/lib/i18n';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 import { useIsMobile } from '@/hooks/use-mobile';
-import { useAuthContext } from '@/contexts/AuthContext';
+import { useAuth } from '@/hooks/core/useAuth';
 import { rateLimitService } from '@/services/core/RateLimitService';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 
@@ -20,7 +20,7 @@ const DashboardHeaderButtons: React.FC<DashboardHeaderButtonsProps> = ({
 }) => {
   const t = useT();
   const isMobile = useIsMobile();
-  const { user } = useAuthContext();
+  const { user } = useAuth();
   const [rateLimitStatus, setRateLimitStatus] = useState<{
     isNearLimit: boolean;
     remainingAttempts: number;
