@@ -5,7 +5,6 @@ import { DatabaseProject, DatabaseMilestone } from '@/hooks/projectTypes';
 import { ProjectTemplate } from '@/types/projectTemplate';
 import { generateSlug, ensureUniqueSlug } from '@/lib/slugUtils';
 import * as analytics from '@/lib/analytics';
-import { securityMonitor } from '@/lib/securityMonitoring';
 import { sendPaymentNotification } from '@/services/emailNotifications';
 import { trackProjectCreated, trackMilestoneApproved, trackPaymentProofUploaded, trackDeliverableUploaded, trackMilestoneCreated } from '@/lib/analytics';
 import { toast } from 'sonner';
@@ -15,6 +14,7 @@ import { EmailService } from './core/EmailService';
 import { ClientService } from './core/ClientService';
 import { ContractService } from './core/ContractService';
 import { CurrencyService } from './core/CurrencyService';
+import { rateLimitService } from './core/RateLimitService';
 
 export interface ProjectOperationData extends CreateProjectFormData {
   id?: string; // For edit operations
@@ -81,16 +81,14 @@ export class ProjectService {
       throw new Error('At least one milestone is required');
     }
 
-    // Rate limiting check
-    const rateLimitKey = `project_creation_${this.user!.id}`;
-    const isRateLimited = await securityMonitor.checkRateLimit(
-      rateLimitKey,
-      5, // max 5 attempts
-      3600 // per hour
+    // Rate limiting check - check both burst and hourly limits
+    const rateLimitResult = rateLimitService.checkMultipleRateLimits(
+      this.user!.id,
+      ['project_creation_burst', 'project_creation']
     );
 
-    if (isRateLimited) {
-      throw new Error('Too many project creation attempts. Please try again later.');
+    if (!rateLimitResult.allowed) {
+      throw new Error(rateLimitResult.message || 'Too many project creation attempts. Please try again later.');
     }
 
     // Check user limits using the centralized UserService

@@ -2,7 +2,7 @@ import { User } from '@supabase/supabase-js';
 import { BaseService } from './BaseService';
 import { ClientWithProjectCount, CreateClientData, UpdateClientData } from '@/types/client';
 import { validateEmail, sanitizeInput } from '@/lib/inputValidation';
-import { securityMonitor } from '@/lib/securityMonitoring';
+import { rateLimitService } from './RateLimitService';
 import { toast } from 'sonner';
 
 export interface Client {
@@ -94,7 +94,7 @@ export class ClientService extends BaseService {
     const user = this.ensureAuthenticated();
 
     try {
-      securityMonitor.monitorDataAccess('clients', 'fetch_all');
+      
 
       // Get clients and manually count projects
       const { data: clients, error: clientsError } = await this.supabase
@@ -139,9 +139,12 @@ export class ClientService extends BaseService {
 
     try {
       // Rate limiting check
-      const rateLimitKey = `create_client_${user.id}`;
-      if (!securityMonitor.checkRateLimit(rateLimitKey, 10, 60000)) {
-        toast.error('Too many attempts. Please try again later.');
+      const rateLimitResult = rateLimitService.checkMultipleRateLimits(
+        user.id,
+        ['client_creation_burst', 'client_creation']
+      );
+      
+      if (!rateLimitResult.allowed) {
         return null;
       }
 
@@ -153,7 +156,7 @@ export class ClientService extends BaseService {
 
       const sanitizedData = validationResult.sanitizedData;
 
-      securityMonitor.monitorDataModification('clients', 'create', { email: sanitizedData.email });
+      
 
       const { data: newClient, error } = await this.supabase
         .from('clients')
@@ -193,7 +196,7 @@ export class ClientService extends BaseService {
 
       const sanitizedData = validationResult.sanitizedData;
 
-      securityMonitor.monitorDataModification('clients', 'update', { clientId });
+      
 
       const { data: updatedClient, error } = await this.supabase
         .from('clients')
@@ -223,7 +226,7 @@ export class ClientService extends BaseService {
     const user = this.ensureAuthenticated();
 
     try {
-      securityMonitor.monitorDataModification('clients', 'delete', { clientId });
+      
 
       const { error } = await this.supabase
         .from('clients')
@@ -249,7 +252,7 @@ export class ClientService extends BaseService {
       const emailValidation = validateEmail(clientData.email);
       if (!emailValidation.isValid) {
         toast.error(emailValidation.error || 'Invalid email');
-        securityMonitor.monitorValidationFailure(clientData.email, 'email_validation');
+        
         return { isValid: false };
       }
     }
@@ -257,7 +260,7 @@ export class ClientService extends BaseService {
     if ('name' in clientData && clientData.name) {
       const sanitizedName = sanitizeInput(clientData.name);
       if (sanitizedName !== clientData.name) {
-        securityMonitor.monitorValidationFailure(clientData.name, 'name_sanitization');
+        
         return { isValid: true, sanitizedData: { ...clientData, name: sanitizedName } };
       }
     }

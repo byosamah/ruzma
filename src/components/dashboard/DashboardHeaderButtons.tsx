@@ -1,10 +1,13 @@
 
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Button } from '@/components/ui/button';
 // Replaced icons with emojis
 import { useT } from '@/lib/i18n';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 import { useIsMobile } from '@/hooks/use-mobile';
+import { useAuthContext } from '@/contexts/AuthContext';
+import { rateLimitService } from '@/services/core/RateLimitService';
+import { Alert, AlertDescription } from '@/components/ui/alert';
 
 interface DashboardHeaderButtonsProps {
   onNewProject: () => void;
@@ -17,6 +20,24 @@ const DashboardHeaderButtons: React.FC<DashboardHeaderButtonsProps> = ({
 }) => {
   const t = useT();
   const isMobile = useIsMobile();
+  const { user } = useAuthContext();
+  const [rateLimitStatus, setRateLimitStatus] = useState<{
+    isNearLimit: boolean;
+    remainingAttempts: number;
+    resetTime: number;
+  } | null>(null);
+
+  useEffect(() => {
+    if (user) {
+      const status = rateLimitService.getRateLimitStatus(user.id, 'project_creation');
+      setRateLimitStatus(status);
+    }
+  }, [user]);
+
+  const formatResetTime = (resetTime: number) => {
+    const minutesUntilReset = Math.ceil((resetTime - Date.now()) / (60 * 1000));
+    return minutesUntilReset > 0 ? `${minutesUntilReset} minute${minutesUntilReset !== 1 ? 's' : ''}` : '0 minutes';
+  };
 
   const NewProjectButton = () => {
     const button = (
@@ -48,7 +69,19 @@ const DashboardHeaderButtons: React.FC<DashboardHeaderButtonsProps> = ({
   };
 
   return (
-    <div className="flex justify-center w-full">
+    <div className="flex flex-col items-center w-full gap-3">
+      {/* Rate Limit Warning */}
+      {rateLimitStatus?.isNearLimit && (
+        <div className="w-full max-w-md">
+          <Alert className="border-amber-200 bg-amber-50">
+            <AlertDescription className="text-amber-800 text-sm text-center">
+              You have {rateLimitStatus.remainingAttempts} project creation attempts remaining. 
+              Limit resets in {formatResetTime(rateLimitStatus.resetTime)}.
+            </AlertDescription>
+          </Alert>
+        </div>
+      )}
+      
       <div className="w-full max-w-md">
         <NewProjectButton />
       </div>

@@ -1,7 +1,7 @@
 
 import { toast } from 'sonner';
 import { validateEmail, sanitizeInput } from '@/lib/inputValidation';
-import { securityMonitor } from '@/lib/securityMonitoring';
+import { rateLimitService } from '@/services/core/RateLimitService';
 import { CreateClientData, UpdateClientData } from '@/types/client';
 
 export const validateClientData = (clientData: CreateClientData | UpdateClientData, userId: string) => {
@@ -9,7 +9,6 @@ export const validateClientData = (clientData: CreateClientData | UpdateClientDa
     const emailValidation = validateEmail(clientData.email);
     if (!emailValidation.isValid) {
       toast.error(emailValidation.error || 'Invalid email');
-      securityMonitor.monitorValidationFailure(clientData.email, 'email_validation');
       return { isValid: false };
     }
   }
@@ -17,7 +16,6 @@ export const validateClientData = (clientData: CreateClientData | UpdateClientDa
   if ('name' in clientData && clientData.name) {
     const sanitizedName = sanitizeInput(clientData.name);
     if (sanitizedName !== clientData.name) {
-      securityMonitor.monitorValidationFailure(clientData.name, 'name_sanitization');
       return { isValid: true, sanitizedData: { ...clientData, name: sanitizedName } };
     }
   }
@@ -26,10 +24,9 @@ export const validateClientData = (clientData: CreateClientData | UpdateClientDa
 };
 
 export const checkRateLimit = (userId: string): boolean => {
-  const rateLimitKey = `create_client_${userId}`;
-  if (!securityMonitor.checkRateLimit(rateLimitKey, 10, 60000)) { // 10 attempts per minute
-    toast.error('Too many attempts. Please try again later.');
-    return false;
-  }
-  return true;
+  const result = rateLimitService.checkMultipleRateLimits(
+    userId,
+    ['client_creation_burst', 'client_creation']
+  );
+  return result.allowed;
 };
