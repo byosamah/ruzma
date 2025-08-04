@@ -263,13 +263,13 @@ export const useProfitabilityAnalytics = (projects: DatabaseProject[], locale: s
       {
         metric: getMetricName('Monthly Revenue Growth', locale),
         value: lastMonthRevenue > 0 ? ((currentMonthRevenue - lastMonthRevenue) / lastMonthRevenue) * 100 : 0,
-        trend: currentMonthRevenue > lastMonthRevenue ? getMetricName('up', locale) : currentMonthRevenue < lastMonthRevenue ? getMetricName('down', locale) : getMetricName('stable', locale),
+        trend: currentMonthRevenue > lastMonthRevenue ? 'up' : currentMonthRevenue < lastMonthRevenue ? 'down' : 'stable',
         period: getMetricName('Month over Month', locale),
       },
       {
         metric: getMetricName('Average Project Margin', locale),
         value: projectTypes.length > 0 ? projectTypes.reduce((sum, pt) => sum + pt.completionRate, 0) / projectTypes.length : 0,
-        trend: getMetricName('stable', locale),
+        trend: 'stable',
         period: getMetricName('Current Period', locale),
       },
     ];
