@@ -1,4 +1,3 @@
-
 export const projectTranslations = {
   en: {
     loadingProject: "Loading project...",
@@ -187,6 +186,53 @@ export const projectTranslations = {
     emailDomainVerificationRequired: "Email domain verification required",
     createInvoice: "Create Invoice",
     failedToCopyLink: "Failed to copy link",
+
+    // Default contract templates
+    defaultContractTerms: `Terms and Conditions:
+
+1. Scope of Work
+The freelancer agrees to provide the services outlined in the project scope and milestones detailed in this agreement.
+
+2. Payment Terms
+Payment will be made according to the milestone schedule specified below. All payments are due within 7 days of milestone completion and approval.
+
+3. Intellectual Property
+Upon full payment, all intellectual property rights to the completed work will transfer to the client.
+
+4. Confidentiality
+Both parties agree to maintain confidentiality of all proprietary information shared during this project.
+
+5. Revisions
+Revisions are included as specified in the revision policy. Additional revisions outside of scope may incur additional charges.
+
+6. Termination
+Either party may terminate this agreement with 7 days written notice. Client will pay for all work completed up to termination date.`,
+
+    defaultPaymentTerms: `Payment Schedule:
+- Payments due within 7 days of milestone completion
+- Late payments may incur 1.5% monthly fee
+- All payments in agreed project currency
+- Payment methods: Bank transfer, PayPal, or as agreed
+- Partial refunds available for incomplete milestones only`,
+
+    defaultProjectScope: `Project Deliverables:
+[Specify concrete deliverables, features, and requirements]
+
+Timeline:
+[Specify project duration and key deadlines]
+
+Included Services:
+[List what is included in the project price]
+
+Not Included:
+[Specify what is out of scope to avoid scope creep]`,
+
+    defaultRevisionPolicy: `Revision Policy:
+- Up to 2 rounds of revisions included per milestone
+- Revisions must be requested within 7 days of delivery
+- Additional revisions: $50/hour
+- Major scope changes require separate agreement
+- Revisions must be specific and actionable`,
   },
   ar: {
     loadingProject: "جاري تحميل المشروع...",
@@ -375,7 +421,9 @@ export const projectTranslations = {
     emailDomainVerificationRequired: "مطلوب التحقق من نطاق البريد الإلكتروني",
     createInvoice: "إنشاء فاتورة",
     failedToCopyLink: "فشل في نسخ الرابط",
-    defaultContractTermsAr: `الشروط والأحكام:
+
+    // Default contract templates
+    defaultContractTerms: `الشروط والأحكام:
 
 1. نطاق العمل
 يوافق المستقل على تقديم الخدمات المحددة في نطاق المشروع والمراحل المفصلة في هذه الاتفاقية.
@@ -395,14 +443,14 @@ export const projectTranslations = {
 6. الإنهاء
 يمكن لأي من الطرفين إنهاء هذه الاتفاقية بإشعار كتابي مدته 7 أيام. سيدفع العميل مقابل جميع الأعمال المكتملة حتى تاريخ الإنهاء.`,
 
-    defaultPaymentTermsAr: `جدول الدفع:
+    defaultPaymentTerms: `جدول الدفع:
 - المدفوعات مستحقة خلال 7 أيام من اكتمال المرحلة
 - المدفوعات المتأخرة قد تستدعي رسوماً شهرية بنسبة 1.5%
 - جميع المدفوعات بعملة المشروع المتفق عليها
 - طرق الدفع: التحويل البنكي، باي بال، أو كما متفق عليه
 - المبالغ المستردة الجزئية متاحة للمراحل غير المكتملة فقط`,
 
-    defaultProjectScopeAr: `مخرجات المشروع:
+    defaultProjectScope: `مخرجات المشروع:
 [حدد المخرجات المحددة والميزات والمتطلبات]
 
 الجدول الزمني:
@@ -414,7 +462,7 @@ export const projectTranslations = {
 غير مشمول:
 [حدد ما هو غير مشمول لتجنب توسع النطاق]`,
 
-    defaultRevisionPolicyAr: `سياسة المراجعات:
+    defaultRevisionPolicy: `سياسة المراجعات:
 - حتى جولتين من المراجعات مشمولة لكل مرحلة
 - يجب طلب المراجعات خلال 7 أيام من التسليم
 - المراجعات الإضافية: 50 دولار في الساعة
