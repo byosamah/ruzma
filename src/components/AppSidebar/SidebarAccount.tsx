@@ -1,12 +1,13 @@
 
 import React from 'react';
 import { User, CreditCard } from 'lucide-react';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 import { SidebarGroup, SidebarGroupContent, SidebarGroupLabel, SidebarMenu, SidebarMenuButton, SidebarMenuItem, useSidebar } from '@/components/ui/sidebar';
 import { useT } from '@/lib/i18n';
+import { useLanguageNavigation } from '@/hooks/useLanguageNavigation';
 
 const SidebarAccount = () => {
-  const navigate = useNavigate();
+  const { navigate, getCurrentPath } = useLanguageNavigation();
   const location = useLocation();
   const t = useT();
   const { state } = useSidebar();
@@ -25,7 +26,7 @@ const SidebarAccount = () => {
     }
   ];
 
-  const isActive = (url: string) => location.pathname === url;
+  const isActive = (url: string) => getCurrentPath() === url;
 
   return (
     <SidebarGroup className="space-y-2">
