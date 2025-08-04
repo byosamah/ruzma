@@ -27,7 +27,7 @@ const categorizeProject = (project: DatabaseProject): string => {
   return 'other';
 };
 
-export const useProfitabilityAnalytics = (projects: DatabaseProject[]) => {
+export const useProfitabilityAnalytics = (projects: DatabaseProject[], locale: string = 'en') => {
   const profitabilityData = useMemo((): ProfitabilityData => {
     // Group projects by type
     const projectsByType = new Map<string, DatabaseProject[]>();
@@ -92,7 +92,8 @@ export const useProfitabilityAnalytics = (projects: DatabaseProject[]) => {
     const pricingTrends = Array.from({length: 6}, (_, i) => {
       const date = new Date();
       date.setMonth(date.getMonth() - (5 - i));
-      const monthStr = date.toLocaleDateString('en-US', { month: 'short', year: 'numeric' });
+      // Use locale-aware date formatting
+      const monthStr = date.toLocaleDateString(locale === 'ar' ? 'ar-SA' : 'en-US', { month: 'short', year: 'numeric' });
       
       const monthProjects = projects.filter(project => {
         const projectDate = new Date(project.created_at);
@@ -132,16 +133,16 @@ export const useProfitabilityAnalytics = (projects: DatabaseProject[]) => {
 
     const profitabilityMetrics: ProfitabilityMetric[] = [
       {
-        metric: 'Monthly Revenue Growth',
+        metric: 'monthlyRevenueGrowth', // Changed to translation key
         value: lastMonthRevenue > 0 ? ((currentMonthRevenue - lastMonthRevenue) / lastMonthRevenue) * 100 : 0,
         trend: currentMonthRevenue > lastMonthRevenue ? 'up' : currentMonthRevenue < lastMonthRevenue ? 'down' : 'stable',
-        period: 'Month over Month',
+        period: 'monthOverMonth', // Changed to translation key
       },
       {
-        metric: 'Average Project Margin',
+        metric: 'averageProjectMargin', // Changed to translation key
         value: projectTypes.length > 0 ? projectTypes.reduce((sum, pt) => sum + pt.completionRate, 0) / projectTypes.length : 0,
         trend: 'stable',
-        period: 'Current Period',
+        period: 'currentPeriod', // Changed to translation key
       },
     ];
 
@@ -171,7 +172,7 @@ export const useProfitabilityAnalytics = (projects: DatabaseProject[]) => {
       profitabilityMetrics,
       revenueOptimization,
     };
-  }, [projects]);
+  }, [projects, locale]);
 
   return profitabilityData;
 };
