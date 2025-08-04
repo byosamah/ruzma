@@ -90,9 +90,29 @@ export const analyticsTranslations = {
     averageClientLifetime: "Average Client Lifetime",
     monthsOfCollaboration: "Months of collaboration",
     actionRequired: "Action Required",
+    youHave: "You have",
     highRiskClientMessage: "high-risk client",
     highRiskClientsMessage: "high-risk clients",
     thatMayNeedAttention: "that may need attention.",
+    
+    // Chart Labels (for dynamic configuration)
+    revenue: "Revenue",
+    chartTotalRevenue: "Total Revenue",
+    chartRevenuePerDay: "Revenue/Day",
+    chartCompleted: "Completed",
+    chartPending: "Pending",
+    chartProjects: "Projects",
+    
+    // Project Categories
+    webDevelopment: "Web Development",
+    mobileApp: "Mobile App",
+    designBranding: "Design & Branding",
+    marketing: "Marketing",
+    dataAnalytics: "Data & Analytics",
+    ecommerce: "E-commerce",
+    backendDevelopment: "Backend Development",
+    consulting: "Consulting",
+    other: "Other",
     // Profitability specific
     completed: "completed",
     repeatRate: "repeat rate",
@@ -203,9 +223,29 @@ export const analyticsTranslations = {
     averageClientLifetime: "متوسط عمر العميل",
     monthsOfCollaboration: "أشهر التعاون",
     actionRequired: "مطلوب إجراء",
+    youHave: "لديك",
     highRiskClientMessage: "عميل عالي المخاطر",
     highRiskClientsMessage: "عملاء عاليي المخاطر",
     thatMayNeedAttention: "قد يحتاجون إلى اهتمام.",
+    
+    // Chart Labels (for dynamic configuration)
+    revenue: "الإيرادات",
+    chartTotalRevenue: "إجمالي الإيرادات",
+    chartRevenuePerDay: "الإيرادات/يوم",
+    chartCompleted: "مكتمل",
+    chartPending: "معلق",
+    chartProjects: "المشاريع",
+    
+    // Project Categories
+    webDevelopment: "تطوير الويب",
+    mobileApp: "تطبيق الهاتف المحمول",
+    designBranding: "التصميم والعلامة التجارية",
+    marketing: "التسويق",
+    dataAnalytics: "البيانات والتحليلات",
+    ecommerce: "التجارة الإلكترونية",
+    backendDevelopment: "تطوير الخادم",
+    consulting: "الاستشارات",
+    other: "أخرى",
     // Profitability specific
     completed: "مكتمل",
     repeatRate: "معدل التكرار",

@@ -124,7 +124,7 @@ const ClientRiskAssessment: React.FC<ClientRiskAssessmentProps> = ({
                   <span className="text-sm font-medium">{t('actionRequired')}</span>
                 </div>
                 <p className="text-xs text-red-600 mt-1">
-                  You have {riskAssessment.highRisk} {riskAssessment.highRisk !== 1 ? t('highRiskClientsMessage') : t('highRiskClientMessage')} {t('thatMayNeedAttention')}
+                  {t('youHave')} {riskAssessment.highRisk} {riskAssessment.highRisk !== 1 ? t('highRiskClientsMessage') : t('highRiskClientMessage')} {t('thatMayNeedAttention')}
                 </p>
               </div>
             )}

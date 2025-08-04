@@ -33,23 +33,23 @@ interface AnalyticsChartsProps {
   userCurrency: CurrencyCode;
 }
 
-const chartConfig = {
-  revenue: { label: "Revenue", color: "hsl(var(--chart-1))" },
-  projects: { label: "Projects", color: "hsl(var(--chart-2))" },
-  completed: { label: "Completed", color: "hsl(var(--chart-3))" },
-  pending: { label: "Pending", color: "hsl(var(--chart-4))" },
-};
-
 const AnalyticsCharts: React.FC<AnalyticsChartsProps> = ({ data, userCurrency }) => {
   const t = useT();
+
+  const chartConfig = {
+    revenue: { label: t('revenue'), color: "hsl(var(--chart-1))" },
+    projects: { label: t('chartProjects'), color: "hsl(var(--chart-2))" },
+    completed: { label: t('chartCompleted'), color: "hsl(var(--chart-3))" },
+    pending: { label: t('chartPending'), color: "hsl(var(--chart-4))" },
+  };
 
   return (
     <div className="space-y-4 sm:space-y-6">
       {/* Revenue Trend Chart */}
-      <Card className="card-flat">
+      <Card className="card-flat" dir={t('revenueOverTime') === 'الإيرادات عبر الوقت' ? 'rtl' : 'ltr'}>
         <CardHeader className="pb-3 sm:pb-4">
-          <CardTitle className="text-base sm:text-lg font-medium text-primary">
-            {t('revenueOverTime')}
+          <CardTitle className="text-base sm:text-lg font-medium text-primary flex items-center gap-2 rtl:flex-row-reverse">
+            📈 {t('revenueOverTime')}
           </CardTitle>
         </CardHeader>
         <CardContent className="px-3 sm:px-6">
@@ -97,10 +97,10 @@ const AnalyticsCharts: React.FC<AnalyticsChartsProps> = ({ data, userCurrency })
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
         {/* Milestone Status Distribution */}
-        <Card className="card-flat">
+        <Card className="card-flat" dir={t('milestonesStatus') === 'حالة المراحل' ? 'rtl' : 'ltr'}>
           <CardHeader className="pb-3 sm:pb-4">
-            <CardTitle className="text-base sm:text-lg font-medium text-primary">
-              {t('milestonesStatus')}
+            <CardTitle className="text-base sm:text-lg font-medium text-primary flex items-center gap-2 rtl:flex-row-reverse">
+              🎯 {t('milestonesStatus')}
             </CardTitle>
           </CardHeader>
           <CardContent className="px-3 sm:px-6">
@@ -130,10 +130,10 @@ const AnalyticsCharts: React.FC<AnalyticsChartsProps> = ({ data, userCurrency })
         </Card>
 
         {/* Monthly Progress */}
-        <Card className="card-flat">
+        <Card className="card-flat" dir={t('projectsOverTime') === 'المشاريع عبر الوقت' ? 'rtl' : 'ltr'}>
           <CardHeader className="pb-3 sm:pb-4">
-            <CardTitle className="text-base sm:text-lg font-medium text-primary">
-              {t('projectsOverTime')}
+            <CardTitle className="text-base sm:text-lg font-medium text-primary flex items-center gap-2 rtl:flex-row-reverse">
+              📊 {t('projectsOverTime')}
             </CardTitle>
           </CardHeader>
           <CardContent className="px-3 sm:px-6">

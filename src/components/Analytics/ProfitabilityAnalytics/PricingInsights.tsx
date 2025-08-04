@@ -133,8 +133,7 @@ const PricingInsights: React.FC<PricingInsightsProps> = ({
               </div>
               <p className="text-sm text-blue-600">
                 {t('basedOnYourPerformance')}{' '}
-                <strong>{revenueOptimization.potentialIncrease.toFixed(1)}%</strong> to{' '}
-                <strong>{formatCurrency(revenueOptimization.suggestedRate, userCurrency)}</strong>{' '}
+                <strong>{revenueOptimization.potentialIncrease.toFixed(1)}%</strong>{' '}
                 {t('toPerProject')}
               </p>
             </div>

@@ -5,6 +5,7 @@ import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Legend } from 'recharts';
 import { formatCurrency, CurrencyCode } from '@/lib/currency';
 import { useT } from '@/lib/i18n';
 import { ProjectTypeAnalytics } from '@/types/advancedAnalytics';
+import { useCategoryTranslator } from '@/hooks/analytics/categoryTranslator';
 
 interface ProjectTypeProfitabilityProps {
   projectTypes: ProjectTypeAnalytics[];
@@ -16,10 +17,11 @@ const ProjectTypeProfitability: React.FC<ProjectTypeProfitabilityProps> = ({
   userCurrency,
 }) => {
   const t = useT();
+  const translateCategory = useCategoryTranslator();
 
   const chartData = projectTypes.slice(0, 8).map(type => ({
-    category: type.category.length > 12 ? type.category.substring(0, 12) + '...' : type.category,
-    fullCategory: type.category,
+    category: translateCategory(type.category).length > 12 ? translateCategory(type.category).substring(0, 12) + '...' : translateCategory(type.category),
+    fullCategory: translateCategory(type.category),
     revenue: type.totalRevenue,
     revenuePerDay: type.revenuePerDay,
     completionRate: type.completionRate,
@@ -27,8 +29,8 @@ const ProjectTypeProfitability: React.FC<ProjectTypeProfitabilityProps> = ({
   }));
 
   const chartConfig = {
-    revenue: { label: "Total Revenue", color: "hsl(var(--chart-1))" },
-    revenuePerDay: { label: "Revenue/Day", color: "hsl(var(--chart-2))" },
+    revenue: { label: t('chartTotalRevenue'), color: "hsl(var(--chart-1))" },
+    revenuePerDay: { label: t('chartRevenuePerDay'), color: "hsl(var(--chart-2))" },
   };
 
   return (
@@ -101,7 +103,7 @@ const ProjectTypeProfitability: React.FC<ProjectTypeProfitabilityProps> = ({
                   </div>
                   <div className="min-w-0 flex-1">
                     <p className="font-medium text-sm truncate">
-                      {type.category}
+                      {translateCategory(type.category)}
                     </p>
                     <div className="flex items-center gap-4 text-xs text-muted-foreground rtl:flex-row-reverse">
                       <span>{type.projectCount} {t('projects')}</span>

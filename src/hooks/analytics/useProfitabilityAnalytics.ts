@@ -2,20 +2,29 @@ import { useMemo } from 'react';
 import { DatabaseProject } from '@/hooks/projectTypes';
 import { ProjectTypeAnalytics, ProfitabilityData, ProfitabilityMetric } from '@/types/advancedAnalytics';
 
-// Simple project categorization based on keywords in project name/brief
+// Bilingual project categorization based on keywords in project name/brief
 const categorizeProject = (project: DatabaseProject): string => {
   const text = `${project.name} ${project.brief}`.toLowerCase();
   
-  if (text.includes('website') || text.includes('web') || text.includes('landing')) return 'Web Development';
-  if (text.includes('app') || text.includes('mobile') || text.includes('ios') || text.includes('android')) return 'Mobile App';
-  if (text.includes('design') || text.includes('ui') || text.includes('ux') || text.includes('logo') || text.includes('brand')) return 'Design & Branding';
-  if (text.includes('marketing') || text.includes('seo') || text.includes('social') || text.includes('content')) return 'Marketing';
-  if (text.includes('data') || text.includes('analytics') || text.includes('dashboard') || text.includes('report')) return 'Data & Analytics';
-  if (text.includes('ecommerce') || text.includes('shop') || text.includes('store') || text.includes('e-commerce')) return 'E-commerce';
-  if (text.includes('api') || text.includes('backend') || text.includes('database') || text.includes('server')) return 'Backend Development';
-  if (text.includes('consult') || text.includes('strategy') || text.includes('advice')) return 'Consulting';
+  // English keywords
+  if (text.includes('website') || text.includes('web') || text.includes('landing') || 
+      text.includes('موقع') || text.includes('ويب') || text.includes('صفحة')) return 'webDevelopment';
+  if (text.includes('app') || text.includes('mobile') || text.includes('ios') || text.includes('android') ||
+      text.includes('تطبيق') || text.includes('محمول') || text.includes('جوال')) return 'mobileApp';
+  if (text.includes('design') || text.includes('ui') || text.includes('ux') || text.includes('logo') || text.includes('brand') ||
+      text.includes('تصميم') || text.includes('شعار') || text.includes('هوية') || text.includes('علامة')) return 'designBranding';
+  if (text.includes('marketing') || text.includes('seo') || text.includes('social') || text.includes('content') ||
+      text.includes('تسويق') || text.includes('محتوى') || text.includes('إعلان')) return 'marketing';
+  if (text.includes('data') || text.includes('analytics') || text.includes('dashboard') || text.includes('report') ||
+      text.includes('بيانات') || text.includes('تحليل') || text.includes('تقرير') || text.includes('لوحة')) return 'dataAnalytics';
+  if (text.includes('ecommerce') || text.includes('shop') || text.includes('store') || text.includes('e-commerce') ||
+      text.includes('متجر') || text.includes('تجارة') || text.includes('بيع')) return 'ecommerce';
+  if (text.includes('api') || text.includes('backend') || text.includes('database') || text.includes('server') ||
+      text.includes('خادم') || text.includes('قاعدة') || text.includes('بيانات')) return 'backendDevelopment';
+  if (text.includes('consult') || text.includes('strategy') || text.includes('advice') ||
+      text.includes('استشار') || text.includes('نصيحة') || text.includes('إرشاد')) return 'consulting';
   
-  return 'Other';
+  return 'other';
 };
 
 export const useProfitabilityAnalytics = (projects: DatabaseProject[]) => {
