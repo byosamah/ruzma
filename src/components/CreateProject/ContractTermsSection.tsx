@@ -179,15 +179,16 @@ Not Included:
       name={fieldName}
       render={({ field }) => (
         <FormItem>
-          <div className={`flex items-center justify-between mb-2 ${language === 'ar' ? 'flex-row-reverse' : ''}`}>
+          <div className={`flex items-center justify-between mb-2 ${language === 'ar' ? 'flex-row-reverse' : ''}`} style={language === 'ar' ? { direction: 'rtl' } : {}}>
             <FormLabel className={`text-sm font-medium text-gray-700 ${language === 'ar' ? 'text-right' : 'text-left'}`}>{label}</FormLabel>
-            <div className={`flex items-center ${language === 'ar' ? 'flex-row-reverse gap-2' : 'gap-2'}`}>
-              <span className={`text-sm text-gray-500 ${language === 'ar' ? 'text-right' : 'text-left'}`}>
+            <div className={`flex items-center ${language === 'ar' ? 'flex-row-reverse gap-2' : 'gap-2'}`} style={language === 'ar' ? { direction: 'rtl' } : {}}>
+              <span className={`text-sm text-gray-500 ${language === 'ar' ? 'text-right mr-2' : 'text-left'}`}>
                 {t('useTemplate')}
               </span>
               <Switch
                 checked={useDefaults[fieldName]}
                 onCheckedChange={(checked) => handleToggleDefault(fieldName, defaultText)}
+                className={language === 'ar' ? 'rtl-switch' : ''}
               />
             </div>
           </div>
@@ -213,7 +214,7 @@ Not Included:
   );
 
   return (
-    <div className="bg-white rounded-lg border border-gray-200 overflow-hidden" dir={language === 'ar' ? 'rtl' : 'ltr'}>
+    <div className="bg-white rounded-lg border border-gray-200 overflow-hidden" dir={language === 'ar' ? 'rtl' : 'ltr'} style={{ direction: language === 'ar' ? 'rtl' : 'ltr' }}>
       <div className="px-4 sm:px-6 py-3 sm:py-4 border-b border-gray-100">
         <div className={`flex items-center gap-2 mb-2 ${language === 'ar' ? 'flex-row-reverse' : ''}`}>
           <span className="text-base sm:text-xl text-gray-600">📄</span>

@@ -96,4 +96,35 @@
   .fade-in {
     @apply animate-[fadeIn_300ms_ease-out];
   }
+
+  /* RTL Support for Contract Terms */
+  .rtl-switch {
+    direction: ltr !important;
+  }
+
+  [dir="rtl"] .flex-row-reverse {
+    flex-direction: row-reverse !important;
+  }
+
+  [dir="rtl"] .text-right {
+    text-align: right !important;
+  }
+
+  [dir="rtl"] .grid-flow-row-dense {
+    grid-auto-flow: row dense;
+  }
+
+  /* Force RTL layout */
+  [dir="rtl"] {
+    direction: rtl !important;
+  }
+
+  [dir="rtl"] .justify-between {
+    justify-content: space-between !important;
+  }
+
+  [dir="rtl"] .items-center {
+    align-items: center !important;
+  }
+}
 }
