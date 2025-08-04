@@ -1,4 +1,3 @@
-
 export const analyticsTranslations = {
   en: {
     analytics: "Analytics",
@@ -132,6 +131,14 @@ export const analyticsTranslations = {
     lastWeek: "Last Week",
     thisQuarter: "This Quarter",
     lastQuarter: "Last Quarter",
+    // NEW: Profitability Analytics specific translations
+    monthlyRevenueGrowth: "Monthly Revenue Growth",
+    averageProjectMargin: "Average Project Margin",
+    monthOverMonth: "Month over Month",
+    currentPeriod: "Current Period",
+    trendUp: "Up",
+    trendDown: "Down",
+    trendStable: "Stable",
   },
   ar: {
     analytics: "التحليلات",
@@ -265,5 +272,13 @@ export const analyticsTranslations = {
     lastWeek: "الأسبوع الماضي",
     thisQuarter: "هذا الربع",
     lastQuarter: "الربع الماضي",
+    // NEW: Profitability Analytics specific translations
+    monthlyRevenueGrowth: "نمو الإيرادات الشهرية",
+    averageProjectMargin: "متوسط هامش المشروع",
+    monthOverMonth: "مقارنة بالشهر السابق",
+    currentPeriod: "الفترة الحالية",
+    trendUp: "صاعد",
+    trendDown: "هابط",
+    trendStable: "مستقر",
   },
 };
