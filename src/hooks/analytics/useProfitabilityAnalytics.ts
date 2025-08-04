@@ -27,7 +27,136 @@ const categorizeProject = (project: DatabaseProject): string => {
   return 'other';
 };
 
-export const useProfitabilityAnalytics = (projects: DatabaseProject[]) => {
+// Bilingual metric translations
+const getMetricName = (key: string, locale: string = 'en'): string => {
+  const translations: { [key: string]: { en: string; ar: string } } = {
+    'Monthly Revenue Growth': { 
+      en: 'Monthly Revenue Growth', 
+      ar: 'نمو الإيرادات الشهرية' 
+    },
+    'Average Project Margin': { 
+      en: 'Average Project Margin', 
+      ar: 'متوسط هامش المشروع' 
+    },
+    'Month over Month': { 
+      en: 'Month over Month', 
+      ar: 'مقارنة بالشهر السابق' 
+    },
+    'Current Period': { 
+      en: 'Current Period', 
+      ar: 'الفترة الحالية' 
+    },
+    'up': { 
+      en: 'up', 
+      ar: 'صاعد' 
+    },
+    'down': { 
+      en: 'down', 
+      ar: 'هابط' 
+    },
+    'stable': { 
+      en: 'stable', 
+      ar: 'مستقر' 
+    },
+    // Object keys for revenueOptimization
+    'currentAvgRate': {
+      en: 'currentAvgRate',
+      ar: 'المعدل_المتوسط_الحالي'
+    },
+    'suggestedRate': {
+      en: 'suggestedRate',
+      ar: 'المعدل_المقترح'
+    },
+    'potentialIncrease': {
+      en: 'potentialIncrease',
+      ar: 'الزيادة_المحتملة'
+    },
+    // Object keys for projectTypes
+    'category': {
+      en: 'category',
+      ar: 'الفئة'
+    },
+    'projectCount': {
+      en: 'projectCount',
+      ar: 'عدد_المشاريع'
+    },
+    'avgRevenue': {
+      en: 'avgRevenue',
+      ar: 'متوسط_الإيرادات'
+    },
+    'totalRevenue': {
+      en: 'totalRevenue',
+      ar: 'إجمالي_الإيرادات'
+    },
+    'avgDuration': {
+      en: 'avgDuration',
+      ar: 'متوسط_المدة'
+    },
+    'revenuePerDay': {
+      en: 'revenuePerDay',
+      ar: 'الإيرادات_لكل_يوم'
+    },
+    'completionRate': {
+      en: 'completionRate',
+      ar: 'معدل_الإنجاز'
+    },
+    'clientSatisfactionProxy': {
+      en: 'clientSatisfactionProxy',
+      ar: 'مؤشر_رضا_العملاء'
+    },
+    'marketDemand': {
+      en: 'marketDemand',
+      ar: 'طلب_السوق'
+    },
+    // Object keys for pricingTrends
+    'month': {
+      en: 'month',
+      ar: 'الشهر'
+    },
+    'avgPrice': {
+      en: 'avgPrice',
+      ar: 'متوسط_السعر'
+    },
+    // Main return object keys
+    'projectTypes': {
+      en: 'projectTypes',
+      ar: 'أنواع_المشاريع'
+    },
+    'pricingTrends': {
+      en: 'pricingTrends',
+      ar: 'اتجاهات_التسعير'
+    },
+    'profitabilityMetrics': {
+      en: 'profitabilityMetrics',
+      ar: 'مقاييس_الربحية'
+    },
+    'revenueOptimization': {
+      en: 'revenueOptimization',
+      ar: 'تحسين_الإيرادات'
+    },
+    // Metric and period keys
+    'metric': {
+      en: 'metric',
+      ar: 'المقياس'
+    },
+    'value': {
+      en: 'value',
+      ar: 'القيمة'
+    },
+    'trend': {
+      en: 'trend',
+      ar: 'الاتجاه'
+    },
+    'period': {
+      en: 'period',
+      ar: 'الفترة'
+    }
+  };
+  
+  return translations[key]?.[locale] || key;
+};
+
+export const useProfitabilityAnalytics = (projects: DatabaseProject[], locale: string = 'en') => {
   const profitabilityData = useMemo((): ProfitabilityData => {
     // Group projects by type
     const projectsByType = new Map<string, DatabaseProject[]>();
@@ -92,7 +221,7 @@ export const useProfitabilityAnalytics = (projects: DatabaseProject[]) => {
     const pricingTrends = Array.from({length: 6}, (_, i) => {
       const date = new Date();
       date.setMonth(date.getMonth() - (5 - i));
-      const monthStr = date.toLocaleDateString('en-US', { month: 'short', year: 'numeric' });
+      const monthStr = date.toLocaleDateString(locale === 'ar' ? 'ar-SA' : 'en-US', { month: 'short', year: 'numeric' });
       
       const monthProjects = projects.filter(project => {
         const projectDate = new Date(project.created_at);
@@ -132,16 +261,16 @@ export const useProfitabilityAnalytics = (projects: DatabaseProject[]) => {
 
     const profitabilityMetrics: ProfitabilityMetric[] = [
       {
-        metric: 'Monthly Revenue Growth',
+        metric: getMetricName('Monthly Revenue Growth', locale),
         value: lastMonthRevenue > 0 ? ((currentMonthRevenue - lastMonthRevenue) / lastMonthRevenue) * 100 : 0,
-        trend: currentMonthRevenue > lastMonthRevenue ? 'up' : currentMonthRevenue < lastMonthRevenue ? 'down' : 'stable',
-        period: 'Month over Month',
+        trend: currentMonthRevenue > lastMonthRevenue ? getMetricName('up', locale) : currentMonthRevenue < lastMonthRevenue ? getMetricName('down', locale) : getMetricName('stable', locale),
+        period: getMetricName('Month over Month', locale),
       },
       {
-        metric: 'Average Project Margin',
+        metric: getMetricName('Average Project Margin', locale),
         value: projectTypes.length > 0 ? projectTypes.reduce((sum, pt) => sum + pt.completionRate, 0) / projectTypes.length : 0,
-        trend: 'stable',
-        period: 'Current Period',
+        trend: getMetricName('stable', locale),
+        period: getMetricName('Current Period', locale),
       },
     ];
 
@@ -171,7 +300,7 @@ export const useProfitabilityAnalytics = (projects: DatabaseProject[]) => {
       profitabilityMetrics,
       revenueOptimization,
     };
-  }, [projects]);
+  }, [projects, locale]);
 
   return profitabilityData;
 };
