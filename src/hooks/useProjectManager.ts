@@ -215,7 +215,7 @@ export const useProjectManager = (options: UseProjectManagerOptions) => {
     }>;
   }): Promise<boolean> => {
     if (!user) {
-      toast.error('You must be logged in to save a template');
+      toast.error(t('mustBeLoggedInToSaveTemplate'));
       return false;
     }
 
@@ -238,11 +238,11 @@ export const useProjectManager = (options: UseProjectManagerOptions) => {
         user_id: user.id,
       });
       
-      toast.success('Template saved successfully');
+      toast.success(t('templateSavedSuccessfully'));
       return true;
     } catch (error) {
       console.error('Error saving template:', error);
-      toast.error('Failed to save template');
+      toast.error(t('failedToSaveTemplate'));
       return false;
     }
   };
@@ -250,7 +250,7 @@ export const useProjectManager = (options: UseProjectManagerOptions) => {
   // Main submit handler
   const handleSubmit = async (data: CreateProjectFormData) => {
     if (!user) {
-      toast.error('You must be logged in');
+      toast.error(t('mustBeLoggedIn'));
       return;
     }
 
@@ -293,13 +293,13 @@ export const useProjectManager = (options: UseProjectManagerOptions) => {
             end_date: m.end_date || '',
           })),
         });
-        toast.success('Template saved successfully');
+        toast.success(t('templateSavedSuccessfully'));
       }
 
       // Show success message
       toast.success(
         mode === 'create' 
-          ? 'Project created successfully' 
+          ? t('projectCreatedSuccessfully') 
           : 'Project updated successfully'
       );
 
@@ -312,7 +312,7 @@ export const useProjectManager = (options: UseProjectManagerOptions) => {
 
     } catch (error: any) {
       console.error(`Error ${mode === 'create' ? 'creating' : 'updating'} project:`, error);
-      toast.error(error.message || 'An error occurred');
+      toast.error(error.message || t('errorOccurred'));
     } finally {
       setIsSubmitting(false);
     }

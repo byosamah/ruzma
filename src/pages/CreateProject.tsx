@@ -8,6 +8,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { User } from '@supabase/supabase-js';
 import { toast } from 'sonner';
 import { useT } from '@/lib/i18n';
+import { useLanguage } from '@/contexts/LanguageContext';
 import ProjectDetailsForm from '@/components/CreateProject/ProjectDetailsForm';
 import MilestonesList from '@/components/CreateProject/MilestonesList';
 import SaveAsTemplateCheckbox from '@/components/CreateProject/SaveAsTemplateCheckbox';
@@ -23,6 +24,7 @@ interface CreateProjectProps {
 
 const CreateProject: React.FC<CreateProjectProps> = ({ user, profile }) => {
   const t = useT();
+  const { language } = useLanguage();
   
   const { navigate } = useLanguageNavigation();
   const location = useLocation();
@@ -57,7 +59,7 @@ const CreateProject: React.FC<CreateProjectProps> = ({ user, profile }) => {
 
   return (
     <Layout user={profile || user} onSignOut={handleSignOut}>
-      <div className="min-h-screen bg-gray-50/30">
+      <div className="min-h-screen bg-gray-50/30" dir={language === 'ar' ? 'rtl' : 'ltr'}>
         <div className="w-full max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6 lg:py-8 space-y-6 sm:space-y-8">
           {/* Header */}
           <div className="space-y-1 sm:space-y-2">

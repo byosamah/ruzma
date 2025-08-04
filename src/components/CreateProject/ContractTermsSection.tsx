@@ -6,6 +6,8 @@ import { Textarea } from '@/components/ui/textarea';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Switch } from '@/components/ui/switch';
 import { Alert, AlertDescription } from '@/components/ui/alert';
+import { useT } from '@/lib/i18n';
+import { useLanguage } from '@/contexts/LanguageContext';
 // Icons replaced with emojis
 
 interface ContractTermsSectionProps {
@@ -15,6 +17,8 @@ interface ContractTermsSectionProps {
 export const ContractTermsSection: React.FC<ContractTermsSectionProps> = ({
   form
 }) => {
+  const t = useT();
+  const { language } = useLanguage();
   const contractRequired = form.watch("contractRequired");
   const [useTemplates, setUseTemplates] = useState(false);
   const [useDefaults, setUseDefaults] = useState({
@@ -24,7 +28,27 @@ export const ContractTermsSection: React.FC<ContractTermsSectionProps> = ({
     revisionPolicy: false
   });
 
-  const defaultContractTerms = `Terms and Conditions:
+  const defaultContractTerms = language === 'ar' ? 
+    `الشروط والأحكام:
+
+1. نطاق العمل
+يوافق المستقل على تقديم الخدمات المحددة في نطاق المشروع والمراحل المفصلة في هذه الاتفاقية.
+
+2. شروط الدفع
+سيتم الدفع وفقاً لجدول المراحل المحدد أدناه. جميع المدفوعات مستحقة خلال 7 أيام من اكتمال المرحلة والموافقة عليها.
+
+3. الملكية الفكرية
+عند الدفع الكامل، ستنتقل جميع حقوق الملكية الفكرية للعمل المكتمل إلى العميل.
+
+4. السرية
+يوافق الطرفان على الحفاظ على سرية جميع المعلومات الخاصة المشتركة أثناء هذا المشروع.
+
+5. المراجعات
+المراجعات مشمولة كما هو محدد في سياسة المراجعات. المراجعات الإضافية خارج النطاق قد تستدعي رسوماً إضافية.
+
+6. الإنهاء
+يمكن لأي من الطرفين إنهاء هذه الاتفاقية بإشعار كتابي مدته 7 أيام. سيدفع العميل مقابل جميع الأعمال المكتملة حتى تاريخ الإنهاء.` : 
+    `Terms and Conditions:
 
 1. SCOPE OF WORK
 The freelancer agrees to provide the services outlined in the project scope and milestones detailed in this agreement.
@@ -44,14 +68,33 @@ Revisions are included as outlined in the revision policy. Additional revisions 
 6. TERMINATION
 Either party may terminate this agreement with 7 days written notice. Client will pay for all completed work up to the termination date.`;
 
-  const defaultPaymentTerms = `Payment Schedule:
+  const defaultPaymentTerms = language === 'ar' ? 
+    `جدول الدفع:
+- المدفوعات مستحقة خلال 7 أيام من اكتمال المرحلة
+- المدفوعات المتأخرة قد تستدعي رسوماً شهرية بنسبة 1.5%
+- جميع المدفوعات بعملة المشروع المتفق عليها
+- طرق الدفع: التحويل البنكي، باي بال، أو كما متفق عليه
+- المبالغ المستردة الجزئية متاحة للمراحل غير المكتملة فقط` : 
+    `Payment Schedule:
 - Payments due within 7 days of milestone completion
 - Late payments may incur a 1.5% monthly fee
 - All payments in the agreed project currency
 - Payment methods: Bank transfer, PayPal, or as agreed
 - Partial refunds available for incomplete milestones only`;
 
-  const defaultProjectScope = `Project Deliverables:
+  const defaultProjectScope = language === 'ar' ? 
+    `مخرجات المشروع:
+[حدد المخرجات المحددة والميزات والمتطلبات]
+
+الجدول الزمني:
+[حدد مدة المشروع والمواعيد الرئيسية]
+
+الخدمات المشمولة:
+[اذكر ما هو مشمول في سعر المشروع]
+
+غير مشمول:
+[حدد ما هو غير مشمول لتجنب توسع النطاق]` : 
+    `Project Deliverables:
 [Outline specific deliverables, features, and requirements]
 
 Timeline:
@@ -63,7 +106,14 @@ Included Services:
 Not Included:
 [Specify what is not included to avoid scope creep]`;
 
-  const defaultRevisionPolicy = `Revision Policy:
+  const defaultRevisionPolicy = language === 'ar' ? 
+    `سياسة المراجعات:
+- حتى جولتين من المراجعات مشمولة لكل مرحلة
+- يجب طلب المراجعات خلال 7 أيام من التسليم
+- المراجعات الإضافية: 50 دولار في الساعة
+- التغييرات الرئيسية في النطاق تتطلب اتفاقية منفصلة
+- يجب أن تكون المراجعات محددة وقابلة للتنفيذ` : 
+    `Revision Policy:
 - Up to 2 rounds of revisions included per milestone
 - Revisions must be requested within 7 days of delivery
 - Additional revisions: $50 per hour
@@ -129,11 +179,11 @@ Not Included:
       name={fieldName}
       render={({ field }) => (
         <FormItem>
-          <div className="flex items-center justify-between mb-2">
+          <div className={`flex items-center justify-between mb-2 ${language === 'ar' ? 'rtl:flex-row-reverse' : ''}`}>
             <FormLabel className="text-sm font-medium text-gray-700">{label}</FormLabel>
-            <div className="flex items-center gap-2">
+            <div className={`flex items-center gap-2 ${language === 'ar' ? 'rtl:flex-row-reverse' : ''}`}>
               <span className="text-sm text-gray-500">
-                Use a Template
+                {t('useTemplate')}
               </span>
               <Switch
                 checked={useDefaults[fieldName]}
@@ -143,8 +193,9 @@ Not Included:
           </div>
           <FormControl>
             <Textarea
-              placeholder={useDefaults[fieldName] ? "Using template text..." : placeholder}
-              className="min-h-[200px] resize-y border-gray-200 focus:border-gray-400 focus:ring-0 text-sm"
+              placeholder={useDefaults[fieldName] ? t('usingTemplateText') : placeholder}
+              className={`min-h-[200px] resize-y border-gray-200 focus:border-gray-400 focus:ring-0 text-sm ${language === 'ar' ? 'text-right' : 'text-left'}`}
+              dir={language === 'ar' ? 'rtl' : 'ltr'}
               {...field}
               disabled={useDefaults[fieldName]}
               value={useDefaults[fieldName] ? defaultText : field.value}
@@ -162,21 +213,21 @@ Not Included:
   );
 
   return (
-    <div className="bg-white rounded-lg border border-gray-200 overflow-hidden">
+    <div className="bg-white rounded-lg border border-gray-200 overflow-hidden" dir={language === 'ar' ? 'rtl' : 'ltr'}>
       <div className="px-4 sm:px-6 py-3 sm:py-4 border-b border-gray-100">
-        <div className="flex items-center gap-2 mb-2">
+        <div className={`flex items-center gap-2 mb-2 ${language === 'ar' ? 'rtl:flex-row-reverse' : ''}`}>
           <span className="text-base sm:text-xl text-gray-600">📄</span>
-          <h3 className="text-sm font-medium text-gray-900">Contract Terms</h3>
+          <h3 className="text-sm font-medium text-gray-900">{t('contractTermsTitle')}</h3>
         </div>
         <p className="text-sm text-gray-500 mb-3 sm:mb-4">
-          Configure contract requirements and terms for this project.
+          {t('contractTermsDescription')}
         </p>
 
         {/* Contract Required Toggle */}
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between p-3 sm:p-4 bg-gray-50 rounded-lg mb-3 sm:mb-4 space-y-2 sm:space-y-0">
+        <div className={`flex flex-col sm:flex-row sm:items-center sm:justify-between p-3 sm:p-4 bg-gray-50 rounded-lg mb-3 sm:mb-4 space-y-2 sm:space-y-0 ${language === 'ar' ? 'rtl:flex-row-reverse' : ''}`}>
           <div>
-            <h4 className="text-sm font-medium text-gray-900">Require Contract Approval</h4>
-            <p className="text-sm text-gray-500">Client must approve contract terms before accessing the project</p>
+            <h4 className="text-sm font-medium text-gray-900">{t('requireContractApproval')}</h4>
+            <p className="text-sm text-gray-500">{t('requireContractDescription')}</p>
           </div>
           <FormField
             control={form.control}
@@ -195,19 +246,19 @@ Not Included:
         </div>
 
         {!contractRequired && (
-          <Alert className="mb-3 sm:mb-4">
+          <Alert className="mb-3 sm:mb-4" dir={language === 'ar' ? 'rtl' : 'ltr'}>
             <span className="text-base sm:text-lg">⚠️</span>
             <AlertDescription>
-              Contract approval disabled - clients can access project immediately without signing any contract.
+              {t('contractApprovalDisabled')}
             </AlertDescription>
           </Alert>
         )}
 
         {contractRequired && (
-          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between p-3 sm:p-4 bg-gray-50 rounded-lg space-y-2 sm:space-y-0">
+          <div className={`flex flex-col sm:flex-row sm:items-center sm:justify-between p-3 sm:p-4 bg-gray-50 rounded-lg space-y-2 sm:space-y-0 ${language === 'ar' ? 'rtl:flex-row-reverse' : ''}`}>
             <div>
-              <h4 className="text-sm font-medium text-gray-900">Use a template for all sections</h4>
-              <p className="text-sm text-gray-500">Fill all sections with standard template text</p>
+              <h4 className="text-sm font-medium text-gray-900">{t('useTemplateForAll')}</h4>
+              <p className="text-sm text-gray-500">{t('useTemplateDescription')}</p>
             </div>
             <Switch checked={useTemplates} onCheckedChange={handleMasterToggle} />
           </div>
@@ -215,45 +266,45 @@ Not Included:
       </div>
 
       {contractRequired && (
-        <div className="p-4 sm:p-6 space-y-4 sm:space-y-6">
+        <div className="p-4 sm:p-6 space-y-4 sm:space-y-6" dir={language === 'ar' ? 'rtl' : 'ltr'}>
           <Tabs defaultValue="contract" className="w-full">
-            <TabsList className="grid w-full grid-cols-2 sm:grid-cols-4 h-auto">
-              <TabsTrigger value="contract" className="flex items-center gap-1 text-xs sm:text-sm px-2 sm:px-3 py-2">
+            <TabsList className={`grid w-full grid-cols-2 sm:grid-cols-4 h-auto ${language === 'ar' ? 'rtl:flex-row-reverse' : ''}`}>
+              <TabsTrigger value="contract" className={`flex items-center gap-1 text-xs sm:text-sm px-2 sm:px-3 py-2 ${language === 'ar' ? 'rtl:flex-row-reverse' : ''}`}>
                 <span className="text-sm sm:text-lg">📄</span>
-                <span className="hidden sm:inline">Contract</span>
-                <span className="sm:hidden">Terms</span>
+                <span className="hidden sm:inline">{t('contractTab')}</span>
+                <span className="sm:hidden">{t('contractTabShort')}</span>
               </TabsTrigger>
-              <TabsTrigger value="payment" className="flex items-center gap-1 text-xs sm:text-sm px-2 sm:px-3 py-2">
+              <TabsTrigger value="payment" className={`flex items-center gap-1 text-xs sm:text-sm px-2 sm:px-3 py-2 ${language === 'ar' ? 'rtl:flex-row-reverse' : ''}`}>
                 <span className="text-sm sm:text-lg">💰</span>
-                <span className="hidden sm:inline">Payment</span>
-                <span className="sm:hidden">Pay</span>
+                <span className="hidden sm:inline">{t('paymentTab')}</span>
+                <span className="sm:hidden">{t('paymentTabShort')}</span>
               </TabsTrigger>
-              <TabsTrigger value="scope" className="flex items-center gap-1 text-xs sm:text-sm px-2 sm:px-3 py-2">
+              <TabsTrigger value="scope" className={`flex items-center gap-1 text-xs sm:text-sm px-2 sm:px-3 py-2 ${language === 'ar' ? 'rtl:flex-row-reverse' : ''}`}>
                 <span className="text-sm sm:text-lg">🎯</span>
-                <span className="hidden sm:inline">Scope</span>
-                <span className="sm:hidden">Scope</span>
+                <span className="hidden sm:inline">{t('scopeTab')}</span>
+                <span className="sm:hidden">{t('scopeTab')}</span>
               </TabsTrigger>
-              <TabsTrigger value="revisions" className="flex items-center gap-1 text-xs sm:text-sm px-2 sm:px-3 py-2">
+              <TabsTrigger value="revisions" className={`flex items-center gap-1 text-xs sm:text-sm px-2 sm:px-3 py-2 ${language === 'ar' ? 'rtl:flex-row-reverse' : ''}`}>
                 <span className="text-sm sm:text-lg">🔄</span>
-                <span className="hidden sm:inline">Revisions</span>
-                <span className="sm:hidden">Rev</span>
+                <span className="hidden sm:inline">{t('revisionsTab')}</span>
+                <span className="sm:hidden">{t('revisionsTabShort')}</span>
               </TabsTrigger>
             </TabsList>
 
             <TabsContent value="contract" className="space-y-4 mt-4">
-              {renderContractField('contractTerms', 'General Contract Terms', 'Enter contract terms and conditions...', defaultContractTerms)}
+              {renderContractField('contractTerms', t('generalContractTerms'), t('contractTermsPlaceholder'), defaultContractTerms)}
             </TabsContent>
 
             <TabsContent value="payment" className="space-y-4 mt-4">
-              {renderContractField('paymentTerms', 'Payment Terms and Schedule', 'Enter payment terms...', defaultPaymentTerms)}
+              {renderContractField('paymentTerms', t('paymentTermsAndSchedule'), t('paymentTermsPlaceholder'), defaultPaymentTerms)}
             </TabsContent>
 
             <TabsContent value="scope" className="space-y-4 mt-4">
-              {renderContractField('projectScope', 'Project Scope and Deliverables', 'Define project scope...', defaultProjectScope)}
+              {renderContractField('projectScope', t('projectScopeAndDeliverables'), t('projectScopePlaceholder'), defaultProjectScope)}
             </TabsContent>
 
             <TabsContent value="revisions" className="space-y-4 mt-4">
-              {renderContractField('revisionPolicy', 'Revision Policy', 'Enter revision policy...', defaultRevisionPolicy)}
+              {renderContractField('revisionPolicy', t('revisionPolicyTitle'), t('revisionPolicyPlaceholder'), defaultRevisionPolicy)}
             </TabsContent>
           </Tabs>
         </div>

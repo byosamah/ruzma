@@ -70,7 +70,7 @@ export const projectTranslations = {
     noTemplatesHint: "Templates will be automatically created when you save a project as a template",
     milestoneCount: "{count} milestones",
     total: "Total",
-    useTemplate: "Use Template",
+    useTemplateButton: "Use Template",
     deleteTemplateConfirmation: "Are you sure you want to delete this template?",
     projectMilestones: "Project Milestones",
     trackProgressAndDeliverables: "Track progress and manage deliverables",
@@ -124,6 +124,38 @@ export const projectTranslations = {
     saveLinks: "Save Links",
     noLinksAddedYet: "No links added yet",
     addUpToThreeLinks: "Add up to 3 links to share with your client",
+
+    // Contract Terms Section
+    contractTermsTitle: "Contract Terms",
+    contractTermsDescription: "Configure contract requirements and terms for this project.",
+    requireContractApproval: "Require Contract Approval",
+    requireContractDescription: "Client must approve contract terms before accessing the project",
+    contractApprovalDisabled: "Contract approval disabled - clients can access project immediately without signing any contract.",
+    useTemplateForAll: "Use a template for all sections",
+    useTemplateDescription: "Fill all sections with standard template text",
+    useTemplate: "Use a Template",
+    usingTemplateText: "Using template text...",
+    contractTab: "Contract",
+    contractTabShort: "Terms",
+    paymentTab: "Payment",
+    paymentTabShort: "Pay",
+    scopeTab: "Scope",
+    revisionsTab: "Revisions",
+    revisionsTabShort: "Rev",
+    generalContractTerms: "General Contract Terms",
+    contractTermsPlaceholder: "Enter contract terms and conditions...",
+    paymentTermsAndSchedule: "Payment Terms and Schedule",
+    paymentTermsPlaceholder: "Enter payment terms...",
+    projectScopeAndDeliverables: "Project Scope and Deliverables",
+    projectScopePlaceholder: "Define project scope...",
+    revisionPolicyTitle: "Revision Policy",
+    revisionPolicyPlaceholder: "Enter revision policy...",
+
+    // Notification Messages
+    templateSavedSuccessfully: "Template saved successfully",
+    failedToSaveTemplate: "Failed to save template",
+    errorOccurred: "An error occurred",
+    mustBeLoggedInToSaveTemplate: "You must be logged in to save a template",
   },
   ar: {
     loadingProject: "جاري تحميل المشروع...",
@@ -195,7 +227,7 @@ export const projectTranslations = {
     noTemplatesHint: "سيتم إنشاء القوالب تلقائيًا عند حفظ مشروع كقالب",
     milestoneCount: "{count} مراحل",
     total: "الإجمالي",
-    useTemplate: "استخدام القالب",
+    useTemplateButton: "استخدام القالب",
     deleteTemplateConfirmation: "هل أنت متأكد من أنك تريد حذف هذا القالب؟",
     projectMilestones: "مراحل المشروع",
     trackProgressAndDeliverables: "تتبع التقدم وإدارة التسليمات",
@@ -249,5 +281,84 @@ export const projectTranslations = {
     saveLinks: "حفظ الروابط",
     noLinksAddedYet: "لم يتم إضافة روابط بعد",
     addUpToThreeLinks: "أضف حتى 3 روابط لمشاركتها مع عميلك",
+
+    // Contract Terms Section
+    contractTermsTitle: "شروط العقد",
+    contractTermsDescription: "قم بتكوين متطلبات العقد وشروطه لهذا المشروع.",
+    requireContractApproval: "يتطلب موافقة على العقد",
+    requireContractDescription: "يجب على العميل الموافقة على شروط العقد قبل الوصول إلى المشروع",
+    contractApprovalDisabled: "تم تعطيل موافقة العقد - يمكن للعملاء الوصول إلى المشروع فوراً دون توقيع أي عقد.",
+    useTemplateForAll: "استخدم قالباً لجميع الأقسام",
+    useTemplateDescription: "املأ جميع الأقسام بنص القالب المعياري",
+    useTemplate: "استخدم قالباً",
+    usingTemplateText: "يتم استخدام نص القالب...",
+    contractTab: "العقد",
+    contractTabShort: "الشروط",
+    paymentTab: "الدفع",
+    paymentTabShort: "دفع",
+    scopeTab: "النطاق",
+    revisionsTab: "المراجعات",
+    revisionsTabShort: "مراجعة",
+    generalContractTerms: "شروط العقد العامة",
+    contractTermsPlaceholder: "أدخل شروط وأحكام العقد...",
+    paymentTermsAndSchedule: "شروط وجدولة الدفع",
+    paymentTermsPlaceholder: "أدخل شروط الدفع...",
+    projectScopeAndDeliverables: "نطاق المشروع والمخرجات",
+    projectScopePlaceholder: "حدد نطاق المشروع...",
+    revisionPolicyTitle: "سياسة المراجعات",
+    revisionPolicyPlaceholder: "أدخل سياسة المراجعات...",
+
+    // Default Contract Templates in Arabic
+    defaultContractTermsAr: `الشروط والأحكام:
+
+1. نطاق العمل
+يوافق المستقل على تقديم الخدمات المحددة في نطاق المشروع والمراحل المفصلة في هذه الاتفاقية.
+
+2. شروط الدفع
+سيتم الدفع وفقاً لجدول المراحل المحدد أدناه. جميع المدفوعات مستحقة خلال 7 أيام من اكتمال المرحلة والموافقة عليها.
+
+3. الملكية الفكرية
+عند الدفع الكامل، ستنتقل جميع حقوق الملكية الفكرية للعمل المكتمل إلى العميل.
+
+4. السرية
+يوافق الطرفان على الحفاظ على سرية جميع المعلومات الخاصة المشتركة أثناء هذا المشروع.
+
+5. المراجعات
+المراجعات مشمولة كما هو محدد في سياسة المراجعات. المراجعات الإضافية خارج النطاق قد تستدعي رسوماً إضافية.
+
+6. الإنهاء
+يمكن لأي من الطرفين إنهاء هذه الاتفاقية بإشعار كتابي مدته 7 أيام. سيدفع العميل مقابل جميع الأعمال المكتملة حتى تاريخ الإنهاء.`,
+
+    defaultPaymentTermsAr: `جدول الدفع:
+- المدفوعات مستحقة خلال 7 أيام من اكتمال المرحلة
+- المدفوعات المتأخرة قد تستدعي رسوماً شهرية بنسبة 1.5%
+- جميع المدفوعات بعملة المشروع المتفق عليها
+- طرق الدفع: التحويل البنكي، باي بال، أو كما متفق عليه
+- المبالغ المستردة الجزئية متاحة للمراحل غير المكتملة فقط`,
+
+    defaultProjectScopeAr: `مخرجات المشروع:
+[حدد المخرجات المحددة والميزات والمتطلبات]
+
+الجدول الزمني:
+[حدد مدة المشروع والمواعيد الرئيسية]
+
+الخدمات المشمولة:
+[اذكر ما هو مشمول في سعر المشروع]
+
+غير مشمول:
+[حدد ما هو غير مشمول لتجنب توسع النطاق]`,
+
+    defaultRevisionPolicyAr: `سياسة المراجعات:
+- حتى جولتين من المراجعات مشمولة لكل مرحلة
+- يجب طلب المراجعات خلال 7 أيام من التسليم
+- المراجعات الإضافية: 50 دولار في الساعة
+- التغييرات الرئيسية في النطاق تتطلب اتفاقية منفصلة
+- يجب أن تكون المراجعات محددة وقابلة للتنفيذ`,
+
+    // Notification Messages
+    templateSavedSuccessfully: "تم حفظ القالب بنجاح",
+    failedToSaveTemplate: "فشل في حفظ القالب",
+    errorOccurred: "حدث خطأ",
+    mustBeLoggedInToSaveTemplate: "يجب أن تكون مسجل الدخول لحفظ قالب",
   },
 };

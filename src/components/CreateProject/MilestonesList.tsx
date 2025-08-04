@@ -7,6 +7,7 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 // Icons replaced with emojis
 import { useT } from '@/lib/i18n';
+import { useLanguage } from '@/contexts/LanguageContext';
 import { CreateProjectFormData } from '@/lib/validators/project';
 import { useUserCurrency } from '@/hooks/useUserCurrency';
 
@@ -17,6 +18,7 @@ interface MilestonesListProps {
 
 const MilestonesList: React.FC<MilestonesListProps> = ({ user, profile }) => {
   const t = useT();
+  const { language } = useLanguage();
   const { control } = useFormContext<CreateProjectFormData>();
   const { fields, append, remove } = useFieldArray({
     control,
@@ -30,7 +32,7 @@ const MilestonesList: React.FC<MilestonesListProps> = ({ user, profile }) => {
   };
 
   return (
-    <div className="bg-white rounded-lg border border-gray-200 overflow-hidden">
+    <div className="bg-white rounded-lg border border-gray-200 overflow-hidden" dir={language === 'ar' ? 'rtl' : 'ltr'}>
       <div className="px-4 sm:px-6 py-3 sm:py-4 border-b border-gray-100">
         <h3 className="text-sm font-medium text-gray-900">{t('projectMilestones')}</h3>
       </div>
