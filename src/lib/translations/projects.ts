@@ -187,6 +187,28 @@ export const projectTranslations = {
     createInvoice: "Create Invoice",
     failedToCopyLink: "Failed to copy link",
 
+    // Additional contract status translations
+    contractAwaitingApproval: "Contract Awaiting Approval",
+    contractAwaitingApprovalDesc: "Your contract has been sent to the client for review and approval.",
+    contractApprovedTitle: "Contract Approved",
+    contractApprovedDesc: "Great! Your client has approved the contract. You can now begin work on the project.",
+    changesRequested: "Changes Requested",
+    contractRequiresChanges: "Contract Requires Changes",
+    contractRequiresChangesDesc: "Your client has requested changes to the project proposal.",
+    unknown: "Unknown",
+    contractStatusInfo: "Contract status information",
+    hide: "Hide",
+    details: "Details",
+    updateAndResend: "Update & Resend",
+    sent: "Sent",
+    clientFeedback: "Client Feedback",
+    clientWillReceiveEmail: "The client will receive an email with the contract details and approval options. Once approved, work can begin on the project.",
+    contractDetails: "Contract Details",
+    termsAndConditions: "Terms & Conditions",
+    paymentTerms: "Payment Terms",
+    projectScope: "Project Scope",
+    revisionPolicy: "Revision Policy",
+
     // Default contract templates
     defaultContractTerms: `Terms and Conditions:
 
@@ -421,6 +443,28 @@ Not Included:
     emailDomainVerificationRequired: "مطلوب التحقق من نطاق البريد الإلكتروني",
     createInvoice: "إنشاء فاتورة",
     failedToCopyLink: "فشل في نسخ الرابط",
+
+    // Additional contract status translations
+    contractAwaitingApproval: "العقد في انتظار الموافقة",
+    contractAwaitingApprovalDesc: "تم إرسال عقدك إلى العميل للمراجعة والموافقة.",
+    contractApprovedTitle: "تمت الموافقة على العقد",
+    contractApprovedDesc: "ممتاز! لقد وافق عميلك على العقد. يمكنك الآن البدء في العمل على المشروع.",
+    changesRequested: "مطلوب تغييرات",
+    contractRequiresChanges: "العقد يتطلب تغييرات",
+    contractRequiresChangesDesc: "طلب عميلك تغييرات على اقتراح المشروع.",
+    unknown: "غير معروف",
+    contractStatusInfo: "معلومات حالة العقد",
+    hide: "إخفاء",
+    details: "التفاصيل",
+    updateAndResend: "تحديث وإعادة إرسال",
+    sent: "أُرسل",
+    clientFeedback: "تعليقات العميل",
+    clientWillReceiveEmail: "سيتلقى العميل بريداً إلكترونياً يحتوي على تفاصيل العقد وخيارات الموافقة. بمجرد الموافقة، يمكن بدء العمل على المشروع.",
+    contractDetails: "تفاصيل العقد",
+    termsAndConditions: "الشروط والأحكام",
+    paymentTerms: "شروط الدفع",
+    projectScope: "نطاق المشروع",
+    revisionPolicy: "سياسة المراجعات",
 
     // Default contract templates
     defaultContractTerms: `الشروط والأحكام:

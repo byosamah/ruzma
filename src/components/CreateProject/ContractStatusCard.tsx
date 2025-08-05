@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
+import { useT } from '@/lib/i18n';
 // Icons replaced with emojis
 
 interface ContractStatusCardProps {
@@ -31,6 +32,7 @@ const ContractStatusCard: React.FC<ContractStatusCardProps> = ({
   projectScope,
   revisionPolicy,
 }) => {
+  const t = useT();
   const [isExpanded, setIsExpanded] = useState(contractStatus !== 'approved');
 
   // Auto-collapse when contract is approved
@@ -47,33 +49,33 @@ const ContractStatusCard: React.FC<ContractStatusCardProps> = ({
       case 'pending':
         return {
           icon: <span className="text-xl text-orange-500">⏰</span>,
-          badge: <Badge variant="outline" className="text-orange-600">Pending Approval</Badge>,
-          title: 'Contract Awaiting Approval',
-          description: 'Your contract has been sent to the client for review and approval.',
+          badge: <Badge variant="outline" className="text-orange-600">{t('pendingApproval')}</Badge>,
+          title: t('contractAwaitingApproval'),
+          description: t('contractAwaitingApprovalDesc'),
           showResend: true,
         };
       case 'approved':
         return {
           icon: <span className="text-xl text-green-500">✅</span>,
-          badge: <Badge variant="default" className="bg-green-500 hover:bg-green-600">Approved</Badge>,
-          title: 'Contract Approved',
-          description: 'Great! Your client has approved the contract. You can now begin work on the project.',
+          badge: <Badge variant="default" className="bg-green-500 hover:bg-green-600">{t('approved')}</Badge>,
+          title: t('contractApprovedTitle'),
+          description: t('contractApprovedDesc'),
           showResend: false,
         };
       case 'rejected':
         return {
           icon: <span className="text-xl text-red-500">❌</span>,
-          badge: <Badge variant="destructive">Changes Requested</Badge>,
-          title: 'Contract Requires Changes',
-          description: 'Your client has requested changes to the project proposal.',
+          badge: <Badge variant="destructive">{t('changesRequested')}</Badge>,
+          title: t('contractRequiresChanges'),
+          description: t('contractRequiresChangesDesc'),
           showResend: true,
         };
       default:
         return {
           icon: <span className="text-xl">⏰</span>,
-          badge: <Badge variant="outline">Unknown</Badge>,
-          title: 'Contract Status',
-          description: 'Contract status information',
+          badge: <Badge variant="outline">{t('unknown')}</Badge>,
+          title: t('contractStatus'),
+          description: t('contractStatusInfo'),
           showResend: false,
         };
     }
@@ -98,7 +100,7 @@ const ContractStatusCard: React.FC<ContractStatusCardProps> = ({
                 className="gap-1 h-8 px-2"
               >
                 <span className="text-sm">{isExpanded ? '⬆' : '⬇'}</span>
-                <span className="text-xs">{isExpanded ? 'Hide' : 'Details'}</span>
+                <span className="text-xs">{isExpanded ? t('hide') : t('details')}</span>
               </Button>
             )}
             {statusConfig.showResend && (
@@ -112,7 +114,7 @@ const ContractStatusCard: React.FC<ContractStatusCardProps> = ({
                     className="gap-2"
                   >
                     <span className="text-lg">✏️</span>
-                    Update & Resend
+                    {t('updateAndResend')}
                   </Button>
                 ) : (
                   <Button
@@ -125,7 +127,7 @@ const ContractStatusCard: React.FC<ContractStatusCardProps> = ({
                     <span className="text-lg">
                       {isResending ? '🔄' : '📧'}
                     </span>
-                    Resend Contract
+                    {t('resendContract')}
                   </Button>
                 )}
               </div>
@@ -143,7 +145,7 @@ const ContractStatusCard: React.FC<ContractStatusCardProps> = ({
             <CardTitle className="text-base">{statusConfig.title}</CardTitle>
             {contractStatus === 'approved' && contractApprovedAt && (
               <div className="text-xs text-green-600">
-                Approved {new Date(contractApprovedAt).toLocaleDateString()}
+                {t('approved')} {new Date(contractApprovedAt).toLocaleDateString()}
               </div>
             )}
           </div>
@@ -154,19 +156,19 @@ const ContractStatusCard: React.FC<ContractStatusCardProps> = ({
         <CardContent className="space-y-4">
           {contractSentAt && (
             <div className="text-sm text-muted-foreground">
-              <strong>Sent:</strong> {new Date(contractSentAt).toLocaleDateString()}
+              <strong>{t('sent')}:</strong> {new Date(contractSentAt).toLocaleDateString()}
             </div>
           )}
           
           {contractStatus === 'approved' && contractApprovedAt && (
             <div className="text-sm text-green-600">
-              <strong>Approved:</strong> {new Date(contractApprovedAt).toLocaleDateString()}
+              <strong>{t('approved')}:</strong> {new Date(contractApprovedAt).toLocaleDateString()}
             </div>
           )}
           
           {contractStatus === 'rejected' && rejectionReason && (
             <div className="bg-red-50 border border-red-200 rounded-lg p-3">
-              <h4 className="text-sm font-semibold text-red-800 mb-2">Client Feedback:</h4>
+              <h4 className="text-sm font-semibold text-red-800 mb-2">{t('clientFeedback')}:</h4>
               <p className="text-sm text-red-700 whitespace-pre-wrap">{rejectionReason}</p>
             </div>
           )}
@@ -174,8 +176,7 @@ const ContractStatusCard: React.FC<ContractStatusCardProps> = ({
           {contractStatus === 'pending' && (
             <div className="bg-orange-50 border border-orange-200 rounded-lg p-3">
               <p className="text-sm text-orange-700">
-                The client will receive an email with the contract details and approval options. 
-                Once approved, work can begin on the project.
+                {t('clientWillReceiveEmail')}
               </p>
             </div>
           )}
@@ -183,32 +184,32 @@ const ContractStatusCard: React.FC<ContractStatusCardProps> = ({
           {/* Contract Terms Details */}
           {(contractTerms || paymentTerms || projectScope || revisionPolicy) && (
             <div className="space-y-4">
-              <h4 className="font-semibold text-gray-900 border-t pt-4">Contract Details</h4>
+              <h4 className="font-semibold text-gray-900 border-t pt-4">{t('contractDetails')}</h4>
               
               {contractTerms && (
                 <div className="bg-gray-50 rounded-lg p-4">
-                  <h5 className="font-medium text-gray-900 mb-2">Terms & Conditions</h5>
+                  <h5 className="font-medium text-gray-900 mb-2">{t('termsAndConditions')}</h5>
                   <div className="text-sm text-gray-700 whitespace-pre-wrap">{contractTerms}</div>
                 </div>
               )}
               
               {paymentTerms && (
                 <div className="bg-gray-50 rounded-lg p-4">
-                  <h5 className="font-medium text-gray-900 mb-2">Payment Terms</h5>
+                  <h5 className="font-medium text-gray-900 mb-2">{t('paymentTerms')}</h5>
                   <div className="text-sm text-gray-700 whitespace-pre-wrap">{paymentTerms}</div>
                 </div>
               )}
               
               {projectScope && (
                 <div className="bg-gray-50 rounded-lg p-4">
-                  <h5 className="font-medium text-gray-900 mb-2">Project Scope</h5>
+                  <h5 className="font-medium text-gray-900 mb-2">{t('projectScope')}</h5>
                   <div className="text-sm text-gray-700 whitespace-pre-wrap">{projectScope}</div>
                 </div>
               )}
               
               {revisionPolicy && (
                 <div className="bg-gray-50 rounded-lg p-4">
-                  <h5 className="font-medium text-gray-900 mb-2">Revision Policy</h5>
+                  <h5 className="font-medium text-gray-900 mb-2">{t('revisionPolicy')}</h5>
                   <div className="text-sm text-gray-700 whitespace-pre-wrap">{revisionPolicy}</div>
                 </div>
               )}
