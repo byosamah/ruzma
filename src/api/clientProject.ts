@@ -34,7 +34,7 @@ export const getClientProject = async (token: string, isHybrid?: boolean): Promi
     freelancer_currency: data.freelancer_currency,
   };
   
-  console.log('Successfully fetched project:', typedProject);
+  
   return typedProject;
 };
 

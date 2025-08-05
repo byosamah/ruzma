@@ -29,9 +29,6 @@ const FreelancerView: React.FC<FreelancerViewProps> = ({
   const pendingRevisions = revisionData.requests.filter(req => req.status === 'pending');
 
   // Debug logging to track revision data changes
-  console.log('FreelancerView - Milestone ID:', milestone.id);
-  console.log('FreelancerView - Current revision data:', revisionData);
-  console.log('FreelancerView - Deliverable link:', milestone.deliverable_link);
   const handleRevisionSettingsUpdate = (maxRevisions: number | null) => {
     const updatedRevisionData = updateMaxRevisions(revisionData, maxRevisions);
     const newDeliverableLink = stringifyRevisionData(milestone.deliverable_link, updatedRevisionData);

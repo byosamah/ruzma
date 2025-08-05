@@ -79,7 +79,7 @@ const EditContractDialog: React.FC<EditContractDialogProps> = ({
       onContractUpdated();
       onClose();
     } catch (error) {
-      console.error('Error updating contract:', error);
+      
       toast.error('Failed to update contract');
     } finally {
       setIsUpdating(false);
@@ -132,7 +132,7 @@ Not Included:
 - Major scope changes require separate agreement
 - Revisions must be specific and actionable`;
 
-  console.log('EditContractDialog loading'); // Debug log
+  
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
