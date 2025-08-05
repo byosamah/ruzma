@@ -21,6 +21,7 @@ import {
 } from "recharts";
 import { formatCurrency, CurrencyCode } from "@/lib/currency";
 import { useT } from "@/lib/i18n";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 interface AnalyticsData {
   revenueData: Array<{ month: string; revenue: number; projects: number }>;
@@ -35,6 +36,7 @@ interface AnalyticsChartsProps {
 
 const AnalyticsCharts: React.FC<AnalyticsChartsProps> = ({ data, userCurrency }) => {
   const t = useT();
+  const { language } = useLanguage();
 
   const chartConfig = {
     revenue: { label: t('revenue'), color: "hsl(var(--chart-1))" },
@@ -46,7 +48,7 @@ const AnalyticsCharts: React.FC<AnalyticsChartsProps> = ({ data, userCurrency })
   return (
     <div className="space-y-4 sm:space-y-6">
       {/* Revenue Trend Chart */}
-      <Card className="card-flat" dir={t('revenueOverTime') === 'الإيرادات عبر الوقت' ? 'rtl' : 'ltr'}>
+      <Card className="card-flat" dir={language === 'ar' ? 'rtl' : 'ltr'}>
         <CardHeader className="pb-3 sm:pb-4">
           <CardTitle className="text-base sm:text-lg font-medium text-primary flex items-center gap-2 rtl:flex-row-reverse">
             📈 {t('revenueOverTime')}
@@ -97,7 +99,7 @@ const AnalyticsCharts: React.FC<AnalyticsChartsProps> = ({ data, userCurrency })
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
         {/* Milestone Status Distribution */}
-        <Card className="card-flat" dir={t('milestonesStatus') === 'حالة المراحل' ? 'rtl' : 'ltr'}>
+        <Card className="card-flat" dir={language === 'ar' ? 'rtl' : 'ltr'}>
           <CardHeader className="pb-3 sm:pb-4">
             <CardTitle className="text-base sm:text-lg font-medium text-primary flex items-center gap-2 rtl:flex-row-reverse">
               🎯 {t('milestonesStatus')}
@@ -130,7 +132,7 @@ const AnalyticsCharts: React.FC<AnalyticsChartsProps> = ({ data, userCurrency })
         </Card>
 
         {/* Monthly Progress */}
-        <Card className="card-flat" dir={t('projectsOverTime') === 'المشاريع عبر الوقت' ? 'rtl' : 'ltr'}>
+        <Card className="card-flat" dir={language === 'ar' ? 'rtl' : 'ltr'}>
           <CardHeader className="pb-3 sm:pb-4">
             <CardTitle className="text-base sm:text-lg font-medium text-primary flex items-center gap-2 rtl:flex-row-reverse">
               📊 {t('projectsOverTime')}

@@ -2,6 +2,7 @@ import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { formatCurrency, CurrencyCode } from '@/lib/currency';
 import { useT } from '@/lib/i18n';
+import { useLanguage } from '@/contexts/LanguageContext';
 import { ProfitabilityMetric } from '@/types/advancedAnalytics';
 
 interface RevenueOptimizationProps {
@@ -14,6 +15,7 @@ const RevenueOptimization: React.FC<RevenueOptimizationProps> = ({
   userCurrency,
 }) => {
   const t = useT();
+  const { language } = useLanguage();
 
   // Function to translate metric names
   const translateMetric = (metric: string) => {
@@ -93,7 +95,7 @@ const RevenueOptimization: React.FC<RevenueOptimizationProps> = ({
   return (
     <div className="space-y-6">
       {/* Profitability Metrics */}
-      <Card className="card-flat" dir={t('profitabilityMetrics') === 'مقاييس الربحية' ? 'rtl' : 'ltr'}>
+      <Card className="card-flat" dir={language === 'ar' ? 'rtl' : 'ltr'}>
         <CardHeader className="pb-4">
           <CardTitle className="text-lg font-medium text-primary flex items-center gap-2 rtl:flex-row-reverse">
             📊 {t('profitabilityMetrics')}
@@ -108,10 +110,10 @@ const RevenueOptimization: React.FC<RevenueOptimizationProps> = ({
                     {getTrendEmoji(metric.trend)}
                   </span>
                   <div>
-                    <p className="font-medium text-sm" dir={t('profitabilityMetrics') === 'مقاييس الربحية' ? 'rtl' : 'ltr'}>
+                    <p className="font-medium text-sm" dir={language === 'ar' ? 'rtl' : 'ltr'}>
                       {translateMetric(metric.metric)}
                     </p>
-                    <p className="text-xs text-muted-foreground" dir={t('profitabilityMetrics') === 'مقاييس الربحية' ? 'rtl' : 'ltr'}>
+                    <p className="text-xs text-muted-foreground" dir={language === 'ar' ? 'rtl' : 'ltr'}>
                       {translatePeriod(metric.period)}
                     </p>
                   </div>
@@ -128,7 +130,7 @@ const RevenueOptimization: React.FC<RevenueOptimizationProps> = ({
       </Card>
 
       {/* Actionable Recommendations */}
-      <Card className="card-flat" dir={t('growthRecommendations') === 'توصيات النمو' ? 'rtl' : 'ltr'}>
+      <Card className="card-flat" dir={language === 'ar' ? 'rtl' : 'ltr'}>
         <CardHeader className="pb-4">
           <CardTitle className="text-lg font-medium text-primary flex items-center gap-2 rtl:flex-row-reverse">
             💡 {t('growthRecommendations')}

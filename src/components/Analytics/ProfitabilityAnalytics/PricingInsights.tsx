@@ -4,6 +4,7 @@ import { ChartContainer, ChartTooltip, ChartTooltipContent } from '@/components/
 import { LineChart, Line, XAxis, YAxis, CartesianGrid } from 'recharts';
 import { formatCurrency, CurrencyCode } from '@/lib/currency';
 import { useT } from '@/lib/i18n';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 interface PricingTrend {
   month: string;
@@ -29,6 +30,7 @@ const PricingInsights: React.FC<PricingInsightsProps> = ({
   userCurrency,
 }) => {
   const t = useT();
+  const { language } = useLanguage();
 
   const chartConfig = {
     avgPrice: { label: t('averageProjectValue'), color: "hsl(var(--chart-1))" },
@@ -37,7 +39,7 @@ const PricingInsights: React.FC<PricingInsightsProps> = ({
   return (
     <div className="space-y-6">
       {/* Pricing Trends Chart */}
-      <Card className="card-flat" dir={t('pricingTrends') === 'اتجاهات التسعير' ? 'rtl' : 'ltr'}>
+      <Card className="card-flat" dir={language === 'ar' ? 'rtl' : 'ltr'}>
         <CardHeader className="pb-4">
           <CardTitle className="text-lg font-medium text-primary flex items-center gap-2 rtl:flex-row-reverse">
             📈 {t('pricingTrends')}
@@ -89,7 +91,7 @@ const PricingInsights: React.FC<PricingInsightsProps> = ({
       </Card>
 
       {/* Revenue Optimization */}
-      <Card className="card-flat" dir={t('revenueOptimization') === 'تحسين الإيرادات' ? 'rtl' : 'ltr'}>
+      <Card className="card-flat" dir={language === 'ar' ? 'rtl' : 'ltr'}>
         <CardHeader className="pb-4">
           <CardTitle className="text-lg font-medium text-primary flex items-center gap-2 rtl:flex-row-reverse">
             🎯 {t('revenueOptimization')}

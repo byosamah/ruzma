@@ -1,6 +1,7 @@
 import React from 'react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useT } from '@/lib/i18n';
+import { useLanguage } from '@/contexts/LanguageContext';
 import { CurrencyCode } from '@/lib/currency';
 import { AdvancedAnalyticsData } from '@/types/advancedAnalytics';
 import AnalyticsMetrics from '@/components/Analytics/AnalyticsMetrics';
@@ -28,11 +29,12 @@ const AdvancedAnalyticsLayout: React.FC<AdvancedAnalyticsLayoutProps> = ({
   userCurrency,
 }) => {
   const t = useT();
+  const { language } = useLanguage();
 
   return (
     <div className="space-y-4 sm:space-y-6 rtl:space-y-reverse">
       <Tabs defaultValue="profitability" className="w-full"
-        dir={t('clientIntelligence') === 'ذكاء العملاء' ? 'rtl' : 'ltr'}>
+        dir={language === 'ar' ? 'rtl' : 'ltr'}>
         <TabsList className="grid w-full grid-cols-2 h-auto">
           <TabsTrigger value="client-intelligence" className="flex items-center gap-1 sm:gap-2 px-2 sm:px-3 py-2.5 text-xs sm:text-sm">
             <span className="text-sm sm:text-base">👥</span>

@@ -4,6 +4,7 @@ import { ChartContainer, ChartTooltip, ChartTooltipContent } from '@/components/
 import { PieChart, Pie, Cell, Legend } from 'recharts';
 import { formatCurrency, CurrencyCode } from '@/lib/currency';
 import { useT } from '@/lib/i18n';
+import { useLanguage } from '@/contexts/LanguageContext';
 import { ClientSegment } from '@/types/advancedAnalytics';
 
 interface ClientSegmentationProps {
@@ -16,6 +17,7 @@ const ClientSegmentation: React.FC<ClientSegmentationProps> = ({
   userCurrency,
 }) => {
   const t = useT();
+  const { language } = useLanguage();
 
   const getSegmentEmoji = (segment: string) => {
     switch (segment) {
@@ -54,7 +56,7 @@ const ClientSegmentation: React.FC<ClientSegmentationProps> = ({
   return (
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
       {/* Pie Chart */}
-      <Card className="card-flat" dir={t('clientSegments') === 'شرائح العملاء' ? 'rtl' : 'ltr'}>
+      <Card className="card-flat" dir={language === 'ar' ? 'rtl' : 'ltr'}>
         <CardHeader className="pb-4">
           <CardTitle className="text-lg font-medium text-primary flex items-center gap-2 rtl:flex-row-reverse">
             📊 {t('clientSegments')}
@@ -104,7 +106,7 @@ const ClientSegmentation: React.FC<ClientSegmentationProps> = ({
       </Card>
 
       {/* Segment Details */}
-      <Card className="card-flat" dir={t('segmentDetails') === 'تفاصيل الشرائح' ? 'rtl' : 'ltr'}>
+      <Card className="card-flat" dir={language === 'ar' ? 'rtl' : 'ltr'}>
         <CardHeader className="pb-4">
           <CardTitle className="text-lg font-medium text-primary">
             {t('segmentDetails')}

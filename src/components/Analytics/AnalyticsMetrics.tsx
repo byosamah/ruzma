@@ -4,6 +4,7 @@ import { Card, CardContent } from "@/components/ui/card";
 // Icons replaced with emojis
 import { formatCurrency, CurrencyCode } from "@/lib/currency";
 import { useT } from "@/lib/i18n";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 interface AnalyticsMetricsProps {
   revenueGrowth: number;
@@ -19,6 +20,7 @@ const AnalyticsMetrics: React.FC<AnalyticsMetricsProps> = ({
   userCurrency,
 }) => {
   const t = useT();
+  const { language } = useLanguage();
 
   const metrics = [
     {
@@ -48,7 +50,7 @@ const AnalyticsMetrics: React.FC<AnalyticsMetricsProps> = ({
   ];
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-3 gap-4" dir={t('analytics') === 'التحليلات' ? 'rtl' : 'ltr'}>
+    <div className="grid grid-cols-1 md:grid-cols-3 gap-4" dir={language === 'ar' ? 'rtl' : 'ltr'}>
       {metrics.map((metric, index) => (
         <div key={index} className="stat-card">
           <div className="flex items-center space-x-3 rtl:space-x-reverse rtl:flex-row-reverse">

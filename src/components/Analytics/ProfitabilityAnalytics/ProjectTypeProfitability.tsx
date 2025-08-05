@@ -4,6 +4,7 @@ import { ChartContainer, ChartTooltip, ChartTooltipContent } from '@/components/
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Legend } from 'recharts';
 import { formatCurrency, CurrencyCode } from '@/lib/currency';
 import { useT } from '@/lib/i18n';
+import { useLanguage } from '@/contexts/LanguageContext';
 import { ProjectTypeAnalytics } from '@/types/advancedAnalytics';
 import { useCategoryTranslator } from '@/hooks/analytics/categoryTranslator';
 
@@ -17,6 +18,7 @@ const ProjectTypeProfitability: React.FC<ProjectTypeProfitabilityProps> = ({
   userCurrency,
 }) => {
   const t = useT();
+  const { language } = useLanguage();
   const translateCategory = useCategoryTranslator();
 
   const chartData = projectTypes.slice(0, 8).map(type => ({
@@ -36,7 +38,7 @@ const ProjectTypeProfitability: React.FC<ProjectTypeProfitabilityProps> = ({
   return (
     <div className="space-y-6">
       {/* Revenue by Project Type Chart */}
-      <Card className="card-flat" dir={t('revenueByProjectType') === 'الإيرادات حسب نوع المشروع' ? 'rtl' : 'ltr'}>
+      <Card className="card-flat" dir={language === 'ar' ? 'rtl' : 'ltr'}>
         <CardHeader className="pb-4">
           <CardTitle className="text-lg font-medium text-primary flex items-center gap-2 rtl:flex-row-reverse">
             📊 {t('revenueByProjectType')}
@@ -87,7 +89,7 @@ const ProjectTypeProfitability: React.FC<ProjectTypeProfitabilityProps> = ({
       </Card>
 
       {/* Project Type Details Table */}
-      <Card className="card-flat" dir={t('projectTypePerformance') === 'أداء نوع المشروع' ? 'rtl' : 'ltr'}>
+      <Card className="card-flat" dir={language === 'ar' ? 'rtl' : 'ltr'}>
         <CardHeader className="pb-4">
           <CardTitle className="text-lg font-medium text-primary">
             {t('projectTypePerformance')}

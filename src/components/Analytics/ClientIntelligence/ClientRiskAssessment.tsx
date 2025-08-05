@@ -1,6 +1,7 @@
 import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { useT } from '@/lib/i18n';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 interface RiskAssessment {
   highRisk: number;
@@ -20,6 +21,7 @@ const ClientRiskAssessment: React.FC<ClientRiskAssessmentProps> = ({
   averageClientLifetime,
 }) => {
   const t = useT();
+  const { language } = useLanguage();
 
   const totalClients = riskAssessment.highRisk + riskAssessment.mediumRisk + riskAssessment.lowRisk;
 
@@ -53,7 +55,7 @@ const ClientRiskAssessment: React.FC<ClientRiskAssessmentProps> = ({
   return (
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
       {/* Risk Distribution */}
-      <Card className="card-flat" dir={t('clientRiskAssessment') === 'تقييم مخاطر العملاء' ? 'rtl' : 'ltr'}>
+      <Card className="card-flat" dir={language === 'ar' ? 'rtl' : 'ltr'}>
         <CardHeader className="pb-4">
           <CardTitle className="text-lg font-medium text-primary flex items-center gap-2 rtl:flex-row-reverse">
             🎯 {t('clientRiskAssessment')}
@@ -85,7 +87,7 @@ const ClientRiskAssessment: React.FC<ClientRiskAssessmentProps> = ({
       </Card>
 
       {/* Key Metrics */}
-      <Card className="card-flat" dir={t('relationshipMetrics') === 'مقاييس العلاقات' ? 'rtl' : 'ltr'}>
+      <Card className="card-flat" dir={language === 'ar' ? 'rtl' : 'ltr'}>
         <CardHeader className="pb-4">
           <CardTitle className="text-lg font-medium text-primary">
             {t('relationshipMetrics')}

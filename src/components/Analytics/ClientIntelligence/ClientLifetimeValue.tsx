@@ -2,6 +2,7 @@ import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { formatCurrency, CurrencyCode } from '@/lib/currency';
 import { useT } from '@/lib/i18n';
+import { useLanguage } from '@/contexts/LanguageContext';
 import { ClientAnalytics } from '@/types/advancedAnalytics';
 
 interface ClientLifetimeValueProps {
@@ -14,6 +15,7 @@ const ClientLifetimeValue: React.FC<ClientLifetimeValueProps> = ({
   userCurrency,
 }) => {
   const t = useT();
+  const { language } = useLanguage();
   
   const topClients = clients.slice(0, 5);
 
@@ -43,7 +45,7 @@ const ClientLifetimeValue: React.FC<ClientLifetimeValueProps> = ({
   };
 
   return (
-    <Card className="card-flat" dir={t('topClientsByLifetimeValue') === 'أفضل العملاء حسب القيمة الإجمالية' ? 'rtl' : 'ltr'}>
+    <Card className="card-flat" dir={language === 'ar' ? 'rtl' : 'ltr'}>
       <CardHeader className="pb-4">
         <CardTitle className="text-lg font-medium text-primary flex items-center gap-2 rtl:flex-row-reverse">
           👑 {t('topClientsByLifetimeValue')}
