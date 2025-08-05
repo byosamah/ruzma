@@ -87,7 +87,7 @@ export const authTranslations = {
     loginFailed: "فشل في تسجيل الدخول",
     profileSetupError: "حدث خطأ أثناء إعداد ملفك الشخصي. يرجى محاولة تحديث الصفحة.",
     defaultUser: "مستخدم",
-    emailPlaceholder: "البريد@example.com",
+    emailPlaceholder: "you@example.com",
     passwordPlaceholder: "••••••••",
     signInSuccess: "تم تسجيل الدخول بنجاح!",
     signUpFree: "أنشئ حساباً مجانياً",
