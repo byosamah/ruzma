@@ -22,12 +22,14 @@ const RevisionSettingsDropdown: React.FC<RevisionSettingsDropdownProps> = ({
 
   // Update selectedValue when revisionData changes
   useEffect(() => {
-    
+    console.log('RevisionSettingsDropdown - revisionData changed:', revisionData);
     setSelectedValue(revisionData.maxRevisions?.toString() ?? 'unlimited');
   }, [revisionData.maxRevisions]);
 
   const handleSave = () => {
+    console.log('RevisionSettingsDropdown - Saving selectedValue:', selectedValue);
     const newMaxRevisions = selectedValue === 'unlimited' ? null : parseInt(selectedValue);
+    console.log('RevisionSettingsDropdown - Calling onUpdateMaxRevisions with:', newMaxRevisions);
     onUpdateMaxRevisions(newMaxRevisions);
     setIsOpen(false);
   };

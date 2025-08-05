@@ -67,7 +67,7 @@ export const DeleteAccountDialog = ({ open, onOpenChange }: DeleteAccountDialogP
       toast.success('Account deleted successfully');
       navigate('/');
     } catch (error: any) {
-      
+      console.error('Error deleting account:', error);
       toast.error('Failed to delete account. Please contact support.');
     } finally {
       setIsLoading(false);

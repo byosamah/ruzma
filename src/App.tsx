@@ -33,10 +33,10 @@ const Invoices = lazy(() => import("./pages/Invoices"));
 const CreateInvoice = lazy(() => import("./pages/CreateInvoice"));
 const Clients = lazy(() => import("./pages/Clients"));
 
-// Optimized loading component with minimal DOM
+// Optimized loading component
 const PageLoader = () => (
   <div className="min-h-screen flex items-center justify-center">
-    <div className="critical-loader"></div>
+    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
   </div>
 );
 

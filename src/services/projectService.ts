@@ -39,7 +39,7 @@ export class ProjectService {
   private currencyService: CurrencyService;
 
   constructor(user: User | null) {
-    
+    console.log('ProjectService constructor called with user:', !!user);
     this.user = user;
     const registry = ServiceRegistry.getInstance();
     this.userService = registry.getUserService(user);

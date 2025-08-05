@@ -29,6 +29,7 @@ export const EmailNotificationsDialog = ({ open, onOpenChange }: EmailNotificati
 
   const handleSave = () => {
     // Here you would save the notification preferences
+    console.log('Saving notification preferences:', notifications);
     onOpenChange(false);
   };
 

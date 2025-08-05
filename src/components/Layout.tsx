@@ -51,9 +51,9 @@ const Layout: React.FC<LayoutProps> = ({
   return (
     <div className="min-h-screen bg-white">
       <SidebarProvider>
-        <div className="min-h-screen flex w-full relative">
+        <div className="min-h-screen flex w-full max-w-full overflow-x-hidden">
           <AppSidebar user={user} onSignOut={onSignOutHandler} />
-          <SidebarInset className="flex-1 min-w-0">
+          <SidebarInset className="flex-1 min-w-0 max-w-full">
             <div className={`${isMobile ? 'p-2' : 'p-4'} max-w-full`}>
               <div className="mb-3 md:mb-4">
                 <SidebarTrigger className={`${isMobile ? 'min-h-[44px] min-w-[44px] touch-manipulation' : ''}`} />

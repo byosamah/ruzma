@@ -10,19 +10,8 @@
     <link rel="preconnect" href="https://www.googletagmanager.com">
     <link rel="preconnect" href="https://static.hotjar.com">
     
-    <!-- Preload critical CSS and resources -->
+    <!-- Preload critical CSS -->
     <link rel="modulepreload" href="/src/main.tsx" />
-    
-    <!-- Critical CSS inlined for instant loading -->
-    <style>
-      /* Critical above-the-fold styles */
-      html{font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;line-height:1.5;-webkit-text-size-adjust:100%;tab-size:4}
-      body{margin:0;font-feature-settings:normal;font-variation-settings:normal}
-      #root{min-height:100vh;display:flex;flex-direction:column}
-      .critical-loader{display:inline-block;width:2rem;height:2rem;border:2px solid #e5e7eb;border-radius:50%;border-top-color:#3b82f6;animation:spin 1s ease-in-out infinite}
-      @keyframes spin{to{transform:rotate(360deg)}}
-      img{max-width:100%;height:auto;display:block}
-    </style>
     
     <!-- Google tag (gtag.js) - Deferred -->
     <script>

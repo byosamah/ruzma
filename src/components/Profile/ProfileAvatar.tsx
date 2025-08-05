@@ -20,6 +20,7 @@ export const ProfileAvatar = ({
   fallbackText, 
   size = 'md' 
 }: ProfileAvatarProps) => {
+  console.log('ProfileAvatar rendering with src:', src);
   
   const sizeInPx = sizePixels[size];
   
@@ -40,8 +41,8 @@ export const ProfileAvatar = ({
             src={src}
             alt={alt}
             className="absolute inset-0 w-full h-full object-cover"
-            loading="lazy"
-            decoding="async"
+            onLoad={() => console.log('Avatar image loaded successfully')}
+            onError={() => console.log('Avatar image failed to load')}
             style={{
               width: `${sizeInPx}px`,
               height: `${sizeInPx}px`

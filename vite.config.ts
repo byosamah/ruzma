@@ -23,24 +23,14 @@ export default defineConfig(({ mode }) => ({
     rollupOptions: {
       output: {
         manualChunks: {
-          vendor: ['react', 'react-dom'],
-          router: ['react-router-dom'],
+          vendor: ['react', 'react-dom', 'react-router-dom'],
           ui: ['@radix-ui/react-dialog', '@radix-ui/react-dropdown-menu', '@radix-ui/react-select'],
           supabase: ['@supabase/supabase-js'],
           charts: ['recharts'],
           utils: ['date-fns', 'clsx', 'tailwind-merge'],
           query: ['@tanstack/react-query'],
-          forms: ['react-hook-form', '@hookform/resolvers', 'zod'],
-          icons: ['lucide-react']
-        },
-        chunkFileNames: 'assets/[name].[hash].js',
-        entryFileNames: 'assets/[name].[hash].js',
-        assetFileNames: 'assets/[name].[hash].[ext]'
-      },
-      treeshake: {
-        moduleSideEffects: false,
-        propertyReadSideEffects: false,
-        tryCatchDeoptimization: false
+          forms: ['react-hook-form', '@hookform/resolvers', 'zod']
+        }
       }
     },
     target: 'esnext',
@@ -57,11 +47,7 @@ export default defineConfig(({ mode }) => ({
       '@supabase/supabase-js',
       '@tanstack/react-query',
       'react-router-dom',
-      'recharts',
-      'date-fns',
-      'clsx',
-      'tailwind-merge'
-    ],
-    exclude: ['@vite/client', '@vite/env']
+      'recharts'
+    ]
   }
 }));
