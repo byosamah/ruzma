@@ -27,14 +27,27 @@ export default defineConfig(({ mode }) => ({
           ui: ['@radix-ui/react-dialog', '@radix-ui/react-dropdown-menu', '@radix-ui/react-select'],
           supabase: ['@supabase/supabase-js'],
           charts: ['recharts'],
-          utils: ['date-fns', 'clsx', 'tailwind-merge']
+          utils: ['date-fns', 'clsx', 'tailwind-merge'],
+          query: ['@tanstack/react-query'],
+          forms: ['react-hook-form', '@hookform/resolvers', 'zod']
         }
       }
     },
     target: 'esnext',
-    minify: 'esbuild'
+    minify: 'esbuild',
+    cssMinify: true,
+    cssCodeSplit: true,
+    sourcemap: false,
+    chunkSizeWarningLimit: 1000
   },
   optimizeDeps: {
-    include: ['react', 'react-dom', '@supabase/supabase-js']
+    include: [
+      'react', 
+      'react-dom', 
+      '@supabase/supabase-js',
+      '@tanstack/react-query',
+      'react-router-dom',
+      'recharts'
+    ]
   }
 }));

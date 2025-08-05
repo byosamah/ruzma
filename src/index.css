@@ -1,14 +1,28 @@
 
-/* Import organized CSS modules */
+/* Import organized CSS modules with performance optimizations */
 @import './styles/base.css';
 @import './styles/design-tokens.css';
 @import './styles/components.css';
 @import './styles/mobile.css';
 @import './styles/accessibility.css';
 
-/* Mobile-first responsive base styles */
+/* Mobile-first responsive base styles with performance optimizations */
 * {
   box-sizing: border-box;
+  -webkit-transform: translateZ(0);
+  transform: translateZ(0);
+}
+
+img, picture, video, canvas, svg {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+
+/* Optimize repaints and reflows */
+.performance-optimized {
+  will-change: auto;
+  contain: layout style paint;
 }
 
 html {
