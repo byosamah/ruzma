@@ -36,14 +36,12 @@ body {
   padding: 0;
   width: 100%;
   min-height: 100vh;
-  overflow-x: hidden;
 }
 
 #root {
   width: 100%;
   min-height: 100vh;
   max-width: 100vw;
-  overflow-x: hidden;
 }
 
 /* Remove problematic container overrides that conflict with Tailwind */
