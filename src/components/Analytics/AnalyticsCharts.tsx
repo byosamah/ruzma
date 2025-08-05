@@ -50,7 +50,7 @@ const AnalyticsCharts: React.FC<AnalyticsChartsProps> = ({ data, userCurrency })
       {/* Revenue Trend Chart */}
       <Card className="card-flat" dir={language === 'ar' ? 'rtl' : 'ltr'}>
         <CardHeader className="pb-3 sm:pb-4">
-          <CardTitle className="text-base sm:text-lg font-medium text-primary flex items-center gap-2 rtl:flex-row-reverse">
+          <CardTitle className="text-base sm:text-lg font-medium text-primary flex items-center gap-2 rtl:flex-row-reverse rtl:text-right">
             📈 {t('revenueOverTime')}
           </CardTitle>
         </CardHeader>
@@ -101,7 +101,7 @@ const AnalyticsCharts: React.FC<AnalyticsChartsProps> = ({ data, userCurrency })
         {/* Milestone Status Distribution */}
         <Card className="card-flat" dir={language === 'ar' ? 'rtl' : 'ltr'}>
           <CardHeader className="pb-3 sm:pb-4">
-            <CardTitle className="text-base sm:text-lg font-medium text-primary flex items-center gap-2 rtl:flex-row-reverse">
+            <CardTitle className="text-base sm:text-lg font-medium text-primary flex items-center gap-2 rtl:flex-row-reverse rtl:text-right">
               🎯 {t('milestonesStatus')}
             </CardTitle>
           </CardHeader>
@@ -134,7 +134,7 @@ const AnalyticsCharts: React.FC<AnalyticsChartsProps> = ({ data, userCurrency })
         {/* Monthly Progress */}
         <Card className="card-flat" dir={language === 'ar' ? 'rtl' : 'ltr'}>
           <CardHeader className="pb-3 sm:pb-4">
-            <CardTitle className="text-base sm:text-lg font-medium text-primary flex items-center gap-2 rtl:flex-row-reverse">
+            <CardTitle className="text-base sm:text-lg font-medium text-primary flex items-center gap-2 rtl:flex-row-reverse rtl:text-right">
               📊 {t('projectsOverTime')}
             </CardTitle>
           </CardHeader>
