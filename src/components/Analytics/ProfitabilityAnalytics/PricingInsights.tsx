@@ -41,7 +41,8 @@ const PricingInsights: React.FC<PricingInsightsProps> = ({
       {/* Pricing Trends Chart */}
       <Card className="card-flat" dir={language === 'ar' ? 'rtl' : 'ltr'}>
         <CardHeader className="pb-4">
-          <CardTitle className="text-lg font-medium text-primary flex items-center gap-2 rtl:flex-row-reverse">
+          <CardTitle className="text-lg font-medium text-primary flex items-center gap-2 rtl:flex-row-reverse"
+                     style={{ textAlign: language === 'ar' ? 'right' : 'left' }}>
             📈 {t('pricingTrends')}
           </CardTitle>
         </CardHeader>
@@ -93,7 +94,8 @@ const PricingInsights: React.FC<PricingInsightsProps> = ({
       {/* Revenue Optimization */}
       <Card className="card-flat" dir={language === 'ar' ? 'rtl' : 'ltr'}>
         <CardHeader className="pb-4">
-          <CardTitle className="text-lg font-medium text-primary flex items-center gap-2 rtl:flex-row-reverse">
+          <CardTitle className="text-lg font-medium text-primary flex items-center gap-2 rtl:flex-row-reverse"
+                     style={{ textAlign: language === 'ar' ? 'right' : 'left' }}>
             🎯 {t('revenueOptimization')}
           </CardTitle>
         </CardHeader>

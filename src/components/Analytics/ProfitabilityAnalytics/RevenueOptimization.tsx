@@ -97,7 +97,8 @@ const RevenueOptimization: React.FC<RevenueOptimizationProps> = ({
       {/* Profitability Metrics */}
       <Card className="card-flat" dir={language === 'ar' ? 'rtl' : 'ltr'}>
         <CardHeader className="pb-4">
-          <CardTitle className="text-lg font-medium text-primary flex items-center gap-2 rtl:flex-row-reverse">
+          <CardTitle className="text-lg font-medium text-primary flex items-center gap-2 rtl:flex-row-reverse"
+                     style={{ textAlign: language === 'ar' ? 'right' : 'left' }}>
             📊 {t('profitabilityMetrics')}
           </CardTitle>
         </CardHeader>
@@ -132,7 +133,8 @@ const RevenueOptimization: React.FC<RevenueOptimizationProps> = ({
       {/* Actionable Recommendations */}
       <Card className="card-flat" dir={language === 'ar' ? 'rtl' : 'ltr'}>
         <CardHeader className="pb-4">
-          <CardTitle className="text-lg font-medium text-primary flex items-center gap-2 rtl:flex-row-reverse">
+          <CardTitle className="text-lg font-medium text-primary flex items-center gap-2 rtl:flex-row-reverse"
+                     style={{ textAlign: language === 'ar' ? 'right' : 'left' }}>
             💡 {t('growthRecommendations')}
           </CardTitle>
         </CardHeader>
