@@ -17,7 +17,7 @@ import { useIsMobile } from "@/hooks/use-mobile";
 import { parseClientToken } from "@/lib/clientUrlUtils";
 import { CurrencyCode } from "@/lib/currency";
 import StickyNextStepBar from "@/components/ProjectClient/StickyNextStepBar";
-import '@/styles/client-portal-theme.css';
+
 
 const ClientProject = () => {
   const { token } = useParams<{ token: string }>();

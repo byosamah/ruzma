@@ -5,6 +5,7 @@
 @import './styles/components.css';
 @import './styles/mobile.css';
 @import './styles/accessibility.css';
+@import './styles/client-portal-theme.css';
 
 /* Mobile-first responsive base styles with performance optimizations */
 * {
