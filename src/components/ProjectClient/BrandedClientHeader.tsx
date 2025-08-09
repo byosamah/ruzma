@@ -13,12 +13,12 @@ const BrandedClientHeader: React.FC<BrandedClientHeaderProps> = ({ branding }) =
   const t = useT();
 
   return (
-    <div className="bg-white border-b border-gray-100">
+    <div className="bg-card border-b border-border">
       {/* Top Navigation Bar */}
-      <div className="bg-gray-50 border-b border-gray-100">
+      <div className="bg-secondary border-b border-border">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-12">
-            <div className="text-sm text-gray-600">
+            <div className="text-sm text-muted-foreground">
               {t('clientProjectPortal')}
             </div>
             <LanguageSelector />
@@ -35,27 +35,27 @@ const BrandedClientHeader: React.FC<BrandedClientHeaderProps> = ({ branding }) =
               <img
                 src={branding.logo_url}
                 alt={`${branding.freelancer_name || 'Freelancer'} logo`}
-                className="w-10 h-10 sm:w-12 sm:h-12 rounded-lg object-cover border border-gray-200"
+                className="w-10 h-10 sm:w-12 sm:h-12 rounded-lg object-cover border border-border"
               />
             ) : (
-              <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-lg flex items-center justify-center bg-gray-100 border border-gray-200">
-                <User className="w-5 h-5 sm:w-6 sm:h-6 text-gray-400" />
+              <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-lg flex items-center justify-center bg-muted border border-border">
+                <User className="w-5 h-5 sm:w-6 sm:h-6 text-muted-foreground" />
               </div>
             )}
           </div>
           
           {/* Freelancer Info */}
           <div className="flex-1 min-w-0">
-            <h1 className="text-lg sm:text-xl font-medium text-gray-900 truncate">
+            <h1 className="text-lg sm:text-xl font-medium text-foreground truncate">
               {branding?.freelancer_name || 'Professional Freelancer'}
             </h1>
             {branding?.freelancer_title && (
-              <p className="text-sm text-gray-600 mt-1">
+              <p className="text-sm text-muted-foreground mt-1">
                 {branding.freelancer_title}
               </p>
             )}
             {branding?.freelancer_bio && (
-              <p className="text-sm text-gray-500 mt-2 line-clamp-2 leading-relaxed">
+              <p className="text-sm text-muted-foreground mt-2 line-clamp-2 leading-relaxed">
                 {branding.freelancer_bio}
               </p>
             )}

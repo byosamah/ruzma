@@ -67,7 +67,7 @@ const ClientProject = () => {
   const displayCurrency = freelancerCurrencyCode || userCurrencyCode;
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-background text-foreground">
       <BrandedClientHeader branding={branding} />
       
       {/* Show waiting message if contract was rejected */}

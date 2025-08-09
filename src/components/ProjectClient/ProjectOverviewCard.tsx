@@ -46,12 +46,12 @@ const ProjectOverviewCard: React.FC<ProjectOverviewCardProps> = ({
   return (
     <div className="space-y-4 sm:space-y-6">
       {/* Project Title and Brief */}
-      <div className="bg-white rounded-lg border border-gray-100 p-4 sm:p-6">
-        <h2 className="text-lg sm:text-xl font-medium text-gray-900 mb-2">
+      <div className="bg-card rounded-lg border border-border p-4 sm:p-6">
+        <h2 className="text-lg sm:text-xl font-medium text-foreground mb-2">
           {projectName}
         </h2>
         {projectBrief && (
-          <p className="text-sm text-gray-600 leading-relaxed">
+          <p className="text-sm text-muted-foreground leading-relaxed">
             {projectBrief}
           </p>
         )}

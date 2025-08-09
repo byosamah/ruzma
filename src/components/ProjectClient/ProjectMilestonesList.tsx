@@ -46,9 +46,9 @@ const ProjectMilestonesList: React.FC<ProjectMilestonesListProps> = ({
   }));
 
   return (
-    <Card className="bg-white border border-gray-100">
+    <Card className="bg-card border border-border">
       <CardHeader className="pb-4">
-        <CardTitle className="text-lg font-medium text-gray-900">
+        <CardTitle className="text-lg font-medium text-foreground">
           📋 {t('projectMilestones')}
         </CardTitle>
       </CardHeader>
@@ -72,8 +72,8 @@ const ProjectMilestonesList: React.FC<ProjectMilestonesListProps> = ({
         {/* Empty State */}
         {milestones.length === 0 && (
           <div className="text-center py-8 sm:py-12">
-            <span className="text-4xl sm:text-6xl text-gray-300 mx-auto mb-4 block">📋</span>
-            <p className="text-sm text-gray-500">{t('noMilestonesFound')}</p>
+            <span className="text-4xl sm:text-6xl text-muted-foreground mx-auto mb-4 block">📋</span>
+            <p className="text-sm text-muted-foreground">{t('noMilestonesFound')}</p>
           </div>
         )}
       </CardContent>

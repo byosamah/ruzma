@@ -6,12 +6,12 @@ import { useT } from "@/lib/i18n";
 const ProjectFooter: React.FC = () => {
   const t = useT();
   return (
-    <Card className="bg-slate-100 border-slate-200">
+    <Card className="bg-card border-border">
       <CardContent className="pt-6 text-center">
-        <p className="text-sm text-slate-600">
+        <p className="text-sm text-muted-foreground">
           {t('questionsContactFreelancer')}
         </p>
-        <p className="text-xs text-slate-500 mt-2">
+        <p className="text-xs text-muted-foreground mt-2">
           {t('poweredByRuzma')}
         </p>
       </CardContent>
