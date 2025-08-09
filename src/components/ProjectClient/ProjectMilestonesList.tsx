@@ -54,7 +54,7 @@ const ProjectMilestonesList: React.FC<ProjectMilestonesListProps> = ({
       </CardHeader>
       <CardContent className="space-y-4">
         {transformedMilestones.map((milestone) => (
-          <div key={milestone.id}>
+          <div key={milestone.id} id={`milestone-${milestone.id}`}>
             <MilestoneCard
               milestone={milestone}
               isClient={true}

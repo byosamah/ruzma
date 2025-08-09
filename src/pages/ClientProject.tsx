@@ -16,6 +16,8 @@ import ClientContractStatus from "@/components/ProjectClient/ClientContractStatu
 import { useIsMobile } from "@/hooks/use-mobile";
 import { parseClientToken } from "@/lib/clientUrlUtils";
 import { CurrencyCode } from "@/lib/currency";
+import StickyNextStepBar from "@/components/ProjectClient/StickyNextStepBar";
+import '@/styles/client-portal-theme.css';
 
 const ClientProject = () => {
   const { token } = useParams<{ token: string }>();
@@ -67,7 +69,7 @@ const ClientProject = () => {
   const displayCurrency = freelancerCurrencyCode || userCurrencyCode;
 
   return (
-    <div className="min-h-screen bg-background text-foreground">
+    <div className="client-portal min-h-screen bg-background text-foreground">
       <BrandedClientHeader branding={branding} />
       
       {/* Show waiting message if contract was rejected */}
@@ -103,7 +105,7 @@ const ClientProject = () => {
       
       {/* Main Content - Only show if contract is approved or doesn't require approval */}
       {!needsContractApproval && !contractRejected && (
-        <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6 lg:py-8 space-y-4 sm:space-y-6">
+        <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6 lg:py-8 pb-24 space-y-4 sm:space-y-6">
           {/* Contract Status - Show for all approved contracts */}
           {project.contract_status && (
             <ClientContractStatus
@@ -152,7 +154,7 @@ const ClientProject = () => {
           />
         </main>
       )}
-      
+      <StickyNextStepBar project={project} />
       <ProjectFooter />
     </div>
   );

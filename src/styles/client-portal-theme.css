@@ -1,0 +1,6 @@
+/* Client Portal Theme (scoped) */
+@layer components {
+  .client-portal .sticky-next-step-bar {
+    @apply fixed bottom-0 inset-x-0 z-50 bg-background/90 supports-[backdrop-filter]:bg-background/60 backdrop-blur border-t border-border;
+  }
+}
