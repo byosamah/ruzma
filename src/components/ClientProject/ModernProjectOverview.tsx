@@ -111,20 +111,20 @@ const ModernProjectOverview: React.FC<ModernProjectOverviewProps> = ({
         </CardContent>
       </Card>
 
-      {/* Compact Stats Grid - Side by Side */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+      {/* Stats Grid */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         {stats.map((stat, index) => (
           <Card key={index} className="hover:shadow-md transition-shadow duration-200">
-            <CardContent className="p-4">
-              <div className="flex items-center gap-2">
-                <div className="p-1.5 rounded-md bg-muted shrink-0">
-                  <stat.icon className="w-4 h-4 text-muted-foreground" />
+            <CardContent className="p-6">
+              <div className="flex items-center gap-3">
+                <div className="p-2 rounded-lg bg-muted">
+                  <stat.icon className="w-5 h-5 text-muted-foreground" />
                 </div>
                 <div className="flex-1 min-w-0">
-                  <p className="text-xs font-medium text-muted-foreground truncate">
+                  <p className="text-sm font-medium text-muted-foreground truncate">
                     {stat.label}
                   </p>
-                  <p className="text-base font-bold text-foreground">
+                  <p className="text-lg font-bold text-foreground">
                     {stat.value}
                   </p>
                   {stat.subtitle && (
