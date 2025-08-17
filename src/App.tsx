@@ -10,8 +10,10 @@ import { LanguageLayout } from "@/components/LanguageLayout";
 import { RedirectWithParams } from "@/components/RedirectWithParams";
 import { Suspense, lazy } from "react";
 
-// Lazy load all route components
-const Login = lazy(() => import("./pages/Login"));
+// Import Login directly to avoid dynamic import issues
+import Login from "./pages/Login";
+
+// Lazy load other route components
 const SignUp = lazy(() => import("./pages/SignUp"));
 const EmailConfirmation = lazy(() => import("./pages/EmailConfirmation"));
 const ForgotPassword = lazy(() => import("./pages/ForgotPassword"));
