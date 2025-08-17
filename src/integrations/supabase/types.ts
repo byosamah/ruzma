@@ -7,7 +7,7 @@ export type Json =
   | Json[]
 
 export type Database = {
-  // Allows to automatically instanciate createClient with right options
+  // Allows to automatically instantiate createClient with right options
   // instead of createClient<Database, { PostgrestVersion: 'XX' }>(URL, KEY)
   __InternalSupabase: {
     PostgrestVersion: "12.2.3 (519615d)"
@@ -504,14 +504,14 @@ export type Database = {
         Returns: undefined
       }
       check_user_limits: {
-        Args: { _user_id: string; _action: string; _size?: number }
+        Args: { _action: string; _size?: number; _user_id: string }
         Returns: boolean
       }
       ensure_unique_slug: {
         Args: {
           base_slug: string
-          user_id_param: string
           project_id_param?: string
+          user_id_param: string
         }
         Returns: string
       }
@@ -522,13 +522,13 @@ export type Database = {
       get_clients_with_project_count: {
         Args: { user_id_param: string }
         Returns: {
-          id: string
-          user_id: string
-          name: string
-          email: string
           created_at: string
-          updated_at: string
+          email: string
+          id: string
+          name: string
           project_count: number
+          updated_at: string
+          user_id: string
         }[]
       }
       get_user_limits: {
@@ -542,7 +542,7 @@ export type Database = {
         Returns: undefined
       }
       update_user_storage: {
-        Args: { _user_id: string; _size_change: number }
+        Args: { _size_change: number; _user_id: string }
         Returns: undefined
       }
     }
