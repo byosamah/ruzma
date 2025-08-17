@@ -56,10 +56,10 @@ const ModernInstructionsCard: React.FC<ModernInstructionsCardProps> = ({
       </CardHeader>
       <CardContent>
         {/* Simple Steps Flow */}
-        <div className="flex flex-col sm:flex-row gap-4 sm:gap-2">
+        <div className="flex flex-col sm:flex-row gap-4 sm:gap-2 sm:items-start">
           {steps.map((step, index) => (
-            <div key={index} className="flex items-center gap-3 sm:flex-col sm:text-center flex-1">
-              <div className="flex items-center gap-3 sm:flex-col sm:gap-2">
+            <React.Fragment key={index}>
+              <div className="flex items-center gap-3 sm:flex-col sm:text-center flex-1">
                 <div className="p-3 rounded-lg bg-muted shrink-0">
                   <step.icon className="w-5 h-5 text-muted-foreground" />
                 </div>
@@ -69,9 +69,9 @@ const ModernInstructionsCard: React.FC<ModernInstructionsCardProps> = ({
                 </div>
               </div>
               {index < steps.length - 1 && (
-                <ArrowRight className="w-4 h-4 text-muted-foreground hidden sm:block mt-6" />
+                <ArrowRight className="w-4 h-4 text-muted-foreground hidden sm:block shrink-0 mt-3" />
               )}
-            </div>
+            </React.Fragment>
           ))}
         </div>
 
