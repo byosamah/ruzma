@@ -1,17 +1,15 @@
 import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 import { Badge } from '@/components/ui/badge';
 import { useT } from '@/lib/i18n';
 import { FreelancerBranding } from '@/types/branding';
 import { 
   HelpCircle, 
-  CreditCard, 
   FileText, 
+  Upload, 
   MessageSquare, 
-  Clock,
   CheckCircle,
-  Upload
+  ArrowRight
 } from 'lucide-react';
 
 interface ModernInstructionsCardProps {
@@ -25,92 +23,68 @@ const ModernInstructionsCard: React.FC<ModernInstructionsCardProps> = ({
 }) => {
   const t = useT();
 
-  const instructions = [
+  const steps = [
     {
-      id: 'review-milestones',
       icon: FileText,
       title: 'Review Milestones',
-      content: 'Review the project milestones and their requirements. Each milestone represents a deliverable with specific goals and payment amount.',
-      badge: 'Step 1',
-    },
-    {
-      id: 'track-progress',
-      icon: Clock,
-      title: 'Track Progress',
-      content: 'Monitor the status of each milestone as work progresses. You\'ll be notified when deliverables are ready for review.',
-      badge: 'Ongoing',
+      description: 'Check each milestone and its deliverables',
     },
     ...(paymentProofRequired ? [{
-      id: 'payment-proof',
       icon: Upload,
       title: 'Upload Payment Proof',
-      content: 'When a milestone is delivered, upload proof of payment (receipt, screenshot) to confirm payment has been made.',
-      badge: 'Required',
+      description: 'Submit payment confirmation when requested',
     }] : []),
     {
-      id: 'request-revisions',
       icon: MessageSquare,
-      title: 'Request Revisions',
-      content: 'If deliverables need changes, you can request revisions with specific feedback to guide improvements.',
-      badge: 'Optional',
+      title: 'Request Changes',
+      description: 'Ask for revisions if needed',
     },
     {
-      id: 'final-approval',
       icon: CheckCircle,
-      title: 'Final Approval',
-      content: 'Once satisfied with the deliverable and payment is confirmed, the milestone will be marked as approved.',
-      badge: 'Final',
+      title: 'Approve Work',
+      description: 'Final approval when satisfied',
     },
   ];
 
   return (
     <Card>
-      <CardHeader>
-        <CardTitle className="flex items-center gap-2">
+      <CardHeader className="pb-4">
+        <CardTitle className="flex items-center gap-2 text-lg">
           <HelpCircle className="w-5 h-5 text-primary" />
-          {t('howItWorks')}
+          How It Works
         </CardTitle>
       </CardHeader>
       <CardContent>
-        <Accordion type="single" collapsible defaultValue="review-milestones">
-          {instructions.map((instruction) => (
-            <AccordionItem key={instruction.id} value={instruction.id}>
-              <AccordionTrigger className="hover:no-underline">
-                <div className="flex items-center gap-3 text-left">
-                  <div className="p-2 rounded-lg bg-muted">
-                    <instruction.icon className="w-4 h-4 text-muted-foreground" />
-                  </div>
-                  <div className="flex-1">
-                    <div className="flex items-center gap-2">
-                      <span className="font-medium">{instruction.title}</span>
-                      <Badge variant="outline" className="text-xs">
-                        {instruction.badge}
-                      </Badge>
-                    </div>
-                  </div>
+        {/* Simple Steps Flow */}
+        <div className="flex flex-col sm:flex-row gap-4 sm:gap-2">
+          {steps.map((step, index) => (
+            <div key={index} className="flex items-center gap-3 sm:flex-col sm:text-center flex-1">
+              <div className="flex items-center gap-3 sm:flex-col sm:gap-2">
+                <div className="p-3 rounded-lg bg-muted shrink-0">
+                  <step.icon className="w-5 h-5 text-muted-foreground" />
                 </div>
-              </AccordionTrigger>
-              <AccordionContent className="pt-4 pb-2">
-                <div className="pl-12">
-                  <p className="text-sm text-muted-foreground leading-relaxed">
-                    {instruction.content}
-                  </p>
+                <div className="sm:text-center">
+                  <h3 className="font-medium text-sm">{step.title}</h3>
+                  <p className="text-xs text-muted-foreground mt-1">{step.description}</p>
                 </div>
-              </AccordionContent>
-            </AccordionItem>
-          ))}
-        </Accordion>
-
-        {/* Contact Information */}
-        {branding && (
-          <div className="mt-6 p-4 bg-muted/50 rounded-lg">
-            <div className="flex items-center gap-2 mb-2">
-              <MessageSquare className="w-4 h-4 text-muted-foreground" />
-              <span className="text-sm font-medium">Need Help?</span>
+              </div>
+              {index < steps.length - 1 && (
+                <ArrowRight className="w-4 h-4 text-muted-foreground hidden sm:block mt-6" />
+              )}
             </div>
-            <p className="text-sm text-muted-foreground">
-              Contact {branding.freelancer_name || 'your freelancer'} if you have any questions about the project or need assistance.
-            </p>
+          ))}
+        </div>
+
+        {/* Simple Contact Info */}
+        {branding && (
+          <div className="mt-6 p-4 bg-muted/30 rounded-lg border border-border">
+            <div className="flex items-center gap-2 text-sm">
+              <MessageSquare className="w-4 h-4 text-muted-foreground" />
+              <span className="font-medium">Need help?</span>
+              <span className="text-muted-foreground">
+                Contact {branding.freelancer_name || 'your freelancer'}
+              </span>
+            </div>
           </div>
         )}
       </CardContent>
