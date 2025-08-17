@@ -92,47 +92,47 @@ const ModernProjectOverview: React.FC<ModernProjectOverviewProps> = ({
         )}
       </Card>
 
-      {/* Project Progress Section */}
+      {/* Progress Overview */}
       <Card>
         <CardContent className="p-6">
           <div className="space-y-4">
             <div className="flex items-center justify-between">
               <h3 className="text-lg font-semibold">Project Progress</h3>
-              <Badge variant="secondary" className="text-xs">
+              <Badge variant="secondary">
                 {completedMilestones} of {totalMilestones} complete
               </Badge>
             </div>
-            <div className="space-y-2">
-              <Progress value={progressPercentage} className="h-3" />
-              <div className="flex justify-between text-sm text-muted-foreground">
-                <span>{Math.round(progressPercentage)}% complete</span>
-                <span>{totalMilestones - completedMilestones} remaining</span>
-              </div>
+            <Progress value={progressPercentage} className="h-3" />
+            <div className="flex justify-between text-sm text-muted-foreground">
+              <span>{Math.round(progressPercentage)}% complete</span>
+              <span>{totalMilestones - completedMilestones} remaining</span>
             </div>
           </div>
         </CardContent>
       </Card>
 
-      {/* Single Line Stats Cards - Full Width */}
-      <div className="grid grid-cols-4 gap-4 w-full">
+      {/* Compact Stats Grid - Side by Side */}
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
         {stats.map((stat, index) => (
-          <Card key={index} className="hover:shadow-md transition-shadow duration-200 aspect-square border-[0.5px]">
-            <CardContent className="p-3 h-full flex flex-col justify-center items-center text-center">
-              <div className="p-2 rounded-lg bg-muted mb-2">
-                <stat.icon className="w-5 h-5 text-muted-foreground" />
-              </div>
-              <div className="space-y-1">
-                <p className="text-xs font-medium text-muted-foreground">
-                  {stat.label}
-                </p>
-                <p className="text-sm sm:text-base font-bold text-foreground leading-tight">
-                  {stat.value}
-                </p>
-                {stat.subtitle && (
-                  <p className="text-xs text-muted-foreground">
-                    {stat.subtitle}
+          <Card key={index} className="hover:shadow-md transition-shadow duration-200">
+            <CardContent className="p-4">
+              <div className="flex items-center gap-2">
+                <div className="p-1.5 rounded-md bg-muted shrink-0">
+                  <stat.icon className="w-4 h-4 text-muted-foreground" />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <p className="text-xs font-medium text-muted-foreground truncate">
+                    {stat.label}
                   </p>
-                )}
+                  <p className="text-base font-bold text-foreground">
+                    {stat.value}
+                  </p>
+                  {stat.subtitle && (
+                    <p className="text-xs text-muted-foreground">
+                      {stat.subtitle}
+                    </p>
+                  )}
+                </div>
               </div>
             </CardContent>
           </Card>
