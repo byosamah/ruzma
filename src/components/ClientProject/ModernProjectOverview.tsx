@@ -116,7 +116,7 @@ const ModernProjectOverview: React.FC<ModernProjectOverviewProps> = ({
       {/* Single Line Stats Cards - Full Width */}
       <div className="grid grid-cols-4 gap-4 w-full">
         {stats.map((stat, index) => (
-          <Card key={index} className="hover:shadow-md transition-shadow duration-200 aspect-square">
+          <Card key={index} className="hover:shadow-md transition-shadow duration-200 aspect-square border-[0.5px]">
             <CardContent className="p-3 h-full flex flex-col justify-center items-center text-center">
               <div className="p-2 rounded-lg bg-muted mb-2">
                 <stat.icon className="w-5 h-5 text-muted-foreground" />
