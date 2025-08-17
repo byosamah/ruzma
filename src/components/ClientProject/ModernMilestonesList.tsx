@@ -9,7 +9,6 @@ import { CurrencyCode } from '@/lib/currency';
 import { useT } from '@/lib/i18n';
 import { FreelancerBranding } from '@/types/branding';
 import { Target, Filter, Grid, List } from 'lucide-react';
-
 interface Milestone {
   id: string;
   title: string;
@@ -21,7 +20,6 @@ interface Milestone {
   start_date?: string;
   end_date?: string;
 }
-
 interface ModernMilestonesListProps {
   milestones: any[];
   onPaymentUpload: (milestoneId: string, file: File) => Promise<boolean>;
@@ -32,7 +30,6 @@ interface ModernMilestonesListProps {
   paymentProofRequired?: boolean;
   token?: string;
 }
-
 const ModernMilestonesList: React.FC<ModernMilestonesListProps> = ({
   milestones,
   onPaymentUpload,
@@ -41,7 +38,7 @@ const ModernMilestonesList: React.FC<ModernMilestonesListProps> = ({
   freelancerCurrency,
   branding,
   paymentProofRequired = false,
-  token,
+  token
 }) => {
   const t = useT();
   const [statusFilter, setStatusFilter] = useState<string>('all');
@@ -57,7 +54,7 @@ const ModernMilestonesList: React.FC<ModernMilestonesListProps> = ({
     deliverable_link: milestone.deliverable_link,
     paymentProofUrl: milestone.payment_proof_url,
     start_date: milestone.start_date,
-    end_date: milestone.end_date,
+    end_date: milestone.end_date
   }));
 
   // Filter milestones based on view mode and status filter
@@ -74,7 +71,6 @@ const ModernMilestonesList: React.FC<ModernMilestonesListProps> = ({
     if (statusFilter !== 'all' && milestone.status !== statusFilter) {
       return false;
     }
-
     return true;
   });
 
@@ -82,20 +78,17 @@ const ModernMilestonesList: React.FC<ModernMilestonesListProps> = ({
   const statusCounts = {
     all: transformedMilestones.length,
     active: transformedMilestones.filter(m => !['approved', 'rejected'].includes(m.status)).length,
-    completed: transformedMilestones.filter(m => ['approved', 'rejected'].includes(m.status)).length,
+    completed: transformedMilestones.filter(m => ['approved', 'rejected'].includes(m.status)).length
   };
-
   const getStatusOptions = () => {
     const statuses = [...new Set(transformedMilestones.map(m => m.status))];
-        return statuses.map(status => ({
-          value: status,
-          label: status.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase()),
-          count: transformedMilestones.filter(m => m.status === status).length,
-        }));
+    return statuses.map(status => ({
+      value: status,
+      label: status.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase()),
+      count: transformedMilestones.filter(m => m.status === status).length
+    }));
   };
-
-  return (
-    <Card>
+  return <Card>
       <CardHeader>
         <div className="flex items-center justify-between">
           <CardTitle className="flex items-center gap-2">
@@ -104,29 +97,12 @@ const ModernMilestonesList: React.FC<ModernMilestonesListProps> = ({
           </CardTitle>
           
           {/* Status Filter */}
-          <div className="flex items-center gap-2">
-            <Filter className="w-4 h-4 text-muted-foreground" />
-            <Select value={statusFilter} onValueChange={setStatusFilter}>
-              <SelectTrigger className="w-40">
-                <SelectValue placeholder="Filter by Status" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">
-                  All Statuses ({transformedMilestones.length})
-                </SelectItem>
-                {getStatusOptions().map(option => (
-                  <SelectItem key={option.value} value={option.value}>
-                    {option.label} ({option.count})
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
+          
         </div>
       </CardHeader>
 
       <CardContent>
-        <Tabs value={viewMode} onValueChange={(value) => setViewMode(value as any)}>
+        <Tabs value={viewMode} onValueChange={value => setViewMode(value as any)}>
           <TabsList className="grid w-full grid-cols-3">
             <TabsTrigger value="all" className="flex items-center gap-2">
               <Grid className="w-4 h-4" />
@@ -153,44 +129,22 @@ const ModernMilestonesList: React.FC<ModernMilestonesListProps> = ({
 
           <TabsContent value={viewMode} className="mt-6">
             <div className="space-y-4">
-              {filteredMilestones.length > 0 ? (
-                filteredMilestones.map((milestone, index) => (
-                  <div key={milestone.id}>
-                    <ModernMilestoneCard
-                      milestone={milestone}
-                      currency={currency}
-                      onPaymentUpload={onPaymentUpload}
-                      onRevisionRequest={onRevisionRequest}
-                      paymentProofRequired={paymentProofRequired}
-                      isClient={true}
-                    />
-                    {index < filteredMilestones.length - 1 && (
-                      <Separator className="my-4" />
-                    )}
-                  </div>
-                ))
-              ) : (
-                <div className="text-center py-12">
+              {filteredMilestones.length > 0 ? filteredMilestones.map((milestone, index) => <div key={milestone.id}>
+                    <ModernMilestoneCard milestone={milestone} currency={currency} onPaymentUpload={onPaymentUpload} onRevisionRequest={onRevisionRequest} paymentProofRequired={paymentProofRequired} isClient={true} />
+                    {index < filteredMilestones.length - 1 && <Separator className="my-4" />}
+                  </div>) : <div className="text-center py-12">
                   <Target className="w-12 h-12 mx-auto text-muted-foreground mb-4" />
                   <h3 className="text-lg font-medium text-foreground mb-2">
                     {t('noMilestonesFound')}
                   </h3>
                   <p className="text-sm text-muted-foreground">
-                    {viewMode === 'all' 
-                      ? 'No milestones have been created for this project yet.'
-                      : viewMode === 'active'
-                      ? 'No active milestones at the moment.'
-                      : 'No completed milestones yet.'
-                    }
+                    {viewMode === 'all' ? 'No milestones have been created for this project yet.' : viewMode === 'active' ? 'No active milestones at the moment.' : 'No completed milestones yet.'}
                   </p>
-                </div>
-              )}
+                </div>}
             </div>
           </TabsContent>
         </Tabs>
       </CardContent>
-    </Card>
-  );
+    </Card>;
 };
-
 export default ModernMilestonesList;
