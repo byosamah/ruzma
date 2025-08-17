@@ -114,17 +114,17 @@ const ModernProjectOverview: React.FC<ModernProjectOverviewProps> = ({
       {/* Stats Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         {stats.map((stat, index) => (
-          <Card key={index} className="hover:shadow-md transition-shadow duration-200">
-            <CardContent className="p-6">
-              <div className="flex items-center gap-3">
-                <div className="p-2 rounded-lg bg-muted">
-                  <stat.icon className="w-5 h-5 text-muted-foreground" />
+          <Card key={index} className="aspect-square hover:shadow-md transition-shadow duration-200">
+            <CardContent className="p-6 h-full flex flex-col justify-center">
+              <div className="flex flex-col items-center text-center space-y-3">
+                <div className="p-3 rounded-lg bg-muted">
+                  <stat.icon className="w-6 h-6 text-muted-foreground" />
                 </div>
-                <div className="flex-1 min-w-0">
-                  <p className="text-sm font-medium text-muted-foreground truncate">
+                <div>
+                  <p className="text-sm font-medium text-muted-foreground">
                     {stat.label}
                   </p>
-                  <p className="text-lg font-bold text-foreground">
+                  <p className="text-xl font-bold text-foreground">
                     {stat.value}
                   </p>
                   {stat.subtitle && (
