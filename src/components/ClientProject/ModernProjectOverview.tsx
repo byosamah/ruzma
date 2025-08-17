@@ -75,7 +75,7 @@ const ModernProjectOverview: React.FC<ModernProjectOverviewProps> = ({
   ];
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4">
       {/* Project Header */}
       <Card>
         <CardHeader className="pb-4">
@@ -92,10 +92,34 @@ const ModernProjectOverview: React.FC<ModernProjectOverviewProps> = ({
         )}
       </Card>
 
+      {/* Stats Grid - Square Cards */}
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
+        {stats.map((stat, index) => (
+          <Card key={index} className="aspect-square">
+            <CardContent className="p-4 h-full flex flex-col items-center justify-center text-center">
+              <div className="p-2 rounded-lg bg-muted mb-2">
+                <stat.icon className="w-5 h-5 text-muted-foreground" />
+              </div>
+              <p className="text-xs font-medium text-muted-foreground mb-1">
+                {stat.label}
+              </p>
+              <p className="text-lg font-bold text-foreground">
+                {stat.value}
+              </p>
+              {stat.subtitle && (
+                <p className="text-xs text-muted-foreground mt-1">
+                  {stat.subtitle}
+                </p>
+              )}
+            </CardContent>
+          </Card>
+        ))}
+      </div>
+
       {/* Progress Overview */}
       <Card>
-        <CardContent className="p-6">
-          <div className="space-y-4">
+        <CardContent className="p-4">
+          <div className="space-y-3">
             <div className="flex items-center justify-between">
               <h3 className="text-lg font-semibold">Project Progress</h3>
               <Badge variant="secondary">
@@ -110,34 +134,6 @@ const ModernProjectOverview: React.FC<ModernProjectOverviewProps> = ({
           </div>
         </CardContent>
       </Card>
-
-      {/* Stats Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-        {stats.map((stat, index) => (
-          <Card key={index} className="hover:shadow-md transition-shadow duration-200">
-            <CardContent className="p-6">
-              <div className="flex items-center gap-3">
-                <div className="p-2 rounded-lg bg-muted">
-                  <stat.icon className="w-5 h-5 text-muted-foreground" />
-                </div>
-                <div className="flex-1 min-w-0">
-                  <p className="text-sm font-medium text-muted-foreground truncate">
-                    {stat.label}
-                  </p>
-                  <p className="text-lg font-bold text-foreground">
-                    {stat.value}
-                  </p>
-                  {stat.subtitle && (
-                    <p className="text-xs text-muted-foreground">
-                      {stat.subtitle}
-                    </p>
-                  )}
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-        ))}
-      </div>
     </div>
   );
 };
