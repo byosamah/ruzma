@@ -10,8 +10,6 @@
 /* Mobile-first responsive base styles with performance optimizations */
 * {
   box-sizing: border-box;
-  -webkit-transform: translateZ(0);
-  transform: translateZ(0);
 }
 
 img, picture, video, canvas, svg {
