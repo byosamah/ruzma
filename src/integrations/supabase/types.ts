@@ -539,7 +539,7 @@ export type Database = {
         }[]
       }
       get_user_limits: {
-        Args: { _user_type: string }
+        Args: { _user_type?: string }
         Returns: {
           project_limit: number
         }[]
