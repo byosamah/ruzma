@@ -531,6 +531,13 @@ export type Database = {
           user_id: string
         }[]
       }
+      get_current_user_plan_limits: {
+        Args: Record<PropertyKey, never>
+        Returns: {
+          project_limit: number
+          storage_limit_bytes: number
+        }[]
+      }
       get_user_limits: {
         Args: { _user_type: string }
         Returns: {
