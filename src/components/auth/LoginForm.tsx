@@ -24,6 +24,7 @@ const LoginForm = ({ rememberMe, setRememberMe }: LoginFormProps) => {
     initializeRememberedEmail,
     clearRememberedEmail,
     isLoading,
+    errors,
     signIn,
   } = useAuthManager();
 
@@ -62,8 +63,11 @@ const LoginForm = ({ rememberMe, setRememberMe }: LoginFormProps) => {
               value={loginData.email}
               onChange={handleChange}
               required
-              className="h-11 border-gray-200 focus:border-gray-400 focus:ring-0"
+              className={`h-11 border-gray-200 focus:border-gray-400 focus:ring-0 ${errors.email ? 'border-red-500' : ''}`}
             />
+            {errors.email && (
+              <p className="text-sm text-red-600 mt-1">{errors.email}</p>
+            )}
           </div>
           
           <div className="space-y-2">
@@ -87,7 +91,7 @@ const LoginForm = ({ rememberMe, setRememberMe }: LoginFormProps) => {
                 value={loginData.password}
                 onChange={handleChange}
                 required
-                className="h-11 border-gray-200 focus:border-gray-400 focus:ring-0 pr-10 rtl:pl-10 rtl:pr-3"
+                className={`h-11 border-gray-200 focus:border-gray-400 focus:ring-0 pr-10 rtl:pl-10 rtl:pr-3 ${errors.password ? 'border-red-500' : ''}`}
               />
               <Button
                 type="button"
@@ -103,6 +107,9 @@ const LoginForm = ({ rememberMe, setRememberMe }: LoginFormProps) => {
                 )}
               </Button>
             </div>
+            {errors.password && (
+              <p className="text-sm text-red-600 mt-1">{errors.password}</p>
+            )}
           </div>
 
           <div className="flex items-center space-x-2 rtl:space-x-reverse">
