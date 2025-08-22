@@ -50,63 +50,30 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({ invoiceData, setInvoiceData }
     }));
   };
 
-  // Single effect to handle all project auto-population
+  // Auto-populate invoice data from project
   useEffect(() => {
-    console.log('=== INVOICE AUTO-POPULATION DEBUG ===');
-    console.log('URL:', window.location.href);
-    console.log('URL Search:', window.location.search);
-    console.log('projectIdFromUrl:', projectIdFromUrl);
-    console.log('invoiceData.projectId:', invoiceData.projectId);
-    console.log('projects.length:', projects.length);
-    console.log('invoiceData.lineItems.length:', invoiceData.lineItems.length);
-    
-    // Determine which project to populate from
     const targetProjectId = projectIdFromUrl || invoiceData.projectId;
-    console.log('targetProjectId:', targetProjectId);
     
-    if (!targetProjectId) {
-      console.log('❌ No target project ID found');
-      return;
-    }
-    
-    if (projects.length === 0) {
-      console.log('❌ No projects loaded yet, waiting...');
+    if (!targetProjectId || projects.length === 0) {
       return;
     }
 
     const selectedProject = projects.find(p => p.id === targetProjectId);
     if (!selectedProject) {
-      console.log('❌ Project not found:', targetProjectId);
-      console.log('Available projects:', projects.map(p => ({ id: p.id, name: p.name })));
       return;
     }
 
-    console.log('✅ Found project:', selectedProject.name);
-    console.log('Project data:', {
-      id: selectedProject.id,
-      name: selectedProject.name,
-      client_email: selectedProject.client_email,
-      start_date: selectedProject.start_date,
-      end_date: selectedProject.end_date,
-      milestones: selectedProject.milestones?.length || 0
-    });
-
     // Calculate project dates from milestones
     const projectDates = calculateProjectDates(selectedProject.milestones || []);
-    console.log('Calculated project dates:', projectDates);
     
-    // Enhanced client name extraction
+    // Extract client name from email
     let clientName = '';
-    console.log('Raw client_email from project:', selectedProject.client_email);
     if (selectedProject.client_email) {
       const emailPrefix = selectedProject.client_email.split('@')[0];
       clientName = emailPrefix
         .replace(/[._-]/g, ' ')
         .replace(/\b\w/g, l => l.toUpperCase())
         .trim();
-      console.log('Processed client name:', clientName);
-    } else {
-      console.log('❌ No client email found in project');
     }
     
     // Create milestone line items
@@ -117,11 +84,8 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({ invoiceData, setInvoiceData }
       amount: Number(milestone.price) || 0
     })) || [];
     
-    console.log('✅ Creating milestone line items:', milestoneLineItems);
-    
     // Calculate totals
     const subtotal = milestoneLineItems.reduce((sum, item) => sum + (item.quantity * item.amount), 0);
-    console.log('Calculated subtotal:', subtotal);
     
     // Enhanced date logic with fallbacks
     let invoiceDate = new Date();
@@ -129,33 +93,22 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({ invoiceData, setInvoiceData }
     
     if (projectDates.start_date) {
       invoiceDate = new Date(projectDates.start_date);
-      console.log('✅ Using milestone start date:', projectDates.start_date);
     } else if (selectedProject.start_date) {
       invoiceDate = new Date(selectedProject.start_date);
-      console.log('✅ Using project start date:', selectedProject.start_date);
-    } else {
-      console.log('⚠️ Using default invoice date (today)');
     }
     
     if (projectDates.end_date) {
       dueDate = new Date(projectDates.end_date);
-      console.log('✅ Using milestone end date:', projectDates.end_date);
     } else if (selectedProject.end_date) {
       dueDate = new Date(selectedProject.end_date);
-      console.log('✅ Using project end date:', selectedProject.end_date);
-    } else {
-      console.log('⚠️ Using default due date (+30 days)');
     }
     
-    console.log('Final dates:', { invoiceDate, dueDate });
-    
-    // Update invoice data - prioritize user's preferred currency
+    // Update invoice data
     const newInvoiceData = {
       ...invoiceData,
       projectId: targetProjectId,
       invoiceDate,
       dueDate,
-      // Keep the user's preferred currency instead of overriding with project currency
       billedTo: {
         ...invoiceData.billedTo,
         name: clientName || selectedProject.client_email || ''
@@ -165,15 +118,7 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({ invoiceData, setInvoiceData }
       total: subtotal + invoiceData.tax
     };
     
-    console.log('🚀 UPDATING INVOICE DATA:');
-    console.log('  - projectId:', newInvoiceData.projectId);
-    console.log('  - invoiceDate:', newInvoiceData.invoiceDate);
-    console.log('  - dueDate:', newInvoiceData.dueDate);
-    console.log('  - billedTo name:', newInvoiceData.billedTo.name);
-    console.log('  - lineItems count:', newInvoiceData.lineItems.length);
-    console.log('  - currency:', newInvoiceData.currency);
     setInvoiceData(newInvoiceData);
-    console.log('=== END AUTO-POPULATION DEBUG ===');
   }, [invoiceData.projectId, projects]);
 
   const {

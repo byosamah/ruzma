@@ -3,27 +3,16 @@ import { useAuth } from '@/hooks/core/useAuth';
 import { useDashboardDataQuery } from '@/hooks/dashboard/useDashboardDataQuery';
 import { useDashboardHandlers } from '@/hooks/dashboard/useDashboardHandlers';
 import { useDashboardStats } from '@/hooks/dashboard/useDashboardStats';
-import { ProjectService } from '@/services/projectService';
+import { ServiceRegistry } from '@/services/core/ServiceRegistry';
 import { useUserCurrency } from '@/hooks/useUserCurrency';
 
 export const useDashboard = () => {
-  console.log('useDashboard hook initializing...');
-  
   const { user, loading: authLoading } = useAuth();
-  console.log('useAuth completed, user:', !!user);
-  
   const { data, isLoading: dataLoading, refetch } = useDashboardDataQuery(user);
-  console.log('useDashboardDataQuery completed, data:', !!data);
-  
-  const projectService = new ProjectService(user);
-  console.log('ProjectService created');
-  
   const userCurrency = useUserCurrency(data?.profile);
-  console.log('useUserCurrency completed');
-  
   const stats = useDashboardStats(data?.projects || []);
-  console.log('useDashboardStats completed');
 
+  const projectService = ServiceRegistry.getInstance().getProjectService(user);
   const {
     displayName,
     handleSignOut,

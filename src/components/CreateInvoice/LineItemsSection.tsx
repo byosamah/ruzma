@@ -50,8 +50,6 @@ const LineItemsSection: React.FC<LineItemsSectionProps> = ({
         }));
         
         // Update parent component with milestone data
-        // This would typically be done through a callback prop
-        console.log('Project milestones loaded:', milestoneLineItems);
       }
     }
   }, [invoiceData.projectId, projects]);

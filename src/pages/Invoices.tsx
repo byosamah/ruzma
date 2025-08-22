@@ -7,7 +7,7 @@ import { Button } from '@/components/ui/button';
 // Icons replaced with emojis
 import { useInvoices } from '@/hooks/useInvoices';
 import { useAuth } from '@/hooks/core/useAuth';
-import { useUserProfile } from '@/hooks/core/useUserProfile';
+import { useProfileQuery } from '@/hooks/core/useProfileQuery';
 import { useT } from '@/lib/i18n';
 import InvoicesHeader from '@/components/Invoices/InvoicesHeader';
 import InvoicesStats from '@/components/Invoices/InvoicesStats';
@@ -22,9 +22,9 @@ const Invoices: React.FC = () => {
     authChecked
   } = useAuth();
   const {
-    profile,
-    loading: profileLoading
-  } = useUserProfile(user);
+    data: profile,
+    isLoading: profileLoading
+  } = useProfileQuery(user);
   const {
     invoices,
     loading: invoicesLoading,

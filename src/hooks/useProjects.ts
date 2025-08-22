@@ -3,11 +3,11 @@ import { User } from '@supabase/supabase-js';
 import { DatabaseProject, DatabaseMilestone } from './projectTypes';
 import { ProjectService } from '@/services/projectService';
 import { useUserProjects } from './projects/useUserProjects';
-import { useUserProfile } from './core/useUserProfile';
+import { useProfileQuery } from './core/useProfileQuery';
 
 export const useProjects = (user: User | null) => {
   const { projects, loading, fetchProjects } = useUserProjects(user);
-  const { profile: userProfile, fetchUserProfile } = useUserProfile(user);
+  const { data: userProfile } = useProfileQuery(user);
   const projectService = new ProjectService(user);
 
   // Milestone actions using the project service
@@ -40,7 +40,6 @@ export const useProjects = (user: User | null) => {
     loading,
     userProfile,
     fetchProjects,
-    fetchUserProfile,
     createProject: projectService.createProject.bind(projectService),
     updateProject: projectService.updateProject.bind(projectService),
     deleteProject: projectService.deleteProject.bind(projectService),

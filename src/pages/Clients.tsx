@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import Layout from '@/components/Layout';
 import { useClients } from '@/hooks/useClients';
 import { useAuth } from '@/hooks/core/useAuth';
-import { useUserProfile } from '@/hooks/core/useUserProfile';
+import { useProfileQuery } from '@/hooks/core/useProfileQuery';
 import ClientsHeader from '@/components/Clients/ClientsHeader';
 import ClientsStats from '@/components/Clients/ClientsStats';
 import ClientsSection from '@/components/Clients/ClientsSection';
@@ -20,7 +20,7 @@ const Clients: React.FC = () => {
   const navigate = useNavigate();
   const t = useT();
   const { user, loading: authLoading, authChecked } = useAuth();
-  const { profile, loading: profileLoading } = useUserProfile(user);
+  const { data: profile, isLoading: profileLoading } = useProfileQuery(user);
   const { clients, loading: clientsLoading, createClient, updateClient, deleteClient } = useClients(user);
 
   const [showAddDialog, setShowAddDialog] = useState(false);

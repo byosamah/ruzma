@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import Layout from '@/components/Layout';
 import { useAuth } from '@/hooks/core/useAuth';
-import { useUserProfile } from '@/hooks/core/useUserProfile';
+import { useProfileQuery } from '@/hooks/core/useProfileQuery';
 import { useInvoiceContext } from '@/contexts/InvoiceContext';
 import InvoiceForm from '@/components/CreateInvoice/InvoiceForm';
 import InvoicePreview from '@/components/CreateInvoice/InvoicePreview';
@@ -17,7 +17,7 @@ const CreateInvoice: React.FC = () => {
   const [searchParams] = useSearchParams();
   const projectId = searchParams.get('projectId');
   const { user, loading: authLoading, authChecked } = useAuth();
-  const { profile, loading: profileLoading } = useUserProfile(user);
+  const { data: profile, isLoading: profileLoading } = useProfileQuery(user);
   const { generateInvoiceId } = useInvoiceContext();
 
   const [invoiceData, setInvoiceData] = useState<InvoiceFormData>({

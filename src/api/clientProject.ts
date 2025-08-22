@@ -3,16 +3,11 @@ import { supabase } from '@/integrations/supabase/client';
 import { DatabaseProject } from '@/hooks/projectTypes';
 
 export const getClientProject = async (token: string, isHybrid?: boolean): Promise<DatabaseProject> => {
-  console.log('Fetching project with token:', token, 'isHybrid:', isHybrid);
-  
   const { data, error: invokeError } = await supabase.functions.invoke('get-client-project', {
     body: { token, isHybrid },
   });
 
-  console.log('Edge function response:', { data, invokeError });
-
   if (invokeError) {
-    console.error('Edge function invocation error:', invokeError);
     throw new Error(`Failed to connect to server: ${invokeError.message}`);
   }
 
@@ -30,11 +25,9 @@ export const getClientProject = async (token: string, isHybrid?: boolean): Promi
       ...milestone,
       status: milestone.status as 'pending' | 'payment_submitted' | 'approved' | 'rejected',
     })),
-    // Include freelancer's currency if available from the response
     freelancer_currency: data.freelancer_currency,
   };
   
-  console.log('Successfully fetched project:', typedProject);
   return typedProject;
 };
 
@@ -55,12 +48,10 @@ export const uploadPaymentProof = async ({ milestoneId, file, token }: UploadPay
   });
 
   if (invokeError) {
-    console.error('Edge function invocation error:', invokeError);
     throw new Error(`Upload failed: ${invokeError.message}`);
   }
 
   if (!data?.success) {
-    console.error('Edge function returned an error:', data?.error);
     throw new Error(data?.error || 'Failed to upload payment proof.');
   }
   
