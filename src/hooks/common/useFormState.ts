@@ -11,7 +11,7 @@ export const useFormState = <T extends Record<string, any>>(initialData: T) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
 
-  const updateField = (field: keyof T, value: any) => {
+  const updateField = <K extends keyof T>(field: K, value: T[K]) => {
     setFormData(prev => ({ ...prev, [field]: value }));
     // Clear error for this field when user starts typing
     if (errors[field as string]) {

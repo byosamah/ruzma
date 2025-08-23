@@ -1,5 +1,6 @@
 
 import { Clock, CheckCircle, XCircle, Upload, MessageSquare, Pause } from 'lucide-react';
+import { DatabaseMilestone } from '@/types/shared';
 
 export const getStatusColor = (status: string) => {
   switch (status) {
@@ -90,8 +91,10 @@ export const copyToClipboard = (text: string) => {
   navigator.clipboard.writeText(text);
 };
 
-// Smart status detection functions
-export const getSmartStatus = (milestone: any): string => {
+// Extended milestone status type that includes additional UI states
+type ExtendedMilestoneStatus = DatabaseMilestone['status'] | 'delivered' | 'ready_for_review' | 'in_progress' | 'revision_requested';
+
+export const getSmartStatus = (milestone: DatabaseMilestone): ExtendedMilestoneStatus => {
   const baseStatus = milestone.status || 'pending';
   
   // Check for revision requests in deliverable_link
@@ -99,7 +102,7 @@ export const getSmartStatus = (milestone: any): string => {
     if (milestone.deliverable_link) {
       const data = JSON.parse(milestone.deliverable_link);
       if (data.revisionData?.requests) {
-        const pendingRevisions = data.revisionData.requests.filter((req: any) => req.status === 'pending');
+        const pendingRevisions = data.revisionData.requests.filter((req: { status: string }) => req.status === 'pending');
         if (pendingRevisions.length > 0) {
           return 'revision_requested';
         }
@@ -110,7 +113,7 @@ export const getSmartStatus = (milestone: any): string => {
   }
   
   // Enhanced status detection based on milestone properties
-  if (baseStatus === 'delivered' || baseStatus === 'approved') {
+  if (baseStatus === 'approved') {
     return 'delivered';
   }
   
@@ -130,7 +133,7 @@ export const getSmartStatus = (milestone: any): string => {
 };
 
 export const shouldAutoUpdateStatus = (
-  milestone: any, 
+  milestone: DatabaseMilestone, 
   action: 'deliverable_added' | 'payment_proof_uploaded' | 'payment_approved' | 'payment_rejected'
 ): string | null => {
   const currentStatus = milestone.status;
@@ -140,7 +143,7 @@ export const shouldAutoUpdateStatus = (
       if (currentStatus === 'pending') return 'ready_for_review';
       break;
     case 'payment_proof_uploaded':
-      if (currentStatus === 'pending' || currentStatus === 'ready_for_review') {
+      if (currentStatus === 'pending') {
         return 'payment_submitted';
       }
       break;

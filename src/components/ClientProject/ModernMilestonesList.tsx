@@ -20,8 +20,10 @@ interface Milestone {
   start_date?: string;
   end_date?: string;
 }
+import { DatabaseMilestone } from '@/types/shared';
+
 interface ModernMilestonesListProps {
-  milestones: any[];
+  milestones: DatabaseMilestone[];
   onPaymentUpload: (milestoneId: string, file: File) => Promise<boolean>;
   onRevisionRequest?: (milestoneId: string, feedback: string, images: string[]) => Promise<void>;
   currency: CurrencyCode;

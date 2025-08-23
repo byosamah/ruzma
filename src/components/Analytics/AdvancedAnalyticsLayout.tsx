@@ -17,9 +17,19 @@ import ProjectTypeProfitability from './ProfitabilityAnalytics/ProjectTypeProfit
 import PricingInsights from './ProfitabilityAnalytics/PricingInsights';
 import RevenueOptimization from './ProfitabilityAnalytics/RevenueOptimization';
 
+// Define the analytics data interface that matches what's passed from Analytics page
+interface AnalyticsData {
+  revenueData: Array<{ month: string; revenue: number; projects: number }>;
+  milestoneStatusData: Array<{ status: string; count: number; color: string }>;
+  monthlyProgress: Array<{ month: string; completed: number; pending: number }>;
+  revenueGrowth: number;
+  avgProjectValue: number;
+  completionRate: number;
+}
+
 interface AdvancedAnalyticsLayoutProps {
   data: AdvancedAnalyticsData;
-  basicAnalytics: any;
+  basicAnalytics: AnalyticsData;
   userCurrency: CurrencyCode;
 }
 

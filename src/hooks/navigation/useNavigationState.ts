@@ -3,7 +3,9 @@ import { useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import { useProfileQuery } from '@/hooks/core/useProfileQuery';
 
-export const useNavigationState = (user: any) => {
+import { User } from '@supabase/supabase-js';
+
+export const useNavigationState = (user: User | null) => {
   const location = useLocation();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const { data: userProfile } = useProfileQuery(user);

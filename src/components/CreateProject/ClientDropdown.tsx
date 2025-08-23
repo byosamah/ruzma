@@ -10,10 +10,12 @@ import { useClients } from '@/hooks/useClients';
 import AddClientDialog from '@/components/Clients/AddClientDialog';
 import { useT } from '@/lib/i18n';
 
+import { User } from '@supabase/supabase-js';
+
 interface ClientDropdownProps {
   value: string;
   onChange: (value: string) => void;
-  user?: any; // Add user prop
+  user?: User | null;
 }
 
 const ClientDropdown: React.FC<ClientDropdownProps> = ({ value, onChange, user }) => {

@@ -6,11 +6,34 @@ import { toast } from 'sonner';
 import { trackBrandingUpdated, trackError } from '@/lib/analytics';
 import { brandingService } from '@/services/brandingService';
 
+import { FreelancerBranding } from '@/types/branding';
+
+interface BrandingUpdateData {
+  freelancer_name?: string;
+  freelancer_title?: string;
+  freelancer_bio?: string;
+  primary_color?: string;
+  logo_url?: string;
+}
+
+interface ProfileUpdateData {
+  name: string;
+  email: string;
+  company: string;
+  website: string;
+  bio: string;
+  currency: string;
+  professionalTitle?: string;
+  shortBio?: string;
+  primaryColor?: string;
+  logoUrl?: string;
+}
+
 export const useProfileActions = (user: User | null) => {
   const [isUpdating, setIsUpdating] = useState(false);
   const [isSaved, setIsSaved] = useState(false);
 
-  const updateBranding = async (brandingData: any) => {
+  const updateBranding = async (brandingData: BrandingUpdateData) => {
     if (!user) return false;
     
     setIsUpdating(true);
@@ -41,7 +64,7 @@ export const useProfileActions = (user: User | null) => {
     }
   };
 
-  const updateProfile = async (profileData: any) => {
+  const updateProfile = async (profileData: ProfileUpdateData) => {
     if (!user) return false;
     
     setIsUpdating(true);
@@ -86,20 +109,29 @@ export const useProfileActions = (user: User | null) => {
     }
   };
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>, setFormData: any) => {
+  const handleChange = <T extends Record<string, any>>(
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>, 
+    setFormData: React.Dispatch<React.SetStateAction<T>>
+  ) => {
     const { name, value } = e.target;
-    setFormData((prev: any) => ({ ...prev, [name]: value }));
+    setFormData((prev: T) => ({ ...prev, [name]: value }));
   };
 
-  const handleCurrencyChange = (currency: string, setFormData: any) => {
-    setFormData((prev: any) => ({ ...prev, currency }));
+  const handleCurrencyChange = <T extends Record<string, any>>(
+    currency: string, 
+    setFormData: React.Dispatch<React.SetStateAction<T>>
+  ) => {
+    setFormData((prev: T) => ({ ...prev, currency }));
   };
 
-  const handleLogoUpload = (file: File, setFormData: any) => {
+  const handleLogoUpload = <T extends Record<string, any>>(
+    file: File, 
+    setFormData: React.Dispatch<React.SetStateAction<T>>
+  ) => {
     // This is now handled in the BrandingSection component
   };
 
-  const handleSubmit = async (e: React.FormEvent, formData: any) => {
+  const handleSubmit = async (e: React.FormEvent, formData: ProfileUpdateData) => {
     e.preventDefault();
     await updateProfile(formData);
   };

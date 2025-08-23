@@ -8,7 +8,9 @@ import { useT } from '@/lib/i18n';
 import { CreateProjectFormData } from '@/lib/validators/project';
 import ClientDropdown from './ClientDropdown';
 
-const ProjectDetailsForm = ({ user }: { user?: any }) => {
+import { User } from '@supabase/supabase-js';
+
+const ProjectDetailsForm = ({ user }: { user?: User | null }) => {
   const t = useT();
   const { control } = useFormContext<CreateProjectFormData>();
 
