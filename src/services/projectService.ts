@@ -61,7 +61,7 @@ export class ProjectService {
         return await this.updateProject(data);
       }
     } catch (error) {
-      console.error(`Error ${mode === 'create' ? 'creating' : 'updating'} project:`, error);
+      toast.error(`Failed to ${mode === 'create' ? 'create' : 'update'} project`);
       throw error;
     }
   }
@@ -103,7 +103,6 @@ export class ProjectService {
       try {
         clientId = await this.handleClientLookup(sanitizedClientEmail);
       } catch (error) {
-        console.error('Client lookup failed:', error);
         // Continue without client if lookup fails
       }
     }
@@ -143,7 +142,7 @@ export class ProjectService {
       .single();
 
     if (projectError) {
-      console.error('Error creating project:', projectError);
+      toast.error('Failed to create project');
       throw new Error('Failed to create project');
     }
 
@@ -164,7 +163,6 @@ export class ProjectService {
       try {
         await this.contractService.sendContractApprovalEmail(project.id);
       } catch (emailError) {
-        console.error('Failed to send contract approval email:', emailError);
         // Don't fail project creation if email fails
       }
     }
@@ -215,7 +213,6 @@ export class ProjectService {
       try {
         clientId = await this.handleClientLookup(sanitizedClientEmail);
       } catch (error) {
-        console.error('Client lookup failed:', error);
         // Continue without client if lookup fails
       }
     }
@@ -246,7 +243,7 @@ export class ProjectService {
       .single();
 
     if (updateError) {
-      console.error('Error updating project:', updateError);
+      toast.error('Failed to update project');
       throw new Error('Failed to update project');
     }
 
@@ -264,7 +261,7 @@ export class ProjectService {
       .single();
 
     if (fetchUpdatedError) {
-      console.error('Error fetching updated project:', fetchUpdatedError);
+      toast.error('Failed to fetch updated project');
       throw new Error('Failed to fetch updated project');
     }
 
@@ -305,7 +302,7 @@ export class ProjectService {
         .eq('project_id', projectId);
 
       if (milestonesDeleteError) {
-        console.error('Error deleting milestones:', milestonesDeleteError);
+        toast.error('Failed to delete project milestones');
         throw new Error('Failed to delete project milestones');
       }
 
@@ -316,7 +313,7 @@ export class ProjectService {
         .eq('id', projectId);
 
       if (deleteError) {
-        console.error('Error deleting project:', deleteError);
+        toast.error('Failed to delete project');
         throw new Error('Failed to delete project');
       }
 
@@ -328,12 +325,12 @@ export class ProjectService {
 
       return true;
     } catch (error) {
-      console.error('Error deleting project:', error);
+      toast.error('Failed to delete project');
       throw error;
     }
   }
 
-  private async handleClientLookup(email: string): Promise<any> {
+  private async handleClientLookup(email: string): Promise<string> {
     // Check if client already exists
     const { data: existingClient, error: clientError } = await supabase
       .from('clients')
@@ -368,7 +365,7 @@ export class ProjectService {
     return newClient.id;
   }
 
-  private calculateProjectDates(milestones: any[]): { startDate: string | null; endDate: string | null } {
+  private calculateProjectDates(milestones: CreateProjectFormData['milestones']): { startDate: string | null; endDate: string | null } {
     const validDates = milestones
       .flatMap(m => [m.start_date, m.end_date])
       .filter(date => date && date.trim() !== '')
@@ -388,7 +385,7 @@ export class ProjectService {
     };
   }
 
-  private async createMilestones(projectId: string, milestones: any[]): Promise<DatabaseMilestone[]> {
+  private async createMilestones(projectId: string, milestones: CreateProjectFormData['milestones']): Promise<DatabaseMilestone[]> {
     const milestonesToCreate = milestones.map(milestone => ({
       project_id: projectId,
       title: milestone.title.trim(),
@@ -414,7 +411,7 @@ export class ProjectService {
     })) as DatabaseMilestone[];
   }
 
-  private async updateMilestones(projectId: string, milestones: any[]): Promise<void> {
+  private async updateMilestones(projectId: string, milestones: CreateProjectFormData['milestones']): Promise<void> {
     // Delete existing milestones
     const { error: deleteError } = await supabase
       .from('milestones')
@@ -471,11 +468,11 @@ export class ProjectService {
       throw error;
     }
 
-    // Parse milestones jsonb field
-    return (data || []).map((t: any) => ({
-      ...t,
-      milestones: Array.isArray(t.milestones) ? t.milestones : [],
-    }));
+    // Parse milestones jsonb field with proper typing
+    return (data || []).map((template) => ({
+      ...template,
+      milestones: Array.isArray(template.milestones) ? template.milestones as ProjectTemplate['milestones'] : [],
+    })) as ProjectTemplate[];
   }
 
   async deleteTemplate(templateId: string): Promise<void> {
@@ -525,7 +522,6 @@ export class ProjectService {
         .single();
 
       if (milestoneError || !milestone) {
-        console.error('Error fetching milestone:', milestoneError);
         toast.error('Failed to fetch milestone details');
         return false;
       }
@@ -546,7 +542,6 @@ export class ProjectService {
         .eq('id', milestoneId);
 
       if (updateError) {
-        console.error('Error updating milestone status:', updateError);
         toast.error('Failed to update milestone status');
         return false;
       }
@@ -567,10 +562,7 @@ export class ProjectService {
             isApproved: status === 'approved',
             milestoneName: milestone.title,
           });
-          
-          console.log('Email notification sent successfully');
         } catch (emailError) {
-          console.error('Failed to send email notification:', emailError);
           // Don't fail the status update if email fails
           toast.error('Status updated but failed to send email notification');
         }
@@ -580,7 +572,6 @@ export class ProjectService {
       toast.success(`Payment proof ${statusText} successfully`);
       return true;
     } catch (error) {
-      console.error('Error updating milestone status:', error);
       toast.error('Failed to update milestone status');
       return false;
     }
@@ -596,8 +587,6 @@ export class ProjectService {
     }
 
     try {
-      console.log('Updating milestone status:', milestoneId, 'to', status);
-
       // First verify the user owns this milestone
       const { data: milestone, error: fetchError } = await supabase
         .from('milestones')
@@ -611,7 +600,6 @@ export class ProjectService {
         .single();
 
       if (fetchError || !milestone) {
-        console.error('Error fetching milestone:', fetchError);
         toast.error('Failed to fetch milestone details');
         return false;
       }
@@ -632,16 +620,13 @@ export class ProjectService {
         .eq('id', milestoneId);
 
       if (updateError) {
-        console.error('Error updating milestone status:', updateError);
         toast.error('Failed to update milestone status');
         return false;
       }
 
-      console.log('Milestone status updated successfully');
       toast.success('Status updated successfully');
       return true;
     } catch (error) {
-      console.error('Error updating milestone status:', error);
       toast.error('Failed to update milestone status');
       return false;
     }
@@ -650,13 +635,6 @@ export class ProjectService {
   // File Operations
   async uploadPaymentProof(milestoneId: string, file: File): Promise<boolean> {
     try {
-      console.log('Starting payment proof upload (via edge function):', {
-        milestoneId,
-        fileName: file.name,
-        fileSize: file.size,
-        fileType: file.type
-      });
-
       if (!this.user) {
         toast.error('You must be logged in to upload payment proof');
         return false;
@@ -671,7 +649,6 @@ export class ProjectService {
         });
 
       if (limitError) {
-        console.error('Error checking storage limits:', limitError);
         toast.error('Failed to check storage limits');
         return false;
       }
@@ -693,7 +670,6 @@ export class ProjectService {
         });
 
       if (uploadError) {
-        console.error('Storage upload error:', uploadError);
         toast.error(`Failed to upload file: ${uploadError.message}`);
         return false;
       }
@@ -703,13 +679,11 @@ export class ProjectService {
         .getPublicUrl(filePath);
 
       if (!urlData?.publicUrl) {
-        console.error('Failed to get public URL');
         toast.error('Failed to get file URL');
         return false;
       }
 
       const publicUrl = urlData.publicUrl;
-      console.log('Generated public URL:', publicUrl);
 
       const { data: edgeData, error: edgeError } = await supabase.functions.invoke('submit-payment-proof', {
         body: {
@@ -719,7 +693,6 @@ export class ProjectService {
       });
 
       if (edgeError || (edgeData && edgeData.error)) {
-        console.error("Edge Function error:", edgeError, edgeData?.error || "");
         await supabase.storage.from('payment-proofs').remove([filePath]);
         toast.error(edgeData?.error || edgeError?.message || 'Payment proof submission failed.');
         return false;
@@ -742,7 +715,6 @@ export class ProjectService {
       return true;
 
     } catch (error) {
-      console.error('Unexpected error during payment proof upload:', error);
       toast.error('Failed to upload payment proof');
       return false;
     }
@@ -755,8 +727,6 @@ export class ProjectService {
     }
 
     try {
-      console.log('Starting deliverable upload for milestone:', milestoneId);
-
       // Check storage limits before uploading
       const { data: limitCheck, error: limitError } = await supabase
         .rpc('check_user_limits', {
@@ -766,7 +736,6 @@ export class ProjectService {
         });
 
       if (limitError) {
-        console.error('Error checking storage limits:', limitError);
         toast.error('Failed to check storage limits');
         return false;
       }
@@ -781,8 +750,6 @@ export class ProjectService {
       const fileName = `${Date.now()}-${sanitizedFileName}`;
       const filePath = `${this.user.id}/${milestoneId}/${fileName}`;
 
-      console.log('Sanitized file path:', filePath);
-
       const { error: uploadError } = await supabase.storage
         .from('deliverables')
         .upload(filePath, file, {
@@ -791,7 +758,6 @@ export class ProjectService {
         });
 
       if (uploadError) {
-        console.error('Error uploading file to storage:', uploadError);
         toast.error('Failed to upload file');
         return false;
       }
@@ -811,7 +777,6 @@ export class ProjectService {
         .eq('id', milestoneId);
 
       if (updateError) {
-        console.error('Error updating milestone with deliverable:', updateError);
         await supabase.storage.from('deliverables').remove([filePath]);
         toast.error('Failed to save deliverable information');
         return false;
@@ -833,7 +798,6 @@ export class ProjectService {
       toast.success('Deliverable uploaded successfully!');
       return true;
     } catch (error) {
-      console.error('Error uploading deliverable:', error);
       toast.error('Failed to upload deliverable');
       return false;
     }
@@ -873,7 +837,6 @@ export class ProjectService {
           filePath = milestone.deliverable_url;
         }
       } catch (e) {
-        console.error('Error extracting file path:', e);
         toast.error('Could not locate file path for download');
         return false;
       }
@@ -889,7 +852,6 @@ export class ProjectService {
         .createSignedUrl(filePath, 60);
 
       if (error) {
-        console.error('Error generating signed URL:', error);
         toast.error(`Download failed: ${error.message}`);
         return false;
       }
@@ -910,7 +872,6 @@ export class ProjectService {
       toast.success(`Downloaded ${milestone.deliverable_name}`);
       return true;
     } catch (error) {
-      console.error('Error downloading deliverable:', error);
       toast.error('Failed to download deliverable');
       return false;
     }
@@ -924,8 +885,6 @@ export class ProjectService {
     }
 
     try {
-      console.log('Updating deliverable link for milestone:', milestoneId);
-
       const { error: updateError } = await supabase
         .from('milestones')
         .update({
@@ -935,15 +894,12 @@ export class ProjectService {
         .eq('id', milestoneId);
 
       if (updateError) {
-        console.error('Error updating milestone with deliverable link:', updateError);
         toast.error('Failed to update deliverable link');
         return false;
       }
 
-      console.log('Deliverable link updated successfully');
       return true;
     } catch (error) {
-      console.error('Error updating deliverable link:', error);
       toast.error('Failed to update deliverable link');
       return false;
     }
@@ -957,8 +913,6 @@ export class ProjectService {
     }
 
     try {
-      console.log('Updating revision data for milestone:', milestoneId);
-
       const { error: updateError } = await supabase
         .from('milestones')
         .update({
@@ -968,15 +922,12 @@ export class ProjectService {
         .eq('id', milestoneId);
 
       if (updateError) {
-        console.error('Error updating milestone with revision data:', updateError);
         toast.error('Failed to update revision data');
         return false;
       }
 
-      console.log('Revision data updated successfully');
       return true;
     } catch (error) {
-      console.error('Error updating revision data:', error);
       toast.error('Failed to update revision data');
       return false;
     }
@@ -989,8 +940,6 @@ export class ProjectService {
     }
 
     try {
-      console.log('Adding revision request for milestone:', milestoneId);
-
       const { error: updateError } = await supabase
         .from('milestones')
         .update({
@@ -1000,15 +949,12 @@ export class ProjectService {
         .eq('id', milestoneId);
 
       if (updateError) {
-        console.error('Error updating milestone with revision request:', updateError);
         toast.error('Failed to add revision request');
         return false;
       }
 
-      console.log('Revision request added successfully');
       return true;
     } catch (error) {
-      console.error('Error adding revision request:', error);
       toast.error('Failed to add revision request');
       return false;
     }
@@ -1023,7 +969,6 @@ export class ProjectService {
       });
 
       if (error) {
-        console.error('Edge function error:', error);
         throw new Error(error.message || 'Failed to fetch project');
       }
 
@@ -1032,8 +977,7 @@ export class ProjectService {
       }
 
       return data;
-    } catch (error: any) {
-      console.error('Error fetching client project:', error);
+    } catch (error) {
       throw error;
     }
   }
@@ -1050,18 +994,16 @@ export class ProjectService {
       });
 
       if (error) {
-        console.error('Error uploading payment proof:', error);
         throw new Error('Failed to upload payment proof');
       }
 
       return true;
-    } catch (error: any) {
-      console.error('Error uploading client payment proof:', error);
+    } catch (error) {
       throw error;
     }
   }
 
-  async submitRevisionRequest(token: string, milestoneId: string, feedback: string, images: string[]): Promise<any> {
+  async submitRevisionRequest(token: string, milestoneId: string, feedback: string, images: string[]): Promise<Record<string, unknown> | null> {
     try {
       const { data, error } = await supabase.functions.invoke('submit-revision-request', {
         body: {
@@ -1073,13 +1015,11 @@ export class ProjectService {
       });
 
       if (error) {
-        console.error('Error submitting revision request:', error);
         throw new Error('Failed to submit revision request');
       }
 
       return data;
-    } catch (error: any) {
-      console.error('Error submitting revision request:', error);
+    } catch (error) {
       throw error;
     }
   }
