@@ -1,6 +1,6 @@
 
 import { supabase } from '@/integrations/supabase/client';
-import { DatabaseProject } from '@/hooks/projectTypes';
+import { DatabaseProject, DatabaseMilestone } from '@/hooks/projectTypes';
 
 export const getClientProject = async (token: string, isHybrid?: boolean): Promise<DatabaseProject> => {
   const { data, error: invokeError } = await supabase.functions.invoke('get-client-project', {
@@ -21,7 +21,7 @@ export const getClientProject = async (token: string, isHybrid?: boolean): Promi
 
   const typedProject: DatabaseProject = {
     ...data,
-    milestones: (data.milestones || []).map((milestone: any) => ({
+    milestones: (data.milestones || []).map((milestone: DatabaseMilestone) => ({
       ...milestone,
       status: milestone.status as 'pending' | 'payment_submitted' | 'approved' | 'rejected',
     })),

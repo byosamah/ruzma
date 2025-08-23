@@ -13,7 +13,7 @@ import { useLanguage } from '@/contexts/LanguageContext';
 
 interface LineItemsSectionProps {
   invoiceData: InvoiceFormData;
-  updateLineItem: (id: string, field: keyof import('./types').LineItem, value: any) => void;
+  updateLineItem: (id: string, field: keyof import('./types').LineItem, value: string | number) => void;
   addLineItem: () => void;
   removeLineItem: (id: string) => void;
   updateTax: (taxAmount: number) => void;

@@ -15,7 +15,7 @@ import { useT } from '@/lib/i18n';
 
 interface InvoiceHeaderProps {
   invoiceData: InvoiceFormData;
-  updateField: (field: keyof InvoiceFormData, value: any) => void;
+  updateField: (field: keyof InvoiceFormData, value: string | number | boolean | Date) => void;
 }
 
 const InvoiceHeader: React.FC<InvoiceHeaderProps> = ({ invoiceData, updateField }) => {

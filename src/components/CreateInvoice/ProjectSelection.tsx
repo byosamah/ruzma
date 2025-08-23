@@ -9,7 +9,7 @@ import { useT } from '@/lib/i18n';
 
 interface ProjectSelectionProps {
   invoiceData: InvoiceFormData;
-  updateField: (field: keyof InvoiceFormData, value: any) => void;
+  updateField: (field: keyof InvoiceFormData, value: string | number | boolean | Date) => void;
 }
 
 const ProjectSelection: React.FC<ProjectSelectionProps> = ({

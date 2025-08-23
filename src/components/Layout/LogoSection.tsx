@@ -1,9 +1,10 @@
 
 import React from 'react';
+import { User } from '@supabase/supabase-js';
 import { Link } from 'react-router-dom';
 
 interface LogoSectionProps {
-  user?: any;
+  user?: User;
   isLandingPage: boolean;
 }
 

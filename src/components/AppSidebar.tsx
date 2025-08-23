@@ -1,5 +1,6 @@
 
 import React from 'react';
+import { User } from '@supabase/supabase-js';
 import { Sidebar, SidebarContent, SidebarHeader, SidebarFooter } from '@/components/ui/sidebar';
 import { useLanguage } from '@/contexts/LanguageContext';
 import SidebarLogo from './AppSidebar/SidebarLogo';
@@ -8,7 +9,7 @@ import SidebarAccount from './AppSidebar/SidebarAccount';
 import SidebarFooterComponent from './AppSidebar/SidebarFooter';
 
 interface AppSidebarProps {
-  user?: any;
+  user?: User;
   onSignOut?: () => void;
 }
 

@@ -1,5 +1,6 @@
 
 import React from 'react';
+import { User } from '@supabase/supabase-js';
 import FloatingContactButton from './FloatingContactButton';
 import MainContent from './Layout/MainContent';
 import { AppSidebar } from './AppSidebar';
@@ -10,7 +11,7 @@ import { useIsMobile } from '@/hooks/use-mobile';
 
 interface LayoutProps {
   children: React.ReactNode;
-  user?: any;
+  user?: User;
   onSignOut?: () => void;
 }
 

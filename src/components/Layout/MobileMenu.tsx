@@ -1,5 +1,6 @@
 
 import React from 'react';
+import { User } from '@supabase/supabase-js';
 import { Button } from '@/components/ui/button';
 import { Menu, X } from 'lucide-react';
 import {
@@ -11,16 +12,31 @@ import {
 } from '@/components/ui/sheet';
 import NavigationMenu from './NavigationMenu';
 import { NotificationBell } from '@/components/notifications/NotificationBell';
+import { Notification } from '@/types/notifications';
+
+interface UserProfile {
+  id: string;
+  full_name?: string;
+  email?: string;
+}
+
+interface NotificationData {
+  notifications: Notification[];
+  unreadCount: number;
+  loading: boolean;
+  markAsRead: (id: string) => void;
+  markAllAsRead: () => void;
+}
 
 interface MobileMenuProps {
   mobileMenuOpen: boolean;
   onToggle: () => void;
-  user: any;
-  userProfile: any;
+  user: User | null;
+  userProfile: UserProfile | null;
   isActive: (path: string) => boolean;
   shouldShowUpgradeButton: boolean;
   onSignOut: () => void;
-  notificationsData?: any;
+  notificationsData?: NotificationData;
 }
 
 const MobileMenu: React.FC<MobileMenuProps> = ({

@@ -1,22 +1,38 @@
 
 import React from 'react';
+import { User } from '@supabase/supabase-js';
 import LanguageSelector from '../LanguageSelector';
 import LogoSection from './LogoSection';
 import NavigationMenu from './NavigationMenu';
 import MobileMenu from './MobileMenu';
 import { SidebarTrigger } from '@/components/ui/sidebar';
 import { useIsMobile } from '@/hooks/use-mobile';
+import { Notification } from '@/types/notifications';
+
+interface UserProfile {
+  id: string;
+  full_name?: string;
+  email?: string;
+}
+
+interface NotificationData {
+  notifications: Notification[];
+  unreadCount: number;
+  loading: boolean;
+  markAsRead: (id: string) => void;
+  markAllAsRead: () => void;
+}
 
 interface HeaderProps {
-  user: any;
-  userProfile: any;
+  user: User | null;
+  userProfile: UserProfile | null;
   isActive: (path: string) => boolean;
   isLandingPage: boolean;
   shouldShowUpgradeButton: boolean;
   mobileMenuOpen: boolean;
   onToggleMobileMenu: () => void;
   onSignOut: () => void;
-  notificationsData?: any;
+  notificationsData?: NotificationData;
 }
 
 const Header: React.FC<HeaderProps> = ({

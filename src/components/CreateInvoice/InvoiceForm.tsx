@@ -29,7 +29,7 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({ invoiceData, setInvoiceData }
     return urlParams.get('projectId');
   }, []);
 
-  const updateField = (field: keyof InvoiceFormData, value: any) => {
+  const updateField = (field: keyof InvoiceFormData, value: string | number | boolean | Date) => {
     setInvoiceData(prev => ({ ...prev, [field]: value }));
   };
 
