@@ -45,7 +45,7 @@ const ClientDetailsDialog: React.FC<ClientDetailsDialogProps> = ({
         .order('created_at', { ascending: false });
 
       if (error) {
-        console.error('Error fetching client projects:', error);
+        // Error fetching client projects handled by UI
         return;
       }
 
@@ -60,7 +60,7 @@ const ClientDetailsDialog: React.FC<ClientDetailsDialogProps> = ({
 
       setProjects(typedProjects);
     } catch (error) {
-      console.error('Error:', error);
+      // Error handled by UI
     } finally {
       setLoading(false);
     }

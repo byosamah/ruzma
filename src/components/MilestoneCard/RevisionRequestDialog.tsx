@@ -72,7 +72,7 @@ const RevisionRequestDialog: React.FC<RevisionRequestDialogProps> = ({
       });
 
       if (error) {
-        console.error('Error uploading image:', error);
+        // Error uploading image handled by UI
         throw error;
       }
 
@@ -110,7 +110,7 @@ const RevisionRequestDialog: React.FC<RevisionRequestDialogProps> = ({
       
       toast.success('Revision request sent successfully');
     } catch (error) {
-      console.error('Error submitting revision request:', error);
+      // Error submitting revision request handled by UI
       toast.error('Failed to submit revision request');
     } finally {
       setUploading(false);

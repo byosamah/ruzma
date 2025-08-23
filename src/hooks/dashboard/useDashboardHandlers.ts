@@ -1,10 +1,17 @@
 
 import { useMemo } from 'react';
+import { User } from '@supabase/supabase-js';
 import { useDashboardActions } from '@/hooks/dashboard/useDashboardActions';
 
+interface UserProfile {
+  id: string;
+  full_name?: string;
+  email?: string;
+}
+
 export const useDashboardHandlers = (
-  profile: any, 
-  user: any, 
+  profile: UserProfile | null | undefined, 
+  user: User | null, 
   deleteProject: (projectId: string) => Promise<boolean>,
   refetchProjects?: () => void
 ) => {

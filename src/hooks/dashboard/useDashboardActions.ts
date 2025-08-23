@@ -3,6 +3,7 @@ import { useCallback } from 'react';
 import { useLanguageNavigation } from '@/hooks/useLanguageNavigation';
 import { secureSignOut, logSecurityEvent } from '@/lib/authSecurity';
 import { toast } from 'sonner';
+import { DatabaseProject } from '@/hooks/projectTypes';
 
 export const useDashboardActions = (
   deleteProject: (projectId: string) => Promise<boolean>,
@@ -15,12 +16,12 @@ export const useDashboardActions = (
     await secureSignOut();
   }, []);
 
-  const handleEditProject = useCallback((project: any) => {
+  const handleEditProject = useCallback((project: DatabaseProject) => {
     navigate(`/edit-project/${project.id}`);
   }, [navigate]);
 
   const handleDeleteProject = useCallback(async (projectId: string) => {
-    console.log('HandleDeleteProject called with ID:', projectId); // Debug log
+    // Debug log removed for production
     
     if (!projectId) {
       toast.error('Project ID is missing');
@@ -47,7 +48,7 @@ export const useDashboardActions = (
         }
       } catch (error) {
         toast.dismiss();
-        console.error('Error deleting project:', error);
+        // Error deleting project handled by UI
         toast.error('An error occurred while deleting the project');
       }
     }

@@ -1,11 +1,13 @@
 
+import { useState } from 'react';
 import { toast } from 'sonner';
 import { sendClientLink } from '@/services/clientLinkService';
 import { supabase } from '@/integrations/supabase/client';
 import { useT } from '@/lib/i18n';
+import { DatabaseProject } from '@/hooks/projectTypes';
 
 export const useProjectCardActions = (
-  project: any,
+  project: DatabaseProject,
   onViewClick: (slug: string) => void,
   onEditClick: (slug: string) => void,
   onDeleteClick?: (id: string) => void
@@ -50,17 +52,17 @@ export const useProjectCardActions = (
 
       toast.dismiss();
       toast.success(t('clientLinkSent'));
-    } catch (error: any) {
+    } catch (error: Error | unknown) {
       toast.dismiss();
       
       // Handle domain verification error specifically
-      if (error.message && error.message.includes('Domain verification required')) {
+      if (error instanceof Error && error.message.includes('Domain verification required')) {
         toast.error(t('emailDomainVerificationRequired'));
       } else {
         toast.error(t('clientLinkSendFailed'));
       }
       
-      console.error('Error sending client link:', error);
+      // Error sending client link handled by UI
     }
   };
 
@@ -72,7 +74,7 @@ export const useProjectCardActions = (
   const handleDeleteClick = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    console.log('Delete project clicked for ID:', project.id); // Debug log
+    // Debug log removed for production
     if (onDeleteClick) {
       onDeleteClick(project.id);
     }

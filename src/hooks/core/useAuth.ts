@@ -15,7 +15,7 @@ export const useAuth = () => {
         const { data: { session }, error } = await supabase.auth.getSession();
         
         if (error) {
-          console.error('Error getting session:', error);
+          // Error getting session handled by caller
           logSecurityEvent('auth_session_error', { error: error.message });
           toast.error('Authentication error');
           return;
@@ -27,7 +27,7 @@ export const useAuth = () => {
           logSecurityEvent('auth_session_restored', { userId: session.user.id });
         }
       } catch (error) {
-        console.error('Session error:', error);
+        // Session error handled silently
         logSecurityEvent('auth_session_exception', { error: String(error) });
       } finally {
         setLoading(false);

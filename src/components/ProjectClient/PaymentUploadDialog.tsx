@@ -44,7 +44,7 @@ const PaymentUploadDialog: React.FC<PaymentUploadDialogProps> = ({
       }
     } catch (error) {
       toast.error('Error uploading payment proof');
-      console.error('Upload error:', error);
+      // Upload error handled by UI
     } finally {
       setUploading(false);
     }

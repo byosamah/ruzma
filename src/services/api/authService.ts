@@ -24,7 +24,7 @@ export const authService = {
   // Enhanced sign up with complete validation and security
   async signUp(formData: SignUpData) {
     try {
-      console.log('Starting sign up process...');
+      // Starting sign up process...
       
       // Clean up any existing auth state
       cleanupAuthState();
@@ -33,7 +33,7 @@ export const authService = {
       try {
         await supabase.auth.signOut({ scope: 'global' });
       } catch (error) {
-        console.warn('Pre-signup cleanup failed, continuing:', error);
+        // Pre-signup cleanup failed, continuing
       }
 
       // Validate currency
@@ -79,7 +79,7 @@ export const authService = {
 
       return { data, error: null };
     } catch (error) {
-      console.error('Sign up error:', error);
+      // Sign up error handled by caller
       logSecurityEvent('auth_signup_error', { error: String(error) });
       throw error;
     }
@@ -90,7 +90,7 @@ export const authService = {
     try {
       return await secureSignIn(email, password);
     } catch (error) {
-      console.error('Sign in error:', error);
+      // Sign in error handled by caller
       logSecurityEvent('auth_signin_error', { error: String(error) });
       
       if (error instanceof Error) {
@@ -113,7 +113,7 @@ export const authService = {
       await secureSignOut();
       return { success: true };
     } catch (error) {
-      console.error('Sign out failed:', error);
+      // Sign out error handled by caller
       logSecurityEvent('auth_signout_error', { error: String(error) });
       return { success: false, error };
     }
@@ -144,28 +144,28 @@ export const authService = {
 
       return { error: null };
     } catch (error) {
-      console.error('Resend confirmation error:', error);
+      // Resend confirmation error handled by caller
       logSecurityEvent('auth_resend_error', { error: String(error) });
       throw error;
     }
   },
 
   // Update user metadata
-  async updateUserMetadata(updates: Record<string, any>) {
+  async updateUserMetadata(updates: Record<string, string | number | boolean>) {
     try {
       const { data, error } = await supabase.auth.updateUser({
         data: updates
       });
       
       if (error) {
-        console.error('Update user metadata error:', error);
+        // Update user metadata error handled by caller
         throw error;
       }
       
       logSecurityEvent('auth_metadata_updated', { userId: data.user?.id });
       return { success: true, data };
     } catch (error) {
-      console.error('Update metadata failed:', error);
+      // Update metadata error handled by caller
       logSecurityEvent('auth_metadata_error', { error: String(error) });
       return { success: false, error };
     }

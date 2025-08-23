@@ -61,9 +61,9 @@ const ContractApprovalModal: React.FC<ContractApprovalModalProps> = ({
         onRejectionComplete();
       }
       
-    } catch (error: any) {
-      console.error('Error processing contract:', error);
-      toast.error(error.message || 'Failed to process contract approval');
+    } catch (error: Error | unknown) {
+      // Error processing contract handled by UI
+      toast.error(error instanceof Error ? error.message : 'Failed to process contract approval');
     } finally {
       setSubmitting(false);
     }

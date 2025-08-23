@@ -20,7 +20,7 @@ const ProjectCardActionsHeader: React.FC<ProjectCardActionsHeaderProps> = ({
   const handleDeleteClick = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    console.log('Delete button clicked'); // Debug log
+    // Debug log removed for production
     if (onDeleteClick) {
       onDeleteClick(e);
     }

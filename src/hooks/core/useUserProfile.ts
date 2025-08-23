@@ -36,7 +36,7 @@ export const useUserProfile = (user: User | null) => {
         .single();
 
       if (error) {
-        console.error('Error fetching user profile:', error);
+        // Error fetching user profile handled by caller
         logSecurityEvent('profile_fetch_error', { userId: user.id, error: error.message });
         toast.error('Failed to load profile');
         setProfile(null);
@@ -45,7 +45,7 @@ export const useUserProfile = (user: User | null) => {
         logSecurityEvent('profile_fetched', { userId: user.id });
       }
     } catch (error) {
-      console.error('Profile fetch exception:', error);
+      // Profile fetch exception handled by caller
       logSecurityEvent('profile_fetch_exception', { userId: user?.id, error: String(error) });
       setProfile(null);
     } finally {

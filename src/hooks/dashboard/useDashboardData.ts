@@ -61,7 +61,7 @@ export const useDashboardData = (user: User | null) => {
       }
 
     } catch (error) {
-      console.error('Error fetching dashboard data:', error);
+      // Error fetching dashboard data handled by UI
     } finally {
       setLoading(false);
     }

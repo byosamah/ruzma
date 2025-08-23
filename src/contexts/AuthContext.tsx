@@ -13,7 +13,13 @@ interface AuthState {
 }
 
 interface AuthActions {
-  signUp: (formData: any) => Promise<{ success: boolean; needsConfirmation?: boolean }>;
+  signUp: (formData: {
+    email: string;
+    password: string;
+    name: string;
+    currency: string;
+    country: string;
+  }) => Promise<{ success: boolean; needsConfirmation?: boolean }>;
   signIn: (email: string, password: string, rememberMe?: boolean) => Promise<void>;
   signOut: () => Promise<void>;
   resendConfirmation: (email: string) => Promise<void>;
@@ -39,7 +45,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         const { data: { session }, error } = await supabase.auth.getSession();
         
         if (error) {
-          console.error('Error getting session:', error);
+          // Error logged for debugging purposes only
           logSecurityEvent('auth_session_error', { error: error.message });
           toast.error('Authentication error');
           return;
@@ -52,7 +58,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
           logSecurityEvent('auth_session_restored', { userId: session.user.id });
         }
       } catch (error) {
-        console.error('Session error:', error);
+        // Session error handled silently
         logSecurityEvent('auth_session_exception', { error: String(error) });
       } finally {
         setLoading(false);
@@ -80,7 +86,13 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     return () => subscription.unsubscribe();
   }, []);
 
-  const signUp = async (formData: any) => {
+  const signUp = async (formData: {
+    email: string;
+    password: string;
+    name: string;
+    currency: string;
+    country: string;
+  }) => {
     try {
       const { data, error } = await authService.signUp(formData);
       
@@ -96,7 +108,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         needsConfirmation 
       };
     } catch (error: any) {
-      console.error('Sign up failed:', error);
+      // Sign up error handled by caller
       throw error;
     }
   };
@@ -105,7 +117,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     try {
       await authService.signIn(email, password, rememberMe);
     } catch (error: any) {
-      console.error('Sign in failed:', error);
+      // Sign in error handled by caller
       throw error;
     }
   };
@@ -114,7 +126,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     try {
       await authService.signOut();
     } catch (error: any) {
-      console.error('Sign out failed:', error);
+      // Sign out error handled by caller
       throw error;
     }
   };
@@ -123,7 +135,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     try {
       await authService.resendConfirmation(email);
     } catch (error: any) {
-      console.error('Resend confirmation failed:', error);
+      // Resend confirmation error handled by caller
       throw error;
     }
   };

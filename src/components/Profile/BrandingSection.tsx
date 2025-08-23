@@ -52,7 +52,7 @@ export const BrandingSection = ({
           toast.error(result.error || 'Failed to upload logo');
         }
       } catch (error) {
-        console.error('Error uploading logo:', error);
+        // Error uploading logo handled by UI
         toast.dismiss();
         toast.error('Failed to upload logo');
       }

@@ -30,7 +30,7 @@ export const InvoiceProvider: React.FC<{ children: ReactNode }> = ({ children })
     const authData = useAuth();
     user = authData.user;
   } catch (error) {
-    console.log('Auth not available in current context');
+    // Error not available - using console only for debugging
   }
 
   // Get projects data to access project names
@@ -72,7 +72,7 @@ export const InvoiceProvider: React.FC<{ children: ReactNode }> = ({ children })
       const fetchedInvoices = await invoiceService.getInvoices(user.id);
       setInvoices(fetchedInvoices);
     } catch (error) {
-      console.error('Error refreshing invoices:', error);
+      // Error refreshing invoices handled by UI
       toast.error('Failed to load invoices');
     } finally {
       setLoading(false);
@@ -93,7 +93,7 @@ export const InvoiceProvider: React.FC<{ children: ReactNode }> = ({ children })
       
       return createdInvoice;
     } catch (error) {
-      console.error('Error creating invoice:', error);
+      // Error creating invoice handled by UI
       toast.error('Failed to create invoice');
       throw error;
     }
@@ -106,7 +106,7 @@ export const InvoiceProvider: React.FC<{ children: ReactNode }> = ({ children })
         invoice.id === id ? { ...invoice, ...updates } : invoice
       ));
     } catch (error) {
-      console.error('Error updating invoice:', error);
+      // Error updating invoice handled by UI
       toast.error('Failed to update invoice');
       throw error;
     }
@@ -123,7 +123,7 @@ export const InvoiceProvider: React.FC<{ children: ReactNode }> = ({ children })
         toast.success(`Invoice ${invoice.transactionId} deleted`);
       }
     } catch (error) {
-      console.error('Error deleting invoice:', error);
+      // Error deleting invoice handled by UI
       toast.error('Failed to delete invoice');
       throw error;
     }

@@ -78,9 +78,9 @@ const ContractStatusCard: React.FC<ContractStatusCardProps> = ({
       const contractService = new ContractService(user);
       await contractService.resendContractApprovalEmail(project.id);
       onProjectUpdate?.();
-    } catch (error: any) {
-      console.error('Error resending contract:', error);
-      toast.error(error.message || t('failedToResendContract'));
+    } catch (error: Error | unknown) {
+      // Error resending contract handled by UI
+      toast.error(error instanceof Error ? error.message : t('failedToResendContract'));
     } finally {
       setIsResending(false);
     }

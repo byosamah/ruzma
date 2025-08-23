@@ -41,7 +41,7 @@ export const formatProjectDate = (dateString: string): string => {
     }
     return 'Invalid Date';
   } catch (error) {
-    console.error('Date formatting error:', error, 'for date:', dateString);
+    // Date formatting error handled gracefully
     return 'Invalid Date';
   }
 };

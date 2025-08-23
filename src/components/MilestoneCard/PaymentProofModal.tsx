@@ -22,12 +22,12 @@ const PaymentProofModal: React.FC<PaymentProofModalProps> = ({
   const [imageLoadError, setImageLoadError] = useState(false);
 
   const handleImageError = () => {
-    console.log('Image failed to load:', paymentProofUrl);
+    // Image failed to load - handled gracefully
     setImageLoadError(true);
   };
 
   const handleImageLoad = () => {
-    console.log('Image loaded successfully:', paymentProofUrl);
+    // Image loaded successfully
     setImageLoadError(false);
   };
 

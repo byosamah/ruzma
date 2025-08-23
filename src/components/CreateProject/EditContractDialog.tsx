@@ -79,7 +79,7 @@ const EditContractDialog: React.FC<EditContractDialogProps> = ({
       onContractUpdated();
       onClose();
     } catch (error) {
-      console.error('Error updating contract:', error);
+      // Error updating contract handled by UI
       toast.error('Failed to update contract');
     } finally {
       setIsUpdating(false);
