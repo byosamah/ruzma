@@ -5,6 +5,26 @@ import { toast } from 'sonner';
 import { logSecurityEvent } from '@/lib/authSecurity';
 import { ProfileFormData } from '../types';
 
+interface DatabaseProfile {
+  id: string;
+  full_name?: string;
+  email?: string;
+  company?: string;
+  website?: string;
+  bio?: string;
+  currency?: string;
+  country?: string;
+  [key: string]: unknown;
+}
+
+interface BrandingData {
+  freelancer_title?: string;
+  freelancer_bio?: string;
+  primary_color?: string;
+  logo_url?: string;
+  [key: string]: unknown;
+}
+
 export const fetchExistingProfile = async (userId: string) => {
   const { data: profileData, error: profileError } = await supabase
     .from('profiles')
@@ -37,8 +57,8 @@ export const createNewProfile = async (user: User, userCurrency: string) => {
 };
 
 export const setProfileFormData = (
-  profile: any, 
-  branding: any, 
+  profile: DatabaseProfile | null, 
+  branding: BrandingData | null, 
   user: User, 
   userCurrency?: string
 ): ProfileFormData => {

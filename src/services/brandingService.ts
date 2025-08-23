@@ -2,6 +2,19 @@
 import { supabase } from '@/integrations/supabase/client';
 
 
+interface BrandingUpdateData {
+  professionalTitle?: string;
+  freelancer_title?: string;
+  shortBio?: string;
+  freelancer_bio?: string;
+  name?: string;
+  freelancer_name?: string;
+  primaryColor?: string;
+  primary_color?: string;
+  logoUrl?: string;
+  logo_url?: string;
+}
+
 export const brandingService = {
   async fetchBranding(userId: string) {
     const { data: branding, error } = await supabase
@@ -13,7 +26,7 @@ export const brandingService = {
     return { branding, error };
   },
 
-  async updateBranding(userId: string, brandingData: any) {
+  async updateBranding(userId: string, brandingData: BrandingUpdateData) {
     const { error } = await supabase
       .from('freelancer_branding')
       .upsert({

@@ -2,12 +2,22 @@
 import { useEffect, useState, useCallback, useMemo } from 'react';
 import { User } from '@supabase/supabase-js';
 import { supabase } from '@/integrations/supabase/client';
-import { DatabaseProject } from '@/hooks/projectTypes';
+import { DatabaseProject, DatabaseMilestone } from '@/hooks/projectTypes';
 import { setUserProperties } from '@/lib/analytics';
+
+interface UserProfile {
+  id: string;
+  full_name?: string;
+  email?: string;
+  user_type?: string;
+  currency?: string;
+  subscription_status?: string;
+  subscription_id?: string;
+}
 
 export const useDashboardData = (user: User | null) => {
   const [projects, setProjects] = useState<DatabaseProject[]>([]);
-  const [profile, setProfile] = useState<any>(null);
+  const [profile, setProfile] = useState<UserProfile | null>(null);
   const [loading, setLoading] = useState(true);
 
   const fetchData = useCallback(async () => {

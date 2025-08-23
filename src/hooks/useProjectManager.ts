@@ -7,7 +7,7 @@ import { useLanguageNavigation } from '@/hooks/useLanguageNavigation';
 import { createProjectFormSchema, CreateProjectFormData } from '@/lib/validators/project';
 import { ProjectService, ProjectOperationData } from '@/services/projectService';
 import { ProjectTemplate } from '@/types/projectTemplate';
-import { DatabaseProject } from '@/hooks/projectTypes';
+import { DatabaseProject, DatabaseMilestone } from '@/hooks/projectTypes';
 import { toast } from 'sonner';
 import { useT } from '@/lib/i18n';
 import { supabase } from '@/integrations/supabase/client';
@@ -310,9 +310,9 @@ export const useProjectManager = (options: UseProjectManagerOptions) => {
         navigate('/projects');
       }
 
-    } catch (error: any) {
+    } catch (error) {
       console.error(`Error ${mode === 'create' ? 'creating' : 'updating'} project:`, error);
-      toast.error(error.message || t('errorOccurred'));
+      toast.error(error instanceof Error ? error.message : t('errorOccurred'));
     } finally {
       setIsSubmitting(false);
     }
