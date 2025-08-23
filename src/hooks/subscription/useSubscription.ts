@@ -22,7 +22,6 @@ export const useSubscription = () => {
       const errorMessage = err instanceof Error ? err.message : 'Failed to create checkout';
       setError(errorMessage);
       toast.error(errorMessage);
-      console.error('Checkout creation error:', err);
     } finally {
       setIsLoading(false);
     }

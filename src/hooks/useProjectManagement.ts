@@ -72,7 +72,6 @@ export const useProjectManagement = (slug: string | undefined) => {
       .find(m => m.id === milestoneId);
     
     if (!milestone) {
-      console.error('Milestone not found');
       return;
     }
 

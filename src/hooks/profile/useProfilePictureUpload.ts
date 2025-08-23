@@ -46,8 +46,6 @@ export const useProfilePictureUpload = (
       setIsUploading(true);
       
       try {
-        console.log('Starting crop and upload process...');
-        
         // Get cropped image as blob
         const croppedImageDataUrl = await getCroppedImg(imageToCrop, croppedAreaPixels);
         
@@ -80,15 +78,12 @@ export const useProfilePictureUpload = (
           throw new Error(result.error || 'Upload failed');
         }
 
-        console.log('Upload successful:', result.url);
-        
         // Update local state immediately
         onProfilePictureUpdate(result.url);
         
         toast.success("Profile picture updated successfully!");
         
       } catch (error) {
-        console.error('Error in onCropSave:', error);
         toast.error(error instanceof Error ? error.message : "Failed to update profile picture");
       } finally {
         setIsUploading(false);

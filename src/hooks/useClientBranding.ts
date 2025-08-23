@@ -27,7 +27,7 @@ export const useClientBranding = (freelancerUserId?: string) => {
         .maybeSingle();
 
       if (error) {
-        console.error('Error fetching branding:', error);
+        // Continue with defaults if error occurs
       }
 
       if (data) {
@@ -43,7 +43,7 @@ export const useClientBranding = (freelancerUserId?: string) => {
         } as FreelancerBranding);
       }
     } catch (error) {
-      console.error('Error fetching client branding:', error);
+      // Continue with defaults if error occurs
     } finally {
       setIsLoading(false);
     }

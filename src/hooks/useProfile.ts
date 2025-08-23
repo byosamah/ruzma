@@ -38,7 +38,6 @@ export const useProfile = (user?: User | null) => {
   };
 
   const updateProfilePicture = (newPictureUrl: string) => {
-    console.log('updateProfilePicture called with:', newPictureUrl);
     setProfilePicture(newPictureUrl);
   };
 

@@ -6,8 +6,6 @@ import { toast } from 'sonner';
 export const useProjectCountSync = () => {
   const syncProjectCount = useCallback(async (userId: string) => {
     try {
-      console.log('Syncing project count for user:', userId);
-      
       // Get actual project count
       const { data: projects, error: projectsError } = await supabase
         .from('projects')
@@ -15,12 +13,11 @@ export const useProjectCountSync = () => {
         .eq('user_id', userId);
 
       if (projectsError) {
-        console.error('Error fetching projects for sync:', projectsError);
+        toast.error('Failed to fetch projects for sync');
         return false;
       }
 
       const actualCount = projects?.length || 0;
-      console.log('Actual project count:', actualCount);
 
       // Get current profile count
       const { data: profile, error: profileError } = await supabase
@@ -30,17 +27,14 @@ export const useProjectCountSync = () => {
         .single();
 
       if (profileError) {
-        console.error('Error fetching profile for sync:', profileError);
+        toast.error('Failed to fetch profile for sync');
         return false;
       }
 
       const profileCount = profile.project_count || 0;
-      console.log('Profile project count:', profileCount);
 
       // Update if there's a mismatch
       if (actualCount !== profileCount) {
-        console.log(`Syncing project count: ${profileCount} -> ${actualCount}`);
-        
         const { error: updateError } = await supabase
           .from('profiles')
           .update({ 
@@ -50,18 +44,16 @@ export const useProjectCountSync = () => {
           .eq('id', userId);
 
         if (updateError) {
-          console.error('Error updating project count:', updateError);
+          toast.error('Failed to update project count');
           return false;
         }
 
-        console.log('Project count synced successfully');
         return true;
       }
 
-      console.log('Project count is already in sync');
       return true;
     } catch (error) {
-      console.error('Error in syncProjectCount:', error);
+      toast.error('Failed to sync project count');
       return false;
     }
   }, []);

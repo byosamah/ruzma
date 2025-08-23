@@ -27,7 +27,6 @@ export const useNotifications = (user: User | null) => {
         .limit(50);
 
       if (error) {
-        console.error('Error fetching notifications:', error);
         toast.error('Failed to fetch notifications');
         return;
       }
@@ -41,7 +40,7 @@ export const useNotifications = (user: User | null) => {
       setNotifications(typedNotifications);
       setUnreadCount(typedNotifications.filter(n => !n.is_read).length);
     } catch (error) {
-      console.error('Error fetching notifications:', error);
+      toast.error('Failed to fetch notifications');
     } finally {
       setLoading(false);
     }
@@ -58,7 +57,7 @@ export const useNotifications = (user: User | null) => {
         .eq('user_id', user.id);
 
       if (error) {
-        console.error('Error marking notification as read:', error);
+        toast.error('Failed to mark notification as read');
         return;
       }
 
@@ -70,7 +69,7 @@ export const useNotifications = (user: User | null) => {
       );
       setUnreadCount(prev => Math.max(0, prev - 1));
     } catch (error) {
-      console.error('Error marking notification as read:', error);
+      toast.error('Failed to mark notification as read');
     }
   };
 
@@ -85,7 +84,7 @@ export const useNotifications = (user: User | null) => {
         .eq('is_read', false);
 
       if (error) {
-        console.error('Error marking all notifications as read:', error);
+        toast.error('Failed to mark all notifications as read');
         return;
       }
 
@@ -95,7 +94,7 @@ export const useNotifications = (user: User | null) => {
       );
       setUnreadCount(0);
     } catch (error) {
-      console.error('Error marking all notifications as read:', error);
+      toast.error('Failed to mark all notifications as read');
     }
   };
 

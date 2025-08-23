@@ -30,7 +30,7 @@ export const useBranding = (user: User | null) => {
         .maybeSingle();
 
       if (error) {
-        console.error('Error fetching branding:', error);
+        toast.error('Failed to load branding settings');
       }
 
       if (data) {
@@ -47,7 +47,6 @@ export const useBranding = (user: User | null) => {
         } as FreelancerBranding);
       }
     } catch (error) {
-      console.error('Error fetching branding:', error);
       toast.error('Failed to load branding settings');
     } finally {
       setIsLoading(false);
@@ -75,7 +74,6 @@ export const useBranding = (user: User | null) => {
         .single();
 
       if (error) {
-        console.error('Error saving branding:', error);
         toast.error('Failed to save branding settings');
         return false;
       }
@@ -84,7 +82,6 @@ export const useBranding = (user: User | null) => {
       toast.success('Branding settings saved successfully!');
       return true;
     } catch (error) {
-      console.error('Error saving branding:', error);
       toast.error('Failed to save branding settings');
       return false;
     } finally {
@@ -111,7 +108,6 @@ export const useBranding = (user: User | null) => {
         });
 
       if (error) {
-        console.error('Upload error:', error);
         toast.error('Failed to upload logo');
         return null;
       }
@@ -123,7 +119,6 @@ export const useBranding = (user: User | null) => {
 
       return urlData.publicUrl;
     } catch (error) {
-      console.error('Error uploading logo:', error);
       toast.error('Failed to upload logo');
       return null;
     }

@@ -49,7 +49,6 @@ export const useClientProject = (token?: string | null, isHybrid?: boolean) => {
       }
       
     } catch (err) {
-      console.error('Error fetching client project:', err);
       setError(err instanceof Error ? err.message : 'Failed to load project');
     } finally {
       setLoading(false);
@@ -77,7 +76,6 @@ export const useClientProject = (token?: string | null, isHybrid?: boolean) => {
       
       return result;
     } catch (error) {
-      console.error('Error uploading payment proof:', error);
       throw error;
     }
   };
@@ -87,7 +85,6 @@ export const useClientProject = (token?: string | null, isHybrid?: boolean) => {
       await uploadPaymentProof(milestoneId, file);
       return true;
     } catch (error) {
-      console.error('Error uploading payment proof:', error);
       return false;
     }
   };
@@ -105,7 +102,6 @@ export const useClientProject = (token?: string | null, isHybrid?: boolean) => {
       await loadProject();
       toast.success('Revision request submitted successfully');
     } catch (error) {
-      console.error('Error submitting revision request:', error);
       toast.error('Failed to submit revision request');
     }
   };
