@@ -16,7 +16,6 @@ export const fetchExistingProfile = async (userId: string) => {
 };
 
 export const createNewProfile = async (user: User, userCurrency: string) => {
-  console.log('Profile: Creating new profile...');
   const { data: newProfile, error: createError } = await supabase
     .from('profiles')
     .insert({
@@ -28,11 +27,9 @@ export const createNewProfile = async (user: User, userCurrency: string) => {
     .single();
     
   if (createError) {
-    console.error("Profile: Profile creation failed:", createError);
     logSecurityEvent('profile_creation_failed', { error: createError.message });
     toast.error("Profile setup error");
   } else {
-    console.log('Profile: New profile created');
     logSecurityEvent('profile_created', { userId: user.id });
   }
 

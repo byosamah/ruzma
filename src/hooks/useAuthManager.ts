@@ -148,7 +148,6 @@ export const useAuthManager = () => {
       }
       return true;
     } catch (error) {
-      console.error('Sign up failed:', error);
       if (error instanceof Error) {
         toast.error(error.message);
       } else {
@@ -186,7 +185,6 @@ export const useAuthManager = () => {
       await authService.signIn(loginData.email, loginData.password, rememberMe);
       return true;
     } catch (error) {
-      console.error('Sign in failed:', error);
       if (error instanceof Error) {
         toast.error(error.message);
       } else {
@@ -211,7 +209,6 @@ export const useAuthManager = () => {
       setResendCooldown(60); // 60 second cooldown
       return true;
     } catch (error) {
-      console.error('Resend confirmation failed:', error);
       if (error instanceof Error) {
         toast.error(error.message);
       } else {

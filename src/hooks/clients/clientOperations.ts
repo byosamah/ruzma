@@ -21,7 +21,6 @@ export const fetchClientsData = async (user: User | null): Promise<ClientWithPro
       .order('created_at', { ascending: false });
 
     if (clientsError) {
-      console.error('Error fetching clients:', clientsError);
       securityMonitor.monitorPermissionViolation('clients', 'fetch', {
         error: clientsError.message,
         userId: user.id
@@ -38,7 +37,7 @@ export const fetchClientsData = async (user: User | null): Promise<ClientWithPro
       .in('client_id', (clientsData || []).map(c => c.id));
 
     if (countError) {
-      console.error('Error counting projects:', countError);
+      // Count errors are not critical, continue with zero counts
     }
 
     // Create a map of client_id to project count
@@ -58,7 +57,6 @@ export const fetchClientsData = async (user: User | null): Promise<ClientWithPro
 
     return clientsWithCount;
   } catch (error) {
-    console.error('Error:', error);
     securityMonitor.logEvent('suspicious_activity', {
       activity: 'client_fetch_error',
       error: error instanceof Error ? error.message : 'Unknown error',
@@ -89,7 +87,6 @@ export const createClientData = async (user: User, clientData: CreateClientData)
       }]);
 
     if (error) {
-      console.error('Error creating client:', error);
       if (error.code === '23505') {
         toast.error('A client with this email already exists');
       } else {
@@ -105,7 +102,6 @@ export const createClientData = async (user: User, clientData: CreateClientData)
     toast.success('Client created successfully');
     return true;
   } catch (error) {
-    console.error('Error:', error);
     securityMonitor.logEvent('suspicious_activity', {
       activity: 'client_creation_error',
       error: error instanceof Error ? error.message : 'Unknown error',
@@ -137,7 +133,6 @@ export const updateClientData = async (user: User, clientId: string, clientData:
       .eq('user_id', user.id);
 
     if (error) {
-      console.error('Error updating client:', error);
       if (error.code === '23505') {
         toast.error('A client with this email already exists');
       } else {
@@ -154,7 +149,6 @@ export const updateClientData = async (user: User, clientId: string, clientData:
     toast.success('Client updated successfully');
     return true;
   } catch (error) {
-    console.error('Error:', error);
     securityMonitor.logEvent('suspicious_activity', {
       activity: 'client_update_error',
       error: error instanceof Error ? error.message : 'Unknown error',
@@ -180,7 +174,6 @@ export const deleteClientData = async (user: User, clientId: string): Promise<bo
       .eq('user_id', user.id);
 
     if (error) {
-      console.error('Error deleting client:', error);
       securityMonitor.monitorPermissionViolation('clients', 'delete', {
         error: error.message,
         clientId,
@@ -193,7 +186,6 @@ export const deleteClientData = async (user: User, clientId: string): Promise<bo
     toast.success('Client deleted successfully');
     return true;
   } catch (error) {
-    console.error('Error:', error);
     securityMonitor.logEvent('suspicious_activity', {
       activity: 'client_deletion_error',
       error: error instanceof Error ? error.message : 'Unknown error',

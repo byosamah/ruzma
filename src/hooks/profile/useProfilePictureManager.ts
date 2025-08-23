@@ -47,8 +47,6 @@ export const useProfilePictureManager = ({ user, onSuccess }: UseProfilePictureM
     setIsUploading(true);
     
     try {
-      console.log('Starting crop and upload process...');
-      
       // Get cropped image as blob
       const croppedImageDataUrl = await getCroppedImg(imageToCrop, croppedAreaPixels);
       
@@ -80,14 +78,11 @@ export const useProfilePictureManager = ({ user, onSuccess }: UseProfilePictureM
       if (!uploadResponse.ok) {
         throw new Error(result.error || 'Upload failed');
       }
-
-      console.log('Upload successful:', result.url);
       
       onSuccess(result.url);
       toast.success("Profile picture updated successfully!");
       
     } catch (error) {
-      console.error('Error uploading profile picture:', error);
       toast.error(error instanceof Error ? error.message : "Failed to update profile picture");
     } finally {
       setIsUploading(false);

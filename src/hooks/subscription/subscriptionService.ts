@@ -24,9 +24,6 @@ export const createCheckoutSession = async (planId: string) => {
     throw new Error('User not authenticated');
   }
 
-  console.log('Creating checkout for plan:', plan);
-  console.log('User details:', { id: user.id, email: user.email });
-
   // Call the create-checkout function
   const { data, error: functionError } = await supabase.functions.invoke('create-checkout', {
     body: {
@@ -36,11 +33,8 @@ export const createCheckoutSession = async (planId: string) => {
   });
 
   if (functionError) {
-    console.error('Function error:', functionError);
     throw new Error(functionError.message || 'Failed to create checkout');
   }
-
-  console.log('Create-checkout response:', data);
 
   // Handle both string and object responses
   let responseData = data;
@@ -48,23 +42,19 @@ export const createCheckoutSession = async (planId: string) => {
     try {
       responseData = JSON.parse(data);
     } catch (parseError) {
-      console.error('Failed to parse response as JSON:', parseError);
       throw new Error('Invalid response format from payment provider');
     }
   }
 
   // Extract checkout URL
   const checkoutUrl = responseData?.checkout_url;
-  console.log('Extracted checkout URL:', checkoutUrl);
 
   if (checkoutUrl && typeof checkoutUrl === 'string' && checkoutUrl.trim()) {
-    console.log('Redirecting to checkout:', checkoutUrl);
     toast.success('Redirecting to checkout...');
     setTimeout(() => {
       window.location.href = checkoutUrl;
     }, 500);
   } else {
-    console.error('No valid checkout URL found in response:', responseData);
     throw new Error('No checkout URL received from payment provider');
   }
 };
@@ -82,7 +72,6 @@ export const checkSubscriptionStatus = async (): Promise<SubscriptionProfile | n
 
     return profile;
   } catch (error) {
-    console.error('Error checking subscription status:', error);
     return null;
   }
 };

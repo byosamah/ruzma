@@ -28,8 +28,8 @@ export const useTemplates = ({ user }: UseTemplatesProps) => {
       const fetchedTemplates = await projectService.getTemplates();
       setTemplates(fetchedTemplates);
     } catch (error) {
-      console.error('Error fetching templates:', error);
       setError('Failed to fetch templates');
+      toast.error('Failed to fetch templates');
     } finally {
       setLoading(false);
     }
@@ -78,7 +78,6 @@ export const useTemplates = ({ user }: UseTemplatesProps) => {
       await fetchTemplates();
       return true;
     } catch (error) {
-      console.error('Error saving template:', error);
       toast.error('Failed to save template');
       return false;
     }
@@ -96,7 +95,6 @@ export const useTemplates = ({ user }: UseTemplatesProps) => {
       toast.success('Template deleted successfully');
       return true;
     } catch (error: any) {
-      console.error('Error deleting template:', error);
       toast.error(error.message || 'Failed to delete template');
       return false;
     }

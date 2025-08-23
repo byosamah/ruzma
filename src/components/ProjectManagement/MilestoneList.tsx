@@ -31,7 +31,6 @@ const MilestoneList: React.FC<MilestoneListProps> = ({
       await onPaymentUpload(milestoneId, file);
       return true;
     } catch (error) {
-      console.error('Payment upload failed:', error);
       return false;
     }
   };
@@ -40,7 +39,7 @@ const MilestoneList: React.FC<MilestoneListProps> = ({
     try {
       await onDeliverableLinkUpdate(milestoneId, link);
     } catch (error) {
-      console.error('Deliverable link update failed:', error);
+      // Error handled by parent component
     }
   };
 

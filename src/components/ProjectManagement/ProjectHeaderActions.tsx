@@ -71,8 +71,6 @@ const ProjectHeaderActions: React.FC<ProjectHeaderActionsProps> = ({
       } else {
         toast.error(t('clientLinkSendFailed'));
       }
-      
-      console.error('Error sending client link:', error);
     }
   };
 

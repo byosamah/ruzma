@@ -33,7 +33,6 @@ export const useProfileActions = (user: User | null) => {
       setTimeout(() => setIsSaved(false), 2000);
       return true;
     } catch (error: any) {
-      console.error('Error updating branding:', error);
       trackError('branding_update', error.message, 'useProfileActions');
       toast.error('Failed to update branding');
       return false;
@@ -79,7 +78,6 @@ export const useProfileActions = (user: User | null) => {
       setTimeout(() => setIsSaved(false), 2000);
       return true;
     } catch (error: any) {
-      console.error('Error updating profile:', error);
       trackError('profile_update', error.message, 'useProfileActions');
       toast.error('Failed to update profile');
       return false;
@@ -99,7 +97,6 @@ export const useProfileActions = (user: User | null) => {
 
   const handleLogoUpload = (file: File, setFormData: any) => {
     // This is now handled in the BrandingSection component
-    console.log('Logo upload handled in BrandingSection:', file);
   };
 
   const handleSubmit = async (e: React.FormEvent, formData: any) => {

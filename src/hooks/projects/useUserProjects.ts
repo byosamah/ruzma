@@ -27,7 +27,6 @@ export const useUserProjects = (user: User | null) => {
         .order('created_at', { ascending: false });
 
       if (projectsError) {
-        console.error('Error fetching projects:', projectsError);
         toast.error('Failed to load projects');
         return;
       }
@@ -41,7 +40,6 @@ export const useUserProjects = (user: User | null) => {
       })) as DatabaseProject[];
       setProjects(typedProjects);
     } catch (error) {
-      console.error('Error:', error);
       toast.error('Failed to load projects');
     } finally {
       setLoading(false);

@@ -36,9 +36,7 @@ export const useImageCropping = (
   const onCropSave = async () => {
     if (croppedAreaPixels && imageToCrop && user) {
         try {
-            console.log('Starting crop save process...');
             const croppedImage = await getCroppedImg(imageToCrop, croppedAreaPixels);
-            console.log('Cropped image generated, length:', croppedImage.length);
             
             const { error } = await supabase
               .from('profiles')
@@ -46,8 +44,6 @@ export const useImageCropping = (
               .eq('id', user.id);
 
             if (error) throw error;
-            
-            console.log('Profile updated in database successfully');
             
             // Force immediate state update
             onProfilePictureUpdate(croppedImage);
@@ -59,7 +55,6 @@ export const useImageCropping = (
             
             toast.success("Profile picture updated!");
         } catch (error) {
-            console.error('Error in onCropSave:', error);
             toast.error("There was an error updating your profile picture.");
         } finally {
             setImageToCrop(null);
