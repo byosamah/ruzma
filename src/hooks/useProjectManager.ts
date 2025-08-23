@@ -68,7 +68,7 @@ export const useProjectManager = (options: UseProjectManagerOptions) => {
       paymentTerms: data.payment_terms || '',
       projectScope: data.project_scope || '',
       revisionPolicy: data.revision_policy || '',
-      milestones: (data.milestones as any[])?.map((milestone: any) => ({
+      milestones: (data.milestones as DatabaseMilestone[])?.map((milestone: DatabaseMilestone) => ({
         title: milestone.title || '',
         description: milestone.description || '',
         price: milestone.price || 0,

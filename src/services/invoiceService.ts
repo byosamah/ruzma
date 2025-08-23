@@ -15,7 +15,7 @@ export interface DatabaseInvoice {
   date: string;
   status: string;
   project_id: string | null;
-  invoice_data: any;
+  invoice_data: Record<string, unknown> | string | null;
   created_at: string;
   updated_at: string;
 }
@@ -28,7 +28,7 @@ const convertToInvoice = (dbInvoice: DatabaseInvoice): Invoice => ({
   date: new Date(dbInvoice.date),
   status: dbInvoice.status as InvoiceStatus,
   projectId: dbInvoice.project_id || crypto.randomUUID(),
-  invoiceData: dbInvoice.invoice_data
+  invoiceData: parseInvoiceData(dbInvoice.invoice_data) || {}
 });
 
 const convertFromInvoice = (invoice: Invoice, userId: string, invoiceData?: InvoiceFormData) => ({
@@ -44,8 +44,6 @@ const convertFromInvoice = (invoice: Invoice, userId: string, invoiceData?: Invo
 
 // PDF Data Builder utility
 const buildInvoicePDFData = async (invoice: Invoice): Promise<SharedInvoiceData> => {
-  console.log('Building PDF data for invoice:', invoice.id);
-  
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) {
     throw new Error('User not authenticated');
@@ -67,6 +65,9 @@ const buildInvoicePDFData = async (invoice: Invoice): Promise<SharedInvoiceData>
   const originalData = parseInvoiceData(invoice.invoiceData);
   const lineItems = getLineItems(originalData, invoice);
 
+  // Type guard for billedTo
+  const billedTo = originalData?.billedTo as { name?: string; address?: string } | undefined;
+  
   const invoicePDFData: SharedInvoiceData = {
     invoice: {
       id: invoice.id,
@@ -76,41 +77,40 @@ const buildInvoicePDFData = async (invoice: Invoice): Promise<SharedInvoiceData>
       projectName: invoice.projectName
     },
     billedTo: {
-      name: originalData?.billedTo?.name || 'Client',
-      address: originalData?.billedTo?.address || 'Client Address'
+      name: billedTo?.name || 'Client',
+      address: billedTo?.address || 'Client Address'
     },
     payTo: {
       name: branding?.freelancer_name || profile.full_name || 'Freelancer',
       address: branding?.freelancer_bio || 'Freelancer Address'
     },
     lineItems,
-    currency: originalData?.currency || 'USD',
+    currency: typeof originalData?.currency === 'string' ? originalData.currency : 'USD',
     logoUrl: branding?.logo_url || null,
-    purchaseOrder: originalData?.purchaseOrder || '',
-    paymentTerms: originalData?.paymentTerms || 'Net 30',
-    tax: originalData?.tax || 0,
-    invoiceDate: originalData?.invoiceDate ? new Date(originalData.invoiceDate) : invoice.date,
-    dueDate: originalData?.dueDate ? new Date(originalData.dueDate) : new Date(Date.now() + 30 * 24 * 60 * 60 * 1000)
+    purchaseOrder: typeof originalData?.purchaseOrder === 'string' ? originalData.purchaseOrder : '',
+    paymentTerms: typeof originalData?.paymentTerms === 'string' ? originalData.paymentTerms : 'Net 30',
+    tax: typeof originalData?.tax === 'number' ? originalData.tax : 0,
+    invoiceDate: originalData?.invoiceDate ? new Date(originalData.invoiceDate as string | number | Date) : invoice.date,
+    dueDate: originalData?.dueDate ? new Date(originalData.dueDate as string | number | Date) : new Date(Date.now() + 30 * 24 * 60 * 60 * 1000)
   };
 
   validatePDFData(invoicePDFData);
   return invoicePDFData;
 };
 
-const parseInvoiceData = (invoiceData: any) => {
+const parseInvoiceData = (invoiceData: Record<string, unknown> | string | null): Record<string, unknown> | null => {
   if (!invoiceData) return null;
   if (typeof invoiceData === 'string') {
     try {
-      return JSON.parse(invoiceData);
+      return JSON.parse(invoiceData) as Record<string, unknown>;
     } catch (error) {
-      console.error('Error parsing invoice data:', error);
       return null;
     }
   }
   return invoiceData;
 };
 
-const getLineItems = (originalData: any, invoice: Invoice) => {
+const getLineItems = (originalData: Record<string, unknown> | null, invoice: Invoice) => {
   if (originalData?.lineItems && Array.isArray(originalData.lineItems)) {
     return originalData.lineItems;
   }
@@ -167,7 +167,7 @@ const sendInvoiceToClient = async (invoice: Invoice, invoicePDFData: SharedInvoi
   // Fallback: try to parse from invoice data
   if (!clientEmail) {
     const originalData = parseInvoiceData(invoice.invoiceData);
-    clientEmail = originalData?.selectedClientEmail || '';
+    clientEmail = typeof originalData?.selectedClientEmail === 'string' ? originalData.selectedClientEmail : '';
   }
 
   if (!clientEmail) {
@@ -199,7 +199,6 @@ const sendInvoiceToClient = async (invoice: Invoice, invoicePDFData: SharedInvoi
   });
 
   if (error) {
-    console.error('Error sending invoice:', error);
     throw new Error(error.message || 'Failed to send invoice');
   }
 
@@ -215,11 +214,10 @@ export const invoiceService = {
       .order('created_at', { ascending: false });
 
     if (error) {
-      console.error('Error fetching invoices:', error);
       throw error;
     }
 
-    return data?.map(convertToInvoice) || [];
+    return data?.map((dbInvoice) => convertToInvoice(dbInvoice as DatabaseInvoice)) || [];
   },
 
   async createInvoice(invoice: Invoice, userId: string, invoiceData?: InvoiceFormData): Promise<Invoice> {
@@ -232,7 +230,6 @@ export const invoiceService = {
       .single();
 
     if (error) {
-      console.error('Error creating invoice:', error);
       throw error;
     }
 
@@ -240,14 +237,14 @@ export const invoiceService = {
     try {
       trackInvoiceCreated(invoice.transactionId, invoice.amount, invoiceData?.currency || 'USD');
     } catch (error) {
-      console.error('Error tracking invoice creation:', error);
+      // Analytics error - not critical for functionality
     }
 
     return convertToInvoice(data as DatabaseInvoice);
   },
 
   async updateInvoice(id: string, updates: Partial<Invoice>): Promise<void> {
-    const dbUpdates: any = {};
+    const dbUpdates: Record<string, unknown> = {};
     
     if (updates.transactionId) dbUpdates.transaction_id = updates.transactionId;
     if (updates.amount !== undefined) dbUpdates.amount = updates.amount;
@@ -264,7 +261,6 @@ export const invoiceService = {
       .eq('id', id);
 
     if (error) {
-      console.error('Error updating invoice:', error);
       throw error;
     }
   },
@@ -276,7 +272,6 @@ export const invoiceService = {
       .eq('id', id);
 
     if (error) {
-      console.error('Error deleting invoice:', error);
       throw error;
     }
   },
@@ -284,7 +279,6 @@ export const invoiceService = {
   // Enhanced methods for PDF and email operations
   async downloadInvoicePDF(invoice: Invoice): Promise<void> {
     toast.loading('Generating PDF...', { id: 'pdf-generation' });
-    console.log('Starting PDF generation for invoice:', invoice);
 
     try {
       const invoicePDFData = await buildInvoicePDFData(invoice);
@@ -302,8 +296,8 @@ export const invoiceService = {
       
       toast.success(`PDF downloaded successfully for ${invoice.transactionId}`, { id: 'pdf-generation' });
     } catch (error) {
-      console.error('Error generating PDF:', error);
-      toast.error(`Failed to generate PDF: ${error.message}`, { id: 'pdf-generation' });
+      const errorMessage = error instanceof Error ? error.message : 'Failed to generate PDF';
+      toast.error(errorMessage, { id: 'pdf-generation' });
       throw error;
     }
   },
@@ -315,17 +309,15 @@ export const invoiceService = {
     }
 
     toast.loading('Generating and sending invoice...', { id: 'sending-invoice' });
-    console.log('Sending invoice to client:', invoice.id);
 
     try {
       const invoicePDFData = await buildInvoicePDFData(invoice);
       const result = await sendInvoiceToClient(invoice, invoicePDFData);
 
       toast.success(`Invoice sent successfully to ${result.clientEmail}`, { id: 'sending-invoice' });
-      console.log('Invoice email sent successfully:', result.data);
     } catch (error) {
-      console.error('Error sending invoice to client:', error);
-      toast.error(`Failed to send invoice: ${error.message}`, { id: 'sending-invoice' });
+      const errorMessage = error instanceof Error ? error.message : 'Failed to send invoice';
+      toast.error(errorMessage, { id: 'sending-invoice' });
       throw error;
     }
   }

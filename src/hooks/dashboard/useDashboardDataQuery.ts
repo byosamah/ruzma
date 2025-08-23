@@ -1,7 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
 import { User } from '@supabase/supabase-js';
 import { supabase } from '@/integrations/supabase/client';
-import { DatabaseProject } from '@/hooks/projectTypes';
+import { DatabaseProject, DatabaseMilestone } from '@/hooks/projectTypes';
 import { setUserProperties } from '@/lib/analytics';
 
 const fetchDashboardData = async (user: User) => {

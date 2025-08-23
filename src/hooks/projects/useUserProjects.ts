@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { User } from '@supabase/supabase-js';
 import { toast } from 'sonner';
-import { DatabaseProject } from '../projectTypes';
+import { DatabaseProject, DatabaseMilestone } from '../projectTypes';
 
 export const useUserProjects = (user: User | null) => {
   const [projects, setProjects] = useState<DatabaseProject[]>([]);

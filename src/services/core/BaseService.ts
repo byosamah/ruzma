@@ -16,7 +16,7 @@ export abstract class BaseService {
     return this.user;
   }
 
-  protected logOperation(operation: string, data?: any) {
+  protected logOperation(operation: string, data?: Record<string, unknown>) {
     if (this.user) {
       logSecurityEvent(operation, { userId: this.user.id, ...data });
     }

@@ -68,7 +68,7 @@ export const useInvoiceManager = () => {
     setInvoiceData: React.Dispatch<React.SetStateAction<InvoiceFormData>>,
     id: string, 
     field: keyof LineItem, 
-    value: any
+    value: string | number | boolean | null
   ) => {
     setInvoiceData(prev => {
       const updatedItems = prev.lineItems.map(item =>

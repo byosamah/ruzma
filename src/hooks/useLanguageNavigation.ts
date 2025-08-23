@@ -10,7 +10,7 @@ export function useLanguageNavigation() {
   /**
    * Navigate to a path with the current language prefix
    */
-  const navigateWithLanguage = (path: string, options?: { replace?: boolean; state?: any }) => {
+  const navigateWithLanguage = (path: string, options?: { replace?: boolean; state?: Record<string, unknown> }) => {
     const pathWithLanguage = addLanguageToPath(path, language);
     navigate(pathWithLanguage, options);
   };

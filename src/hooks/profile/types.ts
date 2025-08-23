@@ -17,5 +17,5 @@ export interface ProfileState {
   isLoading: boolean;
   isSaved: boolean;
   imageToCrop: string | null;
-  croppedAreaPixels: any | null;
+  croppedAreaPixels: { x: number; y: number; width: number; height: number } | null;
 }

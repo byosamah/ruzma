@@ -13,7 +13,7 @@ interface UsageLimits {
 }
 
 export const useUsageTracking = (
-  userProfile: any,
+  userProfile: { id?: string; project_count?: number; user_type?: string } | null,
   projects: DatabaseProject[]
 ): UsageLimits => {
   const t = useT();
