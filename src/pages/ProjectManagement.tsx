@@ -116,7 +116,7 @@ const ProjectManagement: React.FC = () => {
 
   if (!project) {
     return (
-      <Layout user={profile || user}>
+      <Layout user={user}>
         <div className="flex items-center justify-center min-h-[50vh]">
           <div className="text-center space-y-4">
             <div className="text-4xl">📁</div>
@@ -140,7 +140,7 @@ const ProjectManagement: React.FC = () => {
   const completedValue = project.milestones.filter(m => m.status === 'approved').reduce((sum, m) => sum + m.price, 0);
 
   return (
-    <Layout user={profile || user}>
+    <Layout user={user}>
       <div className="max-w-5xl mx-auto space-y-8" dir={language === 'ar' ? 'rtl' : 'ltr'}>
         {/* Project Header */}
         <div className="space-y-6">

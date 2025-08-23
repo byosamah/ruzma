@@ -39,7 +39,7 @@ const Invoices: React.FC = () => {
 
   // Show loading while auth is being checked
   if (!authChecked || authLoading) {
-    return <Layout user={profile || user}>
+    return <Layout user={user}>
         <div className="flex items-center justify-center min-h-[50vh]">
           <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-gray-900"></div>
         </div>
@@ -54,7 +54,7 @@ const Invoices: React.FC = () => {
 
   // Show loading for other data
   if (profileLoading || invoicesLoading) {
-    return <Layout user={profile || user}>
+    return <Layout user={user}>
         <div className="flex items-center justify-center min-h-[50vh]">
           <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-gray-900"></div>
         </div>
@@ -66,7 +66,7 @@ const Invoices: React.FC = () => {
   };
 
   return (
-    <Layout user={profile || user}>
+    <Layout user={user}>
       <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 py-4 sm:py-8 space-y-4 sm:space-y-8">
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <InvoicesHeader />

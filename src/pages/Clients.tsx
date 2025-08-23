@@ -51,7 +51,7 @@ const Clients: React.FC = () => {
   // Show loading while auth is being checked with better styling
   if (!authChecked || authLoading) {
     return (
-      <Layout user={profile || user}>
+      <Layout user={user}>
         <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6 lg:py-8">
           <LoadingSpinner 
             size="md" 
@@ -72,7 +72,7 @@ const Clients: React.FC = () => {
   // Show loading only when actually loading data
   if (clientsLoading) {
     return (
-      <Layout user={profile || user}>
+      <Layout user={user}>
         <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6 lg:py-8">
           <ClientsHeader />
           <LoadingSpinner 
@@ -86,7 +86,7 @@ const Clients: React.FC = () => {
   }
 
   return (
-    <Layout user={profile || user}>
+    <Layout user={user}>
       <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6 lg:py-8 space-y-6 sm:space-y-8">
         <ClientsHeader />
         <ClientsStats clients={clients} />

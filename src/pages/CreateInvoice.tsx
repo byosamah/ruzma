@@ -121,7 +121,7 @@ const CreateInvoice: React.FC = () => {
   // Show loading while auth is being checked
   if (!authChecked || authLoading) {
     return (
-      <Layout user={profile || user}>
+      <Layout user={user}>
         <div className="flex items-center justify-center min-h-[50vh]">
           <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-gray-900"></div>
         </div>
@@ -138,7 +138,7 @@ const CreateInvoice: React.FC = () => {
   // Show loading for other data
   if (profileLoading) {
     return (
-      <Layout user={profile || user}>
+      <Layout user={user}>
         <div className="flex items-center justify-center min-h-[50vh]">
           <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-gray-900"></div>
         </div>
@@ -147,7 +147,7 @@ const CreateInvoice: React.FC = () => {
   }
 
   return (
-    <Layout user={profile || user}>
+    <Layout user={user}>
       <div className="space-y-6">
         {/* Header */}
         <div>
