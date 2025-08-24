@@ -56,7 +56,6 @@ const generatePDFFromHTML = async (invoiceData: InvoicePDFData): Promise<jsPDF> 
 
   // Generate HTML using shared template
   const htmlContent = generateInvoiceHTML(sharedData);
-  console.log('Generated shared HTML template');
 
   // Create a temporary container for the invoice
   const container = document.createElement('div');
@@ -68,14 +67,11 @@ const generatePDFFromHTML = async (invoiceData: InvoicePDFData): Promise<jsPDF> 
 
   // Wait for any images to load
   if (invoiceData.logoUrl) {
-    console.log('Waiting for logo to load:', invoiceData.logoUrl);
     await waitForImages(container);
   }
 
   // Give the browser time to render the content
   await new Promise(resolve => setTimeout(resolve, 500));
-
-  console.log('Converting to canvas...');
   
   // Convert to canvas with optimized settings
   const canvas = await html2canvas(container, {
@@ -89,8 +85,6 @@ const generatePDFFromHTML = async (invoiceData: InvoicePDFData): Promise<jsPDF> 
     removeContainer: false,
     foreignObjectRendering: false
   });
-
-  console.log('Canvas created with dimensions:', canvas.width, 'x', canvas.height);
 
   // Remove temporary container
   document.body.removeChild(container);
@@ -108,7 +102,6 @@ const generatePDFFromHTML = async (invoiceData: InvoicePDFData): Promise<jsPDF> 
 
   // Create PDF
   const imgData = canvas.toDataURL('image/png');
-  console.log('Image data URL created');
   
   const pdf = new jsPDF('p', 'mm', 'a4');
   
@@ -124,35 +117,27 @@ const generatePDFFromHTML = async (invoiceData: InvoicePDFData): Promise<jsPDF> 
 
 export const generateInvoicePDF = async (invoiceData: InvoicePDFData): Promise<void> => {
   try {
-    console.log('Starting PDF generation with shared template:', invoiceData);
-    
     const pdf = await generatePDFFromHTML(invoiceData);
 
     // Generate filename and download
     const filename = `Invoice-${invoiceData.invoice.transactionId}-${format(invoiceData.invoice.date, 'yyyy-MM-dd')}.pdf`;
-    console.log('Saving PDF as:', filename);
     pdf.save(filename);
 
   } catch (error) {
-    console.error('Error generating PDF:', error);
     throw new Error(`Failed to generate PDF invoice: ${error.message}`);
   }
 };
 
 export const generateInvoicePDFBlob = async (invoiceData: InvoicePDFData): Promise<Blob> => {
   try {
-    console.log('Starting PDF blob generation with shared template:', invoiceData);
-    
     const pdf = await generatePDFFromHTML(invoiceData);
 
     // Return as blob for email sending
     const pdfBlob = pdf.output('blob');
-    console.log('PDF blob generated successfully');
     
     return pdfBlob;
 
   } catch (error) {
-    console.error('Error generating PDF blob:', error);
     throw new Error(`Failed to generate PDF invoice blob: ${error.message}`);
   }
 };

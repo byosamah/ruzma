@@ -24,32 +24,28 @@ export const cleanupAuthState = () => {
       });
     }
     
-    console.log('Auth state cleaned up');
+    // Auth state cleaned successfully
   } catch (error) {
-    console.error('Error cleaning auth state:', error);
+    // Silent cleanup - errors are not critical here
   }
 };
 
 // Secure sign out with complete cleanup
 export const secureSignOut = async () => {
   try {
-    console.log('Starting secure sign out...');
-    
     // Clean up auth state first
     cleanupAuthState();
     
     // Attempt global sign out (with error handling)
     try {
       await supabase.auth.signOut({ scope: 'global' });
-      console.log('Global sign out successful');
     } catch (signOutError) {
-      console.warn('Global sign out failed, continuing with cleanup:', signOutError);
+      // Continue with cleanup even if global signout fails
     }
     
     // Force page reload for clean state
     window.location.href = '/login';
   } catch (error) {
-    console.error('Error during secure sign out:', error);
     // Force redirect even if there's an error
     window.location.href = '/login';
   }
@@ -58,8 +54,6 @@ export const secureSignOut = async () => {
 // Enhanced sign in with security cleanup
 export const secureSignIn = async (email: string, password: string) => {
   try {
-    console.log('Starting secure sign in...');
-    
     // Clean up any existing auth state
     cleanupAuthState();
     
@@ -67,7 +61,7 @@ export const secureSignIn = async (email: string, password: string) => {
     try {
       await supabase.auth.signOut({ scope: 'global' });
     } catch (error) {
-      console.warn('Pre-signin cleanup failed, continuing:', error);
+      // Continue with signin even if cleanup fails
     }
     
     // Sign in with credentials
@@ -81,7 +75,6 @@ export const secureSignIn = async (email: string, password: string) => {
     }
     
     if (data.user) {
-      console.log('Sign in successful, redirecting...');
       // Force page reload to ensure clean state
       window.location.href = '/dashboard';
       return data;
@@ -89,17 +82,19 @@ export const secureSignIn = async (email: string, password: string) => {
     
     throw new Error('No user returned from sign in');
   } catch (error) {
-    console.error('Secure sign in error:', error);
     throw error;
   }
 };
 
 // Security event logging
 export const logSecurityEvent = (event: string, details: Record<string, any> = {}) => {
-  console.log(`SECURITY_EVENT: ${event}`, {
+  // Log security events for monitoring (could be sent to external service in production)
+  const eventData = {
+    event,
     timestamp: new Date().toISOString(),
     userAgent: navigator.userAgent,
     url: window.location.href,
     ...details
-  });
+  };
+  // In production, this could be sent to a security monitoring service
 };

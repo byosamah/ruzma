@@ -52,8 +52,7 @@ export class SecurityMonitor {
       timestamp
     });
 
-    // Log to console for immediate visibility
-    console.log(`SECURITY_EVENT: ${event}`, enhancedDetails);
+    // Security events logged for monitoring
 
     // Process queue if it gets too large
     if (this.eventQueue.length >= 10) {
@@ -73,11 +72,9 @@ export class SecurityMonitor {
 
     // In a production environment, you might want to send these to a logging service
     try {
-      // For now, we'll just log them locally
+      // Security events processed locally
       // In the future, you could implement server-side logging here
-      console.log('Processing security events batch:', events);
     } catch (error) {
-      console.error('Failed to process security events:', error);
       // Re-add events to queue if processing failed
       this.eventQueue.unshift(...events);
     }

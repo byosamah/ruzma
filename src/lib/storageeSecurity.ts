@@ -69,7 +69,6 @@ export const secureFileUpload = async (
 
     return { success: true, url: urlData.publicUrl };
   } catch (error) {
-    console.error('Secure upload error:', error);
     logSecurityEvent('secure_file_upload_error', {
       bucket,
       error: error instanceof Error ? error.message : 'Unknown error',
@@ -114,7 +113,6 @@ export const secureFileDelete = async (
 
     return { success: true };
   } catch (error) {
-    console.error('Secure delete error:', error);
     logSecurityEvent('secure_file_delete_error', {
       bucket,
       path,
@@ -160,7 +158,6 @@ export const getSecureDownloadUrl = async (
 
     return { success: true, url: data.signedUrl };
   } catch (error) {
-    console.error('Secure download URL error:', error);
     logSecurityEvent('secure_download_url_error', {
       bucket,
       path,

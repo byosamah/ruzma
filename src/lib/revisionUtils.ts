@@ -20,13 +20,11 @@ export function parseRevisionData(milestone: any): RevisionData {
     
     // Handle array format (old format) - no revision data
     if (Array.isArray(parsed)) {
-      console.log('parseRevisionData - Array format detected, no revision data');
       return defaultRevisionData();
     }
     
     // Handle object format with revision data
     if (parsed.revisionData) {
-      console.log('parseRevisionData - Found revision data:', parsed.revisionData);
       
       // Normalize the requests to ensure consistent field names
       const normalizedRequests = parsed.revisionData.requests?.map((request: any) => ({
@@ -42,10 +40,8 @@ export function parseRevisionData(milestone: any): RevisionData {
       };
     }
     
-    console.log('parseRevisionData - Object format but no revision data');
     return defaultRevisionData();
   } catch (error) {
-    console.log('parseRevisionData - Parse error:', error);
     return defaultRevisionData();
   }
 }
@@ -93,13 +89,8 @@ export function stringifyRevisionData(
     // Add revision data
     baseData.revisionData = revisionData;
     
-    console.log('stringifyRevisionData - Original:', originalDeliverableLink);
-    console.log('stringifyRevisionData - BaseData:', baseData);
-    console.log('stringifyRevisionData - Final result:', JSON.stringify(baseData));
-    
     return JSON.stringify(baseData);
   } catch (error) {
-    console.error('stringifyRevisionData - Error:', error);
     return JSON.stringify({ revisionData });
   }
 }

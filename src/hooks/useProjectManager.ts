@@ -192,7 +192,6 @@ export const useProjectManager = (options: UseProjectManagerOptions) => {
         throw error;
       }
     } catch (error) {
-      console.error('Error submitting revision request:', error);
       throw error;
     }
   };
@@ -241,7 +240,6 @@ export const useProjectManager = (options: UseProjectManagerOptions) => {
       toast.success(t('templateSavedSuccessfully'));
       return true;
     } catch (error) {
-      console.error('Error saving template:', error);
       toast.error(t('failedToSaveTemplate'));
       return false;
     }
@@ -311,7 +309,6 @@ export const useProjectManager = (options: UseProjectManagerOptions) => {
       }
 
     } catch (error) {
-      console.error(`Error ${mode === 'create' ? 'creating' : 'updating'} project:`, error);
       toast.error(error instanceof Error ? error.message : t('errorOccurred'));
     } finally {
       setIsSubmitting(false);
