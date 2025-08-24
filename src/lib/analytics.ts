@@ -1,14 +1,16 @@
 
+import { AnalyticsItem, GTAGArgs } from '@/types/common';
+
 // Google Analytics 4 tracking utilities
 declare global {
   interface Window {
-    gtag: (command: string, ...args: any[]) => void;
-    dataLayer: any[];
+    gtag: (command: string, ...args: unknown[]) => void;
+    dataLayer: unknown[];
   }
 }
 
 // Enhanced Ecommerce Events
-export const trackPurchase = (transactionId: string, value: number, currency: string, items: any[]) => {
+export const trackPurchase = (transactionId: string, value: number, currency: string, items: AnalyticsItem[]) => {
   if (typeof window !== 'undefined' && window.gtag) {
     window.gtag('event', 'purchase', {
       transaction_id: transactionId,

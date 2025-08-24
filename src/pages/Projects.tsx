@@ -12,13 +12,10 @@ import { useLanguageNavigation } from '@/hooks/useLanguageNavigation';
 import { useIsMobile } from '@/hooks/use-mobile';
 
 const Projects = () => {
-  console.log('Projects component initializing...');
-  
   const { navigate } = useLanguageNavigation();
   const t = useT();
   const isMobile = useIsMobile();
   
-  console.log('About to call useDashboard...');
   const {
     user,
     profile,
@@ -28,8 +25,6 @@ const Projects = () => {
     handleSignOut,
     handleDeleteProject,
   } = useDashboard();
-  
-  console.log('useDashboard completed, projects length:', projects?.length);
 
   const usage = useUsageTracking(profile, projects);
 

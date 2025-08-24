@@ -1,3 +1,5 @@
+import { MilestoneData } from '@/types/common';
+
 export interface RevisionRequest {
   id: string;
   feedback: string;
@@ -12,11 +14,27 @@ export interface RevisionData {
   requests: RevisionRequest[];
 }
 
-export function parseRevisionData(milestone: any): RevisionData {
-  if (!milestone.deliverable_link) return defaultRevisionData();
+interface RevisionRequestRaw {
+  id: string;
+  feedback: string;
+  images: string[];
+  requestedAt?: string;
+  timestamp?: string; // Backward compatibility
+  status: 'pending' | 'addressed';
+}
+
+interface DeliverableLinkData {
+  links?: Array<{ url: string; title: string }>;
+  revisionData?: RevisionData;
+  [key: string]: unknown;
+}
+
+export function parseRevisionData(milestone: unknown): RevisionData {
+  const milestoneData = milestone as { deliverable_link?: string | null };
+  if (!milestoneData.deliverable_link) return defaultRevisionData();
   
   try {
-    const parsed = JSON.parse(milestone.deliverable_link);
+    const parsed = JSON.parse(milestoneData.deliverable_link);
     
     // Handle array format (old format) - no revision data
     if (Array.isArray(parsed)) {
@@ -27,7 +45,7 @@ export function parseRevisionData(milestone: any): RevisionData {
     if (parsed.revisionData) {
       
       // Normalize the requests to ensure consistent field names
-      const normalizedRequests = parsed.revisionData.requests?.map((request: any) => ({
+      const normalizedRequests = parsed.revisionData.requests?.map((request: RevisionRequestRaw) => ({
         ...request,
         // Use requestedAt field, falling back to timestamp for backward compatibility
         requestedAt: request.requestedAt || request.timestamp || new Date().toISOString()
@@ -59,7 +77,7 @@ export function stringifyRevisionData(
   revisionData: RevisionData
 ): string {
   try {
-    let baseData: any = {};
+    let baseData: DeliverableLinkData = {};
     
     // Try to preserve existing deliverable link data
     if (originalDeliverableLink) {

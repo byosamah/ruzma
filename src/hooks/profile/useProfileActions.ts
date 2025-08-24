@@ -1,4 +1,5 @@
 
+import { AppError } from '@/types/common';
 import { useState } from 'react';
 import { User } from '@supabase/supabase-js';
 import { supabase } from '@/integrations/supabase/client';
@@ -55,8 +56,9 @@ export const useProfileActions = (user: User | null) => {
       setIsSaved(true);
       setTimeout(() => setIsSaved(false), 2000);
       return true;
-    } catch (error: any) {
-      trackError('branding_update', error.message, 'useProfileActions');
+    } catch (error: unknown) {
+      const appError = error as AppError;
+      trackError('branding_update', appError.message, 'useProfileActions');
       toast.error('Failed to update branding');
       return false;
     } finally {
@@ -100,8 +102,9 @@ export const useProfileActions = (user: User | null) => {
       setIsSaved(true);
       setTimeout(() => setIsSaved(false), 2000);
       return true;
-    } catch (error: any) {
-      trackError('profile_update', error.message, 'useProfileActions');
+    } catch (error: unknown) {
+      const appError = error as AppError;
+      trackError('profile_update', appError.message, 'useProfileActions');
       toast.error('Failed to update profile');
       return false;
     } finally {

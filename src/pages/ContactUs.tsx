@@ -42,15 +42,12 @@ const ContactUs = () => {
 
   const onSubmit = async (data: ContactFormData) => {
     try {
-      console.log('Submitting contact form:', data);
-      
       // Call the edge function to send the email
       const { error } = await supabase.functions.invoke('send-contact-email', {
         body: data,
       });
 
       if (error) {
-        console.error('Error sending contact email:', error);
         toast.error(t('contactFailedMessage'));
         return;
       }
@@ -65,7 +62,6 @@ const ContactUs = () => {
         navigate('/dashboard');
       }, 2000);
     } catch (error) {
-      console.error('Error submitting contact form:', error);
       toast.error(t('contactFailedMessage'));
     }
   };

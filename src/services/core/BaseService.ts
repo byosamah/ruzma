@@ -1,3 +1,4 @@
+import { AppError } from '@/types/common';
 import { User } from '@supabase/supabase-js';
 import { supabase } from '@/integrations/supabase/client';
 import { logSecurityEvent } from '@/lib/authSecurity';
@@ -22,9 +23,10 @@ export abstract class BaseService {
     }
   }
 
-  protected async handleError(error: any, operation: string): Promise<never> {
-    console.error(`Error in ${operation}:`, error);
-    this.logOperation(`${operation}_error`, { error: error.message });
+  protected async handleError(error: unknown, operation: string): Promise<never> {
+    const appError = error as AppError;
+    // Error details logged for debugging purposes
+    this.logOperation(`${operation}_error`, { error: appError.message });
     throw error;
   }
 

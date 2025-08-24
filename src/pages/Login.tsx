@@ -20,21 +20,16 @@ const Login = () => {
     setRememberMe(savedRememberMe);
   }, []);
 
-  console.log('Login component render:', { user, authLoading, authChecked });
-
   // Redirect authenticated users to dashboard
   useEffect(() => {
-    console.log('Login useEffect:', { authChecked, user });
     if (authChecked && user) {
       const from = location.state?.from?.pathname || '/dashboard';
-      console.log('Redirecting authenticated user to:', from);
       navigate(from, { replace: true });
     }
   }, [user, authChecked, navigate, location.state]);
 
   // Show loading while checking auth state - but with timeout
   if (!authChecked || authLoading) {
-    console.log('Showing loading spinner');
     return (
       <div className="min-h-screen bg-white flex items-center justify-center">
         <div className="animate-spin rounded-full h-8 w-8 border-2 border-gray-300 border-t-gray-900"></div>
@@ -44,15 +39,12 @@ const Login = () => {
 
   // If user is authenticated, show loading while redirecting
   if (user) {
-    console.log('User authenticated, showing redirect loading');
     return (
       <div className="min-h-screen bg-white flex items-center justify-center">
         <div className="animate-spin rounded-full h-8 w-8 border-2 border-gray-300 border-t-gray-900"></div>
       </div>
     );
   }
-
-  console.log('Rendering login form');
 
   return (
     <div className="min-h-screen bg-white flex items-center justify-center px-4 sm:px-6 lg:px-8 relative">

@@ -24,12 +24,8 @@ const ClientProject = () => {
   const isMobile = useIsMobile();
   const [contractRejected, setContractRejected] = React.useState(false);
   
-  console.log('ClientProject: token from params:', token);
-  console.log('ClientProject: current pathname:', window.location.pathname);
-  
   // Parse the token to handle both legacy and hybrid formats
   const parsedToken = token ? parseClientToken(token) : null;
-  console.log('ClientProject: parsed token:', parsedToken);
   
   const {
     project,
@@ -53,7 +49,6 @@ const ClientProject = () => {
   }
 
   if (error || !project || !parsedToken) {
-    console.log('ClientProject: error or no project:', { error, project, parsedToken });
     return <ClientProjectError error={error} />;
   }
 

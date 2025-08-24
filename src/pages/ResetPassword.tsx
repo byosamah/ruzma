@@ -28,11 +28,8 @@ const ResetPassword = () => {
 
     // Set up auth state listener first to catch any session changes
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
-      console.log('Auth state changed:', event, session?.user?.id);
-      
       if (event === 'PASSWORD_RECOVERY' || event === 'SIGNED_IN' || event === 'TOKEN_REFRESHED') {
         if (session && session.user && mounted) {
-          console.log('Session established via auth state change');
           setHasValidToken(true);
           setError(null);
           setIsValidatingToken(false);
@@ -41,11 +38,6 @@ const ResetPassword = () => {
     });
 
     const validateResetToken = async () => {
-      console.log('=== Password Reset Token Validation ===');
-      console.log('Full URL:', window.location.href);
-      console.log('Hash:', window.location.hash);
-      console.log('Search:', window.location.search);
-
       try {
         // Extract tokens from URL hash fragment (format: #access_token=...&refresh_token=...)
         const hashParams = new URLSearchParams(window.location.hash.substring(1));
@@ -60,64 +52,44 @@ const ResetPassword = () => {
         const directToken = searchParams.get('token');
         const tokenType = searchParams.get('type');
 
-        console.log('Token extraction results:', {
-          hashAccessToken: hashAccessToken ? 'present' : 'missing',
-          hashRefreshToken: hashRefreshToken ? 'present' : 'missing',
-          hashType,
-          searchAccessToken: searchAccessToken ? 'present' : 'missing', 
-          searchRefreshToken: searchRefreshToken ? 'present' : 'missing',
-          directToken: directToken ? 'present' : 'missing',
-          tokenType
-        });
-
         // Method 1: Try setting session with access/refresh tokens
         const finalAccessToken = hashAccessToken || searchAccessToken;
         const finalRefreshToken = hashRefreshToken || searchRefreshToken;
 
         if (finalAccessToken && finalRefreshToken) {
-          console.log('Attempting to set session with extracted tokens...');
           const { data, error } = await supabase.auth.setSession({
             access_token: finalAccessToken,
             refresh_token: finalRefreshToken
           });
 
           if (!error && data.session && data.user) {
-            console.log('Successfully established session with tokens');
             if (mounted) {
               setHasValidToken(true);
               setError(null);
               setIsValidatingToken(false);
             }
             return;
-          } else {
-            console.log('Failed to set session with tokens:', error?.message);
           }
         }
 
         // Method 2: Try exchanging direct recovery token
         if (directToken && tokenType === 'recovery') {
-          console.log('Attempting to exchange recovery token...');
           const { data, error } = await supabase.auth.exchangeCodeForSession(directToken);
           
           if (!error && data.session && data.user) {
-            console.log('Successfully exchanged recovery token');
             if (mounted) {
               setHasValidToken(true);
               setError(null);
               setIsValidatingToken(false);
             }
             return;
-          } else {
-            console.log('Failed to exchange recovery token:', error?.message);
           }
         }
 
         // Method 3: Check for existing valid session
         const { data: { session }, error: sessionError } = await supabase.auth.getSession();
-        console.log('Current session check:', session?.user?.id, sessionError?.message);
 
         if (session && session.user) {
-          console.log('Found existing valid session');
           if (mounted) {
             setHasValidToken(true);
             setError(null);
@@ -127,20 +99,16 @@ const ResetPassword = () => {
         }
 
         // Method 4: Wait longer for Supabase redirect processing
-        console.log('No immediate tokens found, waiting for delayed session...');
         timeoutId = setTimeout(async () => {
           if (!mounted) return;
           
           const { data: { session: delayedSession } } = await supabase.auth.getSession();
-          console.log('Delayed session check:', delayedSession?.user?.id);
           
           if (delayedSession && delayedSession.user) {
-            console.log('Found session after delay');
             setHasValidToken(true);
             setError(null);
             setIsValidatingToken(false);
           } else {
-            console.log('No valid session found - link may be invalid/expired');
             setError('Invalid or expired reset link. The link may have already been used or has expired. Please request a new one.');
             setHasValidToken(false);
             setIsValidatingToken(false);
@@ -148,7 +116,6 @@ const ResetPassword = () => {
         }, 3000); // Extended timeout for better reliability
 
       } catch (error: any) {
-        console.error('Token validation error:', error);
         if (mounted) {
           setError(`Reset link validation failed: ${error.message || 'Please request a new reset link.'}`);
           setHasValidToken(false);
@@ -188,24 +155,20 @@ const ResetPassword = () => {
     setIsLoading(true);
 
     try {
-      console.log('Attempting to update password');
       const { error } = await supabase.auth.updateUser({
         password: password
       });
 
       if (error) {
-        console.error('Password update error:', error);
         throw error;
       }
 
-      console.log('Password updated successfully');
       toast.success(t('passwordUpdateSuccess'));
       
       // Sign out after password reset for security
       await supabase.auth.signOut();
       navigate('/login');
     } catch (error: any) {
-      console.error('Password update error:', error);
       toast.error(error.message || t('passwordUpdateFailed'));
     } finally {
       setIsLoading(false);
