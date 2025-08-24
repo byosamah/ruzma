@@ -160,7 +160,7 @@ const sendInvoiceToClient = async (invoice: Invoice, invoicePDFData: SharedInvoi
         clientEmail = project.client_email;
       }
     } catch (error) {
-      console.warn('Could not fetch client email from project:', error);
+      // Client email will be fetched from invoice data as fallback
     }
   }
 

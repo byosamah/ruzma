@@ -36,7 +36,7 @@ export const useInvoiceManager = () => {
     try {
       await invoiceService.downloadInvoicePDF(invoice);
     } catch (error) {
-      console.error('Error downloading PDF:', error);
+      toast.error('Failed to download PDF. Please try again.');
     }
   };
 
@@ -50,7 +50,7 @@ export const useInvoiceManager = () => {
     try {
       await invoiceService.sendInvoiceToClient(invoice);
     } catch (error) {
-      console.error('Error sending invoice:', error);
+      toast.error('Failed to send invoice to client. Please try again.');
     }
   };
 
@@ -58,7 +58,7 @@ export const useInvoiceManager = () => {
     try {
       await deleteInvoice(invoiceId);
     } catch (error) {
-      console.error('Error deleting invoice:', error);
+      toast.error('Failed to delete invoice. Please try again.');
     }
   };
 

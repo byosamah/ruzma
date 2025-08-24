@@ -118,7 +118,7 @@ export class ClientService extends BaseService {
           .eq('user_id', user.id);
 
         if (countError) {
-          console.warn('Error counting projects for client:', client.id, countError);
+          // Project count will default to 0 if error occurs
         }
 
         clientsWithCount.push({
