@@ -76,7 +76,7 @@ export class ProjectService {
       throw new Error('Project name and brief are required');
     }
 
-    if (data.milestones.length === 0) {
+    if (!data.milestones.length) {
       throw new Error('At least one milestone is required');
     }
 
@@ -153,8 +153,8 @@ export class ProjectService {
     await this.userService.updateProjectCount(1);
 
     // Track project creation
-    trackProjectCreated(project.id, data.milestones.length === 0);
-    if (data.milestones.length > 0) {
+    trackProjectCreated(project.id, !data.milestones.length);
+    if (data.milestones.length) {
       trackMilestoneCreated(project.id, data.milestones.length);
     }
 
@@ -188,7 +188,7 @@ export class ProjectService {
       throw new Error('Project name and brief are required');
     }
 
-    if (data.milestones.length === 0) {
+    if (!data.milestones.length) {
       throw new Error('At least one milestone is required');
     }
 
@@ -372,7 +372,7 @@ export class ProjectService {
       .map(date => new Date(date))
       .filter(date => !isNaN(date.getTime()));
 
-    if (validDates.length === 0) {
+    if (!validDates.length) {
       return { startDate: null, endDate: null };
     }
 

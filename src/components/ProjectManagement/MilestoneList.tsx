@@ -45,7 +45,7 @@ const MilestoneList: React.FC<MilestoneListProps> = ({
 
   return (
     <div className="space-y-4">
-      {milestones.length === 0 ? (
+      {!milestones.length ? (
         <div className="text-center py-12">
           <div className="text-4xl mb-4">📋</div>
           <p className="text-gray-500">{t('noMilestonesYet')}</p>

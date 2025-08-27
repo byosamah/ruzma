@@ -33,9 +33,9 @@ export const ensureUniqueSlug = async (baseSlug: string, userId: string): Promis
       return slug;
     }
     
-    if (!data || data.length === 0) {
-      return slug;
-    }
+      if (!data?.length) {
+        return slug;
+      }
     
     slug = `${baseSlug}-${counter}`;
     counter++;

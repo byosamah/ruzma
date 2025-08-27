@@ -103,7 +103,7 @@ export const getSmartStatus = (milestone: DatabaseMilestone): ExtendedMilestoneS
       const data = JSON.parse(milestone.deliverable_link);
       if (data.revisionData?.requests) {
         const pendingRevisions = data.revisionData.requests.filter((req: { status: string }) => req.status === 'pending');
-        if (pendingRevisions.length > 0) {
+        if (pendingRevisions.length) {
           return 'revision_requested';
         }
       }

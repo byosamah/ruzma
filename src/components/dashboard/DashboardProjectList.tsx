@@ -132,7 +132,7 @@ const DashboardProjectList: React.FC<DashboardProjectListProps> = ({
         </CardTitle>
       </CardHeader>
       <CardContent className={`${isMobile ? 'p-4 pt-0' : 'p-6 pt-0'}`}>
-        {projects.length === 0 ? (
+        {!projects.length ? (
           <div className="text-center py-8">
             <span className="text-6xl text-slate-300 mx-auto mb-4 block">📄</span>
             <h3 className="text-lg font-medium text-slate-600 mb-2">

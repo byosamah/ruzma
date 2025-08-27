@@ -39,7 +39,7 @@ const InvoiceTable: React.FC<InvoiceTableProps> = ({
   const { formatCurrency } = useUserCurrency(profile as { currency?: string } | null);
   const isRTL = language === 'ar';
 
-  if (invoices.length === 0) {
+  if (!invoices.length) {
     return (
       <div className="text-center py-12">
         <div className="w-12 h-12 mx-auto mb-4 bg-gray-100 rounded-lg flex items-center justify-center">

@@ -125,7 +125,7 @@ const validatePDFData = (invoicePDFData: SharedInvoiceData) => {
   if (!invoicePDFData.billedTo.name) {
     throw new Error('Billing information is incomplete');
   }
-  if (!invoicePDFData.lineItems || invoicePDFData.lineItems.length === 0) {
+  if (!invoicePDFData.lineItems?.length) {
     throw new Error('No line items found');
   }
 };

@@ -70,8 +70,8 @@ const ProjectMilestonesList: React.FC<ProjectMilestonesListProps> = ({
         ))}
         
         {/* Empty State */}
-        {milestones.length === 0 && (
-          <div className="text-center py-8 sm:py-12">
+            {!milestones.length && (
+              <div className="text-center py-8 sm:py-12">
             <span className="text-4xl sm:text-6xl text-muted-foreground mx-auto mb-4 block">📋</span>
             <p className="text-sm text-muted-foreground">{t('noMilestonesFound')}</p>
           </div>

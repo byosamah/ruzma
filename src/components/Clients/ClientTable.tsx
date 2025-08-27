@@ -27,7 +27,7 @@ const ClientTable: React.FC<ClientTableProps> = ({
   const { language } = useLanguage();
   const isRTL = language === 'ar';
 
-  if (clients.length === 0) {
+  if (!clients.length) {
     return (
       <div className="text-center py-16">
         <EmptyState

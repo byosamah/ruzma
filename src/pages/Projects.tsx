@@ -73,7 +73,7 @@ const Projects = () => {
                 />
               </div>
               <p className="text-sm text-gray-500">
-                {projects.length === 0 
+                {!projects.length 
                   ? t('noProjectsYet') 
                   : `${projects.length} ${projects.length === 1 ? 'project' : 'projects'}`
                 }
@@ -102,7 +102,7 @@ const Projects = () => {
         </div>
 
         {/* Projects List */}
-        {projects.length === 0 ? (
+        {!projects.length ? (
           <div className="text-center py-12 sm:py-16 bg-white rounded-lg border border-gray-100">
             <span className="text-4xl sm:text-6xl text-gray-300 mx-auto mb-4 sm:mb-6 block">📄</span>
             <h3 className="text-base sm:text-lg font-medium text-gray-600 mb-2 px-4">

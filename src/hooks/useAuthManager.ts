@@ -111,7 +111,7 @@ export const useAuthManager = () => {
     try {
       // Validate form
       const validationErrors = authService.validateSignUpForm(signUpData);
-      if (Object.keys(validationErrors).length > 0) {
+      if (Object.keys(validationErrors).length) {
         setErrors(validationErrors);
         return false;
       }

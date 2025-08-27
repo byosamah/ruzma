@@ -16,7 +16,7 @@ export const getUserLimits = async (userType: string = 'free'): Promise<UserLimi
       return getFallbackLimits(userType);
     }
 
-    if (data && data.length > 0) {
+    if (data?.length) {
       return {
         project_limit: data[0].project_limit,
       };

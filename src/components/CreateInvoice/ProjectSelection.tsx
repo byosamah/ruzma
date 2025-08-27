@@ -22,7 +22,7 @@ const ProjectSelection: React.FC<ProjectSelectionProps> = ({
 
   // Get active projects (projects that have milestones and are not completed)
   const activeProjects = projects.filter(project => 
-    project.milestones && project.milestones.length > 0
+    project.milestones?.length
   );
 
   return (

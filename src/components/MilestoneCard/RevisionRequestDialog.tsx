@@ -97,7 +97,7 @@ const RevisionRequestDialog: React.FC<RevisionRequestDialogProps> = ({
     try {
       // Upload images first
       let imageUrls: string[] = [];
-      if (images.length > 0) {
+      if (images.length) {
         imageUrls = await uploadImages(images);
       }
       

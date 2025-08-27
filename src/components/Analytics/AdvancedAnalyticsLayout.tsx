@@ -4,6 +4,8 @@ import { useT } from '@/lib/i18n';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { CurrencyCode } from '@/lib/currency';
 import { AdvancedAnalyticsData } from '@/types/advancedAnalytics';
+
+// Analytics Components
 import AnalyticsMetrics from '@/components/Analytics/AnalyticsMetrics';
 import AnalyticsCharts from '@/components/Analytics/AnalyticsCharts';
 

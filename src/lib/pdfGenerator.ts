@@ -35,7 +35,7 @@ const generatePDFFromHTML = async (invoiceData: InvoicePDFData): Promise<jsPDF> 
     throw new Error('Missing required invoice data');
   }
 
-  if (!invoiceData.lineItems || invoiceData.lineItems.length === 0) {
+  if (!invoiceData.lineItems?.length) {
     throw new Error('No line items provided');
   }
 

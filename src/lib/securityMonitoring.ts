@@ -65,7 +65,7 @@ export class SecurityMonitor {
 
   // Process and potentially send events to server
   private async processEventQueue() {
-    if (this.eventQueue.length === 0) return;
+    if (!this.eventQueue.length) return;
 
     const events = [...this.eventQueue];
     this.eventQueue = [];

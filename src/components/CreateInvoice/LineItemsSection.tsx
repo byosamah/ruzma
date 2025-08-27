@@ -38,9 +38,9 @@ const LineItemsSection: React.FC<LineItemsSectionProps> = ({
 
   // Populate line items with project milestones when project is selected
   useEffect(() => {
-    if (invoiceData.projectId && projects.length > 0) {
+    if (invoiceData.projectId && projects.length) {
       const selectedProject = projects.find(p => p.id === invoiceData.projectId);
-      if (selectedProject && selectedProject.milestones && selectedProject.milestones.length > 0) {
+      if (selectedProject?.milestones?.length) {
         // Clear existing line items and populate with milestones
         const milestoneLineItems = selectedProject.milestones.map((milestone, index) => ({
           id: milestone.id,

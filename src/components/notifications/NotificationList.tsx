@@ -81,7 +81,7 @@ export const NotificationList: React.FC<NotificationListProps> = ({
       
       <Separator />
       
-      {notifications.length === 0 ? (
+      {!notifications.length ? (
         <div className="p-8 text-center text-sm text-muted-foreground">
           {t('noNotificationsYet')}
         </div>

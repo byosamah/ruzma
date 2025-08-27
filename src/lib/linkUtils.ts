@@ -39,7 +39,7 @@ export function parseDeliverableLinks(deliverableLink: string | null | undefined
 }
 
 export function stringifyDeliverableLinks(links: DeliverableLink[]): string {
-  if (links.length === 0) return '';
+  if (!links.length) return '';
   if (links.length === 1 && links[0].title === 'Shared Link') {
     // For backward compatibility, store single links as plain strings if they have default title
     return links[0].url;

@@ -75,7 +75,7 @@ export const useDialogManager = (initialState: DialogState = {}) => {
   // Handle escape key to close topmost dialog
   const handleEscapeKey = useCallback(() => {
     const openDialogKeys = getOpenDialogs();
-    if (openDialogKeys.length > 0) {
+    if (openDialogKeys.length) {
       const topMostDialog = openDialogKeys[openDialogKeys.length - 1];
       const config = dialogConfigs[topMostDialog];
       

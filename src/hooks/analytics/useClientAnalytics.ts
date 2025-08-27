@@ -45,7 +45,7 @@ export const useClientAnalytics = (projects: DatabaseProject[]) => {
       );
       
       let growthTrend: 'increasing' | 'stable' | 'decreasing' = 'stable';
-      if (recentProjects.length > 0 && olderProjects.length > 0) {
+      if (recentProjects.length && olderProjects.length) {
         const recentAvg = recentProjects.reduce((sum, p) => sum + p.milestones.reduce((mSum, m) => mSum + m.price, 0), 0) / recentProjects.length;
         const olderAvg = olderProjects.reduce((sum, p) => sum + p.milestones.reduce((mSum, m) => mSum + m.price, 0), 0) / olderProjects.length;
         

@@ -55,7 +55,7 @@ const ProjectTemplatesContent = ({ user, profile }: { user: any; profile: any })
           </div>
         </div>
 
-        {templates.length === 0 ? (
+        {!templates.length ? (
           <Card className="text-center py-12 bg-white/80 backdrop-blur-sm">
             <CardContent>
               <span className="text-6xl text-muted-foreground mx-auto mb-4 block">📄</span>
