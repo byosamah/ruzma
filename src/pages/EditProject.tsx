@@ -5,9 +5,11 @@ import Layout from '@/components/Layout';
 import { useProjectManager } from '@/hooks/useProjectManager';
 import { useUserProjects } from '@/hooks/projects/useUserProjects';
 import { useAuth } from '@/hooks/core/useAuth';
+import { useProfileQuery } from '@/hooks/core/useProfileQuery';
 import { useT } from '@/lib/i18n';
 import { useLanguageNavigation } from '@/hooks/useLanguageNavigation';
 import { Form } from '@/components/ui/form';
+import { UserProfile } from '@/types/profile';
 import ContractStatusCard from '@/components/CreateProject/ContractStatusCard';
 import ProjectDetailsForm from '@/components/CreateProject/ProjectDetailsForm';
 import PaymentProofSettings from '@/components/CreateProject/PaymentProofSettings';
@@ -22,6 +24,7 @@ const EditProject: React.FC = () => {
   const { navigate } = useLanguageNavigation();
   const t = useT();
   const { user, loading: authLoading } = useAuth();
+  const { data: profile } = useProfileQuery(user);
   const { projects, loading: projectsLoading } = useUserProjects(user);
   const [isResendingContract, setIsResendingContract] = useState(false);
 
@@ -138,7 +141,7 @@ const EditProject: React.FC = () => {
             <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-6">
               <ProjectDetailsForm user={user} />
               <PaymentProofSettings />
-              <MilestonesList user={user} profile={user} />
+              <MilestonesList user={user} profile={profile as UserProfile} />
               <ContractTermsSection form={form} />
               <FormActions isSubmitting={isSubmitting} onCancel={handleCancel} />
             </form>

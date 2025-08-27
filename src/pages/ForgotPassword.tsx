@@ -21,23 +21,18 @@ const ForgotPassword = () => {
     setIsLoading(true);
 
     try {
-      console.log('Sending password reset email to:', email);
-      
       const { error } = await supabase.auth.resetPasswordForEmail(email, {
         redirectTo: 'https://hub.ruzma.co/en/reset-password',
       });
 
       if (error) {
-        console.error('Password reset error:', error);
         throw error;
       }
 
-      console.log('Password reset email sent successfully');
       setEmailSent(true);
       toast.success(t('passwordResetEmailSent'));
-    } catch (error: any) {
-      console.error('Password reset error:', error);
-      toast.error(error.message || t('passwordResetEmailFailed'));
+    } catch (error: unknown) {
+      toast.error(error instanceof Error ? error.message : t('passwordResetEmailFailed'));
     } finally {
       setIsLoading(false);
     }

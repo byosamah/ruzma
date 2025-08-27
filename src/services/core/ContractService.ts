@@ -58,7 +58,6 @@ export class ContractService extends BaseService {
         .eq('id', projectId);
 
       if (updateError) {
-        console.error('Error updating contract_sent_at:', updateError);
         throw new Error('Failed to update contract timestamp');
       }
 
@@ -68,13 +67,9 @@ export class ContractService extends BaseService {
       });
 
       if (emailError) {
-        console.error('Email sending failed:', emailError);
         throw new Error(emailError.message || 'Failed to send contract approval email');
       }
-
-      console.log('Contract approval email sent successfully:', data);
     } catch (error) {
-      console.error('Error in sendContractApprovalEmail:', error);
       throw error;
     }
   }
@@ -117,7 +112,6 @@ export class ContractService extends BaseService {
       
       toast.success('Contract approval email resent successfully');
     } catch (error) {
-      console.error('Error resending contract approval email:', error);
       toast.error(error instanceof Error ? error.message : 'Failed to resend contract email');
       throw error;
     }
@@ -161,7 +155,6 @@ export class ContractService extends BaseService {
         .eq('id', projectId);
 
       if (updateError) {
-        console.error('Error updating contract:', updateError);
         throw new Error('Failed to update contract details');
       }
 
@@ -172,7 +165,6 @@ export class ContractService extends BaseService {
 
       toast.success('Contract updated and email sent successfully');
     } catch (error) {
-      console.error('Error updating contract and resending email:', error);
       toast.error(error instanceof Error ? error.message : 'Failed to update contract');
       throw error;
     }
@@ -210,7 +202,6 @@ export class ContractService extends BaseService {
         project
       };
     } catch (error) {
-      console.error('Error checking contract approval status:', error);
       throw error;
     }
   }
@@ -247,7 +238,6 @@ export class ContractService extends BaseService {
         rejectionReason: project.contract_rejection_reason
       };
     } catch (error) {
-      console.error('Error getting contract status:', error);
       throw error;
     }
   }

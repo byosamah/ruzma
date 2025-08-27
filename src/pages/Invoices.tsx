@@ -9,6 +9,7 @@ import { useInvoices } from '@/hooks/useInvoices';
 import { useAuth } from '@/hooks/core/useAuth';
 import { useProfileQuery } from '@/hooks/core/useProfileQuery';
 import { useT } from '@/lib/i18n';
+import { UserProfile } from '@/types/profile';
 import InvoicesHeader from '@/components/Invoices/InvoicesHeader';
 import InvoicesStats from '@/components/Invoices/InvoicesStats';
 import InvoicesSection from '@/components/Invoices/InvoicesSection';
@@ -76,11 +77,11 @@ const Invoices: React.FC = () => {
           </Button>
         </div>
 
-        <InvoicesStats invoices={invoices} profile={profile} />
+        <InvoicesStats invoices={invoices} profile={profile as UserProfile} />
 
         <InvoicesSection
           invoices={invoices}
-          profile={profile}
+          profile={profile as UserProfile}
           searchTerm={searchTerm}
           setSearchTerm={setSearchTerm}
           statusFilter={statusFilter}

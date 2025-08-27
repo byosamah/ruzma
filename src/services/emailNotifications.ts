@@ -17,14 +17,11 @@ export const sendPaymentNotification = async (params: SendPaymentNotificationPar
     });
 
     if (response.error) {
-      console.error('Error sending notification:', response.error);
       throw new Error(response.error.message);
     }
 
-    console.log('Notification sent successfully:', response.data);
     return response.data;
   } catch (error) {
-    console.error('Failed to send payment notification:', error);
     throw error;
   }
 };

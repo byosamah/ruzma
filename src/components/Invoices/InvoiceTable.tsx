@@ -14,12 +14,13 @@ import { useUserCurrency } from '@/hooks/useUserCurrency';
 import { useAuth } from '@/hooks/core/useAuth';
 import { useT } from '@/lib/i18n';
 import { useLanguage } from '@/contexts/LanguageContext';
+import { UserProfile } from '@/types/profile';
 import InvoiceStatusBadge from './InvoiceStatusBadge';
 import InvoiceActionsMenu from './InvoiceActionsMenu';
 
 interface InvoiceTableProps {
   invoices: Invoice[];
-  profile?: any;
+  profile?: UserProfile;
   onDownloadPDF: (id: string) => Promise<void>;
   onSendToClient: (id: string) => void;
   onDeleteInvoice: (id: string) => void;
@@ -35,7 +36,7 @@ const InvoiceTable: React.FC<InvoiceTableProps> = ({
   const t = useT();
   const { user } = useAuth();
   const { language } = useLanguage();
-  const { formatCurrency } = useUserCurrency(profile || user);
+  const { formatCurrency } = useUserCurrency(profile as { currency?: string } | null);
   const isRTL = language === 'ar';
 
   if (invoices.length === 0) {

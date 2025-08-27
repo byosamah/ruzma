@@ -10,10 +10,12 @@ import { useT } from '@/lib/i18n';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { CreateProjectFormData } from '@/lib/validators/project';
 import { useUserCurrency } from '@/hooks/useUserCurrency';
+import { UserProfile } from '@/types/profile';
+import { AuthenticatedUser } from '@/types/profile';
 
 interface MilestonesListProps {
-  user?: any;
-  profile?: any;
+  user?: AuthenticatedUser;
+  profile?: UserProfile;
 }
 
 const MilestonesList: React.FC<MilestonesListProps> = ({ user, profile }) => {

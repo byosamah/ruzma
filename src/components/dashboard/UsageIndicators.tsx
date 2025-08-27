@@ -8,8 +8,10 @@ import { useUsageTracking } from '@/hooks/useUsageTracking';
 import { DatabaseProject } from '@/hooks/projectTypes';
 import { useT } from '@/lib/i18n';
 import { UpcomingDeadlines } from './UpcomingDeadlines';
+import { UserProfile } from '@/types/profile';
+
 interface UsageIndicatorsProps {
-  userProfile: any;
+  userProfile: UserProfile;
   projects: DatabaseProject[];
 }
 export const UsageIndicators: React.FC<UsageIndicatorsProps> = ({

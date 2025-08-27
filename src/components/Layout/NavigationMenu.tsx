@@ -5,16 +5,23 @@ import { Home, User, LogOut } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { NotificationBell } from '@/components/notifications/NotificationBell';
 import { useT } from '@/lib/i18n';
+import { AuthenticatedUser, UserProfile } from '@/types/profile';
 
 interface NavigationMenuProps {
-  user: any;
-  userProfile: any;
+  user: AuthenticatedUser;
+  userProfile: UserProfile;
   isActive: (path: string) => boolean;
   isMobile: boolean;
   shouldShowUpgradeButton: boolean;
   onSignOut: () => void;
   onMenuClick: () => void;
-  notificationsData?: any;
+  notificationsData?: {
+    notifications: unknown[];
+    unreadCount: number;
+    loading: boolean;
+    markAsRead: (id: string) => void;
+    markAllAsRead: () => void;
+  };
 }
 
 const NavigationMenu: React.FC<NavigationMenuProps> = ({
@@ -112,7 +119,7 @@ const NavigationMenu: React.FC<NavigationMenuProps> = ({
         );
       })}
       
-      <NotificationBell user={user} notificationsData={notificationsData} />
+      <NotificationBell user={user} notificationsData={notificationsData as any} />
       
       {shouldShowUpgradeButton && (
         <Button 

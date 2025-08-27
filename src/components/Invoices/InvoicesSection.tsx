@@ -3,12 +3,13 @@ import React from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Invoice, InvoiceStatus } from '@/hooks/useInvoices';
 import { useT } from '@/lib/i18n';
+import { UserProfile } from '@/types/profile';
 import InvoiceFilters from './InvoiceFilters';
 import InvoiceTable from './InvoiceTable';
 
 interface InvoicesSectionProps {
   invoices: Invoice[];
-  profile?: any;
+  profile?: UserProfile;
   searchTerm: string;
   setSearchTerm: (value: string) => void;
   statusFilter: InvoiceStatus | 'all';

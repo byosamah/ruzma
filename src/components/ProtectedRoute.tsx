@@ -5,9 +5,10 @@ import { useAuth } from '@/hooks/core/useAuth';
 import { useProfileQuery } from '@/hooks/core/useProfileQuery';
 import { useLanguageNavigation } from '@/hooks/useLanguageNavigation';
 import { useLanguage } from '@/contexts/LanguageContext';
+import { AuthenticatedUser, UserProfile } from '@/types/profile';
 
 interface ProtectedRouteProps {
-  children: React.ReactNode | ((props: { user: any; profile: any }) => React.ReactNode);
+  children: React.ReactNode | ((props: { user: AuthenticatedUser; profile: UserProfile }) => React.ReactNode);
 }
 
 const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
@@ -32,10 +33,10 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
 
   // User is authenticated, render the protected component with user data
   if (typeof children === 'function') {
-    return <>{children({ user, profile })}</>;
+    return <>{children({ user, profile: profile as UserProfile })}</>;
   }
   
-  return React.cloneElement(children as React.ReactElement, { user, profile });
+  return React.cloneElement(children as React.ReactElement, { user, profile: profile as UserProfile });
 };
 
 export default ProtectedRoute;

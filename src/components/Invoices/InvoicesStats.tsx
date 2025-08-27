@@ -5,10 +5,11 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Invoice } from '@/hooks/useInvoices';
 import { useUserCurrency } from '@/hooks/useUserCurrency';
 import { useT } from '@/lib/i18n';
+import { UserProfile } from '@/types/profile';
 
 interface InvoicesStatsProps {
   invoices: Invoice[];
-  profile: any;
+  profile: UserProfile;
 }
 
 const InvoicesStats: React.FC<InvoicesStatsProps> = ({ invoices, profile }) => {

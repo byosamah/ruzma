@@ -10,11 +10,12 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { NotificationList } from './NotificationList';
 import { User } from '@supabase/supabase-js';
+import { Notification } from '@/types/notifications';
 
 interface NotificationBellProps {
   user: User | null;
   notificationsData?: {
-    notifications: any[];
+    notifications: Notification[];
     unreadCount: number;
     loading: boolean;
     markAsRead: (id: string) => void;

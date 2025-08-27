@@ -102,7 +102,6 @@ export type CurrencyCode = keyof typeof CURRENCIES;
 export const formatCurrency = (amount: number, currency: CurrencyCode = 'USD', language: 'en' | 'ar' = 'en'): string => {
   // Add safety check for undefined currency
   if (!currency || !CURRENCIES[currency]) {
-    console.warn('Invalid currency code:', currency, 'defaulting to USD');
     currency = 'USD';
   }
   
@@ -117,7 +116,6 @@ export const formatCurrency = (amount: number, currency: CurrencyCode = 'USD', l
 
 export const getCurrencySymbol = (currency: CurrencyCode = 'USD', language: 'en' | 'ar' = 'en'): string => {
   if (!currency || !CURRENCIES[currency]) {
-    console.warn('Invalid currency code:', currency, 'defaulting to USD');
     currency = 'USD';
   }
   return CURRENCIES[currency].symbol[language];

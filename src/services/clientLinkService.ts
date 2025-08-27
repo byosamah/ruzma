@@ -16,14 +16,11 @@ export const sendClientLink = async (params: SendClientLinkParams) => {
     });
 
     if (response.error) {
-      console.error('Error sending client link:', response.error);
       throw new Error(response.error.message);
     }
 
-    console.log('Client link sent successfully:', response.data);
     return response.data;
   } catch (error) {
-    console.error('Failed to send client link:', error);
     throw error;
   }
 };

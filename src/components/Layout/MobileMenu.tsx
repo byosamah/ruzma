@@ -13,12 +13,7 @@ import {
 import NavigationMenu from './NavigationMenu';
 import { NotificationBell } from '@/components/notifications/NotificationBell';
 import { Notification } from '@/types/notifications';
-
-interface UserProfile {
-  id: string;
-  full_name?: string;
-  email?: string;
-}
+import { UserProfile } from '@/types/profile';
 
 interface NotificationData {
   notifications: Notification[];
