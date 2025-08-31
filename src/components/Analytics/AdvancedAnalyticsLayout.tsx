@@ -35,11 +35,11 @@ interface AdvancedAnalyticsLayoutProps {
   userCurrency: CurrencyCode;
 }
 
-const AdvancedAnalyticsLayout: React.FC<AdvancedAnalyticsLayoutProps> = ({
+const AdvancedAnalyticsLayout = ({
   data,
   basicAnalytics,
   userCurrency,
-}) => {
+}: AdvancedAnalyticsLayoutProps) => {
   const t = useT();
   const { language } = useLanguage();
 
@@ -94,7 +94,7 @@ const AdvancedAnalyticsLayout: React.FC<AdvancedAnalyticsLayoutProps> = ({
               completionRate={basicAnalytics.completionRate}
               userCurrency={userCurrency}
             />
-            
+
             <AnalyticsCharts
               data={basicAnalytics}
               userCurrency={userCurrency}

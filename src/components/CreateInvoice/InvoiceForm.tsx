@@ -18,7 +18,7 @@ interface InvoiceFormProps {
   setInvoiceData: React.Dispatch<React.SetStateAction<InvoiceFormData>>;
 }
 
-const InvoiceForm: React.FC<InvoiceFormProps> = ({ invoiceData, setInvoiceData }) => {
+const InvoiceForm = ({ invoiceData, setInvoiceData }: InvoiceFormProps) => {
   const [showTaxInput, setShowTaxInput] = React.useState(false);
   const { user } = useAuth();
   const { projects } = useProjects(user);

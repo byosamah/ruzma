@@ -13,12 +13,12 @@ interface AnalyticsMetricsProps {
   userCurrency: CurrencyCode;
 }
 
-const AnalyticsMetrics: React.FC<AnalyticsMetricsProps> = ({
+const AnalyticsMetrics = ({
   revenueGrowth,
   avgProjectValue,
   completionRate,
   userCurrency,
-}) => {
+}: AnalyticsMetricsProps) => {
   const t = useT();
   const { language } = useLanguage();
 

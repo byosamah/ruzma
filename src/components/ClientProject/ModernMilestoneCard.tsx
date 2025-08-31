@@ -43,14 +43,14 @@ interface ModernMilestoneCardProps {
   isClient?: boolean;
 }
 
-const ModernMilestoneCard: React.FC<ModernMilestoneCardProps> = ({
+const ModernMilestoneCard = ({
   milestone,
   currency,
   onPaymentUpload,
   onRevisionRequest,
   paymentProofRequired = false,
   isClient = true,
-}) => {
+}: ModernMilestoneCardProps) => {
   const t = useT();
   const [revisionFeedback, setRevisionFeedback] = useState('');
   const [isUploadingPayment, setIsUploadingPayment] = useState(false);

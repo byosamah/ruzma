@@ -27,15 +27,15 @@ export function AppSidebar({ user, onSignOut }: AppSidebarProps) {
   const sidebarSide = language === 'ar' ? 'right' : 'left';
 
   return (
-    <Sidebar 
-      className={`bg-sidebar-background ${language === 'ar' ? 'border-l border-sidebar-border' : 'border-r border-sidebar-border'}`} 
+    <Sidebar
+      className={`bg-sidebar-background ${language === 'ar' ? 'border-l border-sidebar-border' : 'border-r border-sidebar-border'}`}
       collapsible="icon"
       side={sidebarSide}
     >
       <SidebarHeader className="p-6">
         <SidebarLogo />
       </SidebarHeader>
-      
+
       <SidebarContent className="px-4 py-2 space-y-6">
         <SidebarNavigation />
         <SidebarAccount />
