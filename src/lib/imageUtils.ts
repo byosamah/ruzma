@@ -48,6 +48,5 @@ export async function getCroppedImg(imageSrc: string, pixelCrop: Area): Promise<
     size
   );
   
-  console.log('Created circular image with dimensions:', size, 'x', size);
   return canvas.toDataURL('image/png');
 }

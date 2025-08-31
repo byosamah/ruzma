@@ -24,7 +24,6 @@ export const useUsageTracking = (
   // Sync project count when there's a mismatch
   useEffect(() => {
     if (userProfile?.id && projects.length !== (userProfile.project_count || 0)) {
-      console.log('Project count mismatch detected, syncing...');
       syncProjectCount(userProfile.id);
     }
   }, [userProfile?.id, userProfile?.project_count, projects.length, syncProjectCount]);

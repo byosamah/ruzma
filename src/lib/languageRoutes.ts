@@ -54,7 +54,7 @@ export function getStoredLanguage(): Language {
       return stored as Language;
     }
   } catch (error) {
-    console.warn('Failed to read language from localStorage:', error);
+    // Fallback to default language if localStorage fails
   }
   return DEFAULT_LANGUAGE;
 }
@@ -66,7 +66,7 @@ export function storeLanguage(language: Language): void {
   try {
     localStorage.setItem('ruzma-language', language);
   } catch (error) {
-    console.warn('Failed to store language in localStorage:', error);
+    // Silent error - localStorage access is optional
   }
 }
 

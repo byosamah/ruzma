@@ -1,10 +1,11 @@
 
 import { supabase } from '@/integrations/supabase/client';
 import { logSecurityEvent } from './authSecurity';
+import { DatabaseProject } from '@/types/shared';
 
 export interface ClientProjectAccess {
   isValid: boolean;
-  project?: any;
+  project?: DatabaseProject;
   error?: string;
 }
 
@@ -46,8 +47,7 @@ export const validateClientProjectAccess = async (token: string): Promise<Client
 
     return { isValid: true, project: data };
   } catch (error) {
-    console.error('Client project validation error:', error);
-    logSecurityEvent('client_project_access_error', { 
+    logSecurityEvent('client_project_access_error', {
       error: error instanceof Error ? error.message : 'Unknown error',
       token: token.substring(0, 8) + '...'
     });

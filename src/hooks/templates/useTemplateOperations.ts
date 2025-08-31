@@ -8,8 +8,6 @@ export const useTemplateOperations = () => {
   const t = useT();
 
   const createProjectFromTemplate = useCallback((template: ProjectTemplate) => {
-    console.log('Creating project from template:', template);
-    
     // Navigate to create project with template data
     navigate('/create-project', {
       state: {

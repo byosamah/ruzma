@@ -36,7 +36,7 @@ export const SubscriptionPlans: React.FC = () => {
           setUserProfile(profile);
         }
       } catch (error) {
-        console.error('Error fetching user profile:', error);
+        // Error handling managed by react-query
       } finally {
         setProfileLoading(false);
       }

@@ -6,6 +6,7 @@ import { Form } from '@/components/ui/form';
 import Layout from '@/components/Layout';
 import { supabase } from '@/integrations/supabase/client';
 import { User } from '@supabase/supabase-js';
+import { UserProfile } from '@/types/profile';
 import { toast } from 'sonner';
 import { useT } from '@/lib/i18n';
 import { useLanguage } from '@/contexts/LanguageContext';
@@ -19,7 +20,7 @@ import { useProjectManager } from '@/hooks/useProjectManager';
 
 interface CreateProjectProps {
   user: User;
-  profile: any;
+  profile: UserProfile;
 }
 
 const CreateProject: React.FC<CreateProjectProps> = ({ user, profile }) => {
@@ -58,7 +59,7 @@ const CreateProject: React.FC<CreateProjectProps> = ({ user, profile }) => {
   };
 
   return (
-    <Layout user={profile || user} onSignOut={handleSignOut}>
+    <Layout user={user} onSignOut={handleSignOut}>
       <div className="min-h-screen bg-gray-50/30" dir={language === 'ar' ? 'rtl' : 'ltr'}>
         <div className="w-full max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6 lg:py-8 space-y-6 sm:space-y-8">
           {/* Header */}

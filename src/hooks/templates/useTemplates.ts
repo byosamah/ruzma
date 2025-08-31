@@ -94,8 +94,9 @@ export const useTemplates = ({ user }: UseTemplatesProps) => {
       await fetchTemplates();
       toast.success('Template deleted successfully');
       return true;
-    } catch (error: any) {
-      toast.error(error.message || 'Failed to delete template');
+    } catch (error: unknown) {
+      const errorMessage = error instanceof Error ? error.message : 'Failed to delete template';
+      toast.error(errorMessage);
       return false;
     }
   };

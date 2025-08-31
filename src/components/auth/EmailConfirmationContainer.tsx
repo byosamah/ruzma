@@ -36,8 +36,9 @@ const EmailConfirmationContainer: React.FC<EmailConfirmationContainerProps> = ({
       await authService.resendConfirmation(email);
       toast.success(t('confirmationEmailSent'));
       setCooldownTime(40); // 40 second cooldown
-    } catch (error: any) {
-      toast.error(error.message || t('confirmationEmailFailed'));
+    } catch (error: unknown) {
+      const errorMessage = error instanceof Error ? error.message : t('confirmationEmailFailed');
+      toast.error(errorMessage);
     } finally {
       setIsResending(false);
     }

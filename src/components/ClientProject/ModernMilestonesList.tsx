@@ -131,7 +131,7 @@ const ModernMilestonesList: React.FC<ModernMilestonesListProps> = ({
 
           <TabsContent value={viewMode} className="mt-6">
             <div className="space-y-4">
-              {filteredMilestones.length > 0 ? filteredMilestones.map((milestone, index) => <div key={milestone.id}>
+              {filteredMilestones.length ? filteredMilestones.map((milestone, index) => <div key={milestone.id}>
                     <ModernMilestoneCard milestone={milestone} currency={currency} onPaymentUpload={onPaymentUpload} onRevisionRequest={onRevisionRequest} paymentProofRequired={paymentProofRequired} isClient={true} />
                     {index < filteredMilestones.length - 1 && <Separator className="my-4" />}
                   </div>) : <div className="text-center py-12">

@@ -151,7 +151,7 @@ const Dashboard = () => {
               <h2 className="text-lg sm:text-xl font-medium text-gray-900">{t('yourProjects')}</h2>
             </div>
 
-            {projects.length === 0 ? (
+            {!projects.length ? (
               <div className="text-center py-8 sm:py-12 bg-white rounded-lg border border-gray-100 mx-0">
                 <span className="text-4xl sm:text-6xl text-gray-300 mx-auto mb-4 block">📄</span>
                 <h3 className="text-base sm:text-lg font-medium text-gray-600 mb-2 px-4">

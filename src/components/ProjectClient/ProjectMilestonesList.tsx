@@ -6,9 +6,10 @@ import MilestoneCard from '@/components/MilestoneCard';
 import { CurrencyCode } from '@/lib/currency';
 import { useT } from '@/lib/i18n';
 import { FreelancerBranding } from '@/types/branding';
+import { DatabaseMilestone } from '@/types/shared';
 
 interface ProjectMilestonesListProps {
-  milestones: any[]; // Using any[] to match the database structure
+  milestones: DatabaseMilestone[]; // Using proper type to match the database structure
   onPaymentUpload: (milestoneId: string, file: File) => Promise<boolean>;
   onRevisionRequest?: (milestoneId: string, feedback: string, images: string[]) => Promise<void>;
   currency: CurrencyCode;

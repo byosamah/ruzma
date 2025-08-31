@@ -63,7 +63,6 @@ export const brandingService = {
         });
 
       if (error) {
-        console.error('Upload error:', error);
         return { success: false, error: 'Failed to upload logo' };
       }
 
@@ -74,7 +73,6 @@ export const brandingService = {
 
       return { success: true, url: urlData.publicUrl };
     } catch (error) {
-      console.error('Error in brandingService.uploadLogo:', error);
       return { success: false, error: 'Failed to upload logo' };
     }
   }

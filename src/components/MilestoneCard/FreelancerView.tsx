@@ -72,14 +72,14 @@ const FreelancerView: React.FC<FreelancerViewProps> = ({
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
           <h4 className="text-sm font-medium text-gray-700">Revisions</h4>
-          {pendingRevisions.length > 0 && <Button variant="outline" size="sm" onClick={() => setShowRevisionModal(true)} className="gap-2 bg-amber-50 border-amber-200 text-amber-700 hover:bg-amber-100">
+          {pendingRevisions.length && <Button variant="outline" size="sm" onClick={() => setShowRevisionModal(true)} className="gap-2 bg-amber-50 border-amber-200 text-amber-700 hover:bg-amber-100">
               <MessageSquare className="w-3 h-3" />
               {pendingRevisions.length} Revision{pendingRevisions.length > 1 ? 's' : ''} Pending
             </Button>}
         </div>
         
         <div className="flex items-center gap-2">
-          {revisionData.requests.length > 0 && <Button variant="ghost" size="sm" onClick={() => setShowRevisionModal(true)} className="text-xs gap-1">
+          {revisionData.requests.length && <Button variant="ghost" size="sm" onClick={() => setShowRevisionModal(true)} className="text-xs gap-1">
               <MessageSquare className="w-3 h-3" />
               View All ({revisionData.requests.length})
             </Button>}

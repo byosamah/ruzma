@@ -63,7 +63,7 @@ const RevisionDetailsModal: React.FC<RevisionDetailsModalProps> = ({
               </div>
             </div>
 
-            {revisionData.requests.length === 0 ? (
+            {!revisionData.requests.length ? (
               <div className="text-center py-8 text-muted-foreground">
                 <MessageSquare className="w-12 h-12 mx-auto mb-3 opacity-50" />
                 <p>No revision requests yet</p>

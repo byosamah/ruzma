@@ -53,7 +53,7 @@ const ClientLifetimeValue: React.FC<ClientLifetimeValueProps> = ({
       </CardHeader>
       <CardContent>
         <div className="space-y-4 rtl:space-y-reverse">
-          {topClients.length === 0 ? (
+          {!topClients.length ? (
             <p className="text-sm text-muted-foreground text-center py-8">
               {t('noClientDataAvailable')}
             </p>

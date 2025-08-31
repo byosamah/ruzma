@@ -63,14 +63,10 @@ const ProjectHeaderActions: React.FC<ProjectHeaderActionsProps> = ({
 
       toast.dismiss();
       toast.success(t('clientLinkSent'));
-    } catch (error: any) {
+    } catch (error: unknown) {
+      const errorMessage = error instanceof Error ? error.message : 'Failed to send client link';
       toast.dismiss();
-      
-      if (error.message && error.message.includes('Domain verification required')) {
-        toast.error(t('emailDomainVerificationRequired'));
-      } else {
-        toast.error(t('clientLinkSendFailed'));
-      }
+      toast.error(errorMessage);
     }
   };
 

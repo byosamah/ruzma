@@ -108,7 +108,7 @@ const DashboardProjectList: React.FC<DashboardProjectListProps> = ({
       <CardHeader className={`${isMobile ? 'p-4' : 'p-6'}`}>
         <CardTitle className="flex flex-col space-y-3 sm:flex-row sm:items-center sm:justify-between sm:space-y-0">
           <span className="text-base sm:text-lg">{t('recentProjects')}</span>
-          {projects.length > 0 && (
+          {projects.length && (
             <Tooltip>
               <TooltipTrigger asChild>
                 <Button 

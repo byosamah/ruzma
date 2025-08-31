@@ -17,14 +17,13 @@ import { toast } from "sonner";
 const ProjectManagement: React.FC = () => {
   // Add error boundary for Router context
   let slug: string | undefined;
-  let navigate: any;
+  let navigate: (path: string) => void;
   
   try {
     const params = useParams<{ slug: string; }>();
     slug = params.slug;
     navigate = useNavigate();
   } catch (error) {
-    console.error('Router context not available:', error);
     return (
       <div className="flex items-center justify-center min-h-screen">
         <div className="text-center space-y-4">
@@ -86,7 +85,6 @@ const ProjectManagement: React.FC = () => {
       
       toast.success(t('contractResentSuccessfully'));
     } catch (error) {
-      console.error('Error resending contract:', error);
       toast.error(t('failedToResendContract'));
     } finally {
       setIsResendingContract(false);

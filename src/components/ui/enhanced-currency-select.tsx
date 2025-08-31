@@ -117,7 +117,7 @@ export const EnhancedCurrencySelect: React.FC<EnhancedCurrencySelectProps> = ({
             })}
           </div>
           
-          {filteredCurrencies.length === 0 && (
+          {!filteredCurrencies.length && (
             <div className="p-4 text-center text-muted-foreground text-sm">
               {t('noCurrenciesFound')}
             </div>

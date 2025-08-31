@@ -3,6 +3,7 @@ import { BaseService } from './BaseService';
 import { EmailService } from './EmailService';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
+import { DatabaseProject } from '@/types/shared';
 
 export interface ContractUpdateData {
   contractTerms?: string;
@@ -176,7 +177,7 @@ export class ContractService extends BaseService {
   async checkContractApprovalStatus(token: string): Promise<{
     needsApproval: boolean;
     contractStatus?: 'pending' | 'approved' | 'rejected';
-    project?: any;
+    project?: DatabaseProject;
   }> {
     try {
       const { data, error } = await supabase.functions.invoke('get-client-project', {

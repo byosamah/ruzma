@@ -73,7 +73,6 @@ const ContractApproval: React.FC = () => {
         .single();
 
       if (error) {
-        console.error('Error fetching project:', error);
         toast.error('Invalid or expired contract link');
         return;
       }
@@ -99,7 +98,6 @@ const ContractApproval: React.FC = () => {
         profiles: Array.isArray(data.profiles) && data.profiles.length > 0 ? data.profiles[0] : null,
       });
     } catch (error) {
-      console.error('Error:', error);
       toast.error('Failed to load contract details');
     } finally {
       setLoading(false);
@@ -138,9 +136,9 @@ const ContractApproval: React.FC = () => {
       // Update project status locally
       setProject(prev => prev ? { ...prev, contract_status: data.status } : null);
       
-    } catch (error: any) {
-      console.error('Error processing contract:', error);
-      toast.error(error.message || 'Failed to process contract approval');
+    } catch (error: unknown) {
+      const errorMessage = error instanceof Error ? error.message : 'Failed to process contract approval';
+      toast.error(errorMessage);
     } finally {
       setSubmitting(false);
     }

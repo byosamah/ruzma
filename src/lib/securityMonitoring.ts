@@ -179,7 +179,7 @@ export class SecurityMonitor {
     
     for (const [identifier, attempts] of this.rateLimitTracker.entries()) {
       const validAttempts = attempts.filter(time => now - time < oneHour);
-      if (validAttempts.length === 0) {
+      if (!validAttempts.length) {
         this.rateLimitTracker.delete(identifier);
       } else {
         this.rateLimitTracker.set(identifier, validAttempts);

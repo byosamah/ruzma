@@ -190,7 +190,7 @@ export const sanitizeFilename = (filename: string): string => {
 };
 
 // Validate JSON data with size and structure limits
-export const validateJSONData = (data: any): { isValid: boolean; error?: string } => {
+export const validateJSONData = (data: unknown): { isValid: boolean; error?: string } => {
   try {
     const jsonString = JSON.stringify(data);
     

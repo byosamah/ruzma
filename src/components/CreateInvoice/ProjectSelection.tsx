@@ -40,7 +40,7 @@ const ProjectSelection: React.FC<ProjectSelectionProps> = ({
             <SelectContent>
               {loading ? (
                 <SelectItem value="loading" disabled>{t('loadingProjects')}</SelectItem>
-              ) : activeProjects.length > 0 ? (
+              ) : activeProjects.length ? (
                 activeProjects.map((project) => (
                   <SelectItem key={project.id} value={project.id}>
                     {project.name}

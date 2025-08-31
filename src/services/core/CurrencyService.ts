@@ -34,7 +34,6 @@ export class CurrencyService extends BaseService {
 
       return (profile?.currency as CurrencyCode) || 'USD';
     } catch (error) {
-      console.error('Error fetching user currency:', error);
       return 'USD';
     }
   }
@@ -61,7 +60,6 @@ export class CurrencyService extends BaseService {
       // Arabic for Saudi Arabia and UAE
       return profile?.country === 'SA' || profile?.country === 'AE' ? 'ar' : 'en';
     } catch (error) {
-      console.error('Error fetching user language:', error);
       return 'en';
     }
   }
@@ -91,7 +89,6 @@ export class CurrencyService extends BaseService {
 
       return { currency, language };
     } catch (error) {
-      console.error('Error fetching user currency data:', error);
       return { currency: 'USD', language: 'en' };
     }
   }

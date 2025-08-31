@@ -29,7 +29,6 @@ export const ensureUniqueSlug = async (baseSlug: string, userId: string): Promis
       .limit(1);
     
     if (error) {
-      console.error('Error checking slug uniqueness:', error);
       return slug;
     }
     

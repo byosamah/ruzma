@@ -79,7 +79,6 @@ export const BaseUploadDialog: React.FC<BaseUploadDialogProps> = ({
         });
       }
     } catch (error) {
-      console.error('Upload error:', error);
       toast({
         title: "Upload failed",
         description: "An error occurred while uploading the file.",

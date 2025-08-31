@@ -11,7 +11,6 @@ export const getUserLimits = async (userType: string = 'free'): Promise<UserLimi
       .rpc('get_user_limits', { _user_type: userType });
 
     if (error) {
-      console.error('Error fetching user limits:', error);
       // Return fallback limits if database call fails
       return getFallbackLimits(userType);
     }
@@ -25,7 +24,6 @@ export const getUserLimits = async (userType: string = 'free'): Promise<UserLimi
     // Return fallback if no data found
     return getFallbackLimits(userType);
   } catch (error) {
-    console.error('Error in getUserLimits:', error);
     return getFallbackLimits(userType);
   }
 };

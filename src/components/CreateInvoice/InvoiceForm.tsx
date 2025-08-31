@@ -54,7 +54,7 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({ invoiceData, setInvoiceData }
   useEffect(() => {
     const targetProjectId = projectIdFromUrl || invoiceData.projectId;
     
-    if (!targetProjectId || projects.length === 0) {
+    if (!targetProjectId || !projects.length) {
       return;
     }
 
@@ -113,7 +113,7 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({ invoiceData, setInvoiceData }
         ...invoiceData.billedTo,
         name: clientName || selectedProject.client_email || ''
       },
-      lineItems: milestoneLineItems.length > 0 ? milestoneLineItems : invoiceData.lineItems,
+      lineItems: milestoneLineItems.length ? milestoneLineItems : invoiceData.lineItems,
       subtotal,
       total: subtotal + invoiceData.tax
     };

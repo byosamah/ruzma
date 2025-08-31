@@ -7,8 +7,11 @@ import { useTemplates, useTemplateOperations } from '@/hooks/templates';
 import { supabase } from '@/integrations/supabase/client';
 import { useLanguageNavigation } from '@/hooks/useLanguageNavigation';
 import ProtectedRoute from '@/components/ProtectedRoute';
+import { User } from '@supabase/supabase-js';
+import { UserProfile } from '@/types/profile';
+import { ProjectTemplate } from '@/types/projectTemplate';
 
-const ProjectTemplatesContent = ({ user, profile }: { user: any; profile: any }) => {
+const ProjectTemplatesContent = ({ user, profile }: { user: User; profile: UserProfile }) => {
   const t = useT();
   const { navigate } = useLanguageNavigation();
   
@@ -21,7 +24,7 @@ const ProjectTemplatesContent = ({ user, profile }: { user: any; profile: any })
     navigate('/');
   };
 
-  const handleCreateFromTemplate = (template: any) => {
+  const handleCreateFromTemplate = (template: ProjectTemplate) => {
     createProjectFromTemplate(template);
   };
 
@@ -32,7 +35,7 @@ const ProjectTemplatesContent = ({ user, profile }: { user: any; profile: any })
 
   if (loading) {
     return (
-      <Layout user={profile || user} onSignOut={handleSignOut}>
+      <Layout user={user} onSignOut={handleSignOut}>
         <div className="flex items-center justify-center min-h-[400px]">
           <div className="text-center">
             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
@@ -44,7 +47,7 @@ const ProjectTemplatesContent = ({ user, profile }: { user: any; profile: any })
   }
 
   return (
-    <Layout user={profile || user} onSignOut={handleSignOut}>
+    <Layout user={user} onSignOut={handleSignOut}>
       <div className="space-y-8">
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-4">

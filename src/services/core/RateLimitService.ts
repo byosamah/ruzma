@@ -68,7 +68,6 @@ export class RateLimitService {
   checkRateLimit(userId: string, action: string, showToast: boolean = true): RateLimitResult {
     const config = this.configs[action];
     if (!config) {
-      console.warn(`No rate limit config found for action: ${action}`);
       return { allowed: true };
     }
 

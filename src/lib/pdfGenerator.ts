@@ -145,7 +145,7 @@ export const generateInvoicePDFBlob = async (invoiceData: InvoicePDFData): Promi
 const waitForImages = (container: HTMLElement): Promise<void> => {
   return new Promise((resolve) => {
     const images = container.getElementsByTagName('img');
-    if (images.length === 0) {
+    if (!images.length) {
       resolve();
       return;
     }

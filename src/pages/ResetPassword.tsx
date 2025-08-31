@@ -168,8 +168,9 @@ const ResetPassword = () => {
       // Sign out after password reset for security
       await supabase.auth.signOut();
       navigate('/login');
-    } catch (error: any) {
-      toast.error(error.message || t('passwordUpdateFailed'));
+    } catch (error: unknown) {
+      const errorMessage = error instanceof Error ? error.message : t('passwordUpdateFailed');
+      toast.error(errorMessage);
     } finally {
       setIsLoading(false);
     }

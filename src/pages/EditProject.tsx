@@ -63,7 +63,6 @@ const EditProject: React.FC = () => {
       
       toast.success('Contract resent successfully');
     } catch (error) {
-      console.error('Error resending contract:', error);
       toast.error('Failed to resend contract');
     } finally {
       setIsResendingContract(false);

@@ -81,8 +81,7 @@ export class UserService extends BaseService {
         });
 
       if (rpcError) {
-        console.warn('RPC function failed, falling back to direct update:', rpcError);
-        
+        // RPC function failed, falling back to direct update
         // Fallback: Update the project count directly
         const { data: currentProfile, error: fetchError } = await this.supabase
           .from('profiles')

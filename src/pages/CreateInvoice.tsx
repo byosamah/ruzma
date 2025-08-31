@@ -110,7 +110,7 @@ const CreateInvoice: React.FC = () => {
             }
           }
         } catch (error) {
-          console.error('Error fetching project client:', error);
+          // Error handled by react-query
         }
       }
     };

@@ -7,6 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { ClientWithProjectCount } from '@/types/client';
 import { supabase } from '@/integrations/supabase/client';
 import { DatabaseProject } from '@/hooks/projectTypes';
+import { DatabaseMilestone } from '@/types/shared';
 import { useT } from '@/lib/i18n';
 
 interface ClientDetailsDialogProps {
@@ -135,7 +136,7 @@ const ClientDetailsDialog: React.FC<ClientDetailsDialogProps> = ({
                 <div className="text-center py-4">
                   <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900 mx-auto"></div>
                 </div>
-              ) : projects.length > 0 ? (
+              ) : projects.length ? (
                 <div className="space-y-3">
                   {projects.map((project) => (
                     <div key={project.id} className="flex items-center justify-between p-3 border rounded-lg">

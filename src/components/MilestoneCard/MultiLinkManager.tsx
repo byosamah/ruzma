@@ -105,7 +105,7 @@ const MultiLinkManager: React.FC<MultiLinkManagerProps> = ({
           <Link className="w-4 h-4" />
           {t('sharedLinks')} ({links.length}/3)
         </h4>
-        {links.length > 0 && (
+        {links.length && (
           <Button
             variant="ghost"
             size="sm"
@@ -176,7 +176,7 @@ const MultiLinkManager: React.FC<MultiLinkManagerProps> = ({
         )}
       </div>
 
-      {links.length > 0 && (
+      {links.length && (
         <div className="flex space-x-2">
           <Button
             onClick={saveLinks}
@@ -189,7 +189,7 @@ const MultiLinkManager: React.FC<MultiLinkManagerProps> = ({
         </div>
       )}
 
-      {links.length === 0 && (
+      {!links.length && (
         <div className="text-center py-6 text-gray-500">
           <Link className="w-8 h-8 mx-auto mb-2 text-gray-400" />
           <p className="text-sm">{t('noLinksAddedYet')}</p>
