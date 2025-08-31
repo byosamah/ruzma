@@ -23,10 +23,10 @@ interface NotificationBellProps {
   };
 }
 
-export const NotificationBell: React.FC<NotificationBellProps> = ({ 
+export function NotificationBell({ 
   user, 
   notificationsData 
-}) => {
+}: NotificationBellProps) {
   const [isOpen, setIsOpen] = useState(false);
 
   if (!user || !notificationsData) return null;

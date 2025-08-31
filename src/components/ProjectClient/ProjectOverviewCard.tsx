@@ -19,7 +19,7 @@ interface ProjectOverviewCardProps {
   branding?: FreelancerBranding | null;
 }
 
-const ProjectOverviewCard: React.FC<ProjectOverviewCardProps> = ({
+function ProjectOverviewCard({
   projectName,
   projectBrief,
   totalValue,
@@ -28,7 +28,7 @@ const ProjectOverviewCard: React.FC<ProjectOverviewCardProps> = ({
   currency,
   startDate,
   endDate,
-}) => {
+}: ProjectOverviewCardProps) {
   const t = useT();
   const progressPercentage = totalMilestones > 0 ? (completedMilestones / totalMilestones) * 100 : 0;
 

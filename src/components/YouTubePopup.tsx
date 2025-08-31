@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import React, { memo, useState } from 'react';
 import { Play } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
@@ -15,12 +15,12 @@ interface YouTubePopupProps {
   buttonSize?: 'sm' | 'default' | 'lg';
 }
 
-const YouTubePopup: React.FC<YouTubePopupProps> = ({
+function YouTubePopup({
   videoId = 'dQw4w9WgXcQ', // Default video ID
   buttonText,
   buttonVariant = 'outline',
   buttonSize = 'sm'
-}) => {
+}: YouTubePopupProps) {
   const [isOpen, setIsOpen] = useState(false);
   const t = useT();
 
@@ -58,4 +58,4 @@ const YouTubePopup: React.FC<YouTubePopupProps> = ({
   );
 };
 
-export default YouTubePopup;
+export default memo(YouTubePopup);

@@ -11,7 +11,7 @@ import { useT } from '@/lib/i18n';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { getSubscriptionPlans } from '@/hooks/subscription/planUtils';
 
-export const SubscriptionPlans: React.FC = () => {
+export function SubscriptionPlans() {
   const t = useT();
   const { language } = useLanguage();
   const { createCheckout, isLoading } = useSubscription();

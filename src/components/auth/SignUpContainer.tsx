@@ -10,7 +10,7 @@ import { User, Mail } from 'lucide-react';
 import { useAuthManager } from '@/hooks/useAuthManager';
 import { useT } from '@/lib/i18n';
 
-const SignUpContainer: React.FC = () => {
+function SignUpContainer() {
   const t = useT();
   const {
     signUpData,

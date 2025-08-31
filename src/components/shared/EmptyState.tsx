@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { memo } from 'react';
 // Icons replaced with emojis
 import { Button } from '@/components/ui/button';
 
@@ -11,14 +11,14 @@ interface EmptyStateProps {
   className?: string;
 }
 
-export const EmptyState: React.FC<EmptyStateProps> = ({
+export function EmptyState({
   emoji,
   title,
   description,
   actionLabel,
   onAction,
   className = ''
-}) => {
+}: EmptyStateProps) {
   return (
     <div className={`text-center py-8 ${className}`}>
       <div className="w-16 h-16 surface-muted rounded-lg flex items-center justify-center mx-auto mb-4">
@@ -33,4 +33,6 @@ export const EmptyState: React.FC<EmptyStateProps> = ({
       )}
     </div>
   );
-};
+}
+
+export default memo(EmptyState);

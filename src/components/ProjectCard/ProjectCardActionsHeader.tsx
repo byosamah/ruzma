@@ -1,5 +1,5 @@
 
-import React from 'react';
+import React, { memo } from 'react';
 import { Button } from '@/components/ui/button';
 import { Edit, Trash2 } from 'lucide-react';
 import { useIsMobile } from '@/hooks/use-mobile';
@@ -10,10 +10,10 @@ interface ProjectCardActionsHeaderProps {
   onDeleteClick?: (e: React.MouseEvent) => void;
 }
 
-const ProjectCardActionsHeader: React.FC<ProjectCardActionsHeaderProps> = ({
+function ProjectCardActionsHeader({
   onEditClick,
   onDeleteClick
-}) => {
+}: ProjectCardActionsHeaderProps) {
   const isMobile = useIsMobile();
   const t = useT();
 
@@ -50,4 +50,4 @@ const ProjectCardActionsHeader: React.FC<ProjectCardActionsHeaderProps> = ({
   );
 };
 
-export default ProjectCardActionsHeader;
+export default memo(ProjectCardActionsHeader);

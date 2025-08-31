@@ -1,5 +1,5 @@
 
-import React from 'react';
+import React, { memo } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { useT } from '@/lib/i18n';
 import { FreelancerBranding } from '@/types/branding';
@@ -9,9 +9,9 @@ interface ProjectInstructionsCardProps {
   paymentProofRequired?: boolean;
 }
 
-const ProjectInstructionsCard: React.FC<ProjectInstructionsCardProps> = ({
+function ProjectInstructionsCard({
   paymentProofRequired = false,
-}) => {
+}: ProjectInstructionsCardProps) {
   const t = useT();
 
   return (
@@ -57,4 +57,4 @@ const ProjectInstructionsCard: React.FC<ProjectInstructionsCardProps> = ({
   );
 };
 
-export default ProjectInstructionsCard;
+export default memo(ProjectInstructionsCard);

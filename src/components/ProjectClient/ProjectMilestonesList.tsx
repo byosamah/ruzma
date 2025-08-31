@@ -19,7 +19,7 @@ interface ProjectMilestonesListProps {
   token?: string; // Client access token
 }
 
-const ProjectMilestonesList: React.FC<ProjectMilestonesListProps> = ({
+function ProjectMilestonesList({
   milestones,
   onPaymentUpload,
   onRevisionRequest,
@@ -28,7 +28,7 @@ const ProjectMilestonesList: React.FC<ProjectMilestonesListProps> = ({
   branding,
   paymentProofRequired = false,
   token,
-}) => {
+}: ProjectMilestonesListProps) {
   const t = useT();
 
   // Transform database milestones to match expected Milestone interface

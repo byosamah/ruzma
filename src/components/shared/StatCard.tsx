@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { memo } from 'react';
 // Icons replaced with emojis
 
 interface StatCardProps {
@@ -9,13 +9,13 @@ interface StatCardProps {
   className?: string;
 }
 
-export const StatCard: React.FC<StatCardProps> = ({
+export function StatCard({
   emoji,
   title,
   value,
   subtitle,
   className = ''
-}) => {
+}: StatCardProps) {
   return (
     <div className={`stat-card ${className}`}>
       <div className="flex items-start justify-between">
@@ -32,4 +32,6 @@ export const StatCard: React.FC<StatCardProps> = ({
       </div>
     </div>
   );
-};
+}
+
+export default memo(StatCard);
