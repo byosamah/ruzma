@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { memo } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Milestone } from './types';
 import MilestoneHeader from './MilestoneHeader';
@@ -23,7 +23,7 @@ interface MilestoneCardProps {
   token?: string; // Client access token
 }
 
-const MilestoneCard: React.FC<MilestoneCardProps> = ({
+const MilestoneCard = ({
   milestone,
   isClient = false,
   onUpdateMilestoneStatus,
@@ -37,7 +37,7 @@ const MilestoneCard: React.FC<MilestoneCardProps> = ({
   branding,
   paymentProofRequired = false,
   token,
-}) => {
+}: MilestoneCardProps) => {
   return (
     <Card className="bg-gray-50 border border-gray-100">
       <CardContent className="p-4 sm:p-6">
@@ -80,4 +80,4 @@ const MilestoneCard: React.FC<MilestoneCardProps> = ({
   );
 };
 
-export default MilestoneCard;
+export default memo(MilestoneCard);

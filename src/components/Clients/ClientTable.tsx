@@ -1,5 +1,5 @@
 
-import React from 'react';
+import React, { memo } from 'react';
 import { Button } from '@/components/ui/button';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
@@ -175,4 +175,4 @@ const ClientTable: React.FC<ClientTableProps> = ({
   );
 };
 
-export default ClientTable;
+export default memo(ClientTable);

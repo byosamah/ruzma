@@ -1,5 +1,5 @@
 
-import React, { memo } from 'react';
+import React, { memo, useCallback, useMemo } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -29,35 +29,35 @@ const DashboardProjectList: React.FC<DashboardProjectListProps> = ({
   const t = useT();
   const isMobile = useIsMobile();
 
-  const getStatusColor = (status: string) => {
-    switch (status) {
-      case 'approved':
-        return 'bg-green-100 text-green-800';
-      case 'pending':
-        return 'bg-yellow-100 text-yellow-800';
-      case 'payment_submitted':
-        return 'bg-blue-100 text-blue-800';
-      case 'rejected':
-        return 'bg-red-100 text-red-800';
-      default:
-        return 'bg-gray-100 text-gray-800';
-    }
-  };
+const getStatusColor = (status: string) => {
+  switch (status) {
+    case 'approved':
+      return 'bg-green-100 text-green-800';
+    case 'pending':
+      return 'bg-yellow-100 text-yellow-800';
+    case 'payment_submitted':
+      return 'bg-blue-100 text-blue-800';
+    case 'rejected':
+      return 'bg-red-100 text-red-800';
+    default:
+      return 'bg-gray-100 text-gray-800';
+  }
+};
 
-  const getContractStatusColor = (status: string) => {
-    switch (status) {
-      case 'approved':
-        return 'bg-green-100 text-green-800';
-      case 'pending':
-        return 'bg-orange-100 text-orange-800';
-      case 'rejected':
-        return 'bg-red-100 text-red-800';
-      default:
-        return 'bg-gray-100 text-gray-800';
-    }
-  };
+const getContractStatusColor = (status: string) => {
+  switch (status) {
+    case 'approved':
+      return 'bg-green-100 text-green-800';
+    case 'pending':
+      return 'bg-orange-100 text-orange-800';
+    case 'rejected':
+      return 'bg-red-100 text-red-800';
+    default:
+      return 'bg-gray-100 text-gray-800';
+  }
+};
 
-  const getProjectDisplayStatus = (project: DatabaseProject) => {
+  const getProjectDisplayStatus = useCallback((project: DatabaseProject) => {
     // If contract is not approved, show contract status
     if (project.contract_status && project.contract_status !== 'approved') {
       return {
@@ -72,9 +72,9 @@ const DashboardProjectList: React.FC<DashboardProjectListProps> = ({
       status: milestoneStatus,
       color: getStatusColor(milestoneStatus)
     };
-  };
+  }, []);
 
-  const EmptyProjectsButton = () => {
+  const EmptyProjectsButton = useCallback(() => {
     const button = (
       <Button 
         onClick={onNewProject} 
@@ -101,7 +101,9 @@ const DashboardProjectList: React.FC<DashboardProjectListProps> = ({
     }
 
     return button;
-  };
+  }, [onNewProject, canCreateProject, isMobile, t]);
+
+  const projectsToShow = useMemo(() => projects.slice(0, 5), [projects]);
 
   return (
     <Card className="max-w-full overflow-hidden">
@@ -143,7 +145,7 @@ const DashboardProjectList: React.FC<DashboardProjectListProps> = ({
           </div>
         ) : (
           <div className="space-y-4">
-            {projects.slice(0, 5).map((project) => {
+            {projectsToShow.map((project) => {
               const totalMilestones = project.milestones.length;
               const completedMilestones = project.milestones.filter(
                 (m) => m.status === 'approved'

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { memo, useMemo } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from '@/components/ui/chart';
 import { PieChart, Pie, Cell, Legend } from 'recharts';
@@ -12,23 +12,12 @@ interface ClientSegmentationProps {
   userCurrency: CurrencyCode;
 }
 
-const ClientSegmentation: React.FC<ClientSegmentationProps> = ({
+const ClientSegmentation = ({
   segments,
   userCurrency,
-}) => {
+}: ClientSegmentationProps) => {
   const t = useT();
   const { language } = useLanguage();
-
-  const getSegmentEmoji = (segment: string) => {
-    switch (segment) {
-      case 'champion': return '🏆';
-      case 'growing': return '🌱';
-      case 'stable': return '⚖️';
-      case 'at-risk': return '⚠️';
-      case 'one-time': return '1️⃣';
-      default: return '👤';
-    }
-  };
 
   const getSegmentLabel = (segment: string) => {
     switch (segment) {
@@ -41,16 +30,27 @@ const ClientSegmentation: React.FC<ClientSegmentationProps> = ({
     }
   };
 
-  const chartData = segments.map(segment => ({
+  const chartData = useMemo(() => segments.map(segment => ({
     name: getSegmentLabel(segment.segment),
     value: segment.count,
     totalValue: segment.totalValue,
     avgValue: segment.avgValue,
     color: segment.color,
-  }));
+  })), [segments, t]);
 
   const chartConfig = {
     count: { label: t('clients'), color: "hsl(var(--chart-1))" },
+  };
+
+  const getSegmentEmoji = (segment: string) => {
+    switch (segment) {
+      case 'champion': return '🏆';
+      case 'growing': return '🌱';
+      case 'stable': return '⚖️';
+      case 'at-risk': return '⚠️';
+      case 'one-time': return '1️⃣';
+      default: return '👤';
+    }
   };
 
   return (
@@ -146,4 +146,4 @@ const ClientSegmentation: React.FC<ClientSegmentationProps> = ({
   );
 };
 
-export default ClientSegmentation;
+export default memo(ClientSegmentation);
