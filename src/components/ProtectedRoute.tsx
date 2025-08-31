@@ -11,7 +11,7 @@ interface ProtectedRouteProps {
   children: React.ReactNode | ((props: { user: AuthenticatedUser; profile: UserProfile }) => React.ReactNode);
 }
 
-const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
+function ProtectedRoute({ children }: ProtectedRouteProps) {
   const { user, loading, authChecked } = useAuth();
   const { data: profile, isLoading: profileLoading } = useProfileQuery(user);
   const { navigate } = useLanguageNavigation();

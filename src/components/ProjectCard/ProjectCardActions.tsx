@@ -14,7 +14,7 @@ interface ProjectCardActionsProps {
   variant?: 'header' | 'footer';
 }
 
-const ProjectCardActions: React.FC<ProjectCardActionsProps> = ({
+function ProjectCardActions({
   onEditClick,
   onViewClick,
   onDeleteClick,
@@ -23,7 +23,7 @@ const ProjectCardActions: React.FC<ProjectCardActionsProps> = ({
   onSendClientLink,
   showClientActions = false,
   variant = 'header'
-}) => {
+}: ProjectCardActionsProps) {
   if (variant === 'header') {
     return (
       <ProjectCardActionsHeader

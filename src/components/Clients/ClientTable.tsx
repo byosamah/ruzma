@@ -17,12 +17,12 @@ interface ClientTableProps {
   onViewDetails: (client: ClientWithProjectCount) => void;
 }
 
-const ClientTable: React.FC<ClientTableProps> = ({
+function ClientTable({
   clients,
   onEdit,
   onDelete,
   onViewDetails
-}) => {
+}: ClientTableProps) {
   const t = useT();
   const { language } = useLanguage();
   const isRTL = language === 'ar';

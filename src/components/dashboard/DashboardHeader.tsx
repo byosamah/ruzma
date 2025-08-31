@@ -11,11 +11,11 @@ interface DashboardHeaderProps {
   canCreateProject: boolean;
 }
 
-const DashboardHeader: React.FC<DashboardHeaderProps> = ({
+function DashboardHeader({
   displayName,
   onNewProject,
   canCreateProject
-}) => {
+}: DashboardHeaderProps) {
   const t = useT();
   const isMobile = useIsMobile();
 

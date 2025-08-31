@@ -7,7 +7,7 @@ interface ClientProjectErrorProps {
   error?: string;
 }
 
-const ClientProjectError: React.FC<ClientProjectErrorProps> = ({ error }) => {
+function ClientProjectError({ error }: ClientProjectErrorProps) {
   const t = useT();
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 flex items-center justify-center">

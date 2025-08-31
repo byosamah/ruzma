@@ -14,7 +14,7 @@ interface SEOHeadProps {
   structuredData?: object;
 }
 
-const SEOHead: React.FC<SEOHeadProps> = ({
+function SEOHead({
   title,
   description,
   keywords,
@@ -24,7 +24,7 @@ const SEOHead: React.FC<SEOHeadProps> = ({
   author,
   locale = 'en_US',
   structuredData
-}) => {
+}: SEOHeadProps) {
   const siteName = 'Ruzma - Freelancers Management System';
   const defaultImage = '/lovable-uploads/3a7605fb-8403-4b7a-926c-29cb12877ef1.png';
   const fullImageUrl = image || defaultImage;

@@ -12,12 +12,12 @@ interface ProjectCardActionsFooterProps {
   showClientActions?: boolean;
 }
 
-const ProjectCardActionsFooter: React.FC<ProjectCardActionsFooterProps> = ({
+function ProjectCardActionsFooter({
   onCopyClientLink,
   onViewClientPage,
   onSendClientLink,
   showClientActions = false
-}) => {
+}: ProjectCardActionsFooterProps) {
   const isMobile = useIsMobile();
   const t = useT();
 

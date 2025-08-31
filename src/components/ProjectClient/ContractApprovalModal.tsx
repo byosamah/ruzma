@@ -17,13 +17,13 @@ interface ContractApprovalModalProps {
   onRejectionComplete: () => void;
 }
 
-const ContractApprovalModal: React.FC<ContractApprovalModalProps> = ({
+function ContractApprovalModal({
   isOpen,
   onClose,
   project,
   onApprovalComplete,
   onRejectionComplete
-}) => {
+}: ContractApprovalModalProps) {
   const [submitting, setSubmitting] = useState(false);
   const [rejectionReason, setRejectionReason] = useState('');
   const [showRejectionForm, setShowRejectionForm] = useState(false);

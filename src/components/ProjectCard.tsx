@@ -4,7 +4,7 @@ import { ProjectCardProps } from './ProjectCard/types';
 import VerticalProjectCard from './ProjectCard/VerticalProjectCard';
 import StandardProjectCard from './ProjectCard/StandardProjectCard';
 
-const ProjectCard: React.FC<ProjectCardProps> = (props) => {
+function ProjectCard(props: ProjectCardProps) {
   if (props.isVerticalLayout) {
     return <VerticalProjectCard {...props} />;
   }

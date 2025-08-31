@@ -14,10 +14,10 @@ interface DashboardHeaderButtonsProps {
   canCreateProject: boolean;
 }
 
-const DashboardHeaderButtons: React.FC<DashboardHeaderButtonsProps> = ({
+function DashboardHeaderButtons({
   onNewProject,
   canCreateProject
-}) => {
+}: DashboardHeaderButtonsProps) {
   const t = useT();
   const isMobile = useIsMobile();
   const { user } = useAuth();

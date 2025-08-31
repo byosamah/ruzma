@@ -9,7 +9,7 @@ interface BrandedClientHeaderProps {
   branding?: FreelancerBranding | null;
 }
 
-const BrandedClientHeader: React.FC<BrandedClientHeaderProps> = ({ branding }) => {
+function BrandedClientHeader({ branding }: BrandedClientHeaderProps) {
   const t = useT();
 
   return (

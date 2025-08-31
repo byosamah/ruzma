@@ -8,10 +8,10 @@ interface PendingContractNoticeProps {
   freelancerName: string;
 }
 
-const PendingContractNotice: React.FC<PendingContractNoticeProps> = ({
+function PendingContractNotice({
   projectName,
   freelancerName,
-}) => {
+}: PendingContractNoticeProps) {
   return (
     <div className="min-h-screen bg-background flex items-center justify-center p-4">
       <Card className="w-full max-w-2xl">

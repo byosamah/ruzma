@@ -14,12 +14,12 @@ interface BrandingCardProps {
   isSaving: boolean;
 }
 
-export const BrandingCard: React.FC<BrandingCardProps> = ({
+export function BrandingCard({
   branding,
   onSave,
   onLogoUpload,
   isSaving
-}) => {
+}: BrandingCardProps) {
   const t = useT();
   const [showPreview, setShowPreview] = useState(false);
   const [formData, setFormData] = useState<BrandingFormData>({

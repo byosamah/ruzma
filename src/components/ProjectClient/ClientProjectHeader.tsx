@@ -5,7 +5,7 @@ import { useT } from '@/lib/i18n';
 import LanguageSelector from '@/components/LanguageSelector';
 import { useIsMobile } from '@/hooks/use-mobile';
 
-const ClientProjectHeader: React.FC = () => {
+function ClientProjectHeader() {
   const t = useT();
   const isMobile = useIsMobile();
   

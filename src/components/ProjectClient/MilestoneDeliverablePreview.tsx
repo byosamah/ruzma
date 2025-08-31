@@ -11,12 +11,12 @@ interface MilestoneDeliverablePreviewProps {
   status: string;
 }
 
-const MilestoneDeliverablePreview: React.FC<MilestoneDeliverablePreviewProps> = ({
+function MilestoneDeliverablePreview({
   milestoneId,
   deliverableUrl,
   deliverableName,
   status
-}) => {
+}: MilestoneDeliverablePreviewProps) {
   const [open, setOpen] = useState(false);
   const t = useT();
 

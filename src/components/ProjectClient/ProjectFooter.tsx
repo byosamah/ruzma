@@ -3,7 +3,7 @@ import React from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { useT } from "@/lib/i18n";
 
-const ProjectFooter: React.FC = () => {
+function ProjectFooter() {
   const t = useT();
   return (
     <Card className="bg-card border-border">

@@ -18,14 +18,14 @@ interface DashboardProjectListProps {
   canCreateProject: boolean;
 }
 
-const DashboardProjectList: React.FC<DashboardProjectListProps> = ({
+function DashboardProjectList({
   projects,
   onEdit,
   onDelete,
   onNewProject,
   currency,
   canCreateProject,
-}) => {
+}: DashboardProjectListProps) {
   const t = useT();
   const isMobile = useIsMobile();
 

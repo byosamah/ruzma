@@ -14,7 +14,7 @@ interface ClientContractStatusProps {
   revisionPolicy?: string;
 }
 
-const ClientContractStatus: React.FC<ClientContractStatusProps> = ({
+function ClientContractStatus({
   contractStatus,
   contractSentAt,
   contractApprovedAt,
@@ -22,7 +22,7 @@ const ClientContractStatus: React.FC<ClientContractStatusProps> = ({
   paymentTerms,
   projectScope,
   revisionPolicy
-}) => {
+}: ClientContractStatusProps) {
   const [isExpanded, setIsExpanded] = useState(contractStatus !== 'approved');
 
   // Auto-collapse when contract is approved

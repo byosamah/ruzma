@@ -13,11 +13,11 @@ interface PaymentUploadDialogProps {
   trigger: React.ReactNode;
 }
 
-const PaymentUploadDialog: React.FC<PaymentUploadDialogProps> = ({
+function PaymentUploadDialog({
   milestoneId,
   onPaymentUpload,
   trigger
-}) => {
+}: PaymentUploadDialogProps) {
   const [open, setOpen] = useState(false);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [uploading, setUploading] = useState(false);

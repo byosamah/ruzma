@@ -8,7 +8,7 @@ interface PaymentProofDebugInfoProps {
   paymentProofUrl: string;
 }
 
-const PaymentProofDebugInfo: React.FC<PaymentProofDebugInfoProps> = ({ paymentProofUrl }) => {
+function PaymentProofDebugInfo({ paymentProofUrl }: PaymentProofDebugInfoProps) {
   const [testResult, setTestResult] = useState<string | null>(null);
 
   const testUrlAccessibility = async () => {

@@ -8,13 +8,13 @@ import { useProjectCardActions } from './useProjectCardActions';
 import ProjectCardActions from './ProjectCardActions';
 import ProjectCardContent from './ProjectCardContent';
 
-const VerticalProjectCard: React.FC<ProjectCardProps> = ({
+function VerticalProjectCard({
   project,
   onViewClick,
   onEditClick,
   onDeleteClick,
   currency
-}) => {
+}: ProjectCardProps) {
   const stats = calculateProjectStats(project);
   const actions = useProjectCardActions(project, onViewClick, onEditClick, onDeleteClick);
 

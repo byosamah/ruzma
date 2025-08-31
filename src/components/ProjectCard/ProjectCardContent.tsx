@@ -15,12 +15,12 @@ interface ProjectCardContentProps {
   isVerticalLayout: boolean;
 }
 
-const ProjectCardContent: React.FC<ProjectCardContentProps> = ({ 
+function ProjectCardContent({ 
   project, 
   stats, 
   currency, 
   isVerticalLayout 
-}) => {
+}: ProjectCardContentProps) {
   const t = useT();
 
   const formatDate = (dateString?: string) => {
