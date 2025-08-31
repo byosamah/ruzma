@@ -33,7 +33,7 @@ export const useUserProjects = (user: User | null) => {
 
       const typedProjects = (projectsData || []).map(project => ({
         ...project,
-        milestones: project.milestones.map((milestone: any) => ({
+        milestones: project.milestones.map((milestone) => ({
           ...milestone,
           status: milestone.status as 'pending' | 'payment_submitted' | 'approved' | 'rejected',
         }))

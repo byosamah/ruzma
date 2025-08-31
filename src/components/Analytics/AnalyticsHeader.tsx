@@ -3,7 +3,7 @@ import React from 'react';
 import YouTubePopup from '@/components/YouTubePopup';
 import { useT } from '@/lib/i18n';
 
-const AnalyticsHeader: React.FC = () => {
+const AnalyticsHeader = () => {
   const t = useT();
 
   return (

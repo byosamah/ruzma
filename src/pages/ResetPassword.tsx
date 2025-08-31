@@ -115,9 +115,9 @@ const ResetPassword = () => {
           }
         }, 3000); // Extended timeout for better reliability
 
-      } catch (error: any) {
+      } catch (error: unknown) {
         if (mounted) {
-          setError(`Reset link validation failed: ${error.message || 'Please request a new reset link.'}`);
+          setError(`Reset link validation failed: ${error instanceof Error ? error.message : 'Please request a new reset link.'}`);
           setHasValidToken(false);
           setIsValidatingToken(false);
         }

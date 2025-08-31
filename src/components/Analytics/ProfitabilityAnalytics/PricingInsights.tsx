@@ -24,11 +24,11 @@ interface PricingInsightsProps {
   userCurrency: CurrencyCode;
 }
 
-const PricingInsights: React.FC<PricingInsightsProps> = ({
+const PricingInsights = ({
   pricingTrends,
   revenueOptimization,
   userCurrency,
-}) => {
+}: PricingInsightsProps) => {
   const t = useT();
   const { language } = useLanguage();
 

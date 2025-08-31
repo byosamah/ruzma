@@ -32,7 +32,7 @@ const fetchDashboardData = async (user: User) => {
   const typedProjects: DatabaseProject[] = (projectsData || []).map(project => ({
     ...project,
     contract_status: project.contract_status as 'pending' | 'approved' | 'rejected' | undefined,
-    milestones: project.milestones.map((milestone: any) => ({
+    milestones: project.milestones.map((milestone) => ({
       ...milestone,
       status: milestone.status as 'pending' | 'payment_submitted' | 'approved' | 'rejected'
     }))

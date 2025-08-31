@@ -10,10 +10,10 @@ interface ClientLifetimeValueProps {
   userCurrency: CurrencyCode;
 }
 
-const ClientLifetimeValue: React.FC<ClientLifetimeValueProps> = ({
+const ClientLifetimeValue = ({
   clients,
   userCurrency,
-}) => {
+}: ClientLifetimeValueProps) => {
   const t = useT();
   const { language } = useLanguage();
   

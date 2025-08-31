@@ -16,11 +16,11 @@ interface ClientDetailsDialogProps {
   client: ClientWithProjectCount | null;
 }
 
-const ClientDetailsDialog: React.FC<ClientDetailsDialogProps> = ({
+const ClientDetailsDialog = ({
   open,
   onOpenChange,
   client
-}) => {
+}: ClientDetailsDialogProps) => {
   const t = useT();
   const [projects, setProjects] = useState<DatabaseProject[]>([]);
   const [loading, setLoading] = useState(false);
@@ -53,7 +53,7 @@ const ClientDetailsDialog: React.FC<ClientDetailsDialogProps> = ({
       // Type the data properly to match DatabaseProject interface
       const typedProjects = (data || []).map(project => ({
         ...project,
-        milestones: project.milestones.map((milestone: any) => ({
+        milestones: project.milestones.map((milestone) => ({
           ...milestone,
           status: milestone.status as 'pending' | 'payment_submitted' | 'approved' | 'rejected',
         }))

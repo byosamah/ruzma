@@ -13,10 +13,10 @@ interface ProjectTypeProfitabilityProps {
   userCurrency: CurrencyCode;
 }
 
-const ProjectTypeProfitability: React.FC<ProjectTypeProfitabilityProps> = ({
+const ProjectTypeProfitability = ({
   projectTypes,
   userCurrency,
-}) => {
+}: ProjectTypeProfitabilityProps) => {
   const t = useT();
   const { language } = useLanguage();
   const translateCategory = useCategoryTranslator();

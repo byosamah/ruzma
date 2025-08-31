@@ -18,7 +18,7 @@ interface InvoiceHeaderProps {
   updateField: (field: keyof InvoiceFormData, value: string | number | boolean | Date) => void;
 }
 
-const InvoiceHeader: React.FC<InvoiceHeaderProps> = ({ invoiceData, updateField }) => {
+const InvoiceHeader = ({ invoiceData, updateField }: InvoiceHeaderProps) => {
   const t = useT();
   const { user } = useAuth();
   const { branding } = useBranding(user);

@@ -15,11 +15,11 @@ interface ClientRiskAssessmentProps {
   averageClientLifetime: number;
 }
 
-const ClientRiskAssessment: React.FC<ClientRiskAssessmentProps> = ({
+const ClientRiskAssessment = ({
   riskAssessment,
   clientRetentionRate,
   averageClientLifetime,
-}) => {
+}: ClientRiskAssessmentProps) => {
   const t = useT();
   const { language } = useLanguage();
 
