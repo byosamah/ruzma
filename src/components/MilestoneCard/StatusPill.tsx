@@ -9,10 +9,10 @@ interface StatusPillProps {
   isClickable?: boolean;
 }
 
-const StatusPill: React.FC<StatusPillProps> = ({ 
+const StatusPill = ({ 
   status, 
-  onClick, 
-  className,
+  onClick = () => {},
+  className = '',
   isClickable = false 
 }) => {
   const StatusIcon = getStatusIcon(status);

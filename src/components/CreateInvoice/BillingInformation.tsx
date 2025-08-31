@@ -18,7 +18,7 @@ interface BillingInformationProps {
   onClientEmailChange: (email: string) => void;
 }
 
-const BillingInformation: React.FC<BillingInformationProps> = ({
+const BillingInformation = ({
   invoiceData,
   updateAddressField,
   onClientEmailChange

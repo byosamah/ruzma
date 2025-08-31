@@ -13,7 +13,7 @@ interface AddClientDialogProps {
   onSubmit: (data: CreateClientData) => Promise<boolean>;
 }
 
-const AddClientDialog: React.FC<AddClientDialogProps> = ({
+const AddClientDialog = ({
   open,
   onOpenChange,
   onSubmit

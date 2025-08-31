@@ -17,7 +17,7 @@ interface InvoiceActionsMenuProps {
   onDeleteInvoice: (id: string) => void;
 }
 
-const InvoiceActionsMenu: React.FC<InvoiceActionsMenuProps> = ({
+const InvoiceActionsMenu = ({
   invoiceId,
   onDownloadPDF,
   onSendToClient,

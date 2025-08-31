@@ -15,7 +15,7 @@ interface FreelancerViewProps {
   onShowPaymentProofPreview: () => void;
   onRevisionUpdate?: (milestoneId: string, newDeliverableLink: string) => void;
 }
-const FreelancerView: React.FC<FreelancerViewProps> = ({
+const FreelancerView = ({
   milestone,
   onApprove,
   onReject,

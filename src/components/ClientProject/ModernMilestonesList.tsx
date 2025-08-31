@@ -32,7 +32,7 @@ interface ModernMilestonesListProps {
   paymentProofRequired?: boolean;
   token?: string;
 }
-const ModernMilestonesList: React.FC<ModernMilestonesListProps> = ({
+const ModernMilestonesList = ({
   milestones,
   onPaymentUpload,
   onRevisionRequest,

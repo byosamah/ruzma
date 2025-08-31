@@ -8,7 +8,7 @@ interface InvoiceStatusBadgeProps {
   status: InvoiceStatus;
 }
 
-const InvoiceStatusBadge: React.FC<InvoiceStatusBadgeProps> = ({ status }) => {
+const InvoiceStatusBadge = ({ status }: InvoiceStatusBadgeProps) => {
   const t = useT();
 
   const getStatusConfig = (status: InvoiceStatus) => {

@@ -12,7 +12,7 @@ interface InvoicesStatsProps {
   profile: UserProfile;
 }
 
-const InvoicesStats: React.FC<InvoicesStatsProps> = ({ invoices, profile }) => {
+const InvoicesStats = ({ invoices, profile }: InvoicesStatsProps) => {
   const t = useT();
   const { formatCurrency } = useUserCurrency(profile);
 

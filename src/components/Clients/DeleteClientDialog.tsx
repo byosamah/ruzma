@@ -11,7 +11,7 @@ interface DeleteClientDialogProps {
   onConfirm: (clientId: string) => Promise<boolean>;
 }
 
-const DeleteClientDialog: React.FC<DeleteClientDialogProps> = ({
+const DeleteClientDialog = ({
   open,
   onOpenChange,
   client,

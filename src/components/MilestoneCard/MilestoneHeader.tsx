@@ -15,7 +15,7 @@ interface MilestoneHeaderProps {
   isClient?: boolean;
 }
 
-const MilestoneHeader: React.FC<MilestoneHeaderProps> = ({ 
+const MilestoneHeader = ({ 
   milestone, 
   currency,
   branding,
@@ -51,10 +51,10 @@ const MilestoneHeader: React.FC<MilestoneHeaderProps> = ({
               className="ml-auto"
             />
           ) : (
-            <StatusPill 
-              status={milestone.status}
-              className="ml-auto"
-            />
+          <StatusPill 
+            status={milestone.status}
+            className="ml-auto"
+          />
           )}
         </div>
       </div>

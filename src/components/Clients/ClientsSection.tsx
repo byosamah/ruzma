@@ -13,7 +13,7 @@ interface ClientsSectionProps {
   onAddClient: () => void;
 }
 
-const ClientsSection: React.FC<ClientsSectionProps> = ({
+const ClientsSection = ({
   clients,
   onEdit,
   onDelete,

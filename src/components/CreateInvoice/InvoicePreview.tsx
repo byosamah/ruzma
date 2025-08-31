@@ -11,7 +11,7 @@ interface InvoicePreviewProps {
   invoiceData: InvoiceFormData;
 }
 
-const InvoicePreview: React.FC<InvoicePreviewProps> = ({ invoiceData }) => {
+const InvoicePreview = ({ invoiceData }: InvoicePreviewProps) => {
   const t = useT();
   const { language } = useLanguage();
   const currencySymbol = getCurrencySymbol(invoiceData.currency as CurrencyCode, language);

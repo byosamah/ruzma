@@ -15,10 +15,10 @@ interface LayoutProps {
   onSignOut?: () => void;
 }
 
-const Layout: React.FC<LayoutProps> = ({
+const Layout = ({
   children,
   user,
-  onSignOut
+  onSignOut = () => {}
 }) => {
   const {
     mobileMenuOpen,

@@ -16,7 +16,7 @@ interface RevisionDetailsModalProps {
   isClientView?: boolean;
 }
 
-const RevisionDetailsModal: React.FC<RevisionDetailsModalProps> = ({
+const RevisionDetailsModal = ({
   isOpen,
   onClose,
   revisionData,

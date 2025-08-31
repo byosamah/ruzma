@@ -53,7 +53,7 @@ const StickyNextStepBar: React.FC<StickyNextStepBarProps> = ({ project }) => {
           <div className="truncate text-sm font-medium text-foreground">
             {nextMilestone.title}
           </div>
-          <StatusPill status={nextMilestone.status} />
+          <StatusPill status={nextMilestone.status} className="" />
         </div>
         <div className="shrink-0">
           <Button size="sm" onClick={handleClick} disabled={isDisabled}>

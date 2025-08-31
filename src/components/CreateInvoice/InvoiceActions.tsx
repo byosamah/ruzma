@@ -9,7 +9,7 @@ interface InvoiceActionsProps {
   isLoading?: boolean;
 }
 
-const InvoiceActions: React.FC<InvoiceActionsProps> = ({
+const InvoiceActions = ({
   onSend,
   isLoading = false
 }) => {

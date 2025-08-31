@@ -14,7 +14,7 @@ interface EditClientDialogProps {
   onSubmit: (clientId: string, data: UpdateClientData) => Promise<boolean>;
 }
 
-const EditClientDialog: React.FC<EditClientDialogProps> = ({
+const EditClientDialog = ({
   open,
   onOpenChange,
   client,

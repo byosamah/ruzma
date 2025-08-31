@@ -21,7 +21,7 @@ interface LineItemsSectionProps {
   setShowTaxInput: (show: boolean) => void;
 }
 
-const LineItemsSection: React.FC<LineItemsSectionProps> = ({
+const LineItemsSection = ({
   invoiceData,
   updateLineItem,
   addLineItem,

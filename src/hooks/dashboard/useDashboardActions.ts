@@ -21,8 +21,6 @@ export const useDashboardActions = (
   }, [navigate]);
 
   const handleDeleteProject = useCallback(async (projectId: string) => {
-    // Debug log removed for production
-    
     if (!projectId) {
       toast.error('Project ID is missing');
       return;

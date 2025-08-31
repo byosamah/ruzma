@@ -10,7 +10,7 @@ interface RevenueOptimizationProps {
   userCurrency: CurrencyCode;
 }
 
-const RevenueOptimization: React.FC<RevenueOptimizationProps> = ({
+const RevenueOptimization = ({
   profitabilityMetrics,
   userCurrency,
 }) => {

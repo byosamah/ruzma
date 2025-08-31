@@ -9,7 +9,7 @@ interface ClientsStatsProps {
   clients: ClientWithProjectCount[];
 }
 
-const ClientsStats: React.FC<ClientsStatsProps> = ({ clients }) => {
+const ClientsStats = ({ clients }: ClientsStatsProps) => {
   const t = useT();
 
   const totalClients = clients.length;

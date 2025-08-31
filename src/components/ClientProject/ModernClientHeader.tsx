@@ -12,7 +12,7 @@ interface ModernClientHeaderProps {
   branding?: FreelancerBranding | null;
 }
 
-const ModernClientHeader: React.FC<ModernClientHeaderProps> = ({ branding }) => {
+const ModernClientHeader = ({ branding }: ModernClientHeaderProps) => {
   const t = useT();
 
   return (

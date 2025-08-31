@@ -13,7 +13,7 @@ interface InvoiceFiltersProps {
   onStatusChange: (value: InvoiceStatus | 'all') => void;
 }
 
-const InvoiceFilters: React.FC<InvoiceFiltersProps> = ({
+const InvoiceFilters = ({
   searchTerm,
   onSearchChange,
   statusFilter,

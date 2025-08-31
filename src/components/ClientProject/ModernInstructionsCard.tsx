@@ -17,7 +17,7 @@ interface ModernInstructionsCardProps {
   paymentProofRequired?: boolean;
 }
 
-const ModernInstructionsCard: React.FC<ModernInstructionsCardProps> = ({
+const ModernInstructionsCard = ({
   branding,
   paymentProofRequired = false,
 }) => {

@@ -30,7 +30,7 @@ interface HeaderProps {
   notificationsData?: NotificationData;
 }
 
-const Header: React.FC<HeaderProps> = ({
+const Header = ({
   user,
   userProfile,
   isActive,

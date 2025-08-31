@@ -16,7 +16,7 @@ interface CurrencySelectionProps {
   updateField: (field: keyof InvoiceFormData, value: string | number | boolean | Date) => void;
 }
 
-const CurrencySelection: React.FC<CurrencySelectionProps> = ({
+const CurrencySelection = ({
   invoiceData,
   updateField
 }) => {

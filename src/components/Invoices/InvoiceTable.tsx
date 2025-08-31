@@ -26,7 +26,7 @@ interface InvoiceTableProps {
   onDeleteInvoice: (id: string) => void;
 }
 
-const InvoiceTable: React.FC<InvoiceTableProps> = ({
+const InvoiceTable = ({
   invoices,
   profile,
   onDownloadPDF,

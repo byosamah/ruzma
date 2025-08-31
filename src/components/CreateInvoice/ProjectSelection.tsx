@@ -12,7 +12,7 @@ interface ProjectSelectionProps {
   updateField: (field: keyof InvoiceFormData, value: string | number | boolean | Date) => void;
 }
 
-const ProjectSelection: React.FC<ProjectSelectionProps> = ({
+const ProjectSelection = ({
   invoiceData,
   updateField
 }) => {

@@ -11,7 +11,7 @@ interface RevisionSettingsDropdownProps {
   onUpdateMaxRevisions: (maxRevisions: number | null) => void;
 }
 
-const RevisionSettingsDropdown: React.FC<RevisionSettingsDropdownProps> = ({
+const RevisionSettingsDropdown = ({
   revisionData,
   onUpdateMaxRevisions
 }) => {

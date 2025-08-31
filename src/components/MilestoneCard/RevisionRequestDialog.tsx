@@ -18,7 +18,7 @@ interface RevisionRequestDialogProps {
   milestoneId?: string; // Milestone ID for uploads
 }
 
-const RevisionRequestDialog: React.FC<RevisionRequestDialogProps> = ({
+const RevisionRequestDialog = ({
   isOpen,
   onClose,
   onSubmit,

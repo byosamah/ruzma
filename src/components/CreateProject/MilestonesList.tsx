@@ -18,7 +18,7 @@ interface MilestonesListProps {
   profile?: UserProfile;
 }
 
-const MilestonesList: React.FC<MilestonesListProps> = ({ user, profile }) => {
+const MilestonesList = ({ user, profile }: MilestonesListProps) => {
   const t = useT();
   const { language } = useLanguage();
   const { control } = useFormContext<CreateProjectFormData>();

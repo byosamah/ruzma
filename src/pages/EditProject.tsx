@@ -75,7 +75,7 @@ const EditProject: React.FC = () => {
 
   if (loading) {
     return (
-      <Layout>
+      <Layout user={user}>
         <div className="flex items-center justify-center min-h-[400px]">
           <div className="text-center">
             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
@@ -88,7 +88,7 @@ const EditProject: React.FC = () => {
 
   if (!user || !project) {
     return (
-      <Layout>
+      <Layout user={user}>
         <div className="flex items-center justify-center min-h-[400px]">
           <div className="text-center">
             <p className="text-slate-600 mb-4">{t('projectNotFoundAccessDenied')}</p>

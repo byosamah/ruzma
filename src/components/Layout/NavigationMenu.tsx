@@ -24,7 +24,7 @@ interface NavigationMenuProps {
   };
 }
 
-const NavigationMenu: React.FC<NavigationMenuProps> = ({
+const NavigationMenu = ({
   user,
   userProfile,
   isActive,

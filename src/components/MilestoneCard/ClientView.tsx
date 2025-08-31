@@ -17,7 +17,7 @@ interface ClientViewProps {
   paymentProofRequired?: boolean;
 }
 
-const ClientView: React.FC<ClientViewProps> = ({
+const ClientView = ({
   milestone,
   onPaymentUpload,
   onRevisionRequest,

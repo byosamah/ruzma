@@ -19,7 +19,7 @@ interface ContractStatusCardProps {
   revisionPolicy?: string;
 }
 
-const ContractStatusCard: React.FC<ContractStatusCardProps> = ({
+const ContractStatusCard = ({
   contractStatus,
   contractSentAt,
   contractApprovedAt,

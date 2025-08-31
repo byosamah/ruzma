@@ -34,7 +34,7 @@ interface MobileMenuProps {
   notificationsData?: NotificationData;
 }
 
-const MobileMenu: React.FC<MobileMenuProps> = ({
+const MobileMenu = ({
   mobileMenuOpen,
   onToggle,
   user,
@@ -69,6 +69,7 @@ const MobileMenu: React.FC<MobileMenuProps> = ({
               shouldShowUpgradeButton={shouldShowUpgradeButton}
               onSignOut={onSignOut}
               onMenuClick={onToggle}
+              notificationsData={notificationsData}
             />
           </div>
         </SheetContent>

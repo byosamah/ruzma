@@ -14,7 +14,7 @@ interface ContractTermsSectionProps {
   form: UseFormReturn<CreateProjectFormData>;
 }
 
-export const ContractTermsSection: React.FC<ContractTermsSectionProps> = ({
+export const ContractTermsSection = ({
   form
 }) => {
   const t = useT();

@@ -28,7 +28,7 @@ interface EditContractDialogProps {
   onContractUpdated: () => void;
 }
 
-const EditContractDialog: React.FC<EditContractDialogProps> = ({
+const EditContractDialog = ({
   isOpen,
   onClose,
   project,

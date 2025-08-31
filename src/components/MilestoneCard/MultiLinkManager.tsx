@@ -16,7 +16,7 @@ interface MultiLinkManagerProps {
   onDeliverableLinkUpdate?: (milestoneId: string, link: string) => void;
 }
 
-const MultiLinkManager: React.FC<MultiLinkManagerProps> = ({
+const MultiLinkManager = ({
   milestone,
   onDeliverableLinkUpdate,
 }) => {

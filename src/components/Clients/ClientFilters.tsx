@@ -11,7 +11,7 @@ interface ClientFiltersProps {
   onAddClient: () => void;
 }
 
-const ClientFilters: React.FC<ClientFiltersProps> = ({
+const ClientFilters = ({
   searchTerm,
   onSearchChange,
   onAddClient

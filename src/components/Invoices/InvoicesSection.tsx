@@ -19,7 +19,7 @@ interface InvoicesSectionProps {
   handleDeleteInvoice: (id: string) => void;
 }
 
-const InvoicesSection: React.FC<InvoicesSectionProps> = ({
+const InvoicesSection = ({
   invoices,
   profile,
   searchTerm,

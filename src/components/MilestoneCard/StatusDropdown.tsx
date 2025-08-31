@@ -17,7 +17,7 @@ interface StatusDropdownProps {
   className?: string;
 }
 
-const StatusDropdown: React.FC<StatusDropdownProps> = ({
+const StatusDropdown = ({
   milestone,
   onStatusChange,
   className

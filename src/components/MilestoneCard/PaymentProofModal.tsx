@@ -12,7 +12,7 @@ interface PaymentProofModalProps {
   milestoneId: string;
 }
 
-const PaymentProofModal: React.FC<PaymentProofModalProps> = ({
+const PaymentProofModal = ({
   paymentProofUrl,
   onClose,
   onApprove,

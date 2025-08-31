@@ -74,7 +74,6 @@ export const useProjectCardActions = (
   const handleDeleteClick = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    // Debug log removed for production
     if (onDeleteClick) {
       onDeleteClick(project.id);
     }

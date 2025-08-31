@@ -18,7 +18,7 @@ interface ClientDropdownProps {
   user?: User | null;
 }
 
-const ClientDropdown: React.FC<ClientDropdownProps> = ({ value, onChange, user }) => {
+const ClientDropdown = ({ value, onChange, user }: ClientDropdownProps) => {
   const t = useT();
   const { clients, createClient } = useClients(user);
   const [open, setOpen] = useState(false);

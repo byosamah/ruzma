@@ -8,7 +8,7 @@ interface LogoSectionProps {
   isLandingPage: boolean;
 }
 
-const LogoSection: React.FC<LogoSectionProps> = ({ user, isLandingPage }) => {
+const LogoSection = ({ user, isLandingPage }: LogoSectionProps) => {
   if (user && !isLandingPage) {
     return (
       <Link to="/dashboard" className="flex items-center">

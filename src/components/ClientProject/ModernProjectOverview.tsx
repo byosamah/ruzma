@@ -22,15 +22,17 @@ interface ModernProjectOverviewProps {
   branding?: FreelancerBranding | null;
 }
 
-const ModernProjectOverview: React.FC<ModernProjectOverviewProps> = ({
+const ModernProjectOverview = ({
   projectName,
   projectBrief,
   totalValue,
   totalMilestones,
   completedMilestones,
   currency,
+  freelancerCurrency,
   startDate,
   endDate,
+  branding,
 }) => {
   const t = useT();
   const progressPercentage = totalMilestones > 0 ? (completedMilestones / totalMilestones) * 100 : 0;

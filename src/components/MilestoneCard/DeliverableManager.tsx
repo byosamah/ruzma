@@ -10,7 +10,7 @@ interface DeliverableManagerProps {
   };
   onDeliverableLinkUpdate?: (milestoneId: string, link: string) => void;
 }
-const DeliverableManager: React.FC<DeliverableManagerProps> = ({
+const DeliverableManager = ({
   milestone,
   onDeliverableLinkUpdate
 }) => {
