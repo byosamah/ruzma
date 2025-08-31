@@ -15,7 +15,7 @@ interface BaseConfirmDialogProps {
   variant?: 'default' | 'destructive';
 }
 
-export const BaseConfirmDialog: React.FC<BaseConfirmDialogProps> = ({
+export const BaseConfirmDialog = ({
   open,
   onOpenChange,
   title,
@@ -26,7 +26,7 @@ export const BaseConfirmDialog: React.FC<BaseConfirmDialogProps> = ({
   confirmLabel = 'Confirm',
   cancelLabel = 'Cancel',
   variant = 'default'
-}) => {
+}: BaseConfirmDialogProps) => {
   const handleCancel = () => {
     onCancel?.();
     onOpenChange(false);

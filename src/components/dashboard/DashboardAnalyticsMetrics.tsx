@@ -12,12 +12,12 @@ interface DashboardAnalyticsMetricsProps {
   userCurrency: CurrencyCode;
 }
 
-const DashboardAnalyticsMetrics: React.FC<DashboardAnalyticsMetricsProps> = ({
+const DashboardAnalyticsMetrics = ({
   revenueGrowth,
   avgProjectValue,
   completionRate,
   userCurrency,
-}) => {
+}: DashboardAnalyticsMetricsProps) => {
   const t = useT();
 
   return (

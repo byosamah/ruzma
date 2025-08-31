@@ -16,7 +16,7 @@ interface FormDialogProps {
   submitDisabled?: boolean;
 }
 
-export const FormDialog: React.FC<FormDialogProps> = ({
+export const FormDialog = ({
   open,
   onOpenChange,
   title,
@@ -27,7 +27,7 @@ export const FormDialog: React.FC<FormDialogProps> = ({
   submitLabel = 'Save',
   cancelLabel = 'Cancel',
   submitDisabled = false
-}) => {
+}: FormDialogProps) => {
   const handleCancel = () => {
     onCancel?.();
     onOpenChange(false);

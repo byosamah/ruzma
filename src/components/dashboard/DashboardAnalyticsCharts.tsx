@@ -52,10 +52,10 @@ const chartConfig = {
   },
 };
 
-const DashboardAnalyticsCharts: React.FC<DashboardAnalyticsChartsProps> = ({
+const DashboardAnalyticsCharts = ({
   data,
   userCurrency,
-}) => {
+}: DashboardAnalyticsChartsProps) => {
   const t = useT();
 
   return (

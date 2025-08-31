@@ -14,7 +14,7 @@ import EditContractDialog from "@/components/CreateProject/EditContractDialog";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 
-const ProjectManagement: React.FC = () => {
+const ProjectManagement = () => {
   // Add error boundary for Router context
   let slug: string | undefined;
   let navigate: (path: string) => void;

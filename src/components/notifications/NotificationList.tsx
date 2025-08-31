@@ -16,13 +16,13 @@ interface NotificationListProps {
   onClose: () => void;
 }
 
-export const NotificationList: React.FC<NotificationListProps> = ({
+export const NotificationList = ({
   notifications,
   loading,
   onMarkAsRead,
   onMarkAllAsRead,
   onClose,
-}) => {
+}: NotificationListProps) => {
   const navigate = useNavigate();
   const t = useT();
 

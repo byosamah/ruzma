@@ -18,10 +18,10 @@ interface DashboardAnalyticsProps {
   userCurrency: CurrencyCode;
 }
 
-const DashboardAnalytics: React.FC<DashboardAnalyticsProps> = ({
+const DashboardAnalytics = ({
   data,
   userCurrency,
-}) => {
+}: DashboardAnalyticsProps) => {
   return (
     <div className="space-y-6">
       <DashboardAnalyticsMetrics

@@ -18,7 +18,7 @@ interface BaseFormDialogProps {
   description?: string;
 }
 
-export const BaseFormDialog: React.FC<BaseFormDialogProps> = ({
+export const BaseFormDialog = ({
   open,
   onOpenChange,
   title,
@@ -31,7 +31,7 @@ export const BaseFormDialog: React.FC<BaseFormDialogProps> = ({
   submitDisabled = false,
   maxWidth = 'sm:max-w-md',
   description
-}) => {
+}: BaseFormDialogProps) => {
   const handleCancel = () => {
     onCancel?.();
     onOpenChange(false);

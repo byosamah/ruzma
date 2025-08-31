@@ -24,14 +24,14 @@ interface EnhancedCurrencySelectProps {
   className?: string;
 }
 
-export const EnhancedCurrencySelect: React.FC<EnhancedCurrencySelectProps> = ({
+export const EnhancedCurrencySelect = ({
   value,
   onChange,
   placeholder,
   showSearch = true,
   showCountryFlags = true,
   className = ""
-}) => {
+}: EnhancedCurrencySelectProps) => {
   const { language } = useLanguage();
   const t = useT();
   const [searchQuery, setSearchQuery] = useState('');

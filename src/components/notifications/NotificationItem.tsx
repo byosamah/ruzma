@@ -16,10 +16,10 @@ interface NotificationItemProps {
   onClick: () => void;
 }
 
-export const NotificationItem: React.FC<NotificationItemProps> = ({
+export const NotificationItem = ({
   notification,
   onClick,
-}) => {
+}: NotificationItemProps) => {
   const getIcon = () => {
     switch (notification.type) {
       case 'payment_proof':

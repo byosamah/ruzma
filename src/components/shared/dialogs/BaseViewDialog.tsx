@@ -16,7 +16,7 @@ interface BaseViewDialogProps {
   scrollable?: boolean;
 }
 
-export const BaseViewDialog: React.FC<BaseViewDialogProps> = ({
+export const BaseViewDialog = ({
   open,
   onOpenChange,
   title,
@@ -27,7 +27,7 @@ export const BaseViewDialog: React.FC<BaseViewDialogProps> = ({
   hideCloseButton = false,
   footer,
   scrollable = true
-}) => {
+}: BaseViewDialogProps) => {
   const handleClose = () => {
     onClose?.();
     onOpenChange(false);

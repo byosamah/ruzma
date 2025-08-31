@@ -9,12 +9,12 @@ interface IconContainerProps {
   className?: string;
 }
 
-export const IconContainer: React.FC<IconContainerProps> = ({
+export const IconContainer = ({
   icon: Icon,
   size = 'md',
   variant = 'muted',
   className
-}) => {
+}: IconContainerProps) => {
   const sizeClasses = {
     sm: 'icon-container-sm',
     md: 'icon-container',

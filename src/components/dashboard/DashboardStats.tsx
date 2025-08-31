@@ -17,14 +17,14 @@ interface DashboardStatsProps {
   userCurrency: CurrencyCode;
 }
 
-const DashboardStats: React.FC<DashboardStatsProps> = ({
+const DashboardStats = ({
   totalProjects,
   totalEarnings,
   completedMilestones,
   totalMilestones,
   pendingPayments,
   userCurrency,
-}) => {
+}: DashboardStatsProps) => {
   const t = useT();
 
   const stats = [

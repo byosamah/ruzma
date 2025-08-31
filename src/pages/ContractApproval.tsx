@@ -36,7 +36,7 @@ interface ProjectData {
   } | null;
 }
 
-const ContractApproval: React.FC = () => {
+const ContractApproval = () => {
   const { token } = useParams<{ token: string }>();
   const navigate = useNavigate();
   const [project, setProject] = useState<ProjectData | null>(null);

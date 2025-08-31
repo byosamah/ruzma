@@ -18,7 +18,7 @@ interface CountrySelectProps {
   className?: string;
 }
 
-export const CountrySelect: React.FC<CountrySelectProps> = ({
+export const CountrySelect = ({
   value,
   onChange,
   onCurrencyChange,
@@ -26,7 +26,7 @@ export const CountrySelect: React.FC<CountrySelectProps> = ({
   required = false,
   disabled = false,
   className
-}) => {
+}: CountrySelectProps) => {
   const t = useT();
   const [open, setOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');

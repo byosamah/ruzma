@@ -20,7 +20,7 @@ interface InvoiceContextType {
 
 const InvoiceContext = createContext<InvoiceContextType | undefined>(undefined);
 
-export const InvoiceProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
+export const InvoiceProvider = ({ children }: { children: ReactNode }) => {
   const [invoices, setInvoices] = useState<Invoice[]>([]);
   const [loading, setLoading] = useState(true);
   

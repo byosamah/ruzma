@@ -23,7 +23,7 @@ interface CreateProjectProps {
   profile: UserProfile;
 }
 
-const CreateProject: React.FC<CreateProjectProps> = ({ user, profile }) => {
+const CreateProject = ({ user, profile }: CreateProjectProps) => {
   const t = useT();
   const { language } = useLanguage();
   

@@ -8,9 +8,9 @@ import { useT } from '@/lib/i18n';
 interface UpcomingDeadlinesProps {
   projects: DatabaseProject[];
 }
-export const UpcomingDeadlines: React.FC<UpcomingDeadlinesProps> = ({
+export const UpcomingDeadlines = ({
   projects
-}) => {
+}: UpcomingDeadlinesProps) => {
   const t = useT();
   const {
     navigate

@@ -14,7 +14,7 @@ import InvoicesHeader from '@/components/Invoices/InvoicesHeader';
 import InvoicesStats from '@/components/Invoices/InvoicesStats';
 import InvoicesSection from '@/components/Invoices/InvoicesSection';
 
-const Invoices: React.FC = () => {
+const Invoices = () => {
   const { navigate } = useLanguageNavigation();
   const t = useT();
   const {

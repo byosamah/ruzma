@@ -19,7 +19,7 @@ interface BaseUploadDialogProps {
   onOpenChange?: (open: boolean) => void;
 }
 
-export const BaseUploadDialog: React.FC<BaseUploadDialogProps> = ({
+export const BaseUploadDialog = ({
   trigger,
   title,
   description,
@@ -30,7 +30,7 @@ export const BaseUploadDialog: React.FC<BaseUploadDialogProps> = ({
   children,
   open: controlledOpen,
   onOpenChange: controlledOnOpenChange
-}) => {
+}: BaseUploadDialogProps) => {
   const { toast } = useToast();
   const [internalOpen, setInternalOpen] = useState(false);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);

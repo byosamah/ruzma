@@ -14,10 +14,10 @@ interface UsageIndicatorsProps {
   userProfile: UserProfile;
   projects: DatabaseProject[];
 }
-export const UsageIndicators: React.FC<UsageIndicatorsProps> = ({
+export const UsageIndicators = ({
   userProfile,
   projects
-}) => {
+}: UsageIndicatorsProps) => {
   const navigate = useNavigate();
   const t = useT();
   const usage = useUsageTracking(userProfile, projects);
