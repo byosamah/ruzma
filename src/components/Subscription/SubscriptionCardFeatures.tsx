@@ -7,9 +7,9 @@ interface SubscriptionCardFeaturesProps {
   features: string[];
 }
 
-export const SubscriptionCardFeatures: React.FC<SubscriptionCardFeaturesProps> = ({
+export function SubscriptionCardFeatures({
   features
-}) => {
+}: SubscriptionCardFeaturesProps) {
   const t = useT();
 
   // Since features now include emojis and are pre-formatted, we don't need translation

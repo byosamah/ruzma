@@ -8,11 +8,11 @@ interface ProjectStatsProps {
   isMobile: boolean;
   userCurrency: CurrencyCode;
 }
-const ProjectStats: React.FC<ProjectStatsProps> = ({
+function ProjectStats({
   project,
   isMobile,
   userCurrency
-}) => {
+}: ProjectStatsProps) {
   // Calculate project stats
   const totalValue = project.milestones.reduce((sum, m) => sum + m.price, 0);
   const completedMilestones = project.milestones.filter(m => m.status === 'approved').length;

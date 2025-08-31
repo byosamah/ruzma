@@ -18,7 +18,7 @@ interface PasswordFieldProps {
   required?: boolean;
 }
 
-export const PasswordField: React.FC<PasswordFieldProps> = ({
+export function PasswordField({
   id,
   name,
   label,
@@ -29,7 +29,7 @@ export const PasswordField: React.FC<PasswordFieldProps> = ({
   showPassword,
   onTogglePassword,
   required = false
-}) => {
+}: PasswordFieldProps) {
   return (
     <div className="space-y-2">
       <Label htmlFor={id} className="text-sm font-medium">{label}{required && ' *'}</Label>

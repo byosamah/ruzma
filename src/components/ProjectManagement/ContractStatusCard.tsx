@@ -15,10 +15,10 @@ interface ContractStatusCardProps {
   onProjectUpdate?: () => void;
 }
 
-const ContractStatusCard: React.FC<ContractStatusCardProps> = ({ 
+function ContractStatusCard({ 
   project, 
   onProjectUpdate 
-}) => {
+}: ContractStatusCardProps) {
   const { user } = useAuth();
   const t = useT();
   const [isResending, setIsResending] = useState(false);

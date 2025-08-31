@@ -10,12 +10,12 @@ interface SubscriptionCardBadgeProps {
   planId?: string;
 }
 
-export const SubscriptionCardBadge: React.FC<SubscriptionCardBadgeProps> = ({
+export function SubscriptionCardBadge({
   isCurrentPlan,
   isPopular,
   currentUserType = 'free',
   planId
-}) => {
+}: SubscriptionCardBadgeProps) {
   const t = useT();
 
   if (isCurrentPlan) {

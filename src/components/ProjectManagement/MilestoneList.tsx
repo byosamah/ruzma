@@ -15,7 +15,7 @@ interface MilestoneListProps {
   onRevisionUpdate?: (milestoneId: string, newDeliverableLink: string) => void;
 }
 
-const MilestoneList: React.FC<MilestoneListProps> = ({
+function MilestoneList({
   milestones,
   userCurrency,
   onUpdateMilestoneStatus,
@@ -23,7 +23,7 @@ const MilestoneList: React.FC<MilestoneListProps> = ({
   onDeliverableLinkUpdate,
   onStatusChange,
   onRevisionUpdate,
-}) => {
+}: MilestoneListProps) {
   const t = useT();
 
   const handlePaymentUpload = async (milestoneId: string, file: File): Promise<boolean> => {

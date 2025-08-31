@@ -11,7 +11,7 @@ import { InvoiceFormData } from '@/components/CreateInvoice/types';
 import { useT } from '@/lib/i18n';
 import { supabase } from '@/integrations/supabase/client';
 
-const CreateInvoice: React.FC = () => {
+function CreateInvoice() {
   const t = useT();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();

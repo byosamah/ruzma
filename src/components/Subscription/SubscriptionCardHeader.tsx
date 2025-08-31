@@ -13,14 +13,14 @@ interface SubscriptionCardHeaderProps {
   language: 'en' | 'ar';
 }
 
-export const SubscriptionCardHeader: React.FC<SubscriptionCardHeaderProps> = ({
+export function SubscriptionCardHeader({
   planId,
   price,
   originalPrice,
   interval,
   currency,
   language
-}) => {
+}: SubscriptionCardHeaderProps) {
   const t = useT();
 
   const getPlanName = (planId: string) => {

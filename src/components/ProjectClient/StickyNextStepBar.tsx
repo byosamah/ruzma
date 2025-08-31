@@ -8,7 +8,7 @@ interface StickyNextStepBarProps {
   project: DatabaseProject;
 }
 
-const StickyNextStepBar: React.FC<StickyNextStepBarProps> = ({ project }) => {
+function StickyNextStepBar({ project }: StickyNextStepBarProps) {
   const t = useT();
 
   // Find the first milestone that is not approved

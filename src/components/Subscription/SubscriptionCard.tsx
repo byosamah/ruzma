@@ -20,7 +20,7 @@ interface SubscriptionCardProps {
   isLoading?: boolean;
 }
 
-export const SubscriptionCard: React.FC<SubscriptionCardProps> = ({
+export function SubscriptionCard({
   plan,
   currency,
   isPopular = false,
@@ -29,7 +29,7 @@ export const SubscriptionCard: React.FC<SubscriptionCardProps> = ({
   currentUserType = 'free',
   onSelectPlan,
   isLoading = false
-}) => {
+}: SubscriptionCardProps) {
   const { language } = useLanguage();
   
   const getCardClassName = () => {

@@ -16,7 +16,7 @@ interface ProjectHeaderProps {
   isResendingContract?: boolean;
 }
 
-const ProjectHeader: React.FC<ProjectHeaderProps> = ({
+function ProjectHeader({
   project,
   onBackClick,
   onEditClick,
@@ -25,7 +25,7 @@ const ProjectHeader: React.FC<ProjectHeaderProps> = ({
   onResendContract,
   onEditContract,
   isResendingContract
-}) => {
+}: ProjectHeaderProps) {
   return (
     <div className="space-y-4">
       {/* Project Title and Description */}

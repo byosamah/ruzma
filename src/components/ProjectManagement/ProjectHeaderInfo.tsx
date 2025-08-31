@@ -10,12 +10,12 @@ interface ProjectHeaderInfoProps {
   onDeleteClick?: () => void;
 }
 
-const ProjectHeaderInfo: React.FC<ProjectHeaderInfoProps> = ({ 
+function ProjectHeaderInfo({ 
   project, 
   isMobile, 
   onEditClick, 
   onDeleteClick 
-}) => {
+}: ProjectHeaderInfoProps) {
   if (isMobile) {
     return (
       <div className="flex-1 min-w-0">

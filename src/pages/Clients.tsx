@@ -16,7 +16,7 @@ import LoadingSpinner from '@/components/shared/LoadingSpinner';
 import { ClientWithProjectCount } from '@/types/client';
 import { useT } from '@/lib/i18n';
 
-const Clients: React.FC = () => {
+function Clients() {
   const navigate = useNavigate();
   const t = useT();
   const { user, loading: authLoading, authChecked } = useAuth();

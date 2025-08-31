@@ -16,12 +16,12 @@ interface ProjectHeaderActionsProps {
   isMobile: boolean;
 }
 
-const ProjectHeaderActions: React.FC<ProjectHeaderActionsProps> = ({
+function ProjectHeaderActions({
   project,
   onEditClick,
   onDeleteClick,
   isMobile
-}) => {
+}: ProjectHeaderActionsProps) {
   const t = useT();
   const { navigate } = useLanguageNavigation();
 

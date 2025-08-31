@@ -13,14 +13,14 @@ interface SubscriptionCardButtonProps {
   onSelectPlan: (planId: string) => void;
 }
 
-export const SubscriptionCardButton: React.FC<SubscriptionCardButtonProps> = ({
+export function SubscriptionCardButton({
   planId,
   isCurrentPlan,
   isLoading,
   currentUserType,
   isPopular,
   onSelectPlan
-}) => {
+}: SubscriptionCardButtonProps) {
   const t = useT();
 
   const getPlanTierValue = (planId: string): number => {

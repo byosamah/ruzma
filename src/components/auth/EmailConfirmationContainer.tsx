@@ -11,7 +11,7 @@ interface EmailConfirmationContainerProps {
   email: string;
 }
 
-const EmailConfirmationContainer: React.FC<EmailConfirmationContainerProps> = ({ email }) => {
+function EmailConfirmationContainer({ email }: EmailConfirmationContainerProps) {
   const t = useT();
   const navigate = useNavigate();
   const [isResending, setIsResending] = useState(false);

@@ -17,7 +17,7 @@ interface FormFieldProps {
   required?: boolean;
 }
 
-export const FormField: React.FC<FormFieldProps> = ({
+export function FormField({
   id,
   name,
   type = 'text',
@@ -28,7 +28,7 @@ export const FormField: React.FC<FormFieldProps> = ({
   error,
   emoji,
   required = false
-}) => {
+}: FormFieldProps) {
   return (
     <div className="space-y-2">
       <Label htmlFor={id} className="text-sm font-medium text-gray-700">

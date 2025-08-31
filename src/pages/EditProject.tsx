@@ -19,7 +19,7 @@ import { ContractTermsSection } from '@/components/CreateProject/ContractTermsSe
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 
-const EditProject: React.FC = () => {
+function EditProject() {
   const { slug } = useParams<{ slug: string }>();
   const { navigate } = useLanguageNavigation();
   const t = useT();

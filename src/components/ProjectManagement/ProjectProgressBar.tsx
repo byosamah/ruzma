@@ -7,9 +7,9 @@ interface ProjectProgressBarProps {
   project: DatabaseProject;
 }
 
-const ProjectProgressBar: React.FC<ProjectProgressBarProps> = ({
+function ProjectProgressBar({
   project
-}) => {
+}: ProjectProgressBarProps) {
   const completedMilestones = project.milestones.filter(m => m.status === 'approved').length;
   const totalMilestones = project.milestones.length;
   const progressPercentage = totalMilestones > 0 ? Math.round(completedMilestones / totalMilestones * 100) : 0;

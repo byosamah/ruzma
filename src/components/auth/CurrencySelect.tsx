@@ -14,12 +14,12 @@ interface CurrencySelectProps {
   required?: boolean;
 }
 
-export const CurrencySelect: React.FC<CurrencySelectProps> = ({
+export function CurrencySelect({
   value,
   onChange,
   error,
   required = false
-}) => {
+}: CurrencySelectProps) {
   const t = useT();
   const { language } = useLanguage();
   

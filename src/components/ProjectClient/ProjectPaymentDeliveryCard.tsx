@@ -9,9 +9,9 @@ interface ProjectPaymentDeliveryCardProps {
   branding?: FreelancerBranding | null;
 }
 
-const ProjectPaymentDeliveryCard: React.FC<ProjectPaymentDeliveryCardProps> = ({
+function ProjectPaymentDeliveryCard({
   paymentProofRequired = false,
-}) => {
+}: ProjectPaymentDeliveryCardProps) {
   const t = useT();
 
   if (!paymentProofRequired) {
