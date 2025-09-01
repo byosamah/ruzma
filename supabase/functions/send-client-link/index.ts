@@ -49,7 +49,7 @@ const handler = async (req: Request): Promise<Response> => {
     }
 
     // Use the full client token directly instead of generating hybrid token
-    const clientUrl = `https://hub.ruzma.co/client/project/${clientToken}`;
+    const clientUrl = `https://app.ruzma.co/client/project/${clientToken}`;
 
     const emailResponse = await resend.emails.send({
       from: `${actualFreelancerName} <notifications@ruzma.co>`,

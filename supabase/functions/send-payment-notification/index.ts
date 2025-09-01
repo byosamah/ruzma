@@ -91,12 +91,12 @@ const handler = async (req: Request): Promise<Response> => {
     const origin = req.headers.get('origin') || req.headers.get('referer');
     console.log("Request origin:", origin);
     
-    // Use hub.ruzma.co as the base URL
-    let baseUrl = 'https://hub.ruzma.co';
+    // Use app.ruzma.co as the base URL
+    let baseUrl = 'https://app.ruzma.co';
     
     if (origin && origin.includes('lovable.app')) {
-      // If the request comes from a lovable.app domain, still use hub.ruzma.co
-      baseUrl = 'https://hub.ruzma.co';
+      // If the request comes from a lovable.app domain, still use app.ruzma.co
+      baseUrl = 'https://app.ruzma.co';
     }
     
     const clientProjectUrl = `${baseUrl}/client/project/${clientToken}`;

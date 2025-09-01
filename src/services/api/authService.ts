@@ -42,7 +42,7 @@ export const authService = {
         throw new Error('Please select a valid currency');
       }
 
-      const redirectUrl = 'https://hub.ruzma.co/';
+      const redirectUrl = 'https://app.ruzma.co/';
       
       const { data, error } = await supabase.auth.signUp({
         email: formData.email,
@@ -122,7 +122,7 @@ export const authService = {
   // Email confirmation resend with cooldown
   async resendConfirmation(email: string) {
     try {
-      const redirectUrl = 'https://hub.ruzma.co/';
+      const redirectUrl = 'https://app.ruzma.co/';
       
       const { error } = await supabase.auth.resend({
         type: 'signup',

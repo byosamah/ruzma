@@ -27,13 +27,13 @@ function ProjectHeaderActions({
 
   const handleViewProjectPage = () => {
     // Use the full client_access_token directly
-    const clientUrl = `https://hub.ruzma.co/client/project/${project.client_access_token}`;
+    const clientUrl = `https://app.ruzma.co/client/project/${project.client_access_token}`;
     window.open(clientUrl, '_blank');
   };
 
   const handleCopyClientLink = async () => {
     // Use the full client_access_token directly
-    const clientUrl = `https://hub.ruzma.co/client/project/${project.client_access_token}`;
+    const clientUrl = `https://app.ruzma.co/client/project/${project.client_access_token}`;
     try {
       await navigator.clipboard.writeText(clientUrl);
       toast.success(t('clientLinkCopied'));
