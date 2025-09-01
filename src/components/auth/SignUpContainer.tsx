@@ -40,7 +40,7 @@ function SignUpContainer() {
       {/* Header - matches Login */}
       <div className="text-center space-y-4">
         <Link to="/">
-          <img src="/lovable-uploads/bca9fbc0-5ee9-455b-91b3-b7eff1f56169.png" alt="Ruzma Logo" className="h-10 mx-auto" />
+          <img src="/assets/logo-full-en.svg" alt="Ruzma Logo" className="h-10 mx-auto" />
         </Link>
         <div className="space-y-2">
           <h1 className="text-2xl font-semibold text-gray-900">{t('welcomeToRuzma')}</h1>

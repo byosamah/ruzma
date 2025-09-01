@@ -182,7 +182,7 @@ const ResetPassword = () => {
       <div className="min-h-screen bg-white flex flex-col items-center justify-center p-4">
         <div className="absolute top-10 sm:top-16">
           <Link to="/">
-            <img src="/lovable-uploads/bca9fbc0-5ee9-455b-91b3-b7eff1f56169.png" alt="Ruzma Logo" className="h-10" />
+            <img src="/assets/logo-full-en.svg" alt="Ruzma Logo" className="h-10" />
           </Link>
         </div>
         <div className="w-full max-w-md">
@@ -203,7 +203,7 @@ const ResetPassword = () => {
       <div className="min-h-screen bg-white flex flex-col items-center justify-center p-4">
         <div className="absolute top-10 sm:top-16">
           <Link to="/">
-            <img src="/lovable-uploads/bca9fbc0-5ee9-455b-91b3-b7eff1f56169.png" alt="Ruzma Logo" className="h-10" />
+            <img src="/assets/logo-full-en.svg" alt="Ruzma Logo" className="h-10" />
           </Link>
         </div>
         <div className="w-full max-w-md">
@@ -239,7 +239,7 @@ const ResetPassword = () => {
     <div className="min-h-screen bg-white flex flex-col items-center justify-center p-4">
       <div className="absolute top-10 sm:top-16">
         <Link to="/">
-          <img src="/lovable-uploads/bca9fbc0-5ee9-455b-91b3-b7eff1f56169.png" alt="Ruzma Logo" className="h-10" />
+          <img src="/assets/logo-full-en.svg" alt="Ruzma Logo" className="h-10" />
         </Link>
       </div>
       <div className="w-full max-w-md">

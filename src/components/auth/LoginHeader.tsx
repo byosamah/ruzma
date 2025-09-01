@@ -12,7 +12,7 @@ const LoginHeader = () => {
       <div className="flex justify-center">
         <Link to="/">
           <img 
-            src="/lovable-uploads/d7c62fd0-8ad6-4696-b936-c40ca12c9886.png" 
+            src="/assets/logo-full-en.svg" 
             alt="Ruzma" 
             className="h-10 object-contain" 
           />

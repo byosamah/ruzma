@@ -53,7 +53,7 @@ function EmailConfirmationContainer({ email }: EmailConfirmationContainerProps) 
       {/* Header */}
       <div className="text-center space-y-4">
         <Link to="/">
-          <img src="/lovable-uploads/bca9fbc0-5ee9-455b-91b3-b7eff1f56169.png" alt="Ruzma Logo" className="h-10 mx-auto" />
+          <img src="/assets/logo-full-en.svg" alt="Ruzma Logo" className="h-10 mx-auto" />
         </Link>
         <div className="space-y-2">
           <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto">

@@ -26,7 +26,7 @@ function SEOHead({
   structuredData
 }: SEOHeadProps) {
   const siteName = 'Ruzma - Freelancers Management System';
-  const defaultImage = '/lovable-uploads/3a7605fb-8403-4b7a-926c-29cb12877ef1.png';
+  const defaultImage = '/assets/social-preview.svg';
   const fullImageUrl = image || defaultImage;
   
   return (
