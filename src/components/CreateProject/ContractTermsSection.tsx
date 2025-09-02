@@ -8,6 +8,7 @@ import { Switch } from '@/components/ui/switch';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { useT } from '@/lib/i18n';
 import { useLanguage } from '@/contexts/LanguageContext';
+import { DEFAULT_CONTRACT_TERMS, DEFAULT_PAYMENT_TERMS, DEFAULT_PROJECT_SCOPE, DEFAULT_REVISION_POLICY } from '@/lib/constants/contractTemplates';
 // Icons replaced with emojis
 
 interface ContractTermsSectionProps {
@@ -28,97 +29,13 @@ export const ContractTermsSection = ({
     revisionPolicy: false
   });
 
-  const defaultContractTerms = language === 'ar' ? 
-    `الشروط والأحكام:
+  const defaultContractTerms = DEFAULT_CONTRACT_TERMS[language];
 
-1. نطاق العمل
-يوافق المستقل على تقديم الخدمات المحددة في نطاق المشروع والمراحل المفصلة في هذه الاتفاقية.
+  const defaultPaymentTerms = DEFAULT_PAYMENT_TERMS[language];
 
-2. شروط الدفع
-سيتم الدفع وفقاً لجدول المراحل المحدد أدناه. جميع المدفوعات مستحقة خلال 7 أيام من اكتمال المرحلة والموافقة عليها.
+  const defaultProjectScope = DEFAULT_PROJECT_SCOPE[language];
 
-3. الملكية الفكرية
-عند الدفع الكامل، ستنتقل جميع حقوق الملكية الفكرية للعمل المكتمل إلى العميل.
-
-4. السرية
-يوافق الطرفان على الحفاظ على سرية جميع المعلومات الخاصة المشتركة أثناء هذا المشروع.
-
-5. المراجعات
-المراجعات مشمولة كما هو محدد في سياسة المراجعات. المراجعات الإضافية خارج النطاق قد تستدعي رسوماً إضافية.
-
-6. الإنهاء
-يمكن لأي من الطرفين إنهاء هذه الاتفاقية بإشعار كتابي مدته 7 أيام. سيدفع العميل مقابل جميع الأعمال المكتملة حتى تاريخ الإنهاء.` : 
-    `Terms and Conditions:
-
-1. SCOPE OF WORK
-The freelancer agrees to provide the services outlined in the project scope and milestones detailed in this agreement.
-
-2. PAYMENT TERMS
-Payment will be made according to the milestone schedule outlined below. All payments are due within 7 days of milestone completion and approval.
-
-3. INTELLECTUAL PROPERTY
-Upon full payment, all intellectual property rights for the completed work will transfer to the client.
-
-4. CONFIDENTIALITY
-Both parties agree to maintain confidentiality of all proprietary information shared during this project.
-
-5. REVISIONS
-Revisions are included as outlined in the revision policy. Additional revisions beyond the scope may incur extra charges.
-
-6. TERMINATION
-Either party may terminate this agreement with 7 days written notice. Client will pay for all completed work up to the termination date.`;
-
-  const defaultPaymentTerms = language === 'ar' ? 
-    `جدول الدفع:
-- المدفوعات مستحقة خلال 7 أيام من اكتمال المرحلة
-- المدفوعات المتأخرة قد تستدعي رسوماً شهرية بنسبة 1.5%
-- جميع المدفوعات بعملة المشروع المتفق عليها
-- طرق الدفع: التحويل البنكي، باي بال، أو كما متفق عليه
-- المبالغ المستردة الجزئية متاحة للمراحل غير المكتملة فقط` : 
-    `Payment Schedule:
-- Payments due within 7 days of milestone completion
-- Late payments may incur a 1.5% monthly fee
-- All payments in the agreed project currency
-- Payment methods: Bank transfer, PayPal, or as agreed
-- Partial refunds available for incomplete milestones only`;
-
-  const defaultProjectScope = language === 'ar' ? 
-    `مخرجات المشروع:
-[حدد المخرجات المحددة والميزات والمتطلبات]
-
-الجدول الزمني:
-[حدد مدة المشروع والمواعيد الرئيسية]
-
-الخدمات المشمولة:
-[اذكر ما هو مشمول في سعر المشروع]
-
-غير مشمول:
-[حدد ما هو غير مشمول لتجنب توسع النطاق]` : 
-    `Project Deliverables:
-[Outline specific deliverables, features, and requirements]
-
-Timeline:
-[Specify project duration and key deadlines]
-
-Included Services:
-[List what is included in the project price]
-
-Not Included:
-[Specify what is not included to avoid scope creep]`;
-
-  const defaultRevisionPolicy = language === 'ar' ? 
-    `سياسة المراجعات:
-- حتى جولتين من المراجعات مشمولة لكل مرحلة
-- يجب طلب المراجعات خلال 7 أيام من التسليم
-- المراجعات الإضافية: 50 دولار في الساعة
-- التغييرات الرئيسية في النطاق تتطلب اتفاقية منفصلة
-- يجب أن تكون المراجعات محددة وقابلة للتنفيذ` : 
-    `Revision Policy:
-- Up to 2 rounds of revisions included per milestone
-- Revisions must be requested within 7 days of delivery
-- Additional revisions: $50 per hour
-- Major scope changes require separate agreement
-- Revisions must be specific and actionable`;
+  const defaultRevisionPolicy = DEFAULT_REVISION_POLICY[language];
 
   const handleMasterToggle = (enabled: boolean) => {
     setUseTemplates(enabled);

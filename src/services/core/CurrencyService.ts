@@ -119,7 +119,7 @@ export class CurrencyService extends BaseService {
    * Validate currency code
    */
   isValidCurrency(currency: string): currency is CurrencyCode {
-    return Object.prototype.hasOwnProperty.call(formatCurrencyUtil as any, currency);
+    return Object.prototype.hasOwnProperty.call(formatCurrencyUtil as Record<string, unknown>, currency);
   }
 
   /**

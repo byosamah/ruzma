@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
-import { CheckCircle, XCircle, ExternalLink, MessageSquare, Settings } from 'lucide-react';
+import { CheckCircle, XCircle, ExternalLink, MessageSquare } from 'lucide-react';
 import { Milestone } from './types';
 import { useT } from '@/lib/i18n';
 import { parseRevisionData, markRevisionAddressed, updateMaxRevisions, stringifyRevisionData } from '@/lib/revisionUtils';

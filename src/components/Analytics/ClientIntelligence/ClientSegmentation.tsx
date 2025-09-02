@@ -1,7 +1,6 @@
-import React, { memo, useMemo } from 'react';
+import React, { memo, useMemo, useCallback } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { ChartContainer, ChartTooltip, ChartTooltipContent } from '@/components/ui/chart';
-import { PieChart, Pie, Cell, Legend } from 'recharts';
+import { ChartContainer, ChartTooltip, PieChart, Pie, Cell, Legend } from '@/components/ui/chartLazy';
 import { formatCurrency, CurrencyCode } from '@/lib/currency';
 import { useT } from '@/lib/i18n';
 import { useLanguage } from '@/contexts/LanguageContext';
@@ -19,7 +18,7 @@ const ClientSegmentation = ({
   const t = useT();
   const { language } = useLanguage();
 
-  const getSegmentLabel = (segment: string) => {
+  const getSegmentLabel = useCallback((segment: string) => {
     switch (segment) {
       case 'champion': return t('champions');
       case 'growing': return t('growing');
@@ -28,7 +27,7 @@ const ClientSegmentation = ({
       case 'one-time': return t('oneTime');
       default: return segment;
     }
-  };
+  }, [t]);
 
   const chartData = useMemo(() => segments.map(segment => ({
     name: getSegmentLabel(segment.segment),
@@ -36,7 +35,7 @@ const ClientSegmentation = ({
     totalValue: segment.totalValue,
     avgValue: segment.avgValue,
     color: segment.color,
-  })), [segments, t]);
+  })), [segments, t, getSegmentLabel]);
 
   const chartConfig = {
     count: { label: t('clients'), color: "hsl(var(--chart-1))" },

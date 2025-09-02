@@ -1,9 +1,7 @@
 
-import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
 import { ProjectCardProps } from './types';
-import { calculateProjectStats, getStatusColor } from './utils';
+import { calculateProjectStats } from './utils';
 import { useProjectCardActions } from './useProjectCardActions';
 import ProjectCardActions from './ProjectCardActions';
 import ProjectCardContent from './ProjectCardContent';

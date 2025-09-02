@@ -8,7 +8,9 @@ import { InvoiceProvider } from "@/contexts/InvoiceContext";
 import ProtectedRoute from "@/components/ProtectedRoute";
 import { LanguageLayout } from "@/components/LanguageLayout";
 import { RedirectWithParams } from "@/components/RedirectWithParams";
+import ErrorBoundary from "@/components/ErrorBoundary";
 import { Suspense, lazy } from "react";
+
 
 // Import Login directly to avoid dynamic import issues
 import Login from "./pages/Login";
@@ -42,29 +44,41 @@ const PageLoader = () => (
   </div>
 );
 
+// Enhanced query client with optimized caching strategies
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
-      staleTime: 10 * 60 * 1000, // 10 minutes
-      gcTime: 30 * 60 * 1000,    // 30 minutes
+      staleTime: 5 * 60 * 1000,   // 5 minutes default
+      gcTime: 15 * 60 * 1000,     // 15 minutes default
       retry: 1,
       refetchOnWindowFocus: false,
-      refetchOnReconnect: false,
+      refetchOnReconnect: true,    // Refetch on network reconnect
       refetchOnMount: false,
+      // Network error retries with exponential backoff
+      retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 30000),
+    },
+    mutations: {
+      retry: 1,
+      // Mutation error handling
+      onError: (error: Error) => {
+        console.error('Mutation error:', error);
+      },
     },
   },
 });
 
 function App() {
+
   return (
-    <QueryClientProvider client={queryClient}>
-      <BrowserRouter>
-        <LanguageProvider>
-          <TooltipProvider>
-            <Toaster />
-            <InvoiceProvider>
-              <Suspense fallback={<PageLoader />}>
-                <Routes>
+    <ErrorBoundary>
+      <QueryClientProvider client={queryClient}>
+        <BrowserRouter>
+          <LanguageProvider>
+                  <TooltipProvider>
+                    <Toaster />
+                    <InvoiceProvider>
+                      <Suspense fallback={<PageLoader />}>
+                    <Routes>
                   {/* Root redirect - handled by LanguageProvider */}
                   <Route path="/" element={<Navigate to="/en/dashboard" replace />} />
                   
@@ -169,6 +183,7 @@ function App() {
                     </LanguageLayout>
                   } />
                   
+                  
                   {/* Backward compatibility redirects */}
                   <Route path="/login" element={<Navigate to="/en/login" replace />} />
                   <Route path="/signup" element={<Navigate to="/en/signup" replace />} />
@@ -191,13 +206,14 @@ function App() {
                   
                   {/* 404 route */}
                   <Route path="*" element={<NotFound />} />
-                </Routes>
-              </Suspense>
-            </InvoiceProvider>
-          </TooltipProvider>
-        </LanguageProvider>
-      </BrowserRouter>
-    </QueryClientProvider>
+                    </Routes>
+                      </Suspense>
+                    </InvoiceProvider>
+                  </TooltipProvider>
+          </LanguageProvider>
+        </BrowserRouter>
+      </QueryClientProvider>
+    </ErrorBoundary>
   );
 }
 

@@ -1,14 +1,17 @@
 
-import React from 'react';
+import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { FormField } from './FormField';
-import { PasswordField } from './PasswordField';
+import { Input } from '@/components/ui/input';
+import { Card, CardContent } from '@/components/ui/card';
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { CountrySelect } from '@/components/ui/country-select';
-import { User, Mail } from 'lucide-react';
+import { Eye, EyeOff, Lock } from 'lucide-react';
 import { useAuthManager } from '@/hooks/useAuthManager';
 import { useT } from '@/lib/i18n';
+import { signUpSchema } from '@/lib/validators/auth';
 
 function SignUpContainer() {
   const t = useT();
@@ -16,23 +19,57 @@ function SignUpContainer() {
     signUpData,
     updateSignUpField,
     handleCountryChange,
-    errors,
     isLoading,
-    showPassword,
-    showConfirmPassword,
-    togglePassword,
-    toggleConfirmPassword,
     signUp,
   } = useAuthManager();
 
-  const handleFormDataChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    updateSignUpField(name as keyof typeof signUpData, value);
-  };
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    await signUp();
+  const form = useForm<SignUpFormData>({
+    resolver: zodResolver(signUpSchema),
+    defaultValues: {
+      name: signUpData.name,
+      email: signUpData.email,
+      country: signUpData.country || '',
+      password: signUpData.password,
+      confirmPassword: signUpData.confirmPassword,
+    },
+  });
+
+  // Watch form changes and sync with useAuthManager
+  const formValues = form.watch();
+  useEffect(() => {
+    // Sync form data with useAuthManager state
+    if (formValues.name !== signUpData.name) {
+      updateSignUpField('name', formValues.name);
+    }
+    if (formValues.email !== signUpData.email) {
+      updateSignUpField('email', formValues.email);
+    }
+    if (formValues.country !== signUpData.country) {
+      handleCountryChange(formValues.country);
+    }
+    if (formValues.password !== signUpData.password) {
+      updateSignUpField('password', formValues.password);
+    }
+    if (formValues.confirmPassword !== signUpData.confirmPassword) {
+      updateSignUpField('confirmPassword', formValues.confirmPassword);
+    }
+  }, [formValues, signUpData, updateSignUpField, handleCountryChange]);
+
+  const onSubmit = async (data: SignUpFormData) => {
+    // Sync the data with useAuthManager and call signUp
+    updateSignUpField('name', data.name);
+    updateSignUpField('email', data.email);
+    updateSignUpField('password', data.password);
+    updateSignUpField('confirmPassword', data.confirmPassword);
+    handleCountryChange(data.country);
+    
+    // Use a small delay to ensure state update has taken effect
+    setTimeout(() => {
+      signUp();
+    }, 0);
   };
 
   return (
@@ -59,73 +96,166 @@ function SignUpContainer() {
       {/* Form - matches Login structure */}
       <Card className="border-0 shadow-none">
         <CardContent className="p-0">
-          <form onSubmit={handleSubmit} className="space-y-5">
-            <FormField
-              id="name"
-              name="name"
-              label={t('fullNameLabel')}
-              placeholder={t('fullNamePlaceholder')}
-              value={signUpData.name}
-              onChange={handleFormDataChange}
-              error={errors.name}
-              emoji="👤"
-              required
-            />
+          <Form {...form}>
+            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-5">
+              <FormField
+                control={form.control}
+                name="name"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="text-sm font-medium text-gray-700">
+                      {t('fullNameLabel')} *
+                    </FormLabel>
+                    <FormControl>
+                      <div className="relative">
+                        <span className="absolute left-3 rtl:left-auto rtl:right-3 top-1/2 -translate-y-1/2 text-lg">
+                          👤
+                        </span>
+                        <Input
+                          {...field}
+                          placeholder={t('fullNamePlaceholder')}
+                          className="pl-10 rtl:pl-3 rtl:pr-10 h-11 border-gray-200 focus:border-gray-400 focus:ring-0"
+                          disabled={isLoading}
+                        />
+                      </div>
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
 
-            <FormField
-              id="email"
-              name="email"
-              type="email"
-              label={t('emailLabel')}
-              placeholder={t('emailPlaceholder')}
-              value={signUpData.email}
-              onChange={handleFormDataChange}
-              error={errors.email}
-              emoji="📧"
-              required
-            />
+              <FormField
+                control={form.control}
+                name="email"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="text-sm font-medium text-gray-700">
+                      {t('emailLabel')} *
+                    </FormLabel>
+                    <FormControl>
+                      <div className="relative">
+                        <span className="absolute left-3 rtl:left-auto rtl:right-3 top-1/2 -translate-y-1/2 text-lg">
+                          📧
+                        </span>
+                        <Input
+                          {...field}
+                          type="email"
+                          placeholder={t('emailPlaceholder')}
+                          className="pl-10 rtl:pl-3 rtl:pr-10 h-11 border-gray-200 focus:border-gray-400 focus:ring-0"
+                          disabled={isLoading}
+                        />
+                      </div>
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
 
-            <CountrySelect
-              value={signUpData.country || ''}
-              onChange={handleCountryChange}
-              error={errors.country}
-              required
-            />
-            
-            <PasswordField
-              id="password"
-              name="password"
-              label={t('passwordLabel')}
-              placeholder={t('passwordPlaceholder')}
-              value={signUpData.password}
-              onChange={handleFormDataChange}
-              error={errors.password}
-              showPassword={showPassword}
-              onTogglePassword={togglePassword}
-              required
-            />
+              <FormField
+                control={form.control}
+                name="country"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormControl>
+                      <CountrySelect
+                        value={field.value}
+                        onChange={(value) => field.onChange(value)}
+                        required
+                        disabled={isLoading}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              
+              <FormField
+                control={form.control}
+                name="password"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="text-sm font-medium text-gray-700">
+                      {t('passwordLabel')} *
+                    </FormLabel>
+                    <FormControl>
+                      <div className="relative">
+                        <Lock className="absolute left-3 rtl:left-auto rtl:right-3 top-1/2 -translate-y-1/2 h-4 w-4 sm:h-5 sm:w-5 text-slate-400" />
+                        <Input
+                          {...field}
+                          type={showPassword ? 'text' : 'password'}
+                          placeholder={t('passwordPlaceholder')}
+                          className="pl-10 rtl:pl-3 rtl:pr-10 pr-10 h-11 border-gray-200 focus:border-gray-400 focus:ring-0"
+                          disabled={isLoading}
+                        />
+                        <Button
+                          type="button"
+                          variant="ghost"
+                          size="sm"
+                          className="absolute right-0 rtl:right-auto rtl:left-0 top-0 h-full px-3 py-2 hover:bg-transparent"
+                          onClick={() => setShowPassword(!showPassword)}
+                          disabled={isLoading}
+                        >
+                          {showPassword ? (
+                            <EyeOff className="h-4 w-4 sm:h-5 sm:w-5 text-slate-400" />
+                          ) : (
+                            <Eye className="h-4 w-4 sm:h-5 sm:w-5 text-slate-400" />
+                          )}
+                        </Button>
+                      </div>
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
 
-            <PasswordField
-              id="confirmPassword"
-              name="confirmPassword"
-              label={t('confirmPasswordLabel')}
-              placeholder={t('confirmPasswordPlaceholder')}
-              value={signUpData.confirmPassword}
-              onChange={handleFormDataChange}
-              error={errors.confirmPassword}
-              showPassword={showConfirmPassword}
-              onTogglePassword={toggleConfirmPassword}
-              required
-            />
+              <FormField
+                control={form.control}
+                name="confirmPassword"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="text-sm font-medium text-gray-700">
+                      {t('confirmPasswordLabel')} *
+                    </FormLabel>
+                    <FormControl>
+                      <div className="relative">
+                        <Lock className="absolute left-3 rtl:left-auto rtl:right-3 top-1/2 -translate-y-1/2 h-4 w-4 sm:h-5 sm:w-5 text-slate-400" />
+                        <Input
+                          {...field}
+                          type={showConfirmPassword ? 'text' : 'password'}
+                          placeholder={t('confirmPasswordPlaceholder')}
+                          className="pl-10 rtl:pl-3 rtl:pr-10 pr-10 h-11 border-gray-200 focus:border-gray-400 focus:ring-0"
+                          disabled={isLoading}
+                        />
+                        <Button
+                          type="button"
+                          variant="ghost"
+                          size="sm"
+                          className="absolute right-0 rtl:right-auto rtl:left-0 top-0 h-full px-3 py-2 hover:bg-transparent"
+                          onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                          disabled={isLoading}
+                        >
+                          {showConfirmPassword ? (
+                            <EyeOff className="h-4 w-4 sm:h-5 sm:w-5 text-slate-400" />
+                          ) : (
+                            <Eye className="h-4 w-4 sm:h-5 sm:w-5 text-slate-400" />
+                          )}
+                        </Button>
+                      </div>
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
 
-            <Button 
-              type="submit" 
-              className="w-full h-11 bg-gray-900 text-white hover:bg-gray-800 font-medium rounded-lg" 
-              disabled={isLoading}
-            >
-              {isLoading ? t('creatingAccount') : t('createAccount')}
-            </Button>
-          </form>
+              <Button 
+                type="submit" 
+                className="w-full h-11 bg-gray-900 text-white hover:bg-gray-800 font-medium rounded-lg" 
+                disabled={isLoading}
+              >
+                {isLoading ? t('creatingAccount') : t('createAccount')}
+              </Button>
+            </form>
+          </Form>
         </CardContent>
       </Card>
       

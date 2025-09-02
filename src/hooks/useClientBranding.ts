@@ -1,5 +1,5 @@
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { FreelancerBranding, defaultBranding } from '@/types/branding';
 import { supabase } from '@/integrations/supabase/client';
 
@@ -7,22 +7,13 @@ export const useClientBranding = (freelancerUserId?: string) => {
   const [branding, setBranding] = useState<FreelancerBranding | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
-  useEffect(() => {
-    if (!freelancerUserId) {
-      setIsLoading(false);
-      return;
-    }
-
-    fetchBranding();
-  }, [freelancerUserId]);
-
-  const fetchBranding = async () => {
+  const fetchBranding = useCallback(async () => {
     if (!freelancerUserId) return;
 
     try {
       const { data, error } = await supabase
         .from('freelancer_branding')
-        .select('*')
+        .select('user_id, freelancer_name, freelancer_title, freelancer_bio, primary_color, secondary_color, logo_url')
         .eq('user_id', freelancerUserId)
         .maybeSingle();
 
@@ -47,7 +38,16 @@ export const useClientBranding = (freelancerUserId?: string) => {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [freelancerUserId]);
+
+  useEffect(() => {
+    if (!freelancerUserId) {
+      setIsLoading(false);
+      return;
+    }
+
+    fetchBranding();
+  }, [freelancerUserId, fetchBranding]);
 
   return {
     branding,

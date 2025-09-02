@@ -1,5 +1,4 @@
 
-import React from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   ChartContainer,
@@ -18,7 +17,7 @@ import {
   YAxis,
   CartesianGrid,
   Legend,
-} from "recharts";
+} from "@/components/ui/chartLazy";
 import { formatCurrency, CurrencyCode } from "@/lib/currency";
 import { useT } from "@/lib/i18n";
 

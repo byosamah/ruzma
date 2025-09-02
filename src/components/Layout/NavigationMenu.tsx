@@ -1,11 +1,11 @@
 
-import React from 'react';
 import { Button } from '@/components/ui/button';
 import { Home, User, LogOut } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { NotificationBell } from '@/components/notifications/NotificationBell';
 import { useT } from '@/lib/i18n';
 import { AuthenticatedUser, UserProfile } from '@/types/profile';
+import { Notification } from '@/types/notifications';
 
 interface NavigationMenuProps {
   user: AuthenticatedUser;
@@ -16,7 +16,7 @@ interface NavigationMenuProps {
   onSignOut: () => void;
   onMenuClick: () => void;
   notificationsData?: {
-    notifications: unknown[];
+    notifications: Notification[];
     unreadCount: number;
     loading: boolean;
     markAsRead: (id: string) => void;
@@ -119,7 +119,7 @@ const NavigationMenu = ({
         );
       })}
       
-      <NotificationBell user={user} notificationsData={notificationsData as any} />
+      <NotificationBell user={user} notificationsData={notificationsData} />
       
       {shouldShowUpgradeButton && (
         <Button 

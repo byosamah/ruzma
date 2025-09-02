@@ -95,7 +95,6 @@ Deno.serve(async (req) => {
       });
 
     if (uploadError) {
-      console.error('Upload error:', uploadError);
       return new Response(
         JSON.stringify({ error: 'Failed to upload file' }),
         { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
@@ -114,7 +113,6 @@ Deno.serve(async (req) => {
       .eq('id', user.id);
 
     if (updateError) {
-      console.error('Profile update error:', updateError);
       return new Response(
         JSON.stringify({ error: 'Failed to update profile' }),
         { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
@@ -134,7 +132,6 @@ Deno.serve(async (req) => {
     );
 
   } catch (error) {
-    console.error('Function error:', error);
     return new Response(
       JSON.stringify({ error: 'Internal server error' }),
       { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }

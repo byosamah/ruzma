@@ -6,7 +6,7 @@ export interface FormState<T> {
   errors: Record<string, string>;
 }
 
-export const useFormState = <T extends Record<string, any>>(initialData: T) => {
+export const useFormState = <T extends Record<string, unknown>>(initialData: T) => {
   const [formData, setFormData] = useState<T>(initialData);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});

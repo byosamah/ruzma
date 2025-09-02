@@ -1,15 +1,15 @@
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { User } from '@supabase/supabase-js';
 import { toast } from 'sonner';
-import { DatabaseProject, DatabaseMilestone } from '../projectTypes';
+import { DatabaseProject } from '../projectTypes';
 
 export const useUserProjects = (user: User | null) => {
   const [projects, setProjects] = useState<DatabaseProject[]>([]);
   const [loading, setLoading] = useState(true);
 
-  const fetchProjects = async () => {
+  const fetchProjects = useCallback(async () => {
     if (!user) {
       setProjects([]);
       setLoading(false);
@@ -44,11 +44,11 @@ export const useUserProjects = (user: User | null) => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [user]);
 
   useEffect(() => {
     fetchProjects();
-  }, [user]);
+  }, [fetchProjects]);
 
   return {
     projects,

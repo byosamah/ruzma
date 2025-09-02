@@ -15,26 +15,13 @@ import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 
 const ProjectManagement = () => {
-  // Add error boundary for Router context
-  let slug: string | undefined;
-  let navigate: (path: string) => void;
-  
-  try {
-    const params = useParams<{ slug: string; }>();
-    slug = params.slug;
-    navigate = useNavigate();
-  } catch (error) {
-    return (
-      <div className="flex items-center justify-center min-h-screen">
-        <div className="text-center space-y-4">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto"></div>
-          <p>Loading...</p>
-        </div>
-      </div>
-    );
-  }
+  // All hooks must be called at the top level before any conditional logic
+  const params = useParams<{ slug: string; }>();
+  const navigate = useNavigate();
   const { language } = useLanguage();
   const t = useT();
+  
+  const slug = params.slug;
   const {
     user,
     profile,

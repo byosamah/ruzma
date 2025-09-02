@@ -24,8 +24,6 @@ Deno.serve(async (req) => {
       );
     }
 
-    console.log('Uploading revision image for milestone:', milestoneId);
-
     // Verify the token belongs to a valid project
     const { data: project, error: projectError } = await supabase
       .from('projects')
@@ -34,7 +32,6 @@ Deno.serve(async (req) => {
       .single();
 
     if (projectError || !project) {
-      console.error('Project not found or invalid token:', projectError);
       return new Response(
         JSON.stringify({ error: 'Invalid project token' }),
         { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 404 }
@@ -54,7 +51,6 @@ Deno.serve(async (req) => {
       });
 
     if (uploadError) {
-      console.error('Error uploading file:', uploadError);
       return new Response(
         JSON.stringify({ error: 'Failed to upload image' }),
         { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 500 }
@@ -65,8 +61,6 @@ Deno.serve(async (req) => {
     const { data: { publicUrl } } = supabase.storage
       .from('deliverables')
       .getPublicUrl(fileName);
-
-    console.log('Image uploaded successfully:', publicUrl);
 
     return new Response(
       JSON.stringify({ 
@@ -80,7 +74,6 @@ Deno.serve(async (req) => {
     );
 
   } catch (error) {
-    console.error('Error in upload-revision-image function:', error);
     return new Response(
       JSON.stringify({ error: 'Internal server error' }),
       { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 500 }

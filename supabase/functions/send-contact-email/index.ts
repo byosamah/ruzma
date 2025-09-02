@@ -26,8 +26,6 @@ const handler = async (req: Request): Promise<Response> => {
   try {
     const { name, email, subject, message }: ContactFormRequest = await req.json();
 
-    console.log('Processing contact form submission:', { name, email, subject });
-
     // Use verified domain for "from" and sender's email as "replyTo"
     const emailResponse = await resend.emails.send({
       from: "Contact Form <onboarding@resend.dev>",
@@ -47,8 +45,6 @@ const handler = async (req: Request): Promise<Response> => {
       `,
     });
 
-    console.log("Email sent successfully:", emailResponse);
-
     return new Response(JSON.stringify({ success: true, emailId: emailResponse.data?.id }), {
       status: 200,
       headers: {
@@ -57,7 +53,6 @@ const handler = async (req: Request): Promise<Response> => {
       },
     });
   } catch (error: any) {
-    console.error("Error in send-contact-email function:", error);
     return new Response(
       JSON.stringify({ error: error.message }),
       {

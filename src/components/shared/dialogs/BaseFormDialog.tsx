@@ -1,5 +1,5 @@
 import React from 'react';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogDescription } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Loader2 } from 'lucide-react';
 
@@ -47,8 +47,10 @@ export const BaseFormDialog = ({
       <DialogContent className={maxWidth}>
         <DialogHeader>
           <DialogTitle>{title}</DialogTitle>
-          {description && (
-            <div className="text-sm text-muted-foreground">{description}</div>
+          {description ? (
+            <DialogDescription>{description}</DialogDescription>
+          ) : (
+            <DialogDescription>Complete the form below and submit</DialogDescription>
           )}
         </DialogHeader>
         

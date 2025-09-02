@@ -40,6 +40,10 @@ src/pages/
 
 // ✅ Always wrap pages with LanguageLayout for i18n routes
 // ❌ DON'T create routes without language prefix for protected pages
+
+// ✅ Client portal routes (public access with token)
+<Route path="/client/:token" element={<ModernClientProject />} />
+// Note: Client routes don't use language prefix as they're accessed by clients directly
 ```
 
 ### Protected Route Pattern

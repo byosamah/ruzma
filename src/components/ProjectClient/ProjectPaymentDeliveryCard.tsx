@@ -1,5 +1,4 @@
 
-import React from 'react';
 import { useT } from '@/lib/i18n';
 import { FreelancerBranding } from '@/types/branding';
 import { StatCard } from '@/components/shared';

@@ -28,50 +28,46 @@ export class ContractService extends BaseService {
       throw new Error('User not authenticated');
     }
 
-    try {
-      // Fetch project to verify it exists and has client email
-      const { data: project, error } = await supabase
-        .from('projects')
-        .select('client_email, contract_required, contract_status')
-        .eq('id', projectId)
-        .eq('user_id', this.user.id)
-        .single();
+    // Fetch project to verify it exists and has client email
+    const { data: project, error } = await supabase
+      .from('projects')
+      .select('client_email, contract_required, contract_status')
+      .eq('id', projectId)
+      .eq('user_id', this.user.id)
+      .single();
 
-      if (error || !project) {
-        throw new Error('Project not found');
-      }
+    if (error || !project) {
+      throw new Error('Project not found');
+    }
 
-      if (!project.client_email) {
-        throw new Error('Project does not have a client email');
-      }
+    if (!project.client_email) {
+      throw new Error('Project does not have a client email');
+    }
 
-      if (!project.contract_required) {
-        throw new Error('Contract approval not required for this project');
-      }
+    if (!project.contract_required) {
+      throw new Error('Contract approval not required for this project');
+    }
 
-      // Update contract_sent_at before sending email
-      const { error: updateError } = await supabase
-        .from('projects')
-        .update({ 
-          contract_sent_at: new Date().toISOString(),
-          contract_status: 'pending' 
-        })
-        .eq('id', projectId);
+    // Update contract_sent_at before sending email
+    const { error: updateError } = await supabase
+      .from('projects')
+      .update({ 
+        contract_sent_at: new Date().toISOString(),
+        contract_status: 'pending' 
+      })
+      .eq('id', projectId);
 
-      if (updateError) {
-        throw new Error('Failed to update contract timestamp');
-      }
+    if (updateError) {
+      throw new Error('Failed to update contract timestamp');
+    }
 
-      // Send email via edge function
-      const { data, error: emailError } = await supabase.functions.invoke('send-contract-approval', {
-        body: { projectId }
-      });
+    // Send email via edge function
+    const { data, error: emailError } = await supabase.functions.invoke('send-contract-approval', {
+      body: { projectId }
+    });
 
-      if (emailError) {
-        throw new Error(emailError.message || 'Failed to send contract approval email');
-      }
-    } catch (error) {
-      throw error;
+    if (emailError) {
+      throw new Error(emailError.message || 'Failed to send contract approval email');
     }
   }
 

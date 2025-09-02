@@ -1,5 +1,4 @@
 
-import React from 'react';
 import { CardFooter } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { useT } from '@/lib/i18n';

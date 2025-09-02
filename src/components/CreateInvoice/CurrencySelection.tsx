@@ -8,7 +8,6 @@ import { InvoiceFormData } from './types';
 import { useAuth } from '@/hooks/core/useAuth';
 import { useProfileQuery } from '@/hooks/core/useProfileQuery';
 import { useUserCurrency } from '@/hooks/useUserCurrency';
-import { ServiceRegistry } from '@/services/core/ServiceRegistry';
 import { useT } from '@/lib/i18n';
 
 interface CurrencySelectionProps {
@@ -30,7 +29,7 @@ const CurrencySelection = ({
     if (userCurrency && !invoiceData.currency) {
       updateField('currency', userCurrency);
     }
-  }, [userCurrency, updateField]);
+  }, [userCurrency, updateField, invoiceData.currency]);
 
   const resetToDefault = () => {
     if (userCurrency) {

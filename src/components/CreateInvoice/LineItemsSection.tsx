@@ -34,7 +34,7 @@ const LineItemsSection = ({
   const { user } = useAuth();
   const { projects } = useProjects(user);
   const { language } = useLanguage();
-  const currencySymbol = getCurrencySymbol(invoiceData.currency as any, language);
+  const currencySymbol = getCurrencySymbol(invoiceData.currency as CurrencyCode, language);
 
   // Populate line items with project milestones when project is selected
   useEffect(() => {

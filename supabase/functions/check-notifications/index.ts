@@ -8,8 +8,6 @@ Deno.serve(async (req) => {
   }
 
   try {
-    console.log('Starting notification check...')
-    
     const supabaseUrl = Deno.env.get('SUPABASE_URL')
     const serviceRoleKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')
 
@@ -23,11 +21,8 @@ Deno.serve(async (req) => {
     const { error } = await supabaseAdmin.rpc('check_deadlines_and_limits')
 
     if (error) {
-      console.error('Error checking deadlines and limits:', error)
       throw error
     }
-
-    console.log('Notification check completed successfully')
 
     return new Response(
       JSON.stringify({ 
@@ -42,7 +37,6 @@ Deno.serve(async (req) => {
     )
 
   } catch (error) {
-    console.error('Function error:', error)
     return new Response(
       JSON.stringify({ 
         error: 'Internal server error',

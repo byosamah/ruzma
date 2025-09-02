@@ -1,5 +1,4 @@
 
-import React from 'react';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Label } from '@/components/ui/label';
 import { Coins } from 'lucide-react';
@@ -25,7 +24,7 @@ export function CurrencySelect({
   
   // Show popular currencies first, then all others
   const popularCurrencies = getPopularCurrencies();
-  const otherCurrencies = Object.keys(CURRENCIES).filter(code => !popularCurrencies.includes(code as any));
+  const otherCurrencies = Object.keys(CURRENCIES).filter(code => !popularCurrencies.includes(code as CurrencyCode));
 
   return (
     <div className="space-y-2">

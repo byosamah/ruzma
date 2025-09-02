@@ -1,5 +1,4 @@
 
-import React from 'react';
 import { CardHeader, CardTitle } from '@/components/ui/card';
 import { CurrencyCode, formatCurrency } from '@/lib/currency';
 import { useT } from '@/lib/i18n';

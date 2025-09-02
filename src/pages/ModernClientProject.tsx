@@ -12,7 +12,6 @@ import ModernProjectOverview from '@/components/ClientProject/ModernProjectOverv
 import ModernInstructionsCard from '@/components/ClientProject/ModernInstructionsCard';
 import ModernMilestonesList from '@/components/ClientProject/ModernMilestonesList';
 import ContractApprovalModal from '@/components/ProjectClient/ContractApprovalModal';
-import ClientContractStatus from '@/components/ProjectClient/ClientContractStatus';
 import ProjectFooter from '@/components/ProjectClient/ProjectFooter';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { parseClientToken } from '@/lib/clientUrlUtils';

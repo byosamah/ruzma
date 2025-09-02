@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { User } from '@supabase/supabase-js';
 import { ProjectTemplate } from '@/types/projectTemplate';
 import { ServiceRegistry } from '@/services/core/ServiceRegistry';
@@ -16,7 +16,7 @@ export const useTemplates = ({ user }: UseTemplatesProps) => {
   const serviceRegistry = ServiceRegistry.getInstance();
   const projectService = serviceRegistry.getProjectService(user);
 
-  const fetchTemplates = async () => {
+  const fetchTemplates = useCallback(async () => {
     if (!user) {
       setTemplates([]);
       return;
@@ -33,7 +33,7 @@ export const useTemplates = ({ user }: UseTemplatesProps) => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [user, projectService]);
 
   const saveTemplate = async (templateData: {
     name: string;
@@ -104,7 +104,7 @@ export const useTemplates = ({ user }: UseTemplatesProps) => {
   // Load templates when user changes
   useEffect(() => {
     fetchTemplates();
-  }, [user]);
+  }, [fetchTemplates]);
 
   return {
     templates,

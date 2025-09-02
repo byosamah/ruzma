@@ -1,11 +1,9 @@
-import React from 'react';
 import Layout from '@/components/Layout';
 import DashboardHeader from '@/components/dashboard/DashboardHeader';
 import DashboardStats from '@/components/dashboard/DashboardStats';
 import ProjectCard from '@/components/ProjectCard';
 import { UsageIndicators } from '@/components/dashboard/UsageIndicators';
 import SEOHead from '@/components/SEO/SEOHead';
-import YouTubePopup from '@/components/YouTubePopup';
 import { useDashboard } from '@/hooks/useDashboard';
 import { useDashboardSEO } from '@/hooks/dashboard/useDashboardSEO';
 import { useUsageTracking } from '@/hooks/useUsageTracking';

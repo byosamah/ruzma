@@ -1,5 +1,4 @@
 
-import React from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 // Icons replaced with emojis
 import { Invoice } from '@/hooks/useInvoices';

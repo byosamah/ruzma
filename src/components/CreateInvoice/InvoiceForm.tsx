@@ -119,7 +119,7 @@ const InvoiceForm = ({ invoiceData, setInvoiceData }: InvoiceFormProps) => {
     };
     
     setInvoiceData(newInvoiceData);
-  }, [invoiceData.projectId, projects]);
+  }, [projectIdFromUrl, invoiceData, setInvoiceData, projects]);
 
   const {
     updateLineItem,

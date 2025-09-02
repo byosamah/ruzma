@@ -1,6 +1,5 @@
 
 import { useState, useEffect } from 'react';
-import { User } from '@supabase/supabase-js';
 import { useProjects } from './useProjects';
 import { DatabaseProject } from './projectTypes';
 import { useDashboard } from './useDashboard';

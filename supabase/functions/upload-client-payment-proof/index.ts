@@ -115,7 +115,6 @@ Deno.serve(async (req) => {
       status: 200,
     })
   } catch (error) {
-    console.error('Upload error:', error)
     return new Response(JSON.stringify({ error: 'Failed to upload payment proof' }), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       status: 500,

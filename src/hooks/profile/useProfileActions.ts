@@ -7,7 +7,6 @@ import { toast } from 'sonner';
 import { trackBrandingUpdated, trackError } from '@/lib/analytics';
 import { brandingService } from '@/services/brandingService';
 
-import { FreelancerBranding } from '@/types/branding';
 
 interface BrandingUpdateData {
   freelancer_name?: string;
@@ -112,7 +111,7 @@ export const useProfileActions = (user: User | null) => {
     }
   };
 
-  const handleChange = <T extends Record<string, any>>(
+  const handleChange = <T extends Record<string, unknown>>(
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>, 
     setFormData: React.Dispatch<React.SetStateAction<T>>
   ) => {
@@ -120,14 +119,14 @@ export const useProfileActions = (user: User | null) => {
     setFormData((prev: T) => ({ ...prev, [name]: value }));
   };
 
-  const handleCurrencyChange = <T extends Record<string, any>>(
+  const handleCurrencyChange = <T extends Record<string, unknown>>(
     currency: string, 
     setFormData: React.Dispatch<React.SetStateAction<T>>
   ) => {
     setFormData((prev: T) => ({ ...prev, currency }));
   };
 
-  const handleLogoUpload = <T extends Record<string, any>>(
+  const handleLogoUpload = <T extends Record<string, unknown>>(
     file: File, 
     setFormData: React.Dispatch<React.SetStateAction<T>>
   ) => {

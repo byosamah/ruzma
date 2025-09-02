@@ -1,5 +1,4 @@
 
-import React from 'react';
 import { Button } from '@/components/ui/button';
 import { Edit, Trash2, ExternalLink, Send, Copy, FileText } from 'lucide-react';
 import { useT } from '@/lib/i18n';

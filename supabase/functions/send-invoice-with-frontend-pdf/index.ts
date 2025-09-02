@@ -36,8 +36,6 @@ const sendEmailWithResend = async (
 
   if (!response.ok) {
     const errorText = await response.text();
-    console.error('Resend API error - Status:', response.status, 'Response:', errorText);
-    
     let errorMessage = 'Failed to send email';
     try {
       const errorData = JSON.parse(errorText);
@@ -77,7 +75,6 @@ const handler = async (req: Request): Promise<Response> => {
     // Validate request
     const validation = validateRequest(requestData);
     if (!validation.isValid) {
-      console.error('Validation failed:', validation.error);
       return createErrorResponse(validation.error!, 400);
     }
     
@@ -86,11 +83,8 @@ const handler = async (req: Request): Promise<Response> => {
     // Validate environment
     const envValidation = validateEnvironment();
     if (!envValidation.isValid) {
-      console.error('Environment validation failed:', envValidation.error);
       return createErrorResponse(envValidation.error!, 500);
     }
-
-    console.log(`Sending invoice ${invoiceId} to ${clientEmail}, PDF size: ${pdfBase64.length} chars`);
 
     // Initialize database and fetch data
     const supabase = initializeSupabase();
@@ -116,8 +110,6 @@ const handler = async (req: Request): Promise<Response> => {
       pdfBase64
     );
 
-    console.log('Email sent successfully:', emailResult);
-
     return new Response(
       JSON.stringify({ 
         success: true, 
@@ -131,8 +123,6 @@ const handler = async (req: Request): Promise<Response> => {
     );
 
   } catch (error: any) {
-    console.error('Error in send-invoice-with-frontend-pdf function:', error);
-    
     if (error.message.includes('Invoice not found')) {
       return createErrorResponse('Invoice not found', 404);
     }

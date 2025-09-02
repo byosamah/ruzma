@@ -1,5 +1,4 @@
 
-import React from 'react';
 import { useT } from '@/lib/i18n';
 import { useIsMobile } from '@/hooks/use-mobile';
 import DashboardHeaderButtons from './DashboardHeaderButtons';

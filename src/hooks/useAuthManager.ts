@@ -19,7 +19,36 @@ interface LoginData {
   password: string;
 }
 
-export const useAuthManager = () => {
+interface UseAuthManagerReturn {
+  // Sign up state
+  signUpData: FormData;
+  updateSignUpField: (field: keyof FormData, value: string) => void;
+  handleCountryChange: (countryCode: string) => void;
+  showPassword: boolean;
+  showConfirmPassword: boolean;
+  togglePassword: () => void;
+  toggleConfirmPassword: () => void;
+  
+  // Login state
+  loginData: LoginData;
+  updateLoginField: (field: keyof LoginData, value: string) => void;
+  initializeRememberedEmail: () => void;
+  clearRememberedEmail: () => void;
+  
+  // Shared state
+  isLoading: boolean;
+  errors: Record<string, string>;
+  resendCooldown: number;
+  clearError: (fieldName: string) => void;
+  clearAllErrors: () => void;
+  
+  // Actions
+  signUp: () => Promise<boolean>;
+  signIn: (rememberMe?: boolean) => Promise<boolean>;
+  resendConfirmation: (email: string) => Promise<boolean>;
+}
+
+export const useAuthManager = (): UseAuthManagerReturn => {
   const t = useT();
   // Sign up form state
   const [signUpData, setSignUpData] = useState<FormData>({

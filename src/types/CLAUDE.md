@@ -169,11 +169,6 @@ export interface Client {
   user_id: string;
   name: string;
   email: string;
-  company?: string;
-  phone?: string;
-  address?: string;
-  country?: string;
-  currency: string;
   notes?: string;
   status: ClientStatus;
   created_at: string;
@@ -185,13 +180,11 @@ export type ClientStatus = 'active' | 'inactive' | 'blocked';
 export interface CreateClientData {
   name: string;
   email: string;
-  company?: string;
-  phone?: string;
-  address?: string;
-  country?: string;
-  currency?: string;
   notes?: string;
 }
+
+// Note: Company and phone fields were removed in recent optimization
+// to simplify client management forms and reduce form complexity
 
 // ✅ Client portal access types
 export interface ClientProjectToken {

@@ -29,8 +29,6 @@ Deno.serve(async (req) => {
       );
     }
 
-    console.log('Processing revision request for milestone:', milestoneId);
-
     // Verify the token belongs to a valid project and get the milestone
     const { data: project, error: projectError } = await supabase
       .from('projects')
@@ -39,7 +37,6 @@ Deno.serve(async (req) => {
       .single();
 
     if (projectError || !project) {
-      console.error('Project not found or invalid token:', projectError);
       return new Response(
         JSON.stringify({ error: 'Invalid project token' }),
         { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 404 }
@@ -69,8 +66,7 @@ Deno.serve(async (req) => {
           revisionData = parsed.revisionData;
         }
       } catch (e) {
-        console.log('Could not parse existing revision data, using defaults');
-      }
+        }
     }
 
     // Check if revision can be requested
@@ -124,14 +120,11 @@ Deno.serve(async (req) => {
       .eq('id', milestoneId);
 
     if (updateError) {
-      console.error('Error updating milestone:', updateError);
       return new Response(
         JSON.stringify({ error: 'Failed to submit revision request' }),
         { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 500 }
       );
     }
-
-    console.log('Revision request submitted successfully');
 
     return new Response(
       JSON.stringify({ 
@@ -148,7 +141,6 @@ Deno.serve(async (req) => {
     );
 
   } catch (error) {
-    console.error('Error in submit-revision-request function:', error);
     return new Response(
       JSON.stringify({ error: 'Internal server error' }),
       { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 500 }

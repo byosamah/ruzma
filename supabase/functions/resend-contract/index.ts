@@ -32,8 +32,6 @@ const handler = async (req: Request): Promise<Response> => {
 
     const { projectId } = await req.json();
 
-    console.log('Resending contract for project:', projectId);
-
     // Call send-contract-approval function directly
     const { data, error } = await supabaseClient.functions.invoke('send-contract-approval', {
       body: { projectId }

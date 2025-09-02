@@ -1,10 +1,10 @@
 
-import { useState } from 'react';
 import { toast } from 'sonner';
 import { sendClientLink } from '@/services/clientLinkService';
 import { supabase } from '@/integrations/supabase/client';
 import { useT } from '@/lib/i18n';
 import { DatabaseProject } from '@/hooks/projectTypes';
+import { ROUTES } from '@/lib/constants/config';
 
 export const useProjectCardActions = (
   project: DatabaseProject,
@@ -16,7 +16,7 @@ export const useProjectCardActions = (
   const handleCopyClientLink = (e: React.MouseEvent) => {
     e.stopPropagation();
     // Use the full client_access_token directly
-    const clientUrl = `https://app.ruzma.co/client/project/${project.client_access_token}`;
+    const clientUrl = ROUTES.CLIENT_PROJECT(project.client_access_token);
     navigator.clipboard.writeText(clientUrl);
     toast.success(t('clientLinkCopied'));
   };
@@ -24,7 +24,7 @@ export const useProjectCardActions = (
   const handleViewClientPage = (e: React.MouseEvent) => {
     e.stopPropagation();
     // Use the full client_access_token directly
-    const clientUrl = `https://app.ruzma.co/client/project/${project.client_access_token}`;
+    const clientUrl = ROUTES.CLIENT_PROJECT(project.client_access_token);
     window.open(clientUrl, '_blank');
   };
 

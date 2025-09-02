@@ -1,5 +1,5 @@
 
-import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import React, { createContext, useContext, useState, useEffect, ReactNode, useCallback } from 'react';
 import { Invoice, InvoiceStatus } from '@/hooks/useInvoices';
 import { InvoiceFormData } from '@/components/CreateInvoice/types';
 import { invoiceService } from '@/services/invoiceService';
@@ -64,7 +64,7 @@ export const InvoiceProvider = ({ children }: { children: ReactNode }) => {
     };
   };
 
-  const refreshInvoices = async () => {
+  const refreshInvoices = useCallback(async () => {
     if (!user) return;
     
     try {
@@ -77,7 +77,7 @@ export const InvoiceProvider = ({ children }: { children: ReactNode }) => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [user]);
 
   const addInvoice = async (formData: InvoiceFormData, status: InvoiceStatus): Promise<Invoice> => {
     if (!user) throw new Error('User not authenticated');
@@ -137,7 +137,7 @@ export const InvoiceProvider = ({ children }: { children: ReactNode }) => {
       setInvoices([]);
       setLoading(false);
     }
-  }, [user]);
+  }, [user, refreshInvoices]);
 
   return (
     <InvoiceContext.Provider value={{

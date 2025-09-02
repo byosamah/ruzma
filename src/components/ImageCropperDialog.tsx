@@ -7,6 +7,7 @@ import {
   DialogContent,
   DialogHeader,
   DialogTitle,
+  DialogDescription,
   DialogFooter,
 } from '@/components/ui/dialog';
 import { Crop, ZoomIn, ZoomOut } from 'lucide-react';
@@ -31,6 +32,7 @@ export const ImageCropperDialog = ({ image, onCropComplete, onSave, onClose }: I
             <DialogContent className="max-w-md sm:max-w-lg">
                 <DialogHeader>
                     <DialogTitle>Crop Profile Photo</DialogTitle>
+                    <DialogDescription>Adjust the crop area and zoom to select your profile picture</DialogDescription>
                 </DialogHeader>
                 <div className="relative h-80 bg-slate-200 rounded-md">
                     {image && (

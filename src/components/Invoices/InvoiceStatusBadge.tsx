@@ -1,5 +1,4 @@
 
-import React from 'react';
 import { Badge } from '@/components/ui/badge';
 import { InvoiceStatus } from '@/hooks/useInvoices';
 import { useT } from '@/lib/i18n';

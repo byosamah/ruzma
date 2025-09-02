@@ -1,5 +1,5 @@
 import { ReactNode } from 'react';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogDescription } from '@/components/ui/dialog';
 import { Form } from '@/components/ui/form';
 import { Button } from '@/components/ui/button';
 import { Loader2 } from 'lucide-react';
@@ -57,7 +57,7 @@ function ShadcnFormDialog<T extends FieldValues = FieldValues>({
         <DialogHeader>
           <DialogTitle>{title}</DialogTitle>
           {description && (
-            <div className="text-sm text-muted-foreground">{description}</div>
+            <DialogDescription>{description}</DialogDescription>
           )}
         </DialogHeader>
         

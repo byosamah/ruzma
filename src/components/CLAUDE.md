@@ -18,6 +18,13 @@ src/components/
 
 ## 🎯 Component Patterns
 
+### 🚀 Recent Quality Improvements
+- **DialogContent Accessibility**: All dialog components now include `DialogDescription` for screen reader support
+- **React Fragment Optimization**: Removed invalid prop warnings by replacing fragments with proper div elements
+- **Import Resolution**: Fixed all missing imports (e.g., Button in EditProject.tsx)
+- **Form Streamlining**: Simplified client forms by removing unused Company/Phone fields
+- **Label Optimization**: Fixed duplicate labels in signup and other forms
+
 ### ✅ Modern Function Component (REQUIRED)
 ```typescript
 // ✅ DO - Use function declaration

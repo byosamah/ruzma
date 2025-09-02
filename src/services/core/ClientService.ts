@@ -26,7 +26,7 @@ export class ClientService extends BaseService {
       // First, try to find existing client
       const { data: existingClient, error: findError } = await this.supabase
         .from('clients')
-        .select('*')
+        .select('id, name, email, user_id, created_at, updated_at')
         .eq('email', clientEmail)
         .eq('user_id', user.id)
         .maybeSingle();
@@ -70,7 +70,7 @@ export class ClientService extends BaseService {
     try {
       const { data: client, error } = await this.supabase
         .from('clients')
-        .select('*')
+        .select('id, name, email, user_id, created_at, updated_at')
         .eq('id', clientId)
         .eq('user_id', user.id)
         .maybeSingle();
@@ -99,7 +99,7 @@ export class ClientService extends BaseService {
       // Get clients and manually count projects
       const { data: clients, error: clientsError } = await this.supabase
         .from('clients')
-        .select('*')
+        .select('id, name, email, user_id, created_at, updated_at')
         .eq('user_id', user.id)
         .order('created_at', { ascending: false });
 

@@ -1,5 +1,4 @@
 
-import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Milestone } from '@/components/MilestoneCard/types';
 import MilestoneCard from '@/components/MilestoneCard';

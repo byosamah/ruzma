@@ -1,5 +1,4 @@
 
-import React from 'react';
 import { Home, FolderOpen, Users, FileText, BarChart3 } from 'lucide-react';
 import { useLocation } from 'react-router-dom';
 import { SidebarGroup, SidebarGroupContent, SidebarGroupLabel, SidebarMenu, SidebarMenuButton, SidebarMenuItem, useSidebar } from '@/components/ui/sidebar';

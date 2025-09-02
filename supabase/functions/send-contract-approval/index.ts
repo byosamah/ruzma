@@ -25,15 +25,12 @@ const handler = async (req: Request): Promise<Response> => {
 
     const resendApiKey = Deno.env.get('RESEND_API_KEY');
     if (!resendApiKey) {
-      console.error('RESEND_API_KEY is not configured');
       throw new Error('Email service is not properly configured. Please contact support.');
     }
     
     const resend = new Resend(resendApiKey);
 
     const { projectId }: ContractApprovalRequest = await req.json();
-
-    console.log('Processing contract approval request for project:', projectId);
 
     // Get project details with milestones
     const { data: project, error: projectError } = await supabaseClient
@@ -53,7 +50,6 @@ const handler = async (req: Request): Promise<Response> => {
       .single();
 
     if (projectError || !project) {
-      console.error('Error fetching project:', projectError);
       throw new Error('Project not found');
     }
 
@@ -75,7 +71,6 @@ const handler = async (req: Request): Promise<Response> => {
     const branding = brandingResult.data;
 
     if (profileResult.error) {
-      console.error('Error fetching profile:', profileResult.error);
       // Continue with default values if profile fetch fails
     }
 
@@ -96,7 +91,6 @@ const handler = async (req: Request): Promise<Response> => {
       .eq('id', projectId);
 
     if (updateError) {
-      console.error('Error updating project:', updateError);
       throw new Error('Failed to update project status');
     }
 
@@ -104,13 +98,6 @@ const handler = async (req: Request): Promise<Response> => {
     const userCurrency = project.freelancer_currency || profile?.currency || 'USD';
     const userLanguage = profile?.country === 'SA' || profile?.country === 'AE' ? 'ar' : 'en';
     
-    console.log('Currency resolution:', {
-      project_freelancer_currency: project.freelancer_currency,
-      profile_currency: profile?.currency,
-      final_currency: userCurrency,
-      user_language: userLanguage
-    });
-
     // Calculate total project value
     const totalValue = project.milestones.reduce((sum: number, milestone: any) => sum + Number(milestone.price), 0);
 
@@ -275,8 +262,6 @@ const handler = async (req: Request): Promise<Response> => {
       `,
     });
 
-    console.log('Contract approval email sent successfully:', emailResponse);
-
     return new Response(JSON.stringify({ 
       success: true, 
       message: 'Contract approval email sent successfully',
@@ -290,7 +275,6 @@ const handler = async (req: Request): Promise<Response> => {
     });
 
   } catch (error: any) {
-    console.error('Error in send-contract-approval function:', error);
     return new Response(
       JSON.stringify({ error: error.message }),
       {

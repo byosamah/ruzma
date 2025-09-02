@@ -1,5 +1,5 @@
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useParams } from 'react-router-dom';
 import { ProjectService } from '@/services/projectService';
 import { DatabaseProject } from '@/hooks/projectTypes';
@@ -16,7 +16,7 @@ export const useClientProject = (token?: string | null, isHybrid?: boolean) => {
   
   const userCurrency = useUserCurrency(null);
 
-  const loadProject = async () => {
+  const loadProject = useCallback(async () => {
     if (!token) {
       setError('Missing access token');
       setLoading(false);
@@ -53,11 +53,11 @@ export const useClientProject = (token?: string | null, isHybrid?: boolean) => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [token, isHybrid]);
 
   useEffect(() => {
     loadProject();
-  }, [token, isHybrid]);
+  }, [loadProject]);
 
   const uploadPaymentProof = async (milestoneId: string, file: File) => {
     if (!token || !project?.id) {

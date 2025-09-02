@@ -1,4 +1,3 @@
-import { AppError } from '@/types/common';
 import React, { createContext, useContext, useEffect, useState, ReactNode } from 'react';
 import { User, Session } from '@supabase/supabase-js';
 import { supabase } from '@/integrations/supabase/client';
@@ -26,7 +25,7 @@ interface AuthActions {
   resendConfirmation: (email: string) => Promise<void>;
 }
 
-interface AuthContextType extends AuthState, AuthActions {}
+type AuthContextType = AuthState & AuthActions;
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
@@ -94,51 +93,31 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     currency: string;
     country: string;
   }) => {
-    try {
-      const { data, error } = await authService.signUp(formData);
-      
-      if (error) {
-        throw error;
-      }
-
-      // Check if user needs email confirmation
-      const needsConfirmation = data.user && !data.session;
-      
-      return { 
-        success: true, 
-        needsConfirmation 
-      };
-    } catch (error: unknown) {
-      // Sign up error handled by caller
+    const { data, error } = await authService.signUp(formData);
+    
+    if (error) {
       throw error;
     }
+
+    // Check if user needs email confirmation
+    const needsConfirmation = data.user && !data.session;
+    
+    return { 
+      success: true, 
+      needsConfirmation 
+    };
   };
 
   const signIn = async (email: string, password: string, rememberMe: boolean = false) => {
-    try {
-      await authService.signIn(email, password, rememberMe);
-    } catch (error: unknown) {
-      // Sign in error handled by caller
-      throw error;
-    }
+    await authService.signIn(email, password, rememberMe);
   };
 
   const signOut = async () => {
-    try {
-      await authService.signOut();
-    } catch (error: unknown) {
-      // Sign out error handled by caller
-      throw error;
-    }
+    await authService.signOut();
   };
 
   const resendConfirmation = async (email: string) => {
-    try {
-      await authService.resendConfirmation(email);
-    } catch (error: unknown) {
-      // Resend confirmation error handled by caller
-      throw error;
-    }
+    await authService.resendConfirmation(email);
   };
 
   const value = {

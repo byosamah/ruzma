@@ -1,112 +1,111 @@
 
-import React, { useState, useEffect } from 'react';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
-import { Button } from '@/components/ui/button';
+import { useEffect } from 'react';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
 import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { ClientWithProjectCount, UpdateClientData } from '@/types/client';
+import { FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
+import { ShadcnFormDialog } from '@/components/shared/dialogs/ShadcnFormDialog';
+import { editClientSchema } from '@/lib/validators/client';
+import { ClientWithProjectCount } from '@/types/client';
 import { useT } from '@/lib/i18n';
 
 interface EditClientDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   client: ClientWithProjectCount | null;
-  onSubmit: (clientId: string, data: UpdateClientData) => Promise<boolean>;
+  onSubmit: (clientId: string, data: EditClientFormData) => Promise<boolean>;
 }
 
-const EditClientDialog = ({
+function EditClientDialog({
   open,
   onOpenChange,
   client,
   onSubmit
-}) => {
+}: EditClientDialogProps) {
   const t = useT();
-  const [formData, setFormData] = useState<UpdateClientData>({
-    name: '',
-    email: ''
+  
+  const form = useForm<EditClientFormData>({
+    resolver: zodResolver(editClientSchema),
+    defaultValues: {
+      name: '',
+      email: '',
+      notes: '',
+    },
   });
-  const [isSubmitting, setIsSubmitting] = useState(false);
 
+  // Update form when client changes
   useEffect(() => {
     if (client) {
-      setFormData({
-        name: client.name,
-        email: client.email
+      form.reset({
+        name: client.name || '',
+        email: client.email || '',
+        notes: client.notes || '',
       });
     }
-  }, [client]);
+  }, [client, form]);
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleSubmit = async (data: EditClientFormData) => {
+    if (!client) return;
     
-    if (!client || !formData.name?.trim() || !formData.email?.trim()) {
-      return;
-    }
-
-    setIsSubmitting(true);
-    
-    const success = await onSubmit(client.id, formData);
+    const success = await onSubmit(client.id, data);
     
     if (success) {
-      onOpenChange(false);
+      // Form dialog will close automatically on success
     }
-    
-    setIsSubmitting(false);
   };
 
-  const handleOpenChange = (newOpen: boolean) => {
-    if (!isSubmitting) {
-      onOpenChange(newOpen);
-    }
-  };
+  if (!client) {
+    return null;
+  }
 
   return (
-    <Dialog open={open} onOpenChange={handleOpenChange}>
-      <DialogContent className="sm:max-w-md">
-        <DialogHeader>
-          <DialogTitle>{t('editClient')}</DialogTitle>
-        </DialogHeader>
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div className="space-y-2">
-            <Label htmlFor="edit-name">{t('clientName')}</Label>
-            <Input
-              id="edit-name"
-              value={formData.name || ''}
-              onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))}
-              placeholder={t('enterClientName')}
-              className="border-gray-300 border"
-              required
-            />
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="edit-email">{t('clientEmail')}</Label>
-            <Input
-              id="edit-email"
-              type="email"
-              value={formData.email || ''}
-              onChange={(e) => setFormData(prev => ({ ...prev, email: e.target.value }))}
-              placeholder={t('enterClientEmail')}
-              className="border-gray-300 border"
-              required
-            />
-          </div>
-          <DialogFooter>
-            <Button
-              type="button"
-              variant="outline"
-              onClick={() => handleOpenChange(false)}
-              disabled={isSubmitting}
-            >
-              {t('cancel')}
-            </Button>
-            <Button type="submit" disabled={isSubmitting}>
-              {isSubmitting ? t('saving') : t('saveChanges')}
-            </Button>
-          </DialogFooter>
-        </form>
-      </DialogContent>
-    </Dialog>
+    <ShadcnFormDialog
+      open={open}
+      onOpenChange={onOpenChange}
+      title={t('editClient')}
+      form={form}
+      onSubmit={handleSubmit}
+      submitLabel={t('saveChanges')}
+      cancelLabel={t('cancel')}
+    >
+      <FormField
+        control={form.control}
+        name="name"
+        render={({ field }) => (
+          <FormItem>
+            <FormLabel>{t('clientName')} *</FormLabel>
+            <FormControl>
+              <Input
+                {...field}
+                placeholder={t('enterClientName')}
+                className="border-gray-300"
+              />
+            </FormControl>
+            <FormMessage />
+          </FormItem>
+        )}
+      />
+      
+      <FormField
+        control={form.control}
+        name="email"
+        render={({ field }) => (
+          <FormItem>
+            <FormLabel>{t('clientEmail')} *</FormLabel>
+            <FormControl>
+              <Input
+                {...field}
+                type="email"
+                placeholder={t('enterClientEmail')}
+                className="border-gray-300"
+              />
+            </FormControl>
+            <FormMessage />
+          </FormItem>
+        )}
+      />
+    </ShadcnFormDialog>
   );
-};
+}
 
 export default EditClientDialog;

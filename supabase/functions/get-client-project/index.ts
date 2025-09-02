@@ -55,8 +55,6 @@ const handler = async (req: Request): Promise<Response> => {
   try {
     const { token, isHybrid } = await req.json();
     
-    console.log('Received token:', token, 'isHybrid flag:', isHybrid);
-
     if (!token) {
       return new Response(
         JSON.stringify({ error: "Token is required" }),
@@ -69,14 +67,10 @@ const handler = async (req: Request): Promise<Response> => {
 
     // Parse the token
     const parsedToken = parseHybridToken(token);
-    console.log('Parsed token:', parsedToken);
-
     let query;
     
     if (parsedToken.isHybrid && parsedToken.shortToken) {
       // For hybrid tokens, search by the short token prefix
-      console.log('Searching for project with short token:', parsedToken.shortToken);
-      
       query = supabase
         .from('projects')
         .select(`
@@ -86,8 +80,6 @@ const handler = async (req: Request): Promise<Response> => {
         .like('client_access_token', `${parsedToken.shortToken}%`);
     } else {
       // For legacy full tokens
-      console.log('Searching for project with full token:', parsedToken.shortToken);
-      
       query = supabase
         .from('projects')
         .select(`
@@ -100,7 +92,6 @@ const handler = async (req: Request): Promise<Response> => {
     const { data: projects, error } = await query;
 
     if (error) {
-      console.error('Database error:', error);
       return new Response(
         JSON.stringify({ error: "Database error occurred" }),
         { 
@@ -111,7 +102,6 @@ const handler = async (req: Request): Promise<Response> => {
     }
 
     if (!projects || projects.length === 0) {
-      console.log('No project found for token');
       return new Response(
         JSON.stringify({ error: "Project not found or access denied" }),
         { 
@@ -156,8 +146,6 @@ const handler = async (req: Request): Promise<Response> => {
       freelancer_currency: profileData?.currency || null
     };
 
-    console.log('Found project:', projectWithCurrency.name);
-
     return new Response(
       JSON.stringify(projectWithCurrency),
       { 
@@ -167,7 +155,6 @@ const handler = async (req: Request): Promise<Response> => {
     );
 
   } catch (error) {
-    console.error('Function error:', error);
     return new Response(
       JSON.stringify({ error: "Internal server error" }),
       { 

@@ -1,5 +1,4 @@
 
-import React from 'react';
 import { CardContent } from '@/components/ui/card';
 import { useT } from '@/lib/i18n';
 

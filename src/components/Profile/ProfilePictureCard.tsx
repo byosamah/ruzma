@@ -1,7 +1,13 @@
 
-import React from 'react';
+import React, { Suspense, lazy } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { ImageCropperDialog } from '@/components/ImageCropperDialog';
+
+// Lazy load the ImageCropperDialog to reduce bundle size
+const ImageCropperDialog = lazy(() => 
+  import('@/components/ImageCropperDialog').then(module => ({
+    default: module.ImageCropperDialog
+  }))
+);
 import { ProfileAvatar } from './ProfileAvatar';
 import { ProfilePictureUpload } from './ProfilePictureUpload';
 import { useProfilePictureManager } from '@/hooks/profile/useProfilePictureManager';
@@ -59,12 +65,20 @@ export const ProfilePictureCard = ({
         </CardContent>
       </Card>
 
-      <ImageCropperDialog
-        image={imageToCrop}
-        onCropComplete={setCroppedAreaPixels}
-        onSave={uploadProfilePicture}
-        onClose={cancelCrop}
-      />
+      {imageToCrop && (
+        <Suspense fallback={
+          <div className="flex items-center justify-center p-4">
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900"></div>
+          </div>
+        }>
+          <ImageCropperDialog
+            image={imageToCrop}
+            onCropComplete={setCroppedAreaPixels}
+            onSave={uploadProfilePicture}
+            onClose={cancelCrop}
+          />
+        </Suspense>
+      )}
     </>
   );
 };

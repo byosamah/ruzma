@@ -2,7 +2,6 @@
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Separator } from '@/components/ui/separator';
 // Icons replaced with emojis
 import { FreelancerBranding, BrandingFormData } from '@/types/branding';
 import { useT } from '@/lib/i18n';

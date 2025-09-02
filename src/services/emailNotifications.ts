@@ -11,17 +11,13 @@ interface SendPaymentNotificationParams {
 }
 
 export const sendPaymentNotification = async (params: SendPaymentNotificationParams) => {
-  try {
-    const response = await supabase.functions.invoke('send-payment-notification', {
-      body: params,
-    });
+  const response = await supabase.functions.invoke('send-payment-notification', {
+    body: params,
+  });
 
-    if (response.error) {
-      throw new Error(response.error.message);
-    }
-
-    return response.data;
-  } catch (error) {
-    throw error;
+  if (response.error) {
+    throw new Error(response.error.message);
   }
+
+  return response.data;
 };

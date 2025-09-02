@@ -1,5 +1,4 @@
 
-import React from 'react';
 import { useT } from '@/lib/i18n';
 import { formatCurrency, CurrencyCode } from '@/lib/currency';
 import { format } from 'date-fns';

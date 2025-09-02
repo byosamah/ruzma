@@ -1,15 +1,17 @@
 
-import React, { useState, useEffect } from 'react';
-import { Link, useNavigate, useLocation } from 'react-router-dom';
+import { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
 import { Card, CardContent } from '@/components/ui/card';
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Eye, EyeOff } from 'lucide-react';
 import { Checkbox } from '@/components/ui/checkbox';
 import { useAuthManager } from '@/hooks/useAuthManager';
 import { useT } from '@/lib/i18n';
-import { X } from 'lucide-react';
+import { loginSchema } from '@/lib/validators/auth';
 
 interface LoginFormProps {
   rememberMe: boolean;
@@ -22,119 +24,154 @@ const LoginForm = ({ rememberMe, setRememberMe }: LoginFormProps) => {
     loginData,
     updateLoginField,
     initializeRememberedEmail,
-    clearRememberedEmail,
     isLoading,
-    errors,
     signIn,
   } = useAuthManager();
 
   const [showPassword, setShowPassword] = useState(false);
 
+  const form = useForm<LoginFormData>({
+    resolver: zodResolver(loginSchema),
+    defaultValues: {
+      email: loginData.email,
+      password: loginData.password,
+    },
+  });
+
+  // Initialize remembered email when component mounts
   useEffect(() => {
-    // Only initialize remembered email once when rememberMe is first enabled
     if (rememberMe && !loginData.email) {
       initializeRememberedEmail();
     }
-  }, [rememberMe, initializeRememberedEmail]);
+  }, [rememberMe, loginData.email, initializeRememberedEmail]);
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    await signIn(rememberMe);
-  };
+  // Update form when loginData changes (from remembered email)
+  useEffect(() => {
+    if (loginData.email !== form.getValues('email')) {
+      form.setValue('email', loginData.email);
+    }
+  }, [loginData.email, form]);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    updateLoginField(name as keyof typeof loginData, value);
+  // Watch form changes and sync with useAuthManager
+  const formValues = form.watch();
+  useEffect(() => {
+    if (formValues.email !== loginData.email) {
+      updateLoginField('email', formValues.email);
+    }
+    if (formValues.password !== loginData.password) {
+      updateLoginField('password', formValues.password);
+    }
+  }, [formValues.email, formValues.password, loginData.email, loginData.password, updateLoginField]);
+
+  const onSubmit = async (data: LoginFormData) => {
+    // Ensure the loginData is synced before calling signIn
+    updateLoginField('email', data.email);
+    updateLoginField('password', data.password);
+    
+    // Use a small delay to ensure state update has taken effect
+    setTimeout(() => {
+      signIn(rememberMe);
+    }, 0);
   };
 
   return (
     <Card className="border-0 shadow-none">
       <CardContent className="p-0">
-        <form onSubmit={handleSubmit} className="space-y-5">
-          <div className="space-y-2">
-            <Label htmlFor="email" className="text-sm font-medium text-gray-700">
-              {t('emailLabel')}
-            </Label>
-            <Input
-              id="email"
+        <Form {...form}>
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-5">
+            <FormField
+              control={form.control}
               name="email"
-              type="email"
-              placeholder={t('emailPlaceholder')}
-              value={loginData.email}
-              onChange={handleChange}
-              required
-              className={`h-11 border-gray-200 focus:border-gray-400 focus:ring-0 ${errors.email ? 'border-red-500' : ''}`}
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel className="text-sm font-medium text-gray-700">
+                    {t('emailLabel')}
+                  </FormLabel>
+                  <FormControl>
+                    <Input
+                      {...field}
+                      type="email"
+                      placeholder={t('emailPlaceholder')}
+                      className="h-11 border-gray-200 focus:border-gray-400 focus:ring-0"
+                      disabled={isLoading}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
             />
-            {errors.email && (
-              <p className="text-sm text-red-600 mt-1">{errors.email}</p>
-            )}
-          </div>
-          
-          <div className="space-y-2">
-            <div className="flex justify-between items-center">
-              <Label htmlFor="password" className="text-sm font-medium text-gray-700">
-                {t('passwordLabel')}
-              </Label>
-              <Link 
-                to="/forgot-password" 
-                className="text-sm text-gray-500 hover:text-gray-700 hover:underline"
-              >
-                {t('forgotPassword')}
-              </Link>
-            </div>
-            <div className="relative">
-              <Input
-                id="password"
-                name="password"
-                type={showPassword ? 'text' : 'password'}
-                placeholder={t('passwordPlaceholder')}
-                value={loginData.password}
-                onChange={handleChange}
-                required
-                className={`h-11 border-gray-200 focus:border-gray-400 focus:ring-0 pr-10 rtl:pl-10 rtl:pr-3 ${errors.password ? 'border-red-500' : ''}`}
+            
+            <FormField
+              control={form.control}
+              name="password"
+              render={({ field }) => (
+                <FormItem>
+                  <div className="flex justify-between items-center">
+                    <FormLabel className="text-sm font-medium text-gray-700">
+                      {t('passwordLabel')}
+                    </FormLabel>
+                    <Link 
+                      to="/forgot-password" 
+                      className="text-sm text-gray-500 hover:text-gray-700 hover:underline"
+                    >
+                      {t('forgotPassword')}
+                    </Link>
+                  </div>
+                  <FormControl>
+                    <div className="relative">
+                      <Input
+                        {...field}
+                        type={showPassword ? 'text' : 'password'}
+                        placeholder={t('passwordPlaceholder')}
+                        className="h-11 border-gray-200 focus:border-gray-400 focus:ring-0 pr-10 rtl:pl-10 rtl:pr-3"
+                        disabled={isLoading}
+                      />
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        size="sm"
+                        className="absolute right-0 rtl:left-0 rtl:right-auto top-0 h-full px-3 hover:bg-transparent"
+                        onClick={() => setShowPassword(!showPassword)}
+                        disabled={isLoading}
+                      >
+                        {showPassword ? (
+                          <EyeOff className="h-4 w-4 text-gray-400" />
+                        ) : (
+                          <Eye className="h-4 w-4 text-gray-400" />
+                        )}
+                      </Button>
+                    </div>
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <div className="flex items-center space-x-2 rtl:space-x-reverse">
+              <Checkbox 
+                id="rememberMe"
+                checked={rememberMe}
+                onCheckedChange={checked => setRememberMe(!!checked)}
+                className="h-4 w-4"
+                disabled={isLoading}
               />
-              <Button
-                type="button"
-                variant="ghost"
-                size="sm"
-                className="absolute right-0 rtl:left-0 rtl:right-auto top-0 h-full px-3 hover:bg-transparent"
-                onClick={() => setShowPassword(!showPassword)}
+              <label 
+                htmlFor="rememberMe" 
+                className="text-sm text-gray-600 cursor-pointer select-none"
               >
-                {showPassword ? (
-                  <EyeOff className="h-4 w-4 text-gray-400" />
-                ) : (
-                  <Eye className="h-4 w-4 text-gray-400" />
-                )}
-              </Button>
+                {t('rememberMe')}
+              </label>
             </div>
-            {errors.password && (
-              <p className="text-sm text-red-600 mt-1">{errors.password}</p>
-            )}
-          </div>
 
-          <div className="flex items-center space-x-2 rtl:space-x-reverse">
-            <Checkbox 
-              id="rememberMe"
-              checked={rememberMe}
-              onCheckedChange={checked => setRememberMe(!!checked)}
-              className="h-4 w-4"
-            />
-            <Label 
-              htmlFor="rememberMe" 
-              className="text-sm text-gray-600 cursor-pointer select-none"
+            <Button 
+              type="submit" 
+              className="w-full h-11 bg-gray-900 text-white hover:bg-gray-800 font-medium rounded-lg" 
+              disabled={isLoading}
             >
-              {t('rememberMe')}
-            </Label>
-          </div>
-
-          <Button 
-            type="submit" 
-            className="w-full h-11 bg-gray-900 text-white hover:bg-gray-800 font-medium rounded-lg" 
-            disabled={isLoading}
-          >
-            {isLoading ? t('signingIn') : t('signIn')}
-          </Button>
-        </form>
+              {isLoading ? t('signingIn') : t('signIn')}
+            </Button>
+          </form>
+        </Form>
       </CardContent>
     </Card>
   );

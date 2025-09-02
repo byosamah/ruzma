@@ -20,12 +20,16 @@ interface LanguageContextProps {
 const LanguageContext = createContext<LanguageContextProps | undefined>(undefined);
 
 export const LanguageProvider = ({ children }: { children: ReactNode }) => {
-  // Check if we're inside a Router context
+  // Always call hooks unconditionally at the top level
   const isInRouter = useInRouterContext();
   
-  // Conditionally use router hooks
-  const location = isInRouter ? useLocation() : { pathname: window.location.pathname };
-  const navigate = isInRouter ? useNavigate() : () => {};
+  // Always call router hooks, but use fallback if not in router context
+  const routerLocation = useLocation();
+  const routerNavigate = useNavigate();
+  
+  // Determine which to use based on router context
+  const location = isInRouter ? routerLocation : { pathname: window.location.pathname };
+  const navigate = isInRouter ? routerNavigate : (() => {});
   
   const initialLanguage = (() => {
     const urlLanguage = getLanguageFromPath(location.pathname);

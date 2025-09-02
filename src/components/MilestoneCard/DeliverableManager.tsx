@@ -1,5 +1,3 @@
-import React from 'react';
-import { Link } from 'lucide-react';
 import { useT } from '@/lib/i18n';
 import MultiLinkManager from './MultiLinkManager';
 interface DeliverableManagerProps {

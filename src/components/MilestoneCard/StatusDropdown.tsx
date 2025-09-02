@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { ChevronDown, Clock, CheckCircle, XCircle, PlayCircle, PauseCircle, AlertCircle } from 'lucide-react';
+import { ChevronDown, Clock, CheckCircle, XCircle, AlertCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,

@@ -1,5 +1,4 @@
 
-import { supabase } from '@/integrations/supabase/client';
 import { logSecurityEvent } from './authSecurity';
 
 // Enhanced security event types

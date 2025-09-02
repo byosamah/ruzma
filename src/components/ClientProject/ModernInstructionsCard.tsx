@@ -1,6 +1,5 @@
 import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
 import { useT } from '@/lib/i18n';
 import { FreelancerBranding } from '@/types/branding';
 import { 
@@ -58,7 +57,7 @@ const ModernInstructionsCard = ({
         {/* Simple Steps Flow */}
         <div className="flex flex-col sm:flex-row gap-4 sm:gap-2 sm:items-start">
           {steps.map((step, index) => (
-            <React.Fragment key={index}>
+            <div key={index} className="flex items-center gap-2 flex-1">
               <div className="flex items-center gap-3 sm:flex-col sm:text-center flex-1">
                 <div className="p-3 rounded-lg bg-muted shrink-0">
                   <step.icon className="w-5 h-5 text-muted-foreground" />
@@ -71,7 +70,7 @@ const ModernInstructionsCard = ({
               {index < steps.length - 1 && (
                 <ArrowRight className="w-4 h-4 text-muted-foreground hidden sm:block shrink-0 mt-3" />
               )}
-            </React.Fragment>
+            </div>
           ))}
         </div>
 

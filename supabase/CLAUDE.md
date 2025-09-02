@@ -23,7 +23,7 @@ supabase/
 profiles              -- 20 users    (User account data)
 projects              -- 7 projects  (Core business entity)
 milestones            -- 14 phases   (Project deliverables)
-clients               -- 15 clients  (Customer relationships)
+clients               -- 15 clients  (Customer relationships - simplified schema)
 invoices              -- 5 invoices  (Financial tracking)
 project_templates     -- 13 templates(Reusable workflows)
 freelancer_branding   -- 6 brands    (Custom client portals)
@@ -32,6 +32,10 @@ user_plan_limits      -- 3 plans     (Subscription configuration)
 notifications         -- 0 records   (Real-time system)
 activity_logs         -- 0 records   (Audit system)
 client_project_tokens -- 0 tokens    (Secure client access)
+
+-- ✅ Recent Schema Optimizations:
+-- Removed non-existent freelancer_branding columns (website, social_links)
+-- Simplified client schema by removing unused fields (company, phone)
 ```
 
 ### Primary Tables (CRITICAL - DON'T BREAK)

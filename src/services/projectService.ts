@@ -459,7 +459,7 @@ export class ProjectService {
 
     const { data, error } = await supabase
       .from('project_templates')
-      .select('*')
+      .select('id, name, brief, milestones, user_id, created_at, updated_at, contract_required, payment_proof_required, contract_terms, payment_terms, project_scope, revision_policy')
       .eq('user_id', this.user.id)
       .order('created_at', { ascending: false });
 

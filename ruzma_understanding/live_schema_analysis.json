@@ -1,25 +1,25 @@
 {
-  "timestamp": "2025-09-01T06:08:44.286Z",
+  "timestamp": "2025-09-02T17:30:27.046Z",
   "tables": {
     "profiles": {
       "exists": true,
-      "row_count": 20
+      "row_count": 22
     },
     "projects": {
       "exists": true,
-      "row_count": 7
+      "row_count": 10
     },
     "milestones": {
       "exists": true,
-      "row_count": 14
+      "row_count": 18
     },
     "clients": {
       "exists": true,
-      "row_count": 15
+      "row_count": 16
     },
     "invoices": {
       "exists": true,
-      "row_count": 5
+      "row_count": 8
     },
     "invoice_items": {
       "exists": true,
@@ -27,7 +27,7 @@
     },
     "project_templates": {
       "exists": true,
-      "row_count": 13
+      "row_count": 14
     },
     "freelancer_branding": {
       "exists": true,
@@ -612,8 +612,8 @@
   "auth_users_count": 0,
   "summary": {
     "existing_tables": 12,
-    "total_application_rows": 83,
+    "total_application_rows": 97,
     "storage_buckets": 4,
-    "analysis_timestamp": "2025-09-01T06:08:52.887Z"
+    "analysis_timestamp": "2025-09-02T17:30:34.208Z"
   }
 }

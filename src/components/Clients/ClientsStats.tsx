@@ -1,5 +1,4 @@
 
-import React from 'react';
 // Icons replaced with emojis
 import { ClientWithProjectCount } from '@/types/client';
 import { useT } from '@/lib/i18n';

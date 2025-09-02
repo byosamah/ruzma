@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogTrigger } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogTrigger, DialogDescription } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -105,8 +105,10 @@ export const BaseUploadDialog = ({
     <DialogContent className="sm:max-w-md">
       <DialogHeader>
         <DialogTitle>{title}</DialogTitle>
-        {description && (
-          <div className="text-sm text-muted-foreground">{description}</div>
+        {description ? (
+          <DialogDescription>{description}</DialogDescription>
+        ) : (
+          <DialogDescription>Select and upload a file</DialogDescription>
         )}
       </DialogHeader>
       

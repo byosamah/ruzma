@@ -11,7 +11,32 @@ interface DialogConfig {
   closeOnOutsideClick?: boolean;
 }
 
-export const useDialogManager = (initialState: DialogState = {}) => {
+interface UseDialogManagerReturn {
+  // State
+  dialogs: DialogState;
+  
+  // Actions
+  openDialog: (key: string, config?: DialogConfig) => void;
+  closeDialog: (key: string) => void;
+  toggleDialog: (key: string, config?: DialogConfig) => void;
+  closeAllDialogs: () => void;
+  
+  // Queries
+  isDialogOpen: (key: string) => boolean;
+  getOpenDialogs: () => string[];
+  hasOpenDialogs: () => boolean;
+  
+  // Event handlers
+  handleEscapeKey: () => void;
+  
+  // Helper for creating dialog props
+  getDialogProps: (key: string) => {
+    open: boolean;
+    onOpenChange: (open: boolean) => void;
+  };
+}
+
+export const useDialogManager = (initialState: DialogState = {}): UseDialogManagerReturn => {
   const [dialogs, setDialogs] = useState<DialogState>(initialState);
   const [dialogConfigs, setDialogConfigs] = useState<Record<string, DialogConfig>>({});
 

@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { useParams } from 'react-router-dom';
 import Layout from '@/components/Layout';
 import { useProjectManager } from '@/hooks/useProjectManager';
@@ -9,6 +9,7 @@ import { useProfileQuery } from '@/hooks/core/useProfileQuery';
 import { useT } from '@/lib/i18n';
 import { useLanguageNavigation } from '@/hooks/useLanguageNavigation';
 import { Form } from '@/components/ui/form';
+import { Button } from '@/components/ui/button';
 import { UserProfile } from '@/types/profile';
 import ContractStatusCard from '@/components/CreateProject/ContractStatusCard';
 import ProjectDetailsForm from '@/components/CreateProject/ProjectDetailsForm';
@@ -92,12 +93,13 @@ function EditProject() {
         <div className="flex items-center justify-center min-h-[400px]">
           <div className="text-center">
             <p className="text-slate-600 mb-4">{t('projectNotFoundAccessDenied')}</p>
-            <button 
+            <Button
+              variant="link"
               onClick={() => navigate('/dashboard')}
-              className="text-blue-600 hover:text-blue-800"
+              className="text-blue-600 hover:text-blue-800 p-0 h-auto"
             >
               {t('returnToDashboard')}
-            </button>
+            </Button>
           </div>
         </div>
       </Layout>

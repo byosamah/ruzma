@@ -1,7 +1,6 @@
 
 import { useState, useEffect } from 'react';
 import { User } from '@supabase/supabase-js';
-import { profileService } from '@/services/profileService';
 import { brandingService } from '@/services/brandingService';
 import { ProfileFormData } from './types';
 import { toast } from 'sonner';

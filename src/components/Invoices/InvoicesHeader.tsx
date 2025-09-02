@@ -1,5 +1,4 @@
 
-import React from 'react';
 import YouTubePopup from '@/components/YouTubePopup';
 import { useT } from '@/lib/i18n';
 

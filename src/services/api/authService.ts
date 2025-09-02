@@ -2,6 +2,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import { cleanupAuthState, logSecurityEvent, secureSignOut, secureSignIn } from '@/lib/authSecurity';
 import { validateSignUpForm } from '@/utils/signUpValidation';
+import { APP_CONFIG } from '@/lib/constants/config';
 
 interface SignUpData {
   name: string;
@@ -42,7 +43,7 @@ export const authService = {
         throw new Error('Please select a valid currency');
       }
 
-      const redirectUrl = 'https://app.ruzma.co/';
+      const redirectUrl = APP_CONFIG.BASE_URL;
       
       const { data, error } = await supabase.auth.signUp({
         email: formData.email,
@@ -122,7 +123,7 @@ export const authService = {
   // Email confirmation resend with cooldown
   async resendConfirmation(email: string) {
     try {
-      const redirectUrl = 'https://app.ruzma.co/';
+      const redirectUrl = APP_CONFIG.BASE_URL;
       
       const { error } = await supabase.auth.resend({
         type: 'signup',

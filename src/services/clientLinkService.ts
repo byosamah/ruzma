@@ -10,17 +10,13 @@ interface SendClientLinkParams {
 }
 
 export const sendClientLink = async (params: SendClientLinkParams) => {
-  try {
-    const response = await supabase.functions.invoke('send-client-link', {
-      body: params,
-    });
+  const response = await supabase.functions.invoke('send-client-link', {
+    body: params,
+  });
 
-    if (response.error) {
-      throw new Error(response.error.message);
-    }
-
-    return response.data;
-  } catch (error) {
-    throw error;
+  if (response.error) {
+    throw new Error(response.error.message);
   }
+
+  return response.data;
 };

@@ -1,7 +1,6 @@
 
 import { useState, useRef } from 'react';
 import { toast } from "sonner";
-import { type Area } from 'react-easy-crop';
 import { getCroppedImg } from '@/lib/imageUtils';
 import { supabase } from '@/integrations/supabase/client';
 import { User } from '@supabase/supabase-js';

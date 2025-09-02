@@ -5,7 +5,7 @@ import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, Command
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Label } from '@/components/ui/label';
 import { cn } from '@/lib/utils';
-import { COUNTRIES, getCountriesList, searchCountries, type Country } from '@/lib/countries';
+import { COUNTRIES, searchCountries } from '@/lib/countries';
 import { useT } from '@/lib/i18n';
 
 interface CountrySelectProps {

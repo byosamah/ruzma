@@ -1,13 +1,12 @@
 
-import React, { useState, useEffect } from 'react';
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import React, { useState, useEffect, useCallback } from 'react';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 // Icons replaced with emojis
 import { ClientWithProjectCount } from '@/types/client';
 import { supabase } from '@/integrations/supabase/client';
 import { DatabaseProject } from '@/hooks/projectTypes';
-import { DatabaseMilestone } from '@/types/shared';
 import { useT } from '@/lib/i18n';
 
 interface ClientDetailsDialogProps {
@@ -25,13 +24,7 @@ const ClientDetailsDialog = ({
   const [projects, setProjects] = useState<DatabaseProject[]>([]);
   const [loading, setLoading] = useState(false);
 
-  useEffect(() => {
-    if (client && open) {
-      fetchClientProjects();
-    }
-  }, [client, open]);
-
-  const fetchClientProjects = async () => {
+  const fetchClientProjects = useCallback(async () => {
     if (!client) return;
     
     setLoading(true);
@@ -65,7 +58,13 @@ const ClientDetailsDialog = ({
     } finally {
       setLoading(false);
     }
-  };
+  }, [client]);
+
+  useEffect(() => {
+    if (client && open) {
+      fetchClientProjects();
+    }
+  }, [client, open, fetchClientProjects]);
 
   if (!client) return null;
 
@@ -79,6 +78,7 @@ const ClientDetailsDialog = ({
             </div>
             {t('clientDetails')}
           </DialogTitle>
+          <DialogDescription>View client information and their project history</DialogDescription>
         </DialogHeader>
         
         <div className="space-y-6">

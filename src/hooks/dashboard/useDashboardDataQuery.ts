@@ -1,7 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
 import { User } from '@supabase/supabase-js';
 import { supabase } from '@/integrations/supabase/client';
-import { DatabaseProject, DatabaseMilestone } from '@/hooks/projectTypes';
+import { DatabaseProject } from '@/hooks/projectTypes';
 import { setUserProperties } from '@/lib/analytics';
 
 const fetchDashboardData = async (user: User) => {
@@ -9,7 +9,7 @@ const fetchDashboardData = async (user: User) => {
   const [profileResult, projectsResult] = await Promise.all([
     supabase
       .from('profiles')
-      .select('*')
+      .select('id, full_name, email, currency, user_type, project_count, storage_used, created_at, updated_at')
       .eq('id', user.id)
       .single(),
     supabase

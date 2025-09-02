@@ -1,5 +1,4 @@
 
-import React from 'react';
 import { Briefcase } from 'lucide-react';
 import { useT } from '@/lib/i18n';
 import LanguageSelector from '@/components/LanguageSelector';

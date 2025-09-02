@@ -1,5 +1,4 @@
 
-import React from 'react';
 import { DatabaseProject } from '@/hooks/projectTypes';
 import { Progress } from '@/components/ui/progress';
 

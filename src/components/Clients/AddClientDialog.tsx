@@ -1,105 +1,95 @@
 
-import React, { useState } from 'react';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
-import { Button } from '@/components/ui/button';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
 import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { CreateClientData } from '@/types/client';
+import { FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
+import { ShadcnFormDialog } from '@/components/shared/dialogs/ShadcnFormDialog';
+import { createClientSchema } from '@/lib/validators/client';
 import { useT } from '@/lib/i18n';
 
 interface AddClientDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  onSubmit: (data: CreateClientData) => Promise<boolean>;
+  onSubmit: (data: CreateClientFormData) => Promise<boolean>;
 }
 
-const AddClientDialog = ({
+function AddClientDialog({
   open,
   onOpenChange,
   onSubmit
-}) => {
+}: AddClientDialogProps) {
   const t = useT();
-  const [formData, setFormData] = useState<CreateClientData>({
-    name: '',
-    email: ''
+  
+  const form = useForm<CreateClientFormData>({
+    resolver: zodResolver(createClientSchema),
+    defaultValues: {
+      name: '',
+      email: '',
+      notes: '',
+    },
   });
-  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    
-    if (!formData.name.trim() || !formData.email.trim()) {
-      return;
-    }
-
-    setIsSubmitting(true);
-    
-    const success = await onSubmit(formData);
+  const handleSubmit = async (data: CreateClientFormData) => {
+    const success = await onSubmit(data);
     
     if (success) {
-      setFormData({ name: '', email: '' });
-      onOpenChange(false);
+      form.reset();
     }
-    
-    setIsSubmitting(false);
   };
 
-  const handleOpenChange = (newOpen: boolean) => {
-    if (!isSubmitting) {
-      onOpenChange(newOpen);
-      if (!newOpen) {
-        setFormData({ name: '', email: '' });
-      }
-    }
+  const handleCancel = () => {
+    form.reset();
   };
 
   return (
-    <Dialog open={open} onOpenChange={handleOpenChange}>
-      <DialogContent className="sm:max-w-md">
-        <DialogHeader>
-          <DialogTitle>{t('addNewClient')}</DialogTitle>
-        </DialogHeader>
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div className="space-y-2">
-            <Label htmlFor="name">{t('clientName')} *</Label>
-            <Input
-              id="name"
-              value={formData.name}
-              onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))}
-              placeholder={t('enterClientName')}
-              className="border-gray-300 border"
-              required
-            />
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="email">{t('clientEmail')} *</Label>
-            <Input
-              id="email"
-              type="email"
-              value={formData.email}
-              onChange={(e) => setFormData(prev => ({ ...prev, email: e.target.value }))}
-              placeholder={t('enterClientEmail')}
-              className="border-gray-300 border"
-              required
-            />
-          </div>
-          <DialogFooter>
-            <Button
-              type="button"
-              variant="outline"
-              onClick={() => handleOpenChange(false)}
-              disabled={isSubmitting}
-            >
-              {t('cancel')}
-            </Button>
-            <Button type="submit" disabled={isSubmitting}>
-              {isSubmitting ? t('adding') : t('addClient')}
-            </Button>
-          </DialogFooter>
-        </form>
-      </DialogContent>
-    </Dialog>
+    <ShadcnFormDialog
+      open={open}
+      onOpenChange={onOpenChange}
+      title={t('addNewClient')}
+      form={form}
+      onSubmit={handleSubmit}
+      onCancel={handleCancel}
+      submitLabel={t('addClient')}
+      cancelLabel={t('cancel')}
+    >
+      <FormField
+        control={form.control}
+        name="name"
+        render={({ field }) => (
+          <FormItem>
+            <FormLabel>{t('clientName')} *</FormLabel>
+            <FormControl>
+              <Input
+                {...field}
+                placeholder={t('enterClientName')}
+                className="border-gray-300"
+              />
+            </FormControl>
+            <FormMessage />
+          </FormItem>
+        )}
+      />
+      
+      <FormField
+        control={form.control}
+        name="email"
+        render={({ field }) => (
+          <FormItem>
+            <FormLabel>{t('clientEmail')} *</FormLabel>
+            <FormControl>
+              <Input
+                {...field}
+                type="email"
+                placeholder={t('enterClientEmail')}
+                className="border-gray-300"
+              />
+            </FormControl>
+            <FormMessage />
+          </FormItem>
+        )}
+      />
+    </ShadcnFormDialog>
   );
-};
+}
 
 export default AddClientDialog;

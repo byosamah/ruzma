@@ -28,8 +28,6 @@ const handler = async (req: Request): Promise<Response> => {
 
     const { approvalToken, action, rejectionReason }: ContractApprovalRequest = await req.json();
 
-    console.log('Processing contract approval action:', action, 'for token:', approvalToken);
-
     // Find project by approval token
     const { data: project, error: projectError } = await supabaseClient
       .from('projects')
@@ -38,7 +36,6 @@ const handler = async (req: Request): Promise<Response> => {
       .single();
 
     if (projectError || !project) {
-      console.error('Error fetching project:', projectError);
       throw new Error('Invalid approval token');
     }
 
@@ -48,7 +45,6 @@ const handler = async (req: Request): Promise<Response> => {
       .select('full_name, email')
       .eq('id', project.user_id)
       .single();
-
 
     if (project.contract_status !== 'pending') {
       throw new Error('Contract has already been processed');
@@ -72,7 +68,6 @@ const handler = async (req: Request): Promise<Response> => {
       .eq('id', project.id);
 
     if (updateError) {
-      console.error('Error updating project:', updateError);
       throw new Error('Failed to update contract status');
     }
 
@@ -163,7 +158,6 @@ const handler = async (req: Request): Promise<Response> => {
     });
 
   } catch (error: any) {
-    console.error('Error in approve-contract function:', error);
     return new Response(
       JSON.stringify({ error: error.message }),
       {

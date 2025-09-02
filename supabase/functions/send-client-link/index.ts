@@ -32,8 +32,6 @@ const handler = async (req: Request): Promise<Response> => {
   try {
     const { clientEmail, projectName, freelancerName, clientToken, userId }: SendClientLinkRequest = await req.json();
 
-    console.log('Sending client link email:', { clientEmail, projectName, freelancerName });
-
     // Get freelancer name from profile if userId is provided
     let actualFreelancerName = freelancerName;
     if (userId) {
@@ -103,8 +101,6 @@ const handler = async (req: Request): Promise<Response> => {
       `,
     });
 
-    console.log("Client link email sent successfully:", emailResponse);
-
     return new Response(JSON.stringify({ success: true, emailId: emailResponse.data?.id }), {
       status: 200,
       headers: {
@@ -113,8 +109,6 @@ const handler = async (req: Request): Promise<Response> => {
       },
     });
   } catch (error: any) {
-    console.error("Error in send-client-link function:", error);
-    
     // Handle Resend domain verification error specifically
     if (error.message && error.message.includes('verify a domain')) {
       return new Response(

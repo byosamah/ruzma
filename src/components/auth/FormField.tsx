@@ -2,7 +2,6 @@
 import React from 'react';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { LucideIcon } from 'lucide-react';
 
 interface FormFieldProps {
   id: string;

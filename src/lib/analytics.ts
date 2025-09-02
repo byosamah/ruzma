@@ -1,5 +1,5 @@
 
-import { AnalyticsItem, GTAGArgs } from '@/types/common';
+import { AnalyticsItem } from '@/types/common';
 
 // Google Analytics 4 tracking utilities
 declare global {

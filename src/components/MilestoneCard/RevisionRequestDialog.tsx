@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Send, Upload, X, Image } from 'lucide-react';
 import { useT } from '@/lib/i18n';
 import { Button } from '@/components/ui/button';
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import { Textarea } from '@/components/ui/textarea';
 import { toast } from 'sonner';
 import { RevisionData, canRequestRevision, getRemainingRevisions } from '@/lib/revisionUtils';
@@ -125,6 +125,7 @@ const RevisionRequestDialog = ({
             <Send className="w-5 h-5 text-primary" />
             Request Revision - {milestoneTitle}
           </DialogTitle>
+          <DialogDescription>Provide feedback and request changes to this milestone</DialogDescription>
         </DialogHeader>
 
         <div className="space-y-6">

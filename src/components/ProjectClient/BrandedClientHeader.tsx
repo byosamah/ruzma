@@ -1,5 +1,4 @@
 
-import React from 'react';
 import LanguageSelector from '@/components/LanguageSelector';
 import { FreelancerBranding } from '@/types/branding';
 import { User } from 'lucide-react';

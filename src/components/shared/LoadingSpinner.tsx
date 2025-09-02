@@ -1,4 +1,3 @@
-import React from 'react';
 import { useT } from '@/lib/i18n';
 
 interface LoadingSpinnerProps {

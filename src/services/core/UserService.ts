@@ -121,7 +121,7 @@ export class UserService extends BaseService {
     try {
       const { data: branding, error } = await this.supabase
         .from('freelancer_branding')
-        .select('id, user_id, logo_url, brand_color, company_name, website, phone, address, created_at, updated_at')
+        .select('id, user_id, logo_url, primary_color, secondary_color, freelancer_name, freelancer_title, freelancer_bio, created_at, updated_at')
         .eq('user_id', user.id)
         .maybeSingle();
 

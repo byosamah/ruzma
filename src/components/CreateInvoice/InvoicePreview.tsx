@@ -1,5 +1,4 @@
 
-import React from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { format } from 'date-fns';
 import { InvoiceFormData } from './types';

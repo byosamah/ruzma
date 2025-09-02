@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import { toast } from 'sonner';
-import { CurrencyCode } from '@/lib/currency';
 import { SubscriptionPlan } from './types';
 import { getSubscriptionPlans, mapUserTypeToPlanId } from './planUtils';
 import { createCheckoutSession, checkSubscriptionStatus } from './subscriptionService';

@@ -1,5 +1,4 @@
 
-import React from "react";
 import { CurrencyCode } from "@/lib/currency";
 import DashboardAnalyticsMetrics from "./DashboardAnalyticsMetrics";
 import DashboardAnalyticsCharts from "./DashboardAnalyticsCharts";

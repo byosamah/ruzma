@@ -1,7 +1,7 @@
 
 import { CurrencyCode } from '@/lib/currency';
 import { SubscriptionPlan } from './types';
-import { BASE_PRICES, EXCHANGE_RATES } from './constants';
+import { EXCHANGE_RATES } from './constants';
 import { translate } from '@/lib/i18n';
 
 export const getSubscriptionPlans = (currency: CurrencyCode = 'USD', language: 'en' | 'ar' = 'en'): SubscriptionPlan[] => {

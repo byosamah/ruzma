@@ -18,6 +18,6 @@ export const useCategoryTranslator = () => {
   
   return (categoryKey: string): string => {
     const translationKey = categoryTranslationMap[categoryKey];
-    return translationKey ? t(translationKey as any) : categoryKey;
+    return translationKey ? t(translationKey) : categoryKey;
   };
 };

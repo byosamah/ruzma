@@ -1,5 +1,5 @@
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { FreelancerBranding, BrandingFormData, defaultBranding } from '@/types/branding';
 import { User } from '@supabase/supabase-js';
 import { supabase } from '@/integrations/supabase/client';
@@ -10,22 +10,13 @@ export const useBranding = (user: User | null) => {
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
 
-  useEffect(() => {
-    if (!user) {
-      setIsLoading(false);
-      return;
-    }
-
-    fetchBranding();
-  }, [user]);
-
-  const fetchBranding = async () => {
+  const fetchBranding = useCallback(async () => {
     if (!user) return;
 
     try {
       const { data, error } = await supabase
         .from('freelancer_branding')
-        .select('*')
+        .select('user_id, freelancer_name, freelancer_title, freelancer_bio, primary_color, secondary_color, logo_url, created_at, updated_at')
         .eq('user_id', user.id)
         .maybeSingle();
 
@@ -51,7 +42,16 @@ export const useBranding = (user: User | null) => {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [user]);
+
+  useEffect(() => {
+    if (!user) {
+      setIsLoading(false);
+      return;
+    }
+
+    fetchBranding();
+  }, [user, fetchBranding]);
 
   const saveBranding = async (formData: BrandingFormData): Promise<boolean> => {
     if (!user) return false;

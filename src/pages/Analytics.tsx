@@ -1,12 +1,9 @@
 
-import React from 'react';
 import Layout from '@/components/Layout';
 import { useDashboard } from '@/hooks/useDashboard';
 import { useDashboardAnalytics } from '@/hooks/useDashboardAnalytics';
 import { useAdvancedAnalytics } from '@/hooks/analytics';
 import AnalyticsHeader from '@/components/Analytics/AnalyticsHeader';
-import AnalyticsMetrics from '@/components/Analytics/AnalyticsMetrics';
-import AnalyticsCharts from '@/components/Analytics/AnalyticsCharts';
 import AdvancedAnalyticsLayout from '@/components/Analytics/AdvancedAnalyticsLayout';
 import { useT } from '@/lib/i18n';
 

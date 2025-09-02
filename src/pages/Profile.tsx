@@ -1,5 +1,4 @@
 
-import React from 'react';
 import Layout from '@/components/Layout';
 import YouTubePopup from '@/components/YouTubePopup';
 import { ProfilePictureCard } from '@/components/Profile/ProfilePictureCard';

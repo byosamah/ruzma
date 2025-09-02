@@ -28,7 +28,6 @@ const handler = async (req: Request): Promise<Response> => {
     // Initialize Resend and Supabase
     const resendApiKey = Deno.env.get("RESEND_API_KEY");
     if (!resendApiKey) {
-      console.error("RESEND_API_KEY environment variable is not set");
       throw new Error("Email service not configured");
     }
 
@@ -39,11 +38,6 @@ const handler = async (req: Request): Promise<Response> => {
     );
     
     const { clientEmail, projectName, projectId, clientToken, isApproved, milestoneName, userId }: EmailRequest = await req.json();
-
-    console.log("Sending payment notification email");
-    console.log("Recipient:", clientEmail);
-    console.log("Project:", projectName);
-    console.log("User ID:", userId);
 
     // Get freelancer information
     let freelancerName = "Your freelancer";
@@ -80,17 +74,12 @@ const handler = async (req: Request): Promise<Response> => {
                           "Your freelancer";
         }
       } catch (error) {
-        console.error('Error fetching freelancer info:', error);
         // Continue with default name
       }
     }
 
-    console.log("Using freelancer name:", freelancerName);
-
     // Generate the correct client project URL using the new domain
     const origin = req.headers.get('origin') || req.headers.get('referer');
-    console.log("Request origin:", origin);
-    
     // Use app.ruzma.co as the base URL
     let baseUrl = 'https://app.ruzma.co';
     
@@ -100,10 +89,6 @@ const handler = async (req: Request): Promise<Response> => {
     }
     
     const clientProjectUrl = `${baseUrl}/client/project/${clientToken}`;
-    
-    console.log("Generated client project URL:", clientProjectUrl);
-    console.log("Client token:", clientToken);
-    console.log("Base URL used:", baseUrl);
     
     let subject: string;
     let htmlContent: string;
@@ -132,16 +117,12 @@ const handler = async (req: Request): Promise<Response> => {
       `;
     }
 
-    console.log("About to send email from:", freelancerName);
-    
     const emailResponse = await resend.emails.send({
       from: `${freelancerName} <notifications@ruzma.co>`,
       to: [clientEmail],
       subject: subject,
       html: htmlContent,
     });
-
-    console.log("Email sent successfully:", emailResponse);
 
     return new Response(JSON.stringify(emailResponse), {
       status: 200,
@@ -151,13 +132,6 @@ const handler = async (req: Request): Promise<Response> => {
       },
     });
   } catch (error: any) {
-    console.error("Error in send-payment-notification function:", error);
-    console.error("Error details:", {
-      message: error.message,
-      name: error.name,
-      statusCode: error.statusCode,
-      stack: error.stack
-    });
     return new Response(
       JSON.stringify({ error: error.message }),
       {

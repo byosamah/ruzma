@@ -1,8 +1,6 @@
-import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
-import { Separator } from '@/components/ui/separator';
 import { useT } from '@/lib/i18n';
 import { formatCurrency, CurrencyCode } from '@/lib/currency';
 import { format } from 'date-fns';

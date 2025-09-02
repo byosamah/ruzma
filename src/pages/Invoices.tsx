@@ -1,8 +1,6 @@
 
-import React from 'react';
 import { useLanguageNavigation } from '@/hooks/useLanguageNavigation';
 import Layout from '@/components/Layout';
-import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 // Icons replaced with emojis
 import { useInvoices } from '@/hooks/useInvoices';

@@ -1,4 +1,3 @@
-import React from 'react';
 import { Coins, Calendar, Wallet } from 'lucide-react';
 import { DatabaseProject } from '@/hooks/projectTypes';
 import { formatCurrency } from '@/lib/currency';

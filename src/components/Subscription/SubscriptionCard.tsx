@@ -1,5 +1,4 @@
 
-import React from 'react';
 import { Card } from '@/components/ui/card';
 import { SubscriptionPlan } from '@/hooks/subscription/useSubscription';
 import { CurrencyCode } from '@/lib/currency';

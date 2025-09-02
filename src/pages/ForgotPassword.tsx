@@ -1,40 +1,49 @@
 
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent } from '@/components/ui/card';
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
+import { forgotPasswordSchema } from '@/lib/validators/auth';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import { useT } from '@/lib/i18n';
 import LanguageSelector from '@/components/LanguageSelector';
+import { ROUTES } from '@/lib/constants/config';
 
 const ForgotPassword = () => {
   const t = useT();
-  const [email, setEmail] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
   const [emailSent, setEmailSent] = useState(false);
+  const [sentToEmail, setSentToEmail] = useState('');
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setIsLoading(true);
+  const form = useForm<ForgotPasswordFormData>({
+    resolver: zodResolver(forgotPasswordSchema),
+    defaultValues: {
+      email: '',
+    },
+  });
 
+  const { isSubmitting } = form.formState;
+
+  const onSubmit = async (data: ForgotPasswordFormData) => {
     try {
-      const { error } = await supabase.auth.resetPasswordForEmail(email, {
-        redirectTo: 'https://app.ruzma.co/en/reset-password',
+      const { error } = await supabase.auth.resetPasswordForEmail(data.email, {
+        redirectTo: ROUTES.RESET_PASSWORD('en'),
       });
 
       if (error) {
         throw error;
       }
 
+      setSentToEmail(data.email);
       setEmailSent(true);
       toast.success(t('passwordResetEmailSent'));
     } catch (error: unknown) {
       toast.error(error instanceof Error ? error.message : t('passwordResetEmailFailed'));
-    } finally {
-      setIsLoading(false);
+      throw error; // Let form handle the error state
     }
   };
 
@@ -57,7 +66,7 @@ const ForgotPassword = () => {
             <div className="space-y-2">
               <h1 className="text-2xl font-semibold text-gray-900">{t('checkYourEmailTitle')}</h1>
               <p className="text-gray-600">
-                {t('checkYourEmailSubtitle', { email })}
+                {t('checkYourEmailSubtitle', { email: sentToEmail })}
               </p>
             </div>
           </div>
@@ -104,29 +113,39 @@ const ForgotPassword = () => {
 
         <Card className="border-0 shadow-none">
           <CardContent className="p-0">
-            <form onSubmit={handleSubmit} className="space-y-5">
-              <div className="space-y-2">
-                <Label htmlFor="email" className="text-sm font-medium text-gray-700">{t('emailLabel')}</Label>
-                <Input
-                  id="email"
+            <Form {...form}>
+              <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-5">
+                <FormField
+                  control={form.control}
                   name="email"
-                  type="email"
-                  placeholder={t('enterYourEmailPlaceholder')}
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  required
-                  className="h-11 border-gray-200 focus:border-gray-400 focus:ring-0"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="text-sm font-medium text-gray-700">
+                        {t('emailLabel')}
+                      </FormLabel>
+                      <FormControl>
+                        <Input
+                          {...field}
+                          type="email"
+                          placeholder={t('enterYourEmailPlaceholder')}
+                          className="h-11 border-gray-200 focus:border-gray-400 focus:ring-0"
+                          disabled={isSubmitting}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
                 />
-              </div>
 
-              <Button 
-                type="submit" 
-                className="w-full h-11 bg-gray-900 text-white hover:bg-gray-800 font-medium rounded-lg" 
-                disabled={isLoading}
-              >
-                {isLoading ? t('sendingResetLink') : t('sendResetLink')}
-              </Button>
-            </form>
+                <Button 
+                  type="submit" 
+                  className="w-full h-11 bg-gray-900 text-white hover:bg-gray-800 font-medium rounded-lg" 
+                  disabled={isSubmitting}
+                >
+                  {isSubmitting ? t('sendingResetLink') : t('sendResetLink')}
+                </Button>
+              </form>
+            </Form>
 
             <div className="mt-6 text-center">
               <Link to="/login" className="text-sm text-gray-900 hover:underline">

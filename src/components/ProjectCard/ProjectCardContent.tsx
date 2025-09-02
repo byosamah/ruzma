@@ -1,12 +1,11 @@
 
-import React from 'react';
-import { CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Calendar, Clock, Coins } from 'lucide-react';
 import { formatCurrency, CurrencyCode } from '@/lib/currency';
 import { DatabaseProject } from '@/hooks/projectTypes';
 import { ProjectStats } from './types';
 import { useT } from '@/lib/i18n';
+import { memo } from 'react';
 
 interface ProjectCardContentProps {
   project: DatabaseProject;
@@ -69,6 +68,6 @@ function ProjectCardContent({
       </div>
     </div>
   );
-};
+}
 
-export default ProjectCardContent;
+export default memo(ProjectCardContent);

@@ -1,6 +1,4 @@
 
-import React from "react";
-import { Card, CardContent } from "@/components/ui/card";
 // Icons replaced with emojis
 import { formatCurrency, CurrencyCode } from "@/lib/currency";
 import { useT } from "@/lib/i18n";

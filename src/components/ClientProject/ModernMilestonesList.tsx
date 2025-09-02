@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Separator } from '@/components/ui/separator';
 import ModernMilestoneCard from './ModernMilestoneCard';
 import { CurrencyCode } from '@/lib/currency';
@@ -104,7 +103,7 @@ const ModernMilestonesList = ({
       </CardHeader>
 
       <CardContent>
-        <Tabs value={viewMode} onValueChange={value => setViewMode(value as any)}>
+        <Tabs value={viewMode} onValueChange={(value: 'all' | 'active' | 'completed') => setViewMode(value)}>
           <TabsList className="grid w-full grid-cols-3">
             <TabsTrigger value="all" className="flex items-center gap-2">
               <Grid className="w-4 h-4" />

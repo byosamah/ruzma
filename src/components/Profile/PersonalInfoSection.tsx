@@ -1,8 +1,7 @@
 
-import React from 'react';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Textarea } from '@/components/ui/textarea';
 // Icons replaced with emojis
 import { EnhancedCurrencySelect } from '@/components/ui/enhanced-currency-select';
 import { CountrySelect } from '@/components/ui/country-select';
@@ -132,11 +131,11 @@ export const PersonalInfoSection = ({
 
       <div className="space-y-2">
         <Label htmlFor="shortBio" className="text-sm text-gray-700">{t('shortBio')}</Label>
-        <textarea
+        <Textarea
           id="shortBio"
           name="shortBio"
           rows={2}
-          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none text-sm"
+          className="border-gray-300 border text-sm resize-none"
           placeholder={t('shortBioPlaceholder')}
           value={formData.shortBio || ''}
           onChange={onFormChange}

@@ -1,10 +1,12 @@
 
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Button } from '@/components/ui/button';
-import { X, ExternalLink, CheckCircle, XCircle, Eye } from 'lucide-react';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
+import { ExternalLink, CheckCircle, XCircle, Eye } from 'lucide-react';
 import { isPdfFile, copyToClipboard } from './utils';
 
 interface PaymentProofModalProps {
+  open: boolean;
   paymentProofUrl: string;
   onClose: () => void;
   onApprove?: (milestoneId: string) => void;
@@ -13,12 +15,13 @@ interface PaymentProofModalProps {
 }
 
 const PaymentProofModal = ({
+  open,
   paymentProofUrl,
   onClose,
   onApprove,
   onReject,
   milestoneId
-}) => {
+}: PaymentProofModalProps) => {
   const [imageLoadError, setImageLoadError] = useState(false);
 
   const handleImageError = () => {
@@ -51,15 +54,13 @@ const PaymentProofModal = ({
   };
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-      <div className="bg-white rounded-lg max-w-4xl max-h-[90vh] overflow-auto w-full">
-        <div className="flex items-center justify-between p-4 border-b">
-          <h3 className="text-lg font-semibold">Payment Proof Preview</h3>
-          <Button variant="ghost" size="sm" onClick={handleClose}>
-            <X className="w-4 h-4" />
-          </Button>
-        </div>
-        <div className="p-4">
+    <Dialog open={open} onOpenChange={handleClose}>
+      <DialogContent className="max-w-4xl max-h-[90vh] overflow-auto">
+        <DialogHeader>
+          <DialogTitle>Payment Proof Preview</DialogTitle>
+          <DialogDescription>View the uploaded payment proof document</DialogDescription>
+        </DialogHeader>
+        <div className="space-y-4">
           <div className="flex items-center justify-center min-h-[300px]">
             {isPdfFile(paymentProofUrl) ? (
               <iframe
@@ -158,8 +159,8 @@ const PaymentProofModal = ({
             )}
           </div>
         </div>
-      </div>
-    </div>
+      </DialogContent>
+    </Dialog>
   );
 };
 

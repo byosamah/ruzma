@@ -22,7 +22,7 @@ interface UserProfile {
 const fetchProfile = async (userId: string): Promise<UserProfile | null> => {
   const { data: profileData, error } = await supabase
     .from('profiles')
-    .select('*')
+    .select('id, full_name, email, currency, user_type, project_count, storage_used, created_at, updated_at')
     .eq('id', userId)
     .single();
 

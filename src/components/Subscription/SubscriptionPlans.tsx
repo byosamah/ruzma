@@ -1,11 +1,10 @@
 
-import React from 'react';
 import { SubscriptionCard } from './SubscriptionCard';
 import { useSubscription } from '@/hooks/subscription/useSubscription';
-import { useProjects } from '@/hooks/useProjects';
 import { supabase } from '@/integrations/supabase/client';
 import { useState, useEffect } from 'react';
 import { User } from '@supabase/supabase-js';
+import { UserProfile } from '@/types/profile';
 import { useUserCurrency } from '@/hooks/useUserCurrency';
 import { useT } from '@/lib/i18n';
 import { useLanguage } from '@/contexts/LanguageContext';
@@ -16,7 +15,7 @@ export function SubscriptionPlans() {
   const { language } = useLanguage();
   const { createCheckout, isLoading } = useSubscription();
   const [user, setUser] = useState<User | null>(null);
-  const [userProfile, setUserProfile] = useState<any>(null);
+  const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
   const [profileLoading, setProfileLoading] = useState(true);
   const { currency } = useUserCurrency(userProfile);
 

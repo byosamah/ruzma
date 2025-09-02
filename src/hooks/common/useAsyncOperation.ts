@@ -8,7 +8,7 @@ interface AsyncOperationOptions {
   onError?: (error: Error) => void;
 }
 
-export const useAsyncOperation = <T extends any[], R>(
+export const useAsyncOperation = <T extends unknown[], R>(
   operation: (...args: T) => Promise<R>,
   options: AsyncOperationOptions = {}
 ) => {

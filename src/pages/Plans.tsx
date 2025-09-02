@@ -1,5 +1,4 @@
 
-import React from 'react';
 import Layout from '@/components/Layout';
 import { SubscriptionPlans } from '@/components/Subscription/SubscriptionPlans';
 import { useAuth } from '@/hooks/core/useAuth';

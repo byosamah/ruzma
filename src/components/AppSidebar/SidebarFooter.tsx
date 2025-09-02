@@ -1,5 +1,4 @@
 
-import React from 'react';
 import { LogOut } from 'lucide-react';
 import { SidebarMenu, SidebarMenuButton, SidebarMenuItem, useSidebar } from '@/components/ui/sidebar';
 import { useT } from '@/lib/i18n';

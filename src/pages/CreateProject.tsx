@@ -7,7 +7,6 @@ import Layout from '@/components/Layout';
 import { supabase } from '@/integrations/supabase/client';
 import { User } from '@supabase/supabase-js';
 import { UserProfile } from '@/types/profile';
-import { toast } from 'sonner';
 import { useT } from '@/lib/i18n';
 import { useLanguage } from '@/contexts/LanguageContext';
 import ProjectDetailsForm from '@/components/CreateProject/ProjectDetailsForm';

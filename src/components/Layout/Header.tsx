@@ -1,5 +1,4 @@
 
-import React from 'react';
 import { User } from '@supabase/supabase-js';
 import LanguageSelector from '../LanguageSelector';
 import LogoSection from './LogoSection';

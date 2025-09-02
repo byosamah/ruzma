@@ -1,5 +1,4 @@
 
-import React from 'react';
 import { User } from '@supabase/supabase-js';
 import { Sidebar, SidebarContent, SidebarHeader, SidebarFooter } from '@/components/ui/sidebar';
 import { useLanguage } from '@/contexts/LanguageContext';

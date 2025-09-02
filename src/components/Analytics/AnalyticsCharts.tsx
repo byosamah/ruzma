@@ -1,5 +1,4 @@
 
-import React from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   ChartContainer,
@@ -18,10 +17,11 @@ import {
   YAxis,
   CartesianGrid,
   Legend,
-} from "recharts";
+} from "@/components/ui/chartLazy";
 import { formatCurrency, CurrencyCode } from "@/lib/currency";
 import { useT } from "@/lib/i18n";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { memo } from "react";
 
 interface AnalyticsData {
   revenueData: Array<{ month: string; revenue: number; projects: number }>;
@@ -174,4 +174,4 @@ const AnalyticsCharts = ({ data, userCurrency }: AnalyticsChartsProps) => {
   );
 };
 
-export default AnalyticsCharts;
+export default memo(AnalyticsCharts);

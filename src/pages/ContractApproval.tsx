@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -49,9 +49,9 @@ const ContractApproval = () => {
     if (token) {
       fetchProjectData();
     }
-  }, [token]);
+  }, [token, fetchProjectData]);
 
-  const fetchProjectData = async () => {
+  const fetchProjectData = useCallback(async () => {
     try {
       const { data, error } = await supabase
         .from('projects')
@@ -102,7 +102,7 @@ const ContractApproval = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [token]);
 
   const handleApproval = async (action: 'approve' | 'reject') => {
     if (!project || !token) return;

@@ -5,6 +5,9 @@ import { Button } from '@/components/ui/button';
 import {
   Dialog,
   DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
 } from '@/components/ui/dialog';
 import { useT } from '@/lib/i18n';
 
@@ -40,6 +43,10 @@ function YouTubePopup({
 
       <Dialog open={isOpen} onOpenChange={setIsOpen}>
         <DialogContent className="max-w-4xl w-full p-0">
+          <DialogHeader className="sr-only">
+            <DialogTitle>Tutorial Video</DialogTitle>
+            <DialogDescription>Watch the tutorial video to learn more</DialogDescription>
+          </DialogHeader>
           <div className="aspect-video w-full p-6">
             <iframe
               width="100%"

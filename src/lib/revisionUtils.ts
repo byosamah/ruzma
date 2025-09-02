@@ -1,4 +1,3 @@
-import { MilestoneData } from '@/types/common';
 
 export interface RevisionRequest {
   id: string;

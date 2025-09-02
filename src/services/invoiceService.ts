@@ -1,7 +1,7 @@
 import { supabase } from '@/integrations/supabase/client';
 import { Invoice, InvoiceStatus } from '@/hooks/invoices/types';
 import { InvoiceFormData } from '@/components/CreateInvoice/types';
-import { generateInvoicePDF, generateInvoicePDFBlob } from '@/lib/pdfGenerator';
+import { generateInvoicePDFLazy as generateInvoicePDF, generateInvoicePDFBlobLazy as generateInvoicePDFBlob } from '@/lib/pdfGeneratorLazy';
 import { trackInvoiceCreated } from '@/lib/analytics';
 import { SharedInvoiceData } from '@/lib/shared/invoice/types';
 import { toast } from 'sonner';
@@ -52,7 +52,7 @@ const buildInvoicePDFData = async (invoice: Invoice): Promise<SharedInvoiceData>
   // Fetch user profile and branding
   const [profileResult, brandingResult] = await Promise.all([
     supabase.from('profiles').select('full_name').eq('id', user.id).single(),
-    supabase.from('freelancer_branding').select('*').eq('user_id', user.id).single()
+    supabase.from('freelancer_branding').select('user_id, freelancer_name, freelancer_title, freelancer_bio, primary_color, secondary_color, logo_url, created_at, updated_at').eq('user_id', user.id).single()
   ]);
 
   const profile = profileResult.data;
@@ -209,7 +209,7 @@ export const invoiceService = {
   async getInvoices(userId: string): Promise<Invoice[]> {
     const { data, error } = await supabase
       .from('invoices')
-      .select('*')
+      .select('id, transaction_id, amount, project_name, date, status, project_id, invoice_data, created_at, updated_at, user_id')
       .eq('user_id', userId)
       .order('created_at', { ascending: false });
 
