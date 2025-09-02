@@ -7,7 +7,7 @@ import { ProjectService } from '../projectService';
 
 export class ServiceRegistry {
   private static instance: ServiceRegistry;
-  private services: Map<string, any> = new Map();
+  private services: Map<string, unknown> = new Map();
 
   private constructor() {}
 
@@ -23,7 +23,7 @@ export class ServiceRegistry {
     if (!this.services.has(key)) {
       this.services.set(key, new UserService(user));
     }
-    return this.services.get(key);
+    return this.services.get(key) as UserService;
   }
 
   getEmailService(user: User | null): EmailService {
@@ -31,7 +31,7 @@ export class ServiceRegistry {
     if (!this.services.has(key)) {
       this.services.set(key, new EmailService(user));
     }
-    return this.services.get(key);
+    return this.services.get(key) as EmailService;
   }
 
   getClientService(user: User | null): ClientService {
@@ -39,7 +39,7 @@ export class ServiceRegistry {
     if (!this.services.has(key)) {
       this.services.set(key, new ClientService(user));
     }
-    return this.services.get(key);
+    return this.services.get(key) as ClientService;
   }
 
   getCurrencyService(user: User | null): CurrencyService {
@@ -47,7 +47,7 @@ export class ServiceRegistry {
     if (!this.services.has(key)) {
       this.services.set(key, new CurrencyService(user));
     }
-    return this.services.get(key);
+    return this.services.get(key) as CurrencyService;
   }
 
   getProjectService(user: User | null): ProjectService {
@@ -55,7 +55,7 @@ export class ServiceRegistry {
     if (!this.services.has(key)) {
       this.services.set(key, new ProjectService(user));
     }
-    return this.services.get(key);
+    return this.services.get(key) as ProjectService;
   }
 
   clearUserServices(userId: string): void {
