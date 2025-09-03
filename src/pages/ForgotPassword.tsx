@@ -53,7 +53,7 @@ const ForgotPassword = () => {
         {/* Language Switcher - Top Right/Left based on direction */}
         <div className="absolute top-4 right-4 rtl:right-auto rtl:left-4 z-10">
           <LanguageSelector 
-            className="border-gray-200 hover:border-gray-300 bg-white" 
+            className="border-gray-200 bg-white" 
             showTextWhenCollapsed={true}
           />
         </div>
@@ -76,7 +76,7 @@ const ForgotPassword = () => {
               <p className="text-sm text-gray-600">
                 {t('checkYourEmailInfo')}
               </p>
-              <Link to="/login" className="text-gray-900 hover:underline font-medium">
+              <Link to="/login" className="text-gray-900 font-medium">
                 {t('backToLogin')}
               </Link>
             </CardContent>
@@ -148,7 +148,7 @@ const ForgotPassword = () => {
             </Form>
 
             <div className="mt-6 text-center">
-              <Link to="/login" className="text-sm text-gray-900 hover:underline">
+              <Link to="/login" className="text-sm text-gray-900">
                 {t('backToLogin')}
               </Link>
             </div>

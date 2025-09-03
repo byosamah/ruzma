@@ -96,7 +96,7 @@ function EditProject() {
             <Button
               variant="link"
               onClick={() => navigate('/dashboard')}
-              className="text-blue-600 hover:text-blue-800 p-0 h-auto"
+              className="text-blue-600 p-0 h-auto"
             >
               {t('returnToDashboard')}
             </Button>

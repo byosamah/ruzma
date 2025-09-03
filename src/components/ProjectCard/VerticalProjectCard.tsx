@@ -18,7 +18,7 @@ function VerticalProjectCard({
 
   return (
     <Card 
-      className="hover:shadow-md transition-shadow duration-200 cursor-pointer border-slate-200" 
+      className="transition-shadow duration-200 cursor-pointer border-slate-200" 
       onClick={actions.handleCardClick}
     >
       <CardHeader className="pb-2 px-3 sm:px-4 pt-3 sm:pt-4">

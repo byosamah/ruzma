@@ -75,7 +75,7 @@ const ProjectTemplatesContent = ({ user, profile }: { user: User; profile: UserP
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {templates.map(template => (
-              <Card key={template.id} className="bg-white/80 backdrop-blur-sm hover:shadow-lg transition-shadow">
+              <Card key={template.id} className="bg-white/80 backdrop-blur-sm transition-shadow">
                 <CardHeader>
                   <div className="flex justify-between items-start">
                     <div className="flex-1">
@@ -91,7 +91,7 @@ const ProjectTemplatesContent = ({ user, profile }: { user: User; profile: UserP
                         variant="ghost" 
                         size="sm" 
                         onClick={() => handleDeleteTemplate(template.id)} 
-                        className="text-red-600 hover:text-red-700"
+                        className="text-red-600"
                       >
                         <span className="text-lg">🗑️</span>
                       </Button>

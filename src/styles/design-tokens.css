@@ -15,7 +15,7 @@
 
   /* Interactive surfaces */
   .surface-hover {
-    @apply hover:bg-accent hover:text-accent-foreground transition-colors duration-150;
+    @apply transition-colors duration-150;
   }
 
   .surface-active {
@@ -84,7 +84,7 @@
 
   /* Interactive states */
   .interactive-hover {
-    @apply hover:bg-accent/50 transition-colors duration-150 cursor-pointer;
+    @apply transition-colors duration-150 cursor-pointer;
   }
 
   .interactive-press {

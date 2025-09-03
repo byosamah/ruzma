@@ -277,7 +277,7 @@ const ContractApproval = () => {
               {project.milestones.map((milestone, index) => (
                 <div 
                   key={milestone.id} 
-                  className="border rounded-lg p-4 hover:bg-accent/50 transition-colors"
+                  className="border rounded-lg p-4 transition-colors"
                 >
                   <div className="flex justify-between items-start">
                     <div className="flex-1">

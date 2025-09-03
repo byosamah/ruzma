@@ -51,7 +51,7 @@ const Login = () => {
       {/* Language Switcher - Top Right/Left based on direction */}
       <div className="absolute top-4 right-4 rtl:right-auto rtl:left-4 z-10">
         <LanguageSelector 
-          className="border-gray-200 hover:border-gray-300 bg-white" 
+          className="border-gray-200 bg-white" 
           showTextWhenCollapsed={true}
         />
       </div>
