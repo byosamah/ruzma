@@ -12,6 +12,7 @@ import { Eye, EyeOff, Lock } from 'lucide-react';
 import { useAuthManager } from '@/hooks/useAuthManager';
 import { useT } from '@/lib/i18n';
 import { signUpSchema } from '@/lib/validators/auth';
+import GoogleAuthButton from './GoogleAuthButton';
 
 function SignUpContainer() {
   const t = useT();
@@ -256,6 +257,24 @@ function SignUpContainer() {
               </Button>
             </form>
           </Form>
+
+          {/* Divider */}
+          <div className="relative mt-6">
+            <div className="absolute inset-0 flex items-center">
+              <span className="w-full border-t border-gray-200" />
+            </div>
+            <div className="relative flex justify-center text-xs uppercase">
+              <span className="bg-white px-2 text-gray-500">or</span>
+            </div>
+          </div>
+
+          {/* Google Sign Up */}
+          <div className="mt-6">
+            <GoogleAuthButton 
+              mode="signup" 
+              disabled={isLoading}
+            />
+          </div>
         </CardContent>
       </Card>
       

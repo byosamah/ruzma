@@ -1,9 +1,9 @@
 {
-  "timestamp": "2025-09-02T17:30:27.046Z",
+  "timestamp": "2025-09-03T19:44:46.955Z",
   "tables": {
     "profiles": {
       "exists": true,
-      "row_count": 22
+      "row_count": 23
     },
     "projects": {
       "exists": true,
@@ -15,11 +15,11 @@
     },
     "clients": {
       "exists": true,
-      "row_count": 16
+      "row_count": 18
     },
     "invoices": {
       "exists": true,
-      "row_count": 8
+      "row_count": 10
     },
     "invoice_items": {
       "exists": true,
@@ -27,7 +27,7 @@
     },
     "project_templates": {
       "exists": true,
-      "row_count": 14
+      "row_count": 15
     },
     "freelancer_branding": {
       "exists": true,
@@ -408,18 +408,6 @@
     ],
     "freelancer_branding": [
       {
-        "id": "4788165d-7d0a-4f6d-bbc4-b848d71466af",
-        "user_id": "0f34b55c-4e5c-428a-9f92-d5e413523069",
-        "logo_url": "https://***REMOVED***.supabase.co/storage/v1/object/public/branding-logos/0f34b55c-4e5c-428a-9f92-d5e413523069/1751049089938_my-notion-face-portrait.png",
-        "primary_color": "#bdf524",
-        "secondary_color": "#1D3770",
-        "freelancer_name": "Osama Khalil",
-        "freelancer_title": "designer",
-        "freelancer_bio": "",
-        "created_at": "2025-06-27T18:31:38.598532+00:00",
-        "updated_at": "2025-08-03T09:55:28.684+00:00"
-      },
-      {
         "id": "f67876dd-a376-4c9a-8cf0-b6bdcb50e86c",
         "user_id": "c0f7bd73-a399-4249-8720-4656a73f402d",
         "logo_url": "",
@@ -442,6 +430,18 @@
         "freelancer_bio": "أنا عبد الرحمن مصمم محترف في مجال إنتاج الفيديوهات الإبداعية\nصممت أكتر من 500 فيديو في المجالات التالية \nموشن جرافيك\nمونتاج \nوايت بورد أنيميشن",
         "created_at": "2025-08-04T09:24:58.271344+00:00",
         "updated_at": "2025-08-04T09:34:03.777+00:00"
+      },
+      {
+        "id": "3941d500-aa87-43df-9cfc-532cf51337c2",
+        "user_id": "758818b8-237c-49bd-a0c8-16f5b0c7611f",
+        "logo_url": "",
+        "primary_color": "#2258e2",
+        "secondary_color": "#1D3770",
+        "freelancer_name": "Raad Kloob",
+        "freelancer_title": "",
+        "freelancer_bio": "",
+        "created_at": "2025-08-11T18:15:45.092332+00:00",
+        "updated_at": "2025-08-11T18:15:44.813+00:00"
       }
     ],
     "user_plan_limits": [
@@ -612,8 +612,8 @@
   "auth_users_count": 0,
   "summary": {
     "existing_tables": 12,
-    "total_application_rows": 97,
+    "total_application_rows": 103,
     "storage_buckets": 4,
-    "analysis_timestamp": "2025-09-02T17:30:34.208Z"
+    "analysis_timestamp": "2025-09-03T19:44:56.966Z"
   }
 }

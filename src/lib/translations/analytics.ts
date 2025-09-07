@@ -1,6 +1,7 @@
 export const analyticsTranslations = {
   en: {
     analytics: "Analytics",
+    analyticsSubtitle: "Track your business performance and growth metrics",
     trackBusinessPerformance: "Track your business performance and growth",
     overview: "Overview",
     projectsOverTime: "Projects Over Time",
@@ -73,7 +74,7 @@ export const analyticsTranslations = {
     avg: "avg",
     clientSegments: "Client Segments",
     segmentDetails: "Segment Details",
-    clients: "clients",
+    clients: "Clients",
     champions: "Champions",
     growing: "Growing",
     stable: "Stable",
@@ -142,6 +143,7 @@ export const analyticsTranslations = {
   },
   ar: {
     analytics: "التحليلات",
+    analyticsSubtitle: "تتبع أداء عملك ومقاييس النمو",
     trackBusinessPerformance: "تتبع أداء عملك ونموه",
     overview: "نظرة عامة",
     projectsOverTime: "المشاريع عبر الوقت",

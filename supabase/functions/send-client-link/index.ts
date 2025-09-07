@@ -108,13 +108,14 @@ const handler = async (req: Request): Promise<Response> => {
         ...corsHeaders,
       },
     });
-  } catch (error: any) {
+  } catch (error: unknown) {
     // Handle Resend domain verification error specifically
-    if (error.message && error.message.includes('verify a domain')) {
+    const errorMessage = error instanceof Error ? error.message : '';
+    if (errorMessage.includes('verify a domain')) {
       return new Response(
         JSON.stringify({ 
           error: 'Domain verification required. Please verify ruzma.co domain in Resend settings.',
-          details: error.message 
+          details: errorMessage 
         }),
         {
           status: 403,

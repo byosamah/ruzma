@@ -4,10 +4,10 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Textarea } from '@/components/ui/textarea';
 import { Badge } from '@/components/ui/badge';
-import { CheckCircle, XCircle, Clock, Coins, Calendar } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import { DatabaseProject } from '@/hooks/projectTypes';
+import { formatCurrency } from '@/lib/currency';
 
 interface ContractApprovalModalProps {
   isOpen: boolean;
@@ -77,57 +77,69 @@ function ContractApprovalModal({
 
   return (
     <Dialog open={isOpen}>
-      <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto" hideCloseButton={true}>
-        <DialogHeader>
-          <div className="flex items-center gap-2 mb-2">
-            <Clock className="w-5 h-5 text-orange-500" />
-            <Badge variant="outline" className="text-orange-600">
+      <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto bg-white" hideCloseButton={true}>
+        <DialogHeader className="space-y-4">
+          <div className="text-center space-y-2">
+            <span className="text-4xl">📋</span>
+            <Badge variant="outline" className="text-orange-600 border-orange-200 bg-orange-50">
               Pending Approval
             </Badge>
           </div>
-          <DialogTitle className="text-2xl">Project Contract Review</DialogTitle>
-          <DialogDescription>
+          <DialogTitle className="text-xl sm:text-2xl font-medium text-gray-900 text-center">
+            Project Contract Review
+          </DialogTitle>
+          <DialogDescription className="text-sm text-gray-500 text-center max-w-md mx-auto">
             {freelancerName} has submitted a project proposal for your review and approval.
           </DialogDescription>
         </DialogHeader>
 
-        <div className="space-y-6">
-          {/* Project Details */}
-          <Card>
-            <CardHeader>
-              <CardTitle>Project Details</CardTitle>
+        <div className="space-y-4 sm:space-y-6">
+          {/* Project Details - Dashboard Style */}
+          <Card className="border-0 shadow-none bg-gray-50">
+            <CardHeader className="pb-3">
+              <div className="flex items-center space-x-2">
+                <span className="text-lg">💼</span>
+                <CardTitle className="text-base font-medium text-gray-900">Project Details</CardTitle>
+              </div>
             </CardHeader>
             <CardContent className="space-y-4">
               <div>
-                <h3 className="font-semibold text-lg">{project.name}</h3>
-                <p className="text-muted-foreground mt-2">{project.brief}</p>
+                <h3 className="text-lg font-medium text-gray-900 mb-2">{project.name}</h3>
+                <p className="text-sm text-gray-500 leading-relaxed">{project.brief}</p>
               </div>
               
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div className="flex items-center gap-2">
-                  <Coins className="w-4 h-4 text-green-600" />
+              {/* Project Stats - Dashboard Style Grid */}
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                <div className="flex items-center space-x-3">
+                  <span className="text-lg">💰</span>
                   <div>
-                    <p className="text-sm text-muted-foreground">Total Value</p>
-                    <p className="font-semibold">${totalValue.toLocaleString()}</p>
+                    <p className="text-xs text-gray-500">Total Value</p>
+                    <p className="text-sm font-medium text-gray-900">
+                      {formatCurrency(totalValue, 'USD')}
+                    </p>
                   </div>
                 </div>
                 
                 {project.start_date && (
-                  <div className="flex items-center gap-2">
-                    <Calendar className="w-4 h-4 text-blue-600" />
+                  <div className="flex items-center space-x-3">
+                    <span className="text-lg">📅</span>
                     <div>
-                      <p className="text-sm text-muted-foreground">Start Date</p>
-                      <p className="font-semibold">{new Date(project.start_date).toLocaleDateString()}</p>
+                      <p className="text-xs text-gray-500">Start Date</p>
+                      <p className="text-sm font-medium text-gray-900">
+                        {new Date(project.start_date).toLocaleDateString()}
+                      </p>
                     </div>
                   </div>
                 )}
                 
                 {project.end_date && (
-                  <div className="flex items-center gap-2">
-                    <Calendar className="w-4 h-4 text-red-600" />
+                  <div className="flex items-center space-x-3">
+                    <span className="text-lg">🎯</span>
                     <div>
-                      <p className="text-sm text-muted-foreground">End Date</p>
-                      <p className="font-semibold">{new Date(project.end_date).toLocaleDateString()}</p>
+                      <p className="text-xs text-gray-500">End Date</p>
+                      <p className="text-sm font-medium text-gray-900">
+                        {new Date(project.end_date).toLocaleDateString()}
+                      </p>
                     </div>
                   </div>
                 )}
@@ -135,36 +147,47 @@ function ContractApprovalModal({
             </CardContent>
           </Card>
 
-          {/* Project Milestones */}
-          <Card>
-            <CardHeader>
-              <CardTitle>Project Milestones</CardTitle>
-              <CardDescription>
+          {/* Project Milestones - Dashboard Style */}
+          <Card className="border-0 shadow-none bg-gray-50">
+            <CardHeader className="pb-3">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center space-x-2">
+                  <span className="text-lg">📊</span>
+                  <CardTitle className="text-base font-medium text-gray-900">Project Milestones</CardTitle>
+                </div>
+                <Badge variant="secondary" className="text-xs">
+                  {project.milestones.length} milestones
+                </Badge>
+              </div>
+              <CardDescription className="text-xs text-gray-500">
                 Review the project breakdown and deliverables
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <div className="space-y-4">
+              <div className="space-y-3">
                 {project.milestones.map((milestone, index) => (
-                  <div 
-                    key={milestone.id} 
-                    className="border rounded-lg p-4 hover:bg-accent/50 transition-colors"
-                  >
-                    <div className="flex justify-between items-start">
-                      <div className="flex-1">
-                        <h4 className="font-semibold">{milestone.title}</h4>
-                        <p className="text-sm text-muted-foreground mt-1">{milestone.description}</p>
-                        {(milestone.start_date || milestone.end_date) && (
-                          <p className="text-xs text-muted-foreground mt-2">
-                            {milestone.start_date && `From: ${new Date(milestone.start_date).toLocaleDateString()}`}
-                            {milestone.start_date && milestone.end_date && ' • '}
-                            {milestone.end_date && `To: ${new Date(milestone.end_date).toLocaleDateString()}`}
-                          </p>
-                        )}
+                  <div key={milestone.id} className="bg-white rounded-lg p-4">
+                    <div className="flex items-start justify-between">
+                      <div className="flex items-start space-x-3 flex-1">
+                        <span className="text-lg">📋</span>
+                        <div className="min-w-0 flex-1">
+                          <h4 className="text-sm font-medium text-gray-900 mb-1">{milestone.title}</h4>
+                          <p className="text-xs text-gray-500 mb-2 leading-relaxed">{milestone.description}</p>
+                          {(milestone.start_date || milestone.end_date) && (
+                            <div className="flex items-center gap-3 text-xs text-gray-400">
+                              {milestone.start_date && (
+                                <span>From: {new Date(milestone.start_date).toLocaleDateString()}</span>
+                              )}
+                              {milestone.end_date && (
+                                <span>To: {new Date(milestone.end_date).toLocaleDateString()}</span>
+                              )}
+                            </div>
+                          )}
+                        </div>
                       </div>
-                      <div className="text-right">
-                        <Badge variant="secondary">${Number(milestone.price).toLocaleString()}</Badge>
-                      </div>
+                      <Badge variant="secondary" className="ml-3 text-xs">
+                        {formatCurrency(Number(milestone.price), 'USD')}
+                      </Badge>
                     </div>
                   </div>
                 ))}
@@ -172,91 +195,106 @@ function ContractApprovalModal({
             </CardContent>
           </Card>
 
-          {/* Contract Terms */}
-          <Card>
-            <CardHeader>
-              <CardTitle>Contract Terms & Conditions</CardTitle>
-              <CardDescription>
+          {/* Contract Terms - Dashboard Style */}
+          <Card className="border-0 shadow-none bg-gray-50">
+            <CardHeader className="pb-3">
+              <div className="flex items-center space-x-2">
+                <span className="text-lg">📄</span>
+                <CardTitle className="text-base font-medium text-gray-900">Contract Terms & Conditions</CardTitle>
+              </div>
+              <CardDescription className="text-xs text-gray-500">
                 Review the detailed terms and conditions for this project
               </CardDescription>
             </CardHeader>
-            <CardContent className="space-y-6">
-              <div>
-                <h4 className="font-semibold mb-2">General Terms</h4>
-                <div className="bg-muted/50 p-4 rounded-lg">
-                  <pre className="whitespace-pre-wrap text-sm">
+            <CardContent className="space-y-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div className="bg-white rounded-lg p-4">
+                  <div className="flex items-center space-x-2 mb-3">
+                    <span className="text-sm">📋</span>
+                    <h4 className="text-sm font-medium text-gray-900">General Terms</h4>
+                  </div>
+                  <div className="text-xs text-gray-600 leading-relaxed">
                     {project.contract_terms || "Not specified"}
-                  </pre>
+                  </div>
                 </div>
-              </div>
-              
-              <div>
-                <h4 className="font-semibold mb-2">Payment Terms</h4>
-                <div className="bg-muted/50 p-4 rounded-lg">
-                  <pre className="whitespace-pre-wrap text-sm">
+                
+                <div className="bg-white rounded-lg p-4">
+                  <div className="flex items-center space-x-2 mb-3">
+                    <span className="text-sm">💳</span>
+                    <h4 className="text-sm font-medium text-gray-900">Payment Terms</h4>
+                  </div>
+                  <div className="text-xs text-gray-600 leading-relaxed">
                     {project.payment_terms || "Not specified"}
-                  </pre>
+                  </div>
                 </div>
-              </div>
-              
-              <div>
-                <h4 className="font-semibold mb-2">Project Scope</h4>
-                <div className="bg-muted/50 p-4 rounded-lg">
-                  <pre className="whitespace-pre-wrap text-sm">
+                
+                <div className="bg-white rounded-lg p-4">
+                  <div className="flex items-center space-x-2 mb-3">
+                    <span className="text-sm">🎯</span>
+                    <h4 className="text-sm font-medium text-gray-900">Project Scope</h4>
+                  </div>
+                  <div className="text-xs text-gray-600 leading-relaxed">
                     {project.project_scope || "Not specified"}
-                  </pre>
+                  </div>
                 </div>
-              </div>
-              
-              <div>
-                <h4 className="font-semibold mb-2">Revision Policy</h4>
-                <div className="bg-muted/50 p-4 rounded-lg">
-                  <pre className="whitespace-pre-wrap text-sm">
+                
+                <div className="bg-white rounded-lg p-4">
+                  <div className="flex items-center space-x-2 mb-3">
+                    <span className="text-sm">🔄</span>
+                    <h4 className="text-sm font-medium text-gray-900">Revision Policy</h4>
+                  </div>
+                  <div className="text-xs text-gray-600 leading-relaxed">
                     {project.revision_policy || "Not specified"}
-                  </pre>
+                  </div>
                 </div>
               </div>
             </CardContent>
           </Card>
 
-          {/* Decision Section */}
+          {/* Decision Section - Dashboard Style */}
           {!showRejectionForm ? (
-            <Card>
-              <CardHeader>
-                <CardTitle>Contract Decision</CardTitle>
-                <CardDescription>
+            <Card className="border-0 shadow-none bg-green-50">
+              <CardHeader className="pb-3">
+                <div className="flex items-center space-x-2">
+                  <span className="text-lg">✅</span>
+                  <CardTitle className="text-base font-medium text-gray-900">Contract Decision</CardTitle>
+                </div>
+                <CardDescription className="text-xs text-gray-500">
                   Please review the project details above and make your decision
                 </CardDescription>
               </CardHeader>
               <CardContent>
-                <div className="flex flex-col sm:flex-row gap-4">
+                <div className="flex flex-col sm:flex-row gap-3">
                   <Button 
                     onClick={() => handleApproval('approve')} 
                     disabled={submitting}
-                    className="flex-1"
+                    className="flex-1 bg-gray-900 hover:bg-gray-800 text-white font-medium border-0 shadow-none"
                     size="lg"
                   >
-                    <CheckCircle className="w-4 h-4 mr-2" />
+                    <span className="text-sm mr-2">✅</span>
                     Approve Contract
                   </Button>
                   <Button 
                     variant="outline" 
                     onClick={() => setShowRejectionForm(true)}
                     disabled={submitting}
-                    className="flex-1"
+                    className="flex-1 border-gray-300 bg-white text-gray-900 hover:bg-gray-50"
                     size="lg"
                   >
-                    <XCircle className="w-4 h-4 mr-2" />
+                    <span className="text-sm mr-2">📝</span>
                     Request Changes
                   </Button>
                 </div>
               </CardContent>
             </Card>
           ) : (
-            <Card>
-              <CardHeader>
-                <CardTitle>Request Changes</CardTitle>
-                <CardDescription>
+            <Card className="border-0 shadow-none bg-orange-50">
+              <CardHeader className="pb-3">
+                <div className="flex items-center space-x-2">
+                  <span className="text-lg">📝</span>
+                  <CardTitle className="text-base font-medium text-gray-900">Request Changes</CardTitle>
+                </div>
+                <CardDescription className="text-xs text-gray-500">
                   Please provide feedback on what needs to be changed
                 </CardDescription>
               </CardHeader>
@@ -266,14 +304,15 @@ function ContractApprovalModal({
                   value={rejectionReason}
                   onChange={(e) => setRejectionReason(e.target.value)}
                   rows={4}
+                  className="bg-white border-gray-200 text-gray-900"
                 />
-                <div className="flex flex-col sm:flex-row gap-4">
+                <div className="flex flex-col sm:flex-row gap-3">
                   <Button 
                     onClick={() => handleApproval('reject')} 
                     disabled={submitting || !rejectionReason.trim()}
-                    className="flex-1"
-                    variant="destructive"
+                    className="flex-1 bg-orange-600 hover:bg-orange-700 text-white font-medium border-0 shadow-none"
                   >
+                    <span className="text-sm mr-2">📤</span>
                     Send Feedback
                   </Button>
                   <Button 
@@ -283,8 +322,9 @@ function ContractApprovalModal({
                       setRejectionReason('');
                     }}
                     disabled={submitting}
-                    className="flex-1"
+                    className="flex-1 border-gray-300 bg-white text-gray-900 hover:bg-gray-50"
                   >
+                    <span className="text-sm mr-2">❌</span>
                     Cancel
                   </Button>
                 </div>

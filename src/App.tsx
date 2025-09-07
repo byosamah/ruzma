@@ -29,7 +29,7 @@ const CreateProject = lazy(() => import("./pages/CreateProject"));
 const EditProject = lazy(() => import("./pages/EditProject"));
 const ProjectManagement = lazy(() => import("./pages/ProjectManagement"));
 const ProjectTemplates = lazy(() => import("./pages/ProjectTemplates"));
-const ClientProject = lazy(() => import("./pages/ModernClientProject"));
+const ClientProject = lazy(() => import("./pages/ClientProject"));
 const ContactUs = lazy(() => import("./pages/ContactUs"));
 const ContractApproval = lazy(() => import("./pages/ContractApproval"));
 const NotFound = lazy(() => import("./pages/NotFound"));

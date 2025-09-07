@@ -1,7 +1,8 @@
 
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { Resend } from "npm:resend@2.0.0";
-import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.50.0';
+import { createLogger, getRequestIdFromHeaders } from "../_shared/logger.ts";
+import { createServiceRoleSupabaseClient } from "../_shared/supabase-client.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -20,7 +21,13 @@ interface EmailRequest {
 }
 
 const handler = async (req: Request): Promise<Response> => {
+  const requestId = getRequestIdFromHeaders(req.headers);
+  const logger = createLogger('send-payment-notification', requestId);
+  
+  logger.info('Payment notification request received', { method: req.method });
+
   if (req.method === "OPTIONS") {
+    logger.debug('CORS preflight request handled');
     return new Response(null, { headers: corsHeaders });
   }
 
@@ -32,10 +39,7 @@ const handler = async (req: Request): Promise<Response> => {
     }
 
     const resend = new Resend(resendApiKey);
-    const supabase = createClient(
-      Deno.env.get('SUPABASE_URL') ?? '',
-      Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
-    );
+    const supabase = createServiceRoleSupabaseClient();
     
     const { clientEmail, projectName, projectId, clientToken, isApproved, milestoneName, userId }: EmailRequest = await req.json();
 
@@ -131,9 +135,10 @@ const handler = async (req: Request): Promise<Response> => {
         ...corsHeaders,
       },
     });
-  } catch (error: any) {
+  } catch (error: unknown) {
+    const message = error instanceof Error ? error.message : 'Unknown error occurred';
     return new Response(
-      JSON.stringify({ error: error.message }),
+      JSON.stringify({ error: message }),
       {
         status: 500,
         headers: { "Content-Type": "application/json", ...corsHeaders },

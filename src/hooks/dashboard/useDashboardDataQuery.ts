@@ -16,7 +16,12 @@ const fetchDashboardData = async (user: User) => {
       .from('projects')
       .select(`
         *,
-        milestones (*)
+        milestones (*),
+        client:clients (
+          id,
+          name,
+          email
+        )
       `)
       .eq('user_id', user.id)
       .order('created_at', { ascending: false })
@@ -31,6 +36,8 @@ const fetchDashboardData = async (user: User) => {
   // Type the projects data properly
   const typedProjects: DatabaseProject[] = (projectsData || []).map(project => ({
     ...project,
+    client_email: project.client?.email || null,
+    client_name: project.client?.name || null,
     contract_status: project.contract_status as 'pending' | 'approved' | 'rejected' | undefined,
     milestones: project.milestones.map((milestone) => ({
       ...milestone,
@@ -61,5 +68,12 @@ export const useDashboardDataQuery = (user: User | null) => {
     enabled: !!user?.id,
     staleTime: 2 * 60 * 1000, // 2 minutes for dashboard data
     retry: 1,
+    onSuccess: (data) => {
+      console.log('useDashboardDataQuery - onSuccess:', data);
+      console.log('useDashboardDataQuery - projects count:', data.projects?.length);
+    },
+    onError: (error) => {
+      console.log('useDashboardDataQuery - onError:', error);
+    },
   });
 };

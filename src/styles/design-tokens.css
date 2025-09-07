@@ -91,6 +91,28 @@
     @apply active:scale-95 transition-transform duration-75;
   }
 
+  /* Focus management system */
+  .focus-ring {
+    @apply focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2;
+  }
+
+  .focus-ring-inset {
+    @apply focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-inset;
+  }
+
+  .focus-ring-subtle {
+    @apply focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring/50 focus-visible:ring-offset-1;
+  }
+
+  /* Desktop enhancement - subtle visual feedback */
+  .desktop-focus-subtle {
+    @apply focus-visible:bg-accent/10 focus-visible:text-accent-foreground transition-all duration-150;
+  }
+
+  .desktop-interactive {
+    @apply focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:bg-accent/10;
+  }
+
   /* Card patterns */
   .card-elevated {
     @apply bg-card border border-border rounded-lg shadow-sm;

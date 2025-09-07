@@ -22,7 +22,7 @@ src/pages/
 ├── Plans.tsx              # Subscription plans
 ├── ContactUs.tsx          # Support
 ├── ContractApproval.tsx   # Client contract approval
-├── ModernClientProject.tsx # Client portal
+├── ClientProject.tsx       # Client portal
 └── NotFound.tsx           # 404 page
 ```
 
@@ -42,7 +42,7 @@ src/pages/
 // ❌ DON'T create routes without language prefix for protected pages
 
 // ✅ Client portal routes (public access with token)
-<Route path="/client/:token" element={<ModernClientProject />} />
+<Route path="/client/:token" element={<ClientProject />} />
 // Note: Client routes don't use language prefix as they're accessed by clients directly
 ```
 

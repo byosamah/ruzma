@@ -14,6 +14,7 @@ interface DatabaseProfile {
   bio?: string;
   currency?: string;
   country?: string;
+  avatar_url?: string;
   [key: string]: unknown;
 }
 
@@ -28,7 +29,7 @@ interface BrandingData {
 export const fetchExistingProfile = async (userId: string) => {
   const { data: profileData, error: profileError } = await supabase
     .from('profiles')
-    .select('id, full_name, email, currency, user_type, project_count, storage_used, created_at, updated_at')
+    .select('id, full_name, email, currency, user_type, project_count, storage_used, avatar_url, created_at, updated_at')
     .eq('id', userId)
     .maybeSingle();
 

@@ -71,6 +71,13 @@ export const authTranslations = {
     confirmationEmailFailed: "Failed to send confirmation email. Please try again.",
     noEmailReceived: "Didn't receive the email? Check your spam folder or try resending.",
     backToSignIn: "Back to Sign In",
+    // Google Authentication
+    googleSignupWith: "Sign up with Google",
+    googleSigninWith: "Sign in with Google",
+    googleLoading: "Connecting...",
+    googleSignupError: "Failed to sign up with Google. Please try again.",
+    googleSigninError: "Failed to sign in with Google. Please try again.",
+    googleUnexpectedError: "Something went wrong. Please try again.",
   },
   ar: {
     login: "تسجيل الدخول",
@@ -143,5 +150,12 @@ export const authTranslations = {
     confirmationEmailFailed: "فشل في إرسال بريد التأكيد. يرجى المحاولة مرة أخرى.",
     noEmailReceived: "لم تتلق البريد الإلكتروني؟ تحقق من مجلد الرسائل غير المرغوب فيها أو حاول إعادة الإرسال.",
     backToSignIn: "العودة لتسجيل الدخول",
+    // Google Authentication
+    googleSignupWith: "إنشاء حساب باستخدام جوجل",
+    googleSigninWith: "تسجيل الدخول باستخدام جوجل",
+    googleLoading: "جارٍ الاتصال...",
+    googleSignupError: "فشل في إنشاء الحساب باستخدام جوجل. يرجى المحاولة مرة أخرى.",
+    googleSigninError: "فشل في تسجيل الدخول باستخدام جوجل. يرجى المحاولة مرة أخرى.",
+    googleUnexpectedError: "حدث خطأ ما. يرجى المحاولة مرة أخرى.",
   },
 };

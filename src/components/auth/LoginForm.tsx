@@ -12,6 +12,7 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { useAuthManager } from '@/hooks/useAuthManager';
 import { useT } from '@/lib/i18n';
 import { loginSchema } from '@/lib/validators/auth';
+import GoogleAuthButton from './GoogleAuthButton';
 
 interface LoginFormProps {
   rememberMe: boolean;
@@ -172,6 +173,24 @@ const LoginForm = ({ rememberMe, setRememberMe }: LoginFormProps) => {
             </Button>
           </form>
         </Form>
+
+        {/* Divider */}
+        <div className="relative mt-6">
+          <div className="absolute inset-0 flex items-center">
+            <span className="w-full border-t border-gray-200" />
+          </div>
+          <div className="relative flex justify-center text-xs uppercase">
+            <span className="bg-white px-2 text-gray-500">or</span>
+          </div>
+        </div>
+
+        {/* Google Sign In */}
+        <div className="mt-6">
+          <GoogleAuthButton 
+            mode="signin" 
+            disabled={isLoading}
+          />
+        </div>
       </CardContent>
     </Card>
   );

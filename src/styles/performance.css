@@ -1,0 +1,83 @@
+/* Performance optimizations */
+@layer utilities {
+  /* GPU-accelerated transforms */
+  .gpu-accelerated {
+    transform: translateZ(0);
+    backface-visibility: hidden;
+    perspective: 1000;
+  }
+
+  /* Will-change optimizations for animations */
+  .will-change-transform {
+    will-change: transform;
+  }
+
+  .will-change-opacity {
+    will-change: opacity;
+  }
+
+  /* Optimize for 60fps animations */
+  .smooth-transform {
+    transform: translateZ(0);
+    transition: transform 150ms cubic-bezier(0.4, 0.0, 0.2, 1);
+  }
+
+  /* Content visibility optimizations */
+  .content-visibility-auto {
+    content-visibility: auto;
+    contain-intrinsic-size: 0 400px;
+  }
+
+  /* Reduce paint areas */
+  .isolate {
+    isolation: isolate;
+  }
+
+  /* Optimize for mobile scrolling */
+  .momentum-scroll {
+    -webkit-overflow-scrolling: touch;
+    overflow-scrolling: touch;
+  }
+
+  /* Optimize text rendering */
+  .optimize-text {
+    text-rendering: optimizeSpeed;
+    font-feature-settings: "kern" 1;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+}
+
+/* Performance-first CSS custom properties */
+:root {
+  /* Optimize transition timing */
+  --transition-fast: 75ms cubic-bezier(0.4, 0.0, 0.2, 1);
+  --transition-normal: 150ms cubic-bezier(0.4, 0.0, 0.2, 1);
+  --transition-slow: 300ms cubic-bezier(0.4, 0.0, 0.2, 1);
+  
+  /* Optimized border radius values */
+  --radius-sm: 0.125rem;
+  --radius-md: 0.375rem;
+  --radius-lg: 0.5rem;
+  --radius-xl: 0.75rem;
+}
+
+/* Reduce motion for users who prefer it */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  :root {
+    --border-width: 2px;
+    --ring-width: 3px;
+  }
+}

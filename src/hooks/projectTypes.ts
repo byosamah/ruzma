@@ -24,6 +24,7 @@ export interface DatabaseProject {
   name: string;
   brief: string;
   client_email?: string;
+  client_name?: string;
   start_date?: string;
   end_date?: string;
   client_access_token: string;

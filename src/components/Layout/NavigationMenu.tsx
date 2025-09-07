@@ -56,7 +56,12 @@ const NavigationMenu = ({
 
   if (isMobile) {
     return (
-      <div className="flex flex-col space-y-3">
+      <nav 
+        id="navigation"
+        className="flex flex-col space-y-3"
+        role="navigation"
+        aria-label="Main navigation"
+      >
         {menuItems.map((item) => {
           const Icon = item.icon;
           return (
@@ -97,7 +102,7 @@ const NavigationMenu = ({
             <span className="text-sm">{t('signOut')}</span>
           </Button>
         </div>
-      </div>
+      </nav>
     );
   }
 
