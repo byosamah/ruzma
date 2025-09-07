@@ -36,6 +36,7 @@ const NotFound = lazy(() => import("./pages/NotFound"));
 const Invoices = lazy(() => import("./pages/Invoices"));
 const CreateInvoice = lazy(() => import("./pages/CreateInvoice"));
 const Clients = lazy(() => import("./pages/Clients"));
+const AuthCallback = lazy(() => import("./pages/AuthCallback"));
 
 // Optimized loading component
 const PageLoader = () => (
@@ -118,6 +119,11 @@ function App() {
                       <ContactUs />
                     </LanguageLayout>
                   } />
+                  <Route path="/:lang/auth/callback" element={
+                    <LanguageLayout>
+                      <AuthCallback />
+                    </LanguageLayout>
+                  } />
                   
                   {/* Language-specific protected routes */}
                   <Route path="/:lang/dashboard" element={
@@ -191,6 +197,7 @@ function App() {
                   <Route path="/forgot-password" element={<Navigate to="/en/forgot-password" replace />} />
                   <Route path="/reset-password" element={<Navigate to="/en/reset-password" replace />} />
                   <Route path="/contact" element={<Navigate to="/en/contact" replace />} />
+                  <Route path="/auth/callback" element={<Navigate to="/en/auth/callback" replace />} />
                   <Route path="/dashboard" element={<Navigate to="/en/dashboard" replace />} />
                   <Route path="/projects" element={<Navigate to="/en/projects" replace />} />
                   <Route path="/clients" element={<Navigate to="/en/clients" replace />} />

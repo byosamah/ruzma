@@ -7,6 +7,7 @@ import AuthToggle from '@/components/auth/AuthToggle';
 import LoginForm from '@/components/auth/LoginForm';
 import LoginFooter from '@/components/auth/LoginFooter';
 import LanguageSelector from '@/components/LanguageSelector';
+import { toast } from 'sonner';
 
 const Login = () => {
   const [rememberMe, setRememberMe] = useState(false);
@@ -19,6 +20,23 @@ const Login = () => {
     const savedRememberMe = localStorage.getItem("rememberMe") === "true";
     setRememberMe(savedRememberMe);
   }, []);
+
+  // Handle OAuth errors from URL params
+  useEffect(() => {
+    const urlParams = new URLSearchParams(location.search);
+    const error = urlParams.get('error');
+    
+    if (error) {
+      if (error === 'oauth_failed') {
+        toast.error('Google sign-in failed. Please try again.');
+      } else if (error === 'oauth_exception') {
+        toast.error('An error occurred during sign-in. Please try again.');
+      }
+      
+      // Clean up the URL
+      navigate(location.pathname, { replace: true });
+    }
+  }, [location.search, location.pathname, navigate]);
 
   // Redirect authenticated users to dashboard
   useEffect(() => {

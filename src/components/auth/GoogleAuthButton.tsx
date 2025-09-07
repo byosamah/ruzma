@@ -4,6 +4,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { useT } from '@/lib/i18n';
 import { toast } from 'sonner';
 import { logSecurityEvent } from '@/lib/authSecurity';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 interface GoogleAuthButtonProps {
   mode: 'signup' | 'signin';
@@ -14,6 +15,7 @@ interface GoogleAuthButtonProps {
 function GoogleAuthButton({ mode, className, disabled }: GoogleAuthButtonProps) {
   const [isLoading, setIsLoading] = useState(false);
   const t = useT();
+  const { currentLanguage } = useLanguage();
 
   const handleGoogleAuth = async () => {
     try {
@@ -22,7 +24,7 @@ function GoogleAuthButton({ mode, className, disabled }: GoogleAuthButtonProps) 
       const { data, error } = await supabase.auth.signInWithOAuth({
         provider: 'google',
         options: {
-          redirectTo: `${window.location.origin}/dashboard`,
+          redirectTo: `${window.location.origin}/${currentLanguage}/auth/callback`,
           queryParams: {
             access_type: 'offline',
             prompt: 'consent',
