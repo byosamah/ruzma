@@ -7,7 +7,7 @@ export const profileService = {
   async fetchProfile(userId: string) {
     const { data: profile, error } = await supabase
       .from('profiles')
-      .select('id, full_name, email, currency, user_type, project_count, storage_used, created_at, updated_at')
+      .select('id, full_name, email, avatar_url, currency, user_type, project_count, storage_used, created_at, updated_at')
       .eq('id', userId)
       .maybeSingle();
 
@@ -21,6 +21,7 @@ export const profileService = {
         id: user.id,
         full_name: user.user_metadata?.full_name || user.email?.split('@')[0] || 'User',
         email: user.email,
+        avatar_url: user.user_metadata?.avatar_url || null,
         currency: userCurrency
       })
       .select()
