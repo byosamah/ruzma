@@ -527,13 +527,13 @@ const ClientProject = () => {
               <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
                 <h3 className="text-sm font-medium text-blue-900 mb-2">📋 Your Actions</h3>
                 <div className="text-sm text-blue-800">
-                  {project.milestones.some(m => m.status === 'pending_payment' || m.status === 'review' || m.status === 'pending') && (
+                  {project.milestones.some(m => m.status === 'pending_payment' || m.status === 'review' || m.status === 'pending' || m.status === 'rejected') && (
                     <p className="mb-2">• Upload payment proof for approved milestones below</p>
                   )}
                   {project.milestones.some(m => m.deliverable_link && (m.status === 'approved' || m.status === 'review' || m.status === 'in_progress')) && (
                     <p className="mb-2">• View and download deliverables for completed work</p>
                   )}
-                  {!project.milestones.some(m => m.status === 'pending_payment' || m.status === 'review' || m.status === 'pending') && 
+                  {!project.milestones.some(m => m.status === 'pending_payment' || m.status === 'review' || m.status === 'pending' || m.status === 'rejected') && 
                    !project.milestones.some(m => m.deliverable_link) && (
                     <p className="text-blue-600">No actions required at this time. Check back for updates!</p>
                   )}
@@ -551,6 +551,8 @@ const ClientProject = () => {
                             <span className="text-xl">
                               {milestone.status === 'approved' ? '✅' : 
                                milestone.status === 'pending_payment' ? '💳' : 
+                               milestone.status === 'payment_submitted' ? '⏳' :
+                               milestone.status === 'rejected' ? '❌' :
                                milestone.status === 'in_progress' ? '🔄' : '⏳'}
                             </span>
                           </div>
@@ -561,6 +563,19 @@ const ClientProject = () => {
                               <span>{formatCurrency(milestone.price, displayCurrency)}</span>
                               <span className="capitalize">{milestone.status.replace('_', ' ')}</span>
                             </div>
+                            
+                            {/* Show payment rejection notice */}
+                            {milestone.status === 'rejected' && (
+                              <div className="mt-3 p-3 bg-red-50 rounded-lg border border-red-200">
+                                <div className="flex items-center gap-2 mb-2">
+                                  <span className="text-red-600">❌</span>
+                                  <span className="text-sm font-medium text-red-800">Payment Proof Rejected</span>
+                                </div>
+                                <p className="text-sm text-red-700">
+                                  Your payment proof was rejected. Please upload a new payment proof with correct details.
+                                </p>
+                              </div>
+                            )}
                             
                             {/* Show deliverable link when milestone is completed or approved */}
                             {milestone.deliverable_link && (milestone.status === 'approved' || milestone.status === 'review' || milestone.status === 'in_progress') && (
@@ -584,16 +599,18 @@ const ClientProject = () => {
                         </div>
                         <div className="flex flex-col items-end gap-2">
                           <Badge 
-                            variant={milestone.status === 'approved' ? 'default' : 'secondary'}
+                            variant={milestone.status === 'approved' ? 'default' : 
+                                    milestone.status === 'rejected' ? 'destructive' : 'secondary'}
                           >
                             {milestone.status === 'approved' ? 'Complete' : 
                              milestone.status === 'pending_payment' ? 'Pending Payment' : 
                              milestone.status === 'payment_submitted' ? 'Payment Under Review' :
+                             milestone.status === 'rejected' ? 'Payment Rejected' :
                              milestone.status === 'in_progress' ? 'In Progress' : 'Pending'}
                           </Badge>
                           
                           {/* Payment upload for milestones that need payment */}
-                          {(milestone.status === 'pending_payment' || milestone.status === 'review' || milestone.status === 'pending') && (
+                          {(milestone.status === 'pending_payment' || milestone.status === 'review' || milestone.status === 'pending' || milestone.status === 'rejected') && (
                             <PaymentUploadDialog
                               milestoneId={milestone.id}
                               onPaymentUpload={handlePaymentUploadImpl}
@@ -601,9 +618,13 @@ const ClientProject = () => {
                                 <Button 
                                   size="sm" 
                                   variant="outline"
-                                  className="text-xs px-3 py-1 h-7 bg-blue-50 hover:bg-blue-100 text-blue-700 border-blue-200"
+                                  className={`text-xs px-3 py-1 h-7 ${
+                                    milestone.status === 'rejected' 
+                                      ? 'bg-red-50 hover:bg-red-100 text-red-700 border-red-200' 
+                                      : 'bg-blue-50 hover:bg-blue-100 text-blue-700 border-blue-200'
+                                  }`}
                                 >
-                                  💳 Upload Payment
+                                  {milestone.status === 'rejected' ? '🔄 Re-upload Payment' : '💳 Upload Payment'}
                                 </Button>
                               }
                             />
@@ -613,6 +634,13 @@ const ClientProject = () => {
                           {milestone.status === 'payment_submitted' && (
                             <div className="text-xs px-3 py-1 bg-yellow-50 text-yellow-700 border border-yellow-200 rounded">
                               ⏳ Payment Under Review
+                            </div>
+                          )}
+                          
+                          {/* Show payment rejected status */}
+                          {milestone.status === 'rejected' && (
+                            <div className="text-xs px-3 py-1 bg-red-50 text-red-700 border border-red-200 rounded">
+                              ❌ Payment Rejected
                             </div>
                           )}
                           
