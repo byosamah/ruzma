@@ -523,6 +523,23 @@ const ClientProject = () => {
                 </Badge>
               </div>
 
+              {/* Client Actions Summary */}
+              <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
+                <h3 className="text-sm font-medium text-blue-900 mb-2">📋 Your Actions</h3>
+                <div className="text-sm text-blue-800">
+                  {project.milestones.some(m => m.status === 'pending_payment' || m.status === 'review') && (
+                    <p className="mb-2">• Upload payment proof for approved milestones below</p>
+                  )}
+                  {project.milestones.some(m => m.deliverable_link && (m.status === 'approved' || m.status === 'review' || m.status === 'in_progress')) && (
+                    <p className="mb-2">• View and download deliverables for completed work</p>
+                  )}
+                  {!project.milestones.some(m => m.status === 'pending_payment' || m.status === 'review') && 
+                   !project.milestones.some(m => m.deliverable_link) && (
+                    <p className="text-blue-600">No actions required at this time. Check back for updates!</p>
+                  )}
+                </div>
+              </div>
+
               {/* Milestone Cards */}
               <section aria-label="Project milestones" className="space-y-3 sm:space-y-4">
                 {project.milestones.map((milestone, index) => (
@@ -544,6 +561,25 @@ const ClientProject = () => {
                               <span>{formatCurrency(milestone.price, displayCurrency)}</span>
                               <span className="capitalize">{milestone.status.replace('_', ' ')}</span>
                             </div>
+                            
+                            {/* Show deliverable link when milestone is completed or approved */}
+                            {milestone.deliverable_link && (milestone.status === 'approved' || milestone.status === 'review' || milestone.status === 'in_progress') && (
+                              <div className="mt-3 p-3 bg-green-50 rounded-lg border border-green-200">
+                                <div className="flex items-center gap-2 mb-2">
+                                  <span className="text-green-600">📎</span>
+                                  <span className="text-sm font-medium text-green-800">Deliverable Ready</span>
+                                </div>
+                                <a 
+                                  href={milestone.deliverable_link} 
+                                  target="_blank" 
+                                  rel="noopener noreferrer"
+                                  className="inline-flex items-center gap-2 text-sm text-green-700 hover:text-green-900 underline"
+                                >
+                                  View Deliverable
+                                  <span>↗️</span>
+                                </a>
+                              </div>
+                            )}
                           </div>
                         </div>
                         <div className="flex flex-col items-end gap-2">
@@ -556,7 +592,8 @@ const ClientProject = () => {
                              milestone.status === 'in_progress' ? 'In Progress' : 'Pending'}
                           </Badge>
                           
-                          {milestone.status === 'pending_payment' && (
+                          {/* Payment upload for milestones that need payment */}
+                          {(milestone.status === 'pending_payment' || milestone.status === 'review') && (
                             <PaymentUploadDialog
                               milestoneId={milestone.id}
                               onPaymentUpload={handlePaymentUploadImpl}
@@ -564,12 +601,26 @@ const ClientProject = () => {
                                 <Button 
                                   size="sm" 
                                   variant="outline"
-                                  className="text-xs px-3 py-1 h-7"
+                                  className="text-xs px-3 py-1 h-7 bg-blue-50 hover:bg-blue-100 text-blue-700 border-blue-200"
                                 >
                                   💳 Upload Payment
                                 </Button>
                               }
                             />
+                          )}
+                          
+                          {/* Show payment submitted status */}
+                          {milestone.status === 'payment_submitted' && (
+                            <div className="text-xs px-3 py-1 bg-yellow-50 text-yellow-700 border border-yellow-200 rounded">
+                              ⏳ Payment Under Review
+                            </div>
+                          )}
+                          
+                          {/* Show paid status */}
+                          {milestone.status === 'paid' && (
+                            <div className="text-xs px-3 py-1 bg-green-50 text-green-700 border border-green-200 rounded">
+                              ✅ Payment Confirmed
+                            </div>
                           )}
                         </div>
                       </div>
