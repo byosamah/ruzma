@@ -12,6 +12,7 @@ import { CurrencyCode } from '@/lib/currency';
 import { formatCurrency } from '@/lib/currency';
 import ContractApprovalModal from '@/components/ProjectClient/ContractApprovalModal';
 import PaymentUploadDialog from '@/components/ProjectClient/PaymentUploadDialog';
+import { parseDeliverableLinks } from '@/lib/linkUtils';
 import { useT } from '@/lib/i18n';
 import ModernClientHeader from '@/components/ClientProject/ModernClientHeader';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
@@ -530,11 +531,14 @@ const ClientProject = () => {
                   {project.milestones.some(m => m.status === 'pending_payment' || m.status === 'review' || m.status === 'pending' || m.status === 'rejected') && (
                     <p className="mb-2">• Upload payment proof for approved milestones below</p>
                   )}
-                  {project.milestones.some(m => m.deliverable_link && (m.status === 'approved' || m.status === 'review' || m.status === 'in_progress')) && (
+                  {project.milestones.some(m => {
+                    const links = parseDeliverableLinks(m.deliverable_link);
+                    return links.length > 0 && (m.status === 'approved' || m.status === 'review' || m.status === 'in_progress');
+                  }) && (
                     <p className="mb-2">• View and download deliverables for completed work</p>
                   )}
                   {!project.milestones.some(m => m.status === 'pending_payment' || m.status === 'review' || m.status === 'pending' || m.status === 'rejected') && 
-                   !project.milestones.some(m => m.deliverable_link) && (
+                   !project.milestones.some(m => parseDeliverableLinks(m.deliverable_link).length > 0) && (
                     <p className="text-blue-600">No actions required at this time. Check back for updates!</p>
                   )}
                 </div>
@@ -577,24 +581,36 @@ const ClientProject = () => {
                               </div>
                             )}
                             
-                            {/* Show deliverable link when milestone is completed or approved */}
-                            {milestone.deliverable_link && (milestone.status === 'approved' || milestone.status === 'review' || milestone.status === 'in_progress') && (
-                              <div className="mt-3 p-3 bg-green-50 rounded-lg border border-green-200">
-                                <div className="flex items-center gap-2 mb-2">
-                                  <span className="text-green-600">📎</span>
-                                  <span className="text-sm font-medium text-green-800">Deliverable Ready</span>
+                            {/* Show deliverable links when milestone is completed or approved */}
+                            {milestone.deliverable_link && (milestone.status === 'approved' || milestone.status === 'review' || milestone.status === 'in_progress') && (() => {
+                              const deliverableLinks = parseDeliverableLinks(milestone.deliverable_link);
+                              if (deliverableLinks.length === 0) return null;
+                              
+                              return (
+                                <div className="mt-3 p-3 bg-green-50 rounded-lg border border-green-200">
+                                  <div className="flex items-center gap-2 mb-2">
+                                    <span className="text-green-600">📎</span>
+                                    <span className="text-sm font-medium text-green-800">
+                                      {deliverableLinks.length === 1 ? 'Deliverable Ready' : `${deliverableLinks.length} Deliverables Ready`}
+                                    </span>
+                                  </div>
+                                  <div className="space-y-2">
+                                    {deliverableLinks.map((link, index) => (
+                                      <a 
+                                        key={index}
+                                        href={link.url} 
+                                        target="_blank" 
+                                        rel="noopener noreferrer"
+                                        className="inline-flex items-center gap-2 text-sm text-green-700 hover:text-green-900 underline block"
+                                      >
+                                        {link.title || 'View Deliverable'}
+                                        <span>↗️</span>
+                                      </a>
+                                    ))}
+                                  </div>
                                 </div>
-                                <a 
-                                  href={milestone.deliverable_link} 
-                                  target="_blank" 
-                                  rel="noopener noreferrer"
-                                  className="inline-flex items-center gap-2 text-sm text-green-700 hover:text-green-900 underline"
-                                >
-                                  View Deliverable
-                                  <span>↗️</span>
-                                </a>
-                              </div>
-                            )}
+                              );
+                            })()}
                           </div>
                         </div>
                         <div className="flex flex-col items-end gap-2">
