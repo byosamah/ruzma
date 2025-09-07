@@ -56,9 +56,17 @@ const ModernClientHeader = ({ branding }: ModernClientHeaderProps) => {
                 </div>
               )}
               
-              {/* Client Portal Badge */}
+              {/* Client Portal Badge with custom brand color */}
               <div className="pt-2">
-                <Badge variant="outline" className="text-xs text-gray-600 border-gray-300">
+                <Badge 
+                  variant="outline" 
+                  className="text-xs border-gray-300"
+                  style={{
+                    backgroundColor: branding?.primary_color || '#3b82f6', // Default to blue
+                    color: '#ffffff',
+                    borderColor: branding?.primary_color || '#3b82f6'
+                  }}
+                >
                   🌐 {t('clientProjectPortal') || 'Client Project Portal'}
                 </Badge>
               </div>
