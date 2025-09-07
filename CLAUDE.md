@@ -228,6 +228,14 @@ npm test                # Component tests
 - ✅ **Interactive Charts Mobile**: Fixed chart overflow issues with responsive containers and proper width constraints
 - ✅ **Smart Keyword Analysis**: Real-time project categorization using actual project content without AI dependency
 
+### Client Portal & Branding Enhancements (Latest)
+- ✅ **Dynamic Brand Colors**: Client project portal now uses freelancer's primary brand color as background
+- ✅ **Automatic Text Contrast**: WCAG-compliant contrast calculation ensures optimal text readability on any brand color
+- ✅ **Intelligent Color System**: Created `colorUtils.ts` with luminance-based contrast calculations
+- ✅ **Customizable Client Experience**: Freelancers can fully personalize client portal appearance through branding settings
+- ✅ **Accessibility Compliance**: All text elements automatically adjust contrast for maximum readability
+- ✅ **Professional Styling**: Badge and secondary text elements adapt intelligently to background colors
+
 ## 🚦 Traffic Light System
 
 ### 🟢 Safe to Edit
@@ -294,6 +302,44 @@ npm test                # Component tests
 - Implement proper loading states
 - Use consistent error handling
 - Maintain accessibility standards
+
+### Branding & Color System
+- Use `getBestTextColor()` for automatic contrast on custom brand backgrounds
+- Implement `getBestSecondaryTextColor()` for secondary text elements
+- Apply `getBadgeColors()` for optimal badge styling on any background
+- Default brand color is `#f9fafb` (light grey) for neutral appearance
+- All color utilities are WCAG-compliant for accessibility
+
+## 🎨 Color System Quick Reference
+
+### Using Color Utilities
+```typescript
+import { getBestTextColor, getBestSecondaryTextColor, getBadgeColors } from '@/lib/colorUtils';
+
+// In components with dynamic brand colors
+const backgroundColor = branding?.primary_color || '#f9fafb';
+const textColor = getBestTextColor(backgroundColor);
+const secondaryTextColor = getBestSecondaryTextColor(backgroundColor);
+const badgeColors = getBadgeColors(backgroundColor);
+
+// Apply to elements
+<h1 style={{ color: textColor }}>Title</h1>
+<p style={{ color: secondaryTextColor }}>Description</p>
+<Badge style={{ 
+  backgroundColor: badgeColors.backgroundColor,
+  color: badgeColors.color,
+  borderColor: badgeColors.borderColor 
+}}>
+  Label
+</Badge>
+```
+
+### Available Utilities in `src/lib/colorUtils.ts`
+- `getBestTextColor(backgroundColor)` - Returns optimal text color (#ffffff or #111827)
+- `getBestSecondaryTextColor(backgroundColor)` - Returns semi-transparent text color
+- `getBadgeColors(backgroundColor)` - Returns complete badge color scheme
+- `isLightColor(hexColor)` - Boolean check for light/dark colors
+- All functions follow WCAG accessibility contrast guidelines
 
 ---
 
