@@ -1,12 +1,16 @@
 import { useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { logSecurityEvent } from '@/lib/authSecurity';
 
 function AuthCallback() {
   const navigate = useNavigate();
+  const { lang } = useParams<{ lang: string }>();
   const { currentLanguage } = useLanguage();
+  
+  // Get language from URL params, context, or default to 'en'
+  const language = lang || currentLanguage || 'en';
 
   useEffect(() => {
     const handleAuthCallback = async () => {
@@ -17,7 +21,7 @@ function AuthCallback() {
         if (error) {
           logSecurityEvent('oauth_callback_error', { error: error.message });
           // Redirect to login with error
-          navigate(`/${currentLanguage}/login?error=oauth_failed`, { replace: true });
+          navigate(`/${language}/login?error=oauth_failed`, { replace: true });
           return;
         }
 
@@ -25,20 +29,20 @@ function AuthCallback() {
           logSecurityEvent('oauth_callback_success', { userId: data.session.user.id });
           // Wait a moment for the auth state to settle
           setTimeout(() => {
-            navigate(`/${currentLanguage}/dashboard`, { replace: true });
+            navigate(`/${language}/dashboard`, { replace: true });
           }, 100);
         } else {
           // No session found, redirect to login
-          navigate(`/${currentLanguage}/login`, { replace: true });
+          navigate(`/${language}/login`, { replace: true });
         }
       } catch (error) {
         logSecurityEvent('oauth_callback_exception', { error: String(error) });
-        navigate(`/${currentLanguage}/login?error=oauth_exception`, { replace: true });
+        navigate(`/${language}/login?error=oauth_exception`, { replace: true });
       }
     };
 
     handleAuthCallback();
-  }, [navigate, currentLanguage]);
+  }, [navigate, language]);
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-background">

@@ -21,10 +21,16 @@ function GoogleAuthButton({ mode, className, disabled }: GoogleAuthButtonProps) 
     try {
       setIsLoading(true);
       
+      // Get current language from URL or default to 'en'
+      const pathSegments = window.location.pathname.split('/');
+      const urlLanguage = pathSegments[1];
+      const validLanguages = ['en', 'ar'];
+      const language = validLanguages.includes(urlLanguage) ? urlLanguage : (currentLanguage || 'en');
+
       const { data, error } = await supabase.auth.signInWithOAuth({
         provider: 'google',
         options: {
-          redirectTo: `${window.location.origin}/${currentLanguage}/auth/callback`,
+          redirectTo: `${window.location.origin}/${language}/auth/callback`,
           queryParams: {
             access_type: 'offline',
             prompt: 'consent',
