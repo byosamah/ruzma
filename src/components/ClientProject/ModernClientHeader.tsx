@@ -3,6 +3,7 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Card, CardContent } from '@/components/ui/card';
 import { FreelancerBranding } from '@/types/branding';
 import { useT } from '@/lib/i18n';
+import { getBestTextColor, getBestSecondaryTextColor, getBadgeColors } from '@/lib/colorUtils';
 
 interface ModernClientHeaderProps {
   branding?: FreelancerBranding | null;
@@ -10,12 +11,17 @@ interface ModernClientHeaderProps {
 
 const ModernClientHeader = ({ branding }: ModernClientHeaderProps) => {
   const t = useT();
+  
+  const backgroundColor = branding?.primary_color || '#f9fafb';
+  const textColor = getBestTextColor(backgroundColor);
+  const secondaryTextColor = getBestSecondaryTextColor(backgroundColor);
+  const badgeColors = getBadgeColors(backgroundColor);
 
   return (
     <Card 
       className="border-0 shadow-none rounded-lg mb-6 sm:mb-8"
       style={{
-        backgroundColor: branding?.primary_color || '#f9fafb' // Default to gray-50
+        backgroundColor
       }}
     >
       <CardContent className="p-4 sm:p-6">
@@ -41,7 +47,7 @@ const ModernClientHeader = ({ branding }: ModernClientHeaderProps) => {
               <h1 
                 className="text-xl sm:text-2xl font-medium break-words"
                 style={{
-                  color: branding?.primary_color ? '#ffffff' : '#111827' // White if custom color, dark if default
+                  color: textColor
                 }}
               >
                 {branding?.freelancer_name || 'Professional Freelancer'}
@@ -63,7 +69,7 @@ const ModernClientHeader = ({ branding }: ModernClientHeaderProps) => {
                   <p 
                     className="text-sm leading-relaxed break-words"
                     style={{
-                      color: branding?.primary_color ? 'rgba(255, 255, 255, 0.8)' : '#6b7280' // Light white if custom color, gray if default
+                      color: secondaryTextColor
                     }}
                   >
                     {branding.freelancer_bio}
@@ -77,9 +83,9 @@ const ModernClientHeader = ({ branding }: ModernClientHeaderProps) => {
                   variant="outline" 
                   className="text-xs"
                   style={{
-                    backgroundColor: branding?.primary_color ? 'rgba(255, 255, 255, 0.2)' : '#3b82f6',
-                    color: branding?.primary_color ? '#ffffff' : '#ffffff',
-                    borderColor: branding?.primary_color ? 'rgba(255, 255, 255, 0.3)' : '#3b82f6'
+                    backgroundColor: badgeColors.backgroundColor,
+                    color: badgeColors.color,
+                    borderColor: badgeColors.borderColor
                   }}
                 >
                   🌐 {t('clientProjectPortal') || 'Client Project Portal'}
