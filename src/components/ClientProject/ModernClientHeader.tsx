@@ -12,7 +12,12 @@ const ModernClientHeader = ({ branding }: ModernClientHeaderProps) => {
   const t = useT();
 
   return (
-    <Card className="border-0 shadow-none bg-gray-50 rounded-lg mb-6 sm:mb-8">
+    <Card 
+      className="border-0 shadow-none rounded-lg mb-6 sm:mb-8"
+      style={{
+        backgroundColor: branding?.primary_color || '#f9fafb' // Default to gray-50
+      }}
+    >
       <CardContent className="p-4 sm:p-6">
         <div className="flex items-start gap-4">
           {/* Logo/Avatar with Dashboard Styling */}
@@ -33,7 +38,12 @@ const ModernClientHeader = ({ branding }: ModernClientHeaderProps) => {
           <div className="flex-1 min-w-0">
             <div className="space-y-2">
               {/* Name */}
-              <h1 className="text-xl sm:text-2xl font-medium text-gray-900 break-words">
+              <h1 
+                className="text-xl sm:text-2xl font-medium break-words"
+                style={{
+                  color: branding?.primary_color ? '#ffffff' : '#111827' // White if custom color, dark if default
+                }}
+              >
                 {branding?.freelancer_name || 'Professional Freelancer'}
               </h1>
               
@@ -50,21 +60,26 @@ const ModernClientHeader = ({ branding }: ModernClientHeaderProps) => {
               {/* Bio */}
               {branding?.freelancer_bio && (
                 <div className="pt-2">
-                  <p className="text-sm text-gray-500 leading-relaxed break-words">
+                  <p 
+                    className="text-sm leading-relaxed break-words"
+                    style={{
+                      color: branding?.primary_color ? 'rgba(255, 255, 255, 0.8)' : '#6b7280' // Light white if custom color, gray if default
+                    }}
+                  >
                     {branding.freelancer_bio}
                   </p>
                 </div>
               )}
               
-              {/* Client Portal Badge with custom brand color */}
+              {/* Client Portal Badge */}
               <div className="pt-2">
                 <Badge 
                   variant="outline" 
-                  className="text-xs border-gray-300"
+                  className="text-xs"
                   style={{
-                    backgroundColor: branding?.primary_color || '#3b82f6', // Default to blue
-                    color: '#ffffff',
-                    borderColor: branding?.primary_color || '#3b82f6'
+                    backgroundColor: branding?.primary_color ? 'rgba(255, 255, 255, 0.2)' : '#3b82f6',
+                    color: branding?.primary_color ? '#ffffff' : '#ffffff',
+                    borderColor: branding?.primary_color ? 'rgba(255, 255, 255, 0.3)' : '#3b82f6'
                   }}
                 >
                   🌐 {t('clientProjectPortal') || 'Client Project Portal'}
