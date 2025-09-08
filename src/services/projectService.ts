@@ -113,8 +113,8 @@ export class ProjectService {
     const baseSlug = generateSlug(sanitizedName);
     const uniqueSlug = await ensureUniqueSlug(baseSlug, this.user!.id);
 
-    // Get user's preferred currency
-    const userCurrency = await this.currencyService.getUserCurrency();
+    // Use project currency from form data, fallback to user's preferred currency
+    const projectCurrency = data.currency || await this.currencyService.getUserCurrency();
 
     // Create project
     const { data: project, error: projectError } = await supabase
@@ -135,7 +135,7 @@ export class ProjectService {
         payment_terms: data.paymentTerms || null,
         project_scope: data.projectScope || null,
         revision_policy: data.revisionPolicy || null,
-        freelancer_currency: userCurrency
+        freelancer_currency: projectCurrency
       })
       .select()
       .single();
@@ -218,6 +218,9 @@ export class ProjectService {
 
     // Calculate project dates
     const { startDate, endDate } = this.calculateProjectDates(data.milestones);
+    
+    // Use project currency from form data, fallback to existing project currency
+    const projectCurrency = data.currency || await this.currencyService.getUserCurrency();
 
     // Update project
     const { data: project, error: updateError } = await supabase
@@ -235,6 +238,7 @@ export class ProjectService {
         payment_terms: data.paymentTerms || null,
         project_scope: data.projectScope || null,
         revision_policy: data.revisionPolicy || null,
+        freelancer_currency: projectCurrency,
         updated_at: new Date().toISOString()
       })
       .eq('id', data.id)

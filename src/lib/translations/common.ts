@@ -47,6 +47,15 @@ export const commonTranslations = {
     tooManySignupAttempts: 'Too many signup attempts. Please try again later.',
     accountCreationFailed: 'Account creation failed',
     
+    // Currency fields
+    currency: 'Currency',
+    selectCurrency: 'Select Currency',
+    searchCurrencies: 'Search currencies...',
+    noCurrenciesFound: 'No currencies found',
+    projectCurrency: 'Project Currency',
+    usingProfileCurrency: 'Using your default currency from profile settings',
+    projectCurrencyHelp: 'This will be used for all milestones and invoices in this project',
+    
     // Invoice core fields
     invoices: 'Invoices',
     invoice: 'Invoice',
@@ -238,6 +247,15 @@ export const commonTranslations = {
     currencySelectionIssue: 'حدثت مشكلة في اختيار العملة',
     tooManySignupAttempts: 'محاولات تسجيل كثيرة جداً. حاول مرة أخرى لاحقاً.',
     accountCreationFailed: 'فشل في إنشاء الحساب',
+    
+    // Currency fields
+    currency: 'العملة',
+    selectCurrency: 'اختر العملة',
+    searchCurrencies: 'البحث عن العملات...',
+    noCurrenciesFound: 'لم يتم العثور على عملات',
+    projectCurrency: 'عملة المشروع',
+    usingProfileCurrency: 'استخدام العملة الافتراضية من إعدادات الحساب',
+    projectCurrencyHelp: 'ستُستخدم لجميع المعالم والفواتير في هذا المشروع',
     
     // Invoice core fields
     invoices: 'الفواتير',

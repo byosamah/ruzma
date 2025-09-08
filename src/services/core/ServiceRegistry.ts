@@ -3,6 +3,8 @@ import { UserService } from './UserService';
 import { EmailService } from './EmailService';
 import { ClientService } from './ClientService';
 import { CurrencyService } from './CurrencyService';
+import { ExchangeRateService } from './ExchangeRateService';
+import { ConversionService } from './ConversionService';
 import { ProjectService } from '../projectService';
 
 export class ServiceRegistry {
@@ -56,6 +58,22 @@ export class ServiceRegistry {
       this.services.set(key, new ProjectService(user));
     }
     return this.services.get(key) as ProjectService;
+  }
+
+  getExchangeRateService(user: User | null): ExchangeRateService {
+    const key = `exchangeRateService_${user?.id || 'anonymous'}`;
+    if (!this.services.has(key)) {
+      this.services.set(key, new ExchangeRateService(user));
+    }
+    return this.services.get(key) as ExchangeRateService;
+  }
+
+  getConversionService(user: User | null): ConversionService {
+    const key = `conversionService_${user?.id || 'anonymous'}`;
+    if (!this.services.has(key)) {
+      this.services.set(key, new ConversionService(user));
+    }
+    return this.services.get(key) as ConversionService;
   }
 
   clearUserServices(userId: string): void {

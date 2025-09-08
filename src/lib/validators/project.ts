@@ -1,10 +1,15 @@
 
 import { z } from 'zod';
+import { CURRENCIES } from '@/lib/currency';
+
+// Get all currency codes for validation
+const currencyCodes = Object.keys(CURRENCIES) as [string, ...string[]];
 
 export const createProjectFormSchema = z.object({
   name: z.string().min(1, 'Project name is required'),
   brief: z.string().min(10, 'Project brief must be at least 10 characters'),
   clientEmail: z.string().email('Please enter a valid email address').optional().or(z.literal('')),
+  currency: z.enum(currencyCodes).default('USD'),
   paymentProofRequired: z.boolean().default(false),
   contractRequired: z.boolean().default(false),
   contractTerms: z.string().optional(),

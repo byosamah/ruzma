@@ -6,12 +6,29 @@ import { Textarea } from '@/components/ui/textarea';
 import { useT } from '@/lib/i18n';
 import { CreateProjectFormData } from '@/lib/validators/project';
 import ClientDropdown from './ClientDropdown';
+import { EnhancedCurrencySelect } from '@/components/ui/enhanced-currency-select';
+import { useAuth } from '@/hooks/core/useAuth';
+import { useProfileQuery } from '@/hooks/core/useProfileQuery';
+import { useUserCurrency } from '@/hooks/useUserCurrency';
+import { useEffect } from 'react';
 
 import { User } from '@supabase/supabase-js';
 
 const ProjectDetailsForm = ({ user }: { user?: User | null }) => {
   const t = useT();
-  const { control } = useFormContext<CreateProjectFormData>();
+  const { control, setValue, watch } = useFormContext<CreateProjectFormData>();
+  const { user: authUser } = useAuth();
+  const { data: profile } = useProfileQuery(authUser);
+  const { currency: userCurrency } = useUserCurrency(profile);
+  
+  const currentCurrency = watch('currency');
+
+  // Set default currency to user's preferred currency when component mounts
+  useEffect(() => {
+    if (userCurrency && !currentCurrency) {
+      setValue('currency', userCurrency);
+    }
+  }, [userCurrency, currentCurrency, setValue]);
 
   return (
     <div className="bg-white rounded-lg border border-gray-200 overflow-hidden">
@@ -74,6 +91,35 @@ const ProjectDetailsForm = ({ user }: { user?: User | null }) => {
                   user={user}
                 />
               </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <FormField
+          control={control}
+          name="currency"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel className="text-sm font-medium text-gray-700">
+                {t('projectCurrency')}
+              </FormLabel>
+              <FormControl>
+                <EnhancedCurrencySelect
+                  value={field.value || userCurrency || 'USD'}
+                  onChange={field.onChange}
+                  placeholder={t('selectCurrency')}
+                  showCountryFlags={true}
+                  showSearch={true}
+                  className="border-gray-300"
+                />
+              </FormControl>
+              <p className="text-xs text-gray-500 mt-1">
+                {userCurrency && field.value === userCurrency 
+                  ? t('usingProfileCurrency') 
+                  : t('projectCurrencyHelp')
+                }
+              </p>
               <FormMessage />
             </FormItem>
           )}
