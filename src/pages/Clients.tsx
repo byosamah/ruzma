@@ -1,9 +1,9 @@
 
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import Layout from '@/components/Layout';
 import { useClients } from '@/hooks/useClients';
 import { useAuth } from '@/hooks/core/useAuth';
+import { useLanguageNavigation } from '@/hooks/useLanguageNavigation';
 import { useProfileQuery } from '@/hooks/core/useProfileQuery';
 import ClientsHeader from '@/components/Clients/ClientsHeader';
 import ClientsStats from '@/components/Clients/ClientsStats';
@@ -17,7 +17,7 @@ import { ClientWithProjectCount } from '@/types/client';
 import { useT } from '@/lib/i18n';
 
 function Clients() {
-  const navigate = useNavigate();
+  const { navigate } = useLanguageNavigation();
   const t = useT();
   const { user, loading: authLoading, authChecked } = useAuth();
   const { data: profile, isLoading: profileLoading } = useProfileQuery(user);
@@ -55,7 +55,7 @@ function Clients() {
         <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6 lg:py-8">
           <LoadingSpinner 
             size="md" 
-            message="Checking authentication..." 
+            message={t('checkingAuthentication')} 
             className="min-h-[40vh] justify-center"
           />
         </div>
@@ -77,7 +77,7 @@ function Clients() {
           <ClientsHeader />
           <LoadingSpinner 
             size="md" 
-            message="Loading your clients..." 
+            message={t('loadingClients')} 
             className="min-h-[40vh] justify-center"
           />
         </div>

@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { useLanguageNavigation } from '@/hooks/useLanguageNavigation';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent } from '@/components/ui/card';
@@ -11,7 +12,7 @@ import { Eye, EyeOff } from 'lucide-react';
 import { Checkbox } from '@/components/ui/checkbox';
 import { useAuthManager } from '@/hooks/useAuthManager';
 import { useT } from '@/lib/i18n';
-import { loginSchema } from '@/lib/validators/auth';
+import { loginSchema, LoginFormData } from '@/lib/validators/auth';
 import GoogleAuthButton from './GoogleAuthButton';
 
 interface LoginFormProps {
@@ -21,6 +22,7 @@ interface LoginFormProps {
 
 const LoginForm = ({ rememberMe, setRememberMe }: LoginFormProps) => {
   const t = useT();
+  const { getPathWithLanguage } = useLanguageNavigation();
   const {
     loginData,
     updateLoginField,
@@ -92,7 +94,7 @@ const LoginForm = ({ rememberMe, setRememberMe }: LoginFormProps) => {
             <span className="w-full border-t border-gray-200" />
           </div>
           <div className="relative flex justify-center text-xs uppercase">
-            <span className="bg-white px-2 text-gray-500">or</span>
+            <span className="bg-white px-2 text-gray-500">{t('or')}</span>
           </div>
         </div>
 
@@ -130,7 +132,7 @@ const LoginForm = ({ rememberMe, setRememberMe }: LoginFormProps) => {
                       {t('passwordLabel')}
                     </FormLabel>
                     <Link 
-                      to="/forgot-password" 
+                      to={getPathWithLanguage('/forgot-password')} 
                       className="text-sm text-gray-500 hover:text-gray-700 hover:underline"
                     >
                       {t('forgotPassword')}

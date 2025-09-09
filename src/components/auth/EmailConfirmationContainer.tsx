@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Mail, CheckCircle, ArrowLeft } from 'lucide-react';
 import { authService } from '@/services/api/authService';
 import { useT } from '@/lib/i18n';
+import { useLanguageNavigation } from '@/hooks/useLanguageNavigation';
 import { toast } from 'sonner';
 
 interface EmailConfirmationContainerProps {
@@ -13,7 +14,7 @@ interface EmailConfirmationContainerProps {
 
 function EmailConfirmationContainer({ email }: EmailConfirmationContainerProps) {
   const t = useT();
-  const navigate = useNavigate();
+  const { navigate, getPathWithLanguage } = useLanguageNavigation();
   const [isResending, setIsResending] = useState(false);
   const [cooldownTime, setCooldownTime] = useState(0);
 
@@ -52,7 +53,7 @@ function EmailConfirmationContainer({ email }: EmailConfirmationContainerProps) 
     <>
       {/* Header */}
       <div className="text-center space-y-4">
-        <Link to="/">
+        <Link to={getPathWithLanguage('/')}>
           <img src="/assets/logo-full-en.svg" alt="Ruzma Logo" className="h-10 mx-auto" />
         </Link>
         <div className="space-y-2">

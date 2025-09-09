@@ -1,11 +1,13 @@
 
 import React, { useState } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import Layout from "@/components/Layout";
 import { Button } from "@/components/ui/button";
 import { CheckCircle2, Coins } from "lucide-react";
 import { useT } from '@/lib/i18n';
 import { useLanguage } from '@/contexts/LanguageContext';
+import { useLanguageNavigation } from '@/hooks/useLanguageNavigation';
+import { formatCurrency } from '@/lib/currency';
 import { useProjectManagement } from '@/hooks/useProjectManagement';
 import { useProjects } from "@/hooks/useProjects";
 import ProjectHeader from "@/components/ProjectManagement/ProjectHeader";
@@ -17,7 +19,7 @@ import { toast } from "sonner";
 const ProjectManagement = () => {
   // All hooks must be called at the top level before any conditional logic
   const params = useParams<{ slug: string; }>();
-  const navigate = useNavigate();
+  const { navigate } = useLanguageNavigation();
   const { language } = useLanguage();
   const t = useT();
   
@@ -123,6 +125,9 @@ const ProjectManagement = () => {
   const completedMilestones = project.milestones.filter(m => m.status === 'approved').length;
   const totalValue = project.milestones.reduce((sum, m) => sum + m.price, 0);
   const completedValue = project.milestones.filter(m => m.status === 'approved').reduce((sum, m) => sum + m.price, 0);
+  
+  // Use the project's stored currency to match ClientProject.tsx
+  const projectCurrency = project.currency || project.freelancer_currency || 'USD';
 
   return (
     <Layout user={user}>
@@ -134,7 +139,7 @@ const ProjectManagement = () => {
             onBackClick={handleBackClick} 
             onEditClick={handleEditClick} 
             onDeleteClick={handleDeleteClick} 
-            userCurrency={userCurrency.currency}
+            userCurrency={projectCurrency}
             onResendContract={handleResendContract}
             onEditContract={handleEditContract}
             isResendingContract={isResendingContract}
@@ -160,7 +165,7 @@ const ProjectManagement = () => {
               <div>
                 <p className="text-sm text-gray-500 mb-1">{t('totalValue')}</p>
                 <p className="text-xl font-medium text-gray-900">
-                  {userCurrency.formatCurrency(totalValue)}
+                  {formatCurrency(totalValue, projectCurrency)}
                 </p>
               </div>
               <Coins className="w-5 h-5 text-gray-400" />
@@ -172,7 +177,7 @@ const ProjectManagement = () => {
               <div>
                 <p className="text-sm text-gray-500 mb-1">{t('completed')}</p>
                 <p className="text-xl font-medium text-gray-900">
-                  {userCurrency.formatCurrency(completedValue)}
+                  {formatCurrency(completedValue, projectCurrency)}
                 </p>
               </div>
               <Coins className="w-5 h-5 text-gray-400" />
@@ -191,7 +196,7 @@ const ProjectManagement = () => {
           
           <MilestoneList 
             milestones={project.milestones} 
-            userCurrency={userCurrency.currency}
+            userCurrency={projectCurrency}
             onUpdateMilestoneStatus={updateMilestoneStatus} 
             onPaymentUpload={uploadPaymentProof}
             onDeliverableLinkUpdate={updateDeliverableLink}

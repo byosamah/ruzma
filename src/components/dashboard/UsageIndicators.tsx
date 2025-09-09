@@ -2,7 +2,7 @@ import { Progress } from '@/components/ui/progress';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 // Replaced icons with emojis
-import { useNavigate } from 'react-router-dom';
+import { useLanguageNavigation } from '@/hooks/useLanguageNavigation';
 import { useUsageTracking } from '@/hooks/useUsageTracking';
 import { DatabaseProject } from '@/hooks/projectTypes';
 import { useT } from '@/lib/i18n';
@@ -17,7 +17,7 @@ export const UsageIndicators = ({
   userProfile,
   projects
 }: UsageIndicatorsProps) => {
-  const navigate = useNavigate();
+  const { navigate } = useLanguageNavigation();
   const t = useT();
   const usage = useUsageTracking(userProfile, projects);
   const userType = userProfile?.user_type || 'free';

@@ -1,19 +1,22 @@
 
 import React, { useState, useEffect } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 import { useAuth } from '@/hooks/core/useAuth';
+import { useLanguageNavigation } from '@/hooks/useLanguageNavigation';
 import LoginHeader from '@/components/auth/LoginHeader';
 import AuthToggle from '@/components/auth/AuthToggle';
 import LoginForm from '@/components/auth/LoginForm';
 import LoginFooter from '@/components/auth/LoginFooter';
 import LanguageSelector from '@/components/LanguageSelector';
 import { toast } from 'sonner';
+import { useT } from '@/lib/i18n';
 
 const Login = () => {
   const [rememberMe, setRememberMe] = useState(false);
-  const navigate = useNavigate();
+  const { navigate } = useLanguageNavigation();
   const location = useLocation();
   const { user, loading: authLoading, authChecked } = useAuth();
+  const t = useT();
 
   // Initialize "Remember Me" state from localStorage
   useEffect(() => {
@@ -28,9 +31,9 @@ const Login = () => {
     
     if (error) {
       if (error === 'oauth_failed') {
-        toast.error('Google sign-in failed. Please try again.');
+        toast.error(t('googleSigninError'));
       } else if (error === 'oauth_exception') {
-        toast.error('An error occurred during sign-in. Please try again.');
+        toast.error(t('googleUnexpectedError'));
       }
       
       // Clean up the URL
@@ -41,8 +44,14 @@ const Login = () => {
   // Redirect authenticated users to dashboard
   useEffect(() => {
     if (authChecked && user) {
-      const from = location.state?.from?.pathname || '/dashboard';
-      navigate(from, { replace: true });
+      const from = location.state?.from?.pathname;
+      if (from && from !== '/') {
+        // If redirecting from a specific page, preserve the path
+        navigate(from, { replace: true });
+      } else {
+        // Default redirect to dashboard
+        navigate('/dashboard', { replace: true });
+      }
     }
   }, [user, authChecked, navigate, location.state]);
 

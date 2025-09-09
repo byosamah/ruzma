@@ -1,14 +1,15 @@
 
 import { useState, useEffect } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { useLanguageNavigation } from '@/hooks/useLanguageNavigation';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Eye, EyeOff, AlertCircle } from 'lucide-react';
-import { resetPasswordSchema } from '@/lib/validators/auth';
+import { resetPasswordSchema, ResetPasswordFormData } from '@/lib/validators/auth';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import { useT } from '@/lib/i18n';
@@ -20,7 +21,7 @@ const ResetPassword = () => {
   const [isValidatingToken, setIsValidatingToken] = useState(true);
   const [hasValidToken, setHasValidToken] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const navigate = useNavigate();
+  const { navigate } = useLanguageNavigation();
 
   const form = useForm<ResetPasswordFormData>({
     resolver: zodResolver(resetPasswordSchema),

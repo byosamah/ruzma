@@ -2,9 +2,11 @@
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { useT } from '@/lib/i18n';
+import { useLanguageNavigation } from '@/hooks/useLanguageNavigation';
 
 const AuthToggle = () => {
   const t = useT();
+  const { getPathWithLanguage } = useLanguageNavigation();
 
   return (
     <div className="flex bg-gray-50 rounded-lg p-1">
@@ -19,7 +21,7 @@ const AuthToggle = () => {
         variant="ghost" 
         className="flex-1 text-gray-500 hover:text-gray-700 hover:bg-gray-100 font-medium text-sm sm:text-base h-9 sm:h-10"
       >
-        <Link to="/signup">{t('signUp')}</Link>
+        <Link to={getPathWithLanguage('/signup')}>{t('signUp')}</Link>
       </Button>
     </div>
   );

@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { useLanguageNavigation } from '@/hooks/useLanguageNavigation';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent } from '@/components/ui/card';
@@ -11,11 +12,12 @@ import { CountrySelect } from '@/components/ui/country-select';
 import { Eye, EyeOff, Lock } from 'lucide-react';
 import { useAuthManager } from '@/hooks/useAuthManager';
 import { useT } from '@/lib/i18n';
-import { signUpSchema } from '@/lib/validators/auth';
+import { signUpSchema, SignUpFormData } from '@/lib/validators/auth';
 import GoogleAuthButton from './GoogleAuthButton';
 
 function SignUpContainer() {
   const t = useT();
+  const { getPathWithLanguage } = useLanguageNavigation();
   const {
     signUpData,
     updateSignUpField,
@@ -77,7 +79,7 @@ function SignUpContainer() {
     <>
       {/* Header - matches Login */}
       <div className="text-center space-y-4">
-        <Link to="/">
+        <Link to={getPathWithLanguage('/')}>
           <img src="/assets/logo-full-en.svg" alt="Ruzma Logo" className="h-10 mx-auto" />
         </Link>
         <div className="space-y-2">
@@ -89,7 +91,7 @@ function SignUpContainer() {
       {/* Auth Toggle - matches Login */}
       <div className="flex bg-gray-100 rounded-lg p-1">
         <Button asChild variant="ghost" className="w-1/2 text-gray-600 font-medium">
-          <Link to="/login">{t('signIn')}</Link>
+          <Link to={getPathWithLanguage('/login')}>{t('signIn')}</Link>
         </Button>
         <Button variant="ghost" className="w-1/2 bg-white shadow-sm text-gray-900 font-medium">{t('signUp')}</Button>
       </div>

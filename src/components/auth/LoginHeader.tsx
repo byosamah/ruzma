@@ -1,15 +1,17 @@
 
 import { Link } from 'react-router-dom';
 import { useT } from '@/lib/i18n';
+import { useLanguageNavigation } from '@/hooks/useLanguageNavigation';
 
 const LoginHeader = () => {
   const t = useT();
+  const { getPathWithLanguage } = useLanguageNavigation();
 
   return (
     <div className="space-y-8">
       {/* Logo */}
       <div className="flex justify-center">
-        <Link to="/">
+        <Link to={getPathWithLanguage('/')}>
           <img 
             src="/assets/logo-full-en.svg" 
             alt="Ruzma" 

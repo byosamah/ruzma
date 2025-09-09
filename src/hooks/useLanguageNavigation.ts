@@ -23,11 +23,10 @@ export function useLanguageNavigation() {
   };
 
   /**
-   * Get current path with specific language prefix
+   * Get target path with current language prefix
    */
-  const getPathWithLanguage = (targetLanguage: string) => {
-    const currentPath = getCurrentPath();
-    return addLanguageToPath(currentPath, targetLanguage as 'en' | 'ar');
+  const getPathWithLanguage = (targetPath: string) => {
+    return addLanguageToPath(targetPath, language);
   };
 
   return {

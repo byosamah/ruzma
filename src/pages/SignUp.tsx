@@ -1,20 +1,25 @@
 
 import React, { useEffect } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 import { useAuth } from '@/hooks/core/useAuth';
+import { useLanguageNavigation } from '@/hooks/useLanguageNavigation';
 import SignUpContainer from '@/components/auth/SignUpContainer';
 import LanguageSelector from '@/components/LanguageSelector';
 
 const SignUp = () => {
-  const navigate = useNavigate();
+  const { navigate } = useLanguageNavigation();
   const location = useLocation();
   const { user, loading: authLoading, authChecked } = useAuth();
 
   // Redirect authenticated users to dashboard
   useEffect(() => {
     if (authChecked && user) {
-      const from = location.state?.from?.pathname || '/dashboard';
-      navigate(from, { replace: true });
+      const from = location.state?.from?.pathname;
+      if (from && from !== '/') {
+        navigate(from, { replace: true });
+      } else {
+        navigate('/dashboard', { replace: true });
+      }
     }
   }, [user, authChecked, navigate, location.state]);
 
