@@ -1,6 +1,6 @@
 import { User } from '@supabase/supabase-js';
 import { BaseService } from './BaseService';
-import { EmailService } from './EmailService';
+import { EnhancedEmailService } from './EnhancedEmailService';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import { DatabaseProject } from '@/types/shared';
@@ -13,11 +13,15 @@ export interface ContractUpdateData {
 }
 
 export class ContractService extends BaseService {
-  private emailService: EmailService;
+  private emailService: EnhancedEmailService;
 
   constructor(user: User | null) {
     super(user);
-    this.emailService = new EmailService(user);
+    this.emailService = new EnhancedEmailService(user, {
+      useReactEmailTemplates: true,
+      fallbackToEdgeFunctions: true,
+      defaultLanguage: 'en'
+    });
   }
 
   /**
@@ -61,13 +65,15 @@ export class ContractService extends BaseService {
       throw new Error('Failed to update contract timestamp');
     }
 
-    // Send email via edge function
-    const { data, error: emailError } = await supabase.functions.invoke('send-contract-approval', {
-      body: { projectId }
-    });
-
-    if (emailError) {
-      throw new Error(emailError.message || 'Failed to send contract approval email');
+    // Send email using EnhancedEmailService with React Email templates
+    try {
+      await this.emailService.sendContractApproval({
+        projectId,
+        clientEmail: project.client_email,
+        language: 'en' // TODO: Get from user profile or project settings
+      });
+    } catch (emailError) {
+      throw new Error(emailError instanceof Error ? emailError.message : 'Failed to send contract approval email');
     }
   }
 

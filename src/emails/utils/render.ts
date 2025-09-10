@@ -1,4 +1,5 @@
 // Email rendering utilities for Ruzma
+import React from 'react';
 import { render } from '@react-email/render';
 
 export interface EmailRenderOptions {

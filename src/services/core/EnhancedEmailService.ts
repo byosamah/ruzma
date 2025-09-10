@@ -283,29 +283,25 @@ export class EnhancedEmailService extends BaseService {
   }
 
   /**
-   * Send rendered email via Edge Function
+   * Send rendered email via existing Edge Functions
+   * For now, we'll use the existing Edge Functions as fallback
+   * In the future, we can create a generic send-rendered-email function
    */
   private async sendRenderedEmail(
     renderedEmail: { to: string; subject: string; html: string; text: string; preview: string },
     emailType: string
   ): Promise<void> {
-    try {
-      const { error } = await this.supabase.functions.invoke('send-rendered-email', {
-        body: {
-          to: renderedEmail.to,
-          subject: renderedEmail.subject,
-          html: renderedEmail.html,
-          text: renderedEmail.text,
-          emailType
-        }
-      });
+    // For now, log the rendered email and use the existing Edge Function approach
+    console.log('Rendered Email Preview:', {
+      to: renderedEmail.to,
+      subject: renderedEmail.subject,
+      preview: renderedEmail.preview,
+      emailType
+    });
 
-      if (error) {
-        throw new Error(error.message);
-      }
-    } catch (error) {
-      throw new Error(`Failed to send rendered email: ${error instanceof Error ? error.message : 'Unknown error'}`);
-    }
+    // Fallback to existing Edge Functions
+    // This will be handled by the individual template methods
+    throw new Error('Rendered email sending not yet implemented - using fallback');
   }
 
   /**

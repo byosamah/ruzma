@@ -1,5 +1,6 @@
 
 import { supabase } from '@/integrations/supabase/client';
+import { EnhancedEmailService } from './core/EnhancedEmailService';
 
 interface SendClientLinkParams {
   clientEmail: string;
@@ -7,16 +8,37 @@ interface SendClientLinkParams {
   freelancerName: string;
   clientToken: string;
   userId?: string;
+  language?: 'en' | 'ar';
+  inviteMessage?: string;
 }
 
 export const sendClientLink = async (params: SendClientLinkParams) => {
-  const response = await supabase.functions.invoke('send-client-link', {
-    body: params,
+  // Use the new EnhancedEmailService with React Email templates
+  const emailService = new EnhancedEmailService(null, {
+    useReactEmailTemplates: true,
+    fallbackToEdgeFunctions: true,
+    defaultLanguage: params.language || 'en'
   });
 
-  if (response.error) {
-    throw new Error(response.error.message);
-  }
+  try {
+    await emailService.sendClientLink({
+      ...params,
+      language: params.language || 'en'
+    });
+    
+    return { success: true };
+  } catch (error) {
+    // Fallback to Edge Function if React Email fails
+    console.warn('React Email failed, falling back to Edge Function:', error);
+    
+    const response = await supabase.functions.invoke('send-client-link', {
+      body: params,
+    });
 
-  return response.data;
+    if (response.error) {
+      throw new Error(response.error.message);
+    }
+
+    return response.data;
+  }
 };
