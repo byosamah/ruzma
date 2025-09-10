@@ -19,7 +19,7 @@ import { useT } from '@/lib/i18n';
 import ClientView from '@/components/MilestoneCard/ClientView';
 import ModernClientHeader from '@/components/ClientProject/ModernClientHeader';
 import { ServiceRegistry } from '@/services/core/ServiceRegistry';
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import jsPDF from 'jspdf';
@@ -646,6 +646,9 @@ const ClientProject = () => {
               <span className="text-xl">📄</span>
               {t('projectContract')}
             </DialogTitle>
+            <DialogDescription>
+              View project contract details, payment information, and project timeline
+            </DialogDescription>
           </DialogHeader>
           
           <div className="space-y-6">

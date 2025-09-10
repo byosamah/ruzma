@@ -7,6 +7,7 @@ import {
   SheetContent,
   SheetHeader,
   SheetTitle,
+  SheetDescription,
   SheetTrigger,
 } from '@/components/ui/sheet';
 import NavigationMenu from './NavigationMenu';
@@ -60,6 +61,9 @@ const MobileMenu = ({
         <SheetContent side="right" className="w-80 sm:w-96 max-w-[90vw]">
           <SheetHeader className="pb-4">
             <SheetTitle className="text-lg text-left">{t('menu')}</SheetTitle>
+            <SheetDescription className="text-left">
+              Navigate through your dashboard and manage your projects
+            </SheetDescription>
           </SheetHeader>
           <div className="mt-6 space-y-4">
             <NavigationMenu

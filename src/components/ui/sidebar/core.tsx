@@ -2,7 +2,8 @@
 import * as React from "react"
 import { cn } from "@/lib/utils"
 import { useSidebar } from "./context"
-import { Sheet, SheetContent } from "@/components/ui/sheet"
+import { Sheet, SheetContent, SheetTitle, SheetDescription } from "@/components/ui/sheet"
+import { VisuallyHidden } from "@/components/ui/visually-hidden"
 
 const SIDEBAR_WIDTH_MOBILE = "18rem"
 
@@ -56,6 +57,10 @@ export const Sidebar = React.forwardRef<
             }
             side={side}
           >
+            <VisuallyHidden>
+              <SheetTitle>Navigation Sidebar</SheetTitle>
+              <SheetDescription>Main navigation sidebar for the application</SheetDescription>
+            </VisuallyHidden>
             <div className="flex h-full w-full flex-col">{children}</div>
           </SheetContent>
         </Sheet>
