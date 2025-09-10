@@ -14,6 +14,5 @@ export interface SubscriptionProfile {
   user_type: string;
   subscription_status: string;
   subscription_id: string;
-  trial_ends_at?: string;
   expires_at?: string;
 }

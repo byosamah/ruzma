@@ -1,5 +1,6 @@
 import { supabase } from '@/integrations/supabase/client';
 import { GRACE_PERIODS, SUBSCRIPTION_STATUS } from '@/hooks/subscription/constants';
+import { mapVariantIdToUserType } from '@/hooks/subscription/planUtils';
 
 // Plan limits configuration
 export const USER_PLAN_LIMITS = {
@@ -93,7 +94,6 @@ export async function validateSubscriptionAccess(
     const status = profile.subscription_status || 'active';
 
     // Try to get detailed subscription info from subscriptions table
-    let trialEndsAt: Date | null = null;
     let expiresAt: Date | null = null;
     let actualStatus = status;
     let subscriptions: any[] | null = null;
@@ -110,7 +110,7 @@ export async function validateSubscriptionAccess(
       if (!testResponse.error) {
         const response = await supabase
           .from('subscriptions')
-          .select('status, trial_ends_at, expires_at, subscription_plan')
+          .select('status, expires_at, variant_id')
           .eq('user_id', userId)
           .in('status', ['active', 'on_trial', 'unpaid'])
           .order('created_at', { ascending: false })
@@ -121,7 +121,6 @@ export async function validateSubscriptionAccess(
           subscriptions = response.data;
           const subscription = response.data[0];
           actualStatus = subscription.status;
-          trialEndsAt = subscription.trial_ends_at ? new Date(subscription.trial_ends_at) : null;
           expiresAt = subscription.expires_at ? new Date(subscription.expires_at) : null;
           isLifetimePlan = false; // Grace period features not available yet
         }
@@ -141,13 +140,7 @@ export async function validateSubscriptionAccess(
     let gracePeriodEndsAt: string | undefined;
     let daysUntilExpiry: number | undefined;
 
-    // Simplified logic without grace period columns
-    if (trialEndsAt) {
-      isTrialExpired = now > trialEndsAt;
-      if (!isTrialExpired) {
-        daysUntilExpiry = Math.ceil((trialEndsAt.getTime() - now.getTime()) / (1000 * 60 * 60 * 24));
-      }
-    }
+    // Simplified logic without trial_ends_at column
 
     if (expiresAt && actualStatus === 'active') {
       daysUntilExpiry = Math.ceil((expiresAt.getTime() - now.getTime()) / (1000 * 60 * 60 * 24));
