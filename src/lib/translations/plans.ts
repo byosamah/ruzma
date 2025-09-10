@@ -67,7 +67,7 @@ export const plansTranslations = {
     basicSupportBenefit: "Basic support",
     accessForever: "Access forever",
     // Trial notes
-    freeTrialSevenDays: "Free trial for 7 days.",
+    freeTrialSevenDays: "Unlimited projects. Access forever.",
     freeTrialFourteenDays: "Free trial for 14 days.",
     // Grace period messages
     trialGracePeriod: "Trial Grace Period",
@@ -147,7 +147,7 @@ export const plansTranslations = {
     basicSupportBenefit: "دعم أساسي",
     accessForever: "وصول مدى الحياة",
     // Trial notes
-    freeTrialSevenDays: "تجربة مجانية لمدة 7 أيام.",
+    freeTrialSevenDays: "مشاريع غير محدودة. وصول مدى الحياة.",
     freeTrialFourteenDays: "تجربة مجانية لمدة 14 يوماً.",
     // Grace period messages
     trialGracePeriod: "فترة سماح التجربة",
