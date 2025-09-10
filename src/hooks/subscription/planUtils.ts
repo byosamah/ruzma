@@ -71,3 +71,14 @@ export const mapUserTypeToPlanId = (userType: string): string | null => {
       return 'free';
   }
 };
+
+export const mapVariantIdToUserType = (variantId: string): string => {
+  switch (variantId) {
+    case '697231':
+      return 'plus';
+    case '697237':
+      return 'pro';
+    default:
+      return 'free';
+  }
+};

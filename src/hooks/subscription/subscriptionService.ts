@@ -1,7 +1,7 @@
 
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
-import { getSubscriptionPlans } from './planUtils';
+import { getSubscriptionPlans, mapVariantIdToUserType } from './planUtils';
 import { SubscriptionProfile } from './types';
 
 export const createCheckoutSession = async (planId: string) => {
@@ -48,7 +48,7 @@ export const createCheckoutSession = async (planId: string) => {
         // Table exists, try to find subscription record
         const { data: subscription, error: subscriptionError } = await supabase
           .from('subscriptions')
-          .select('lemon_squeezy_id, status, subscription_plan')
+          .select('lemon_squeezy_id, status, variant_id')
           .eq('user_id', user.id)
           .eq('status', 'active')
           .single();
@@ -168,7 +168,7 @@ export const checkSubscriptionStatus = async (): Promise<SubscriptionProfile | n
       if (!testResponse.error) {
         const { data: subscriptions, error: subscriptionError } = await supabase
           .from('subscriptions')
-          .select('status, subscription_plan, trial_ends_at, expires_at')
+          .select('status, variant_id, expires_at')
           .eq('user_id', user.id)
           .in('status', ['active', 'on_trial', 'unpaid'])
           .order('created_at', { ascending: false })
@@ -179,10 +179,9 @@ export const checkSubscriptionStatus = async (): Promise<SubscriptionProfile | n
           const subscription = subscriptions[0];
           // Return enhanced profile with subscription details
           return {
-            user_type: subscription.subscription_plan,
+            user_type: mapVariantIdToUserType(subscription.variant_id),
             subscription_status: subscription.status,
             subscription_id: profile.subscription_id,
-            trial_ends_at: subscription.trial_ends_at,
             expires_at: subscription.expires_at
           };
         }
