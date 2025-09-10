@@ -38,33 +38,43 @@ export const createCheckoutSession = async (planId: string) => {
     }
 
     try {
-      // Check if subscriptions table exists and try to find subscription record
-      const { data: subscription, error: subscriptionError } = await supabase
+      // Check if subscriptions table exists first
+      const testResponse = await supabase
         .from('subscriptions')
-        .select('lemon_squeezy_id, status, subscription_plan')
-        .eq('user_id', user.id)
-        .eq('status', 'active')
-        .single();
+        .select('id')
+        .limit(0);
 
-      if (!subscriptionError && subscription?.lemon_squeezy_id) {
-        // Subscriptions table exists and we found an active subscription
-        // Call the cancel-subscription function
-        try {
-          const { error: cancelError } = await supabase.functions.invoke('cancel-subscription', {
-            body: { subscriptionId: subscription.lemon_squeezy_id }
-          });
+      if (!testResponse.error) {
+        // Table exists, try to find subscription record
+        const { data: subscription, error: subscriptionError } = await supabase
+          .from('subscriptions')
+          .select('lemon_squeezy_id, status, subscription_plan')
+          .eq('user_id', user.id)
+          .eq('status', 'active')
+          .single();
 
-          if (cancelError) {
-            throw new Error(cancelError.message || 'Failed to cancel subscription');
+        if (!subscriptionError && subscription?.lemon_squeezy_id) {
+          // Subscriptions table exists and we found an active subscription
+          // Call the cancel-subscription function
+          try {
+            const { error: cancelError } = await supabase.functions.invoke('cancel-subscription', {
+              body: { subscriptionId: subscription.lemon_squeezy_id }
+            });
+
+            if (cancelError) {
+              throw new Error(cancelError.message || 'Failed to cancel subscription');
+            }
+
+            toast.success('Subscription cancelled successfully! You will retain access until the end of your current billing period.');
+            return;
+
+          } catch (functionError) {
+            console.warn('cancel-subscription function not available:', functionError);
+            // Fall back to profile-only update
           }
-
-          toast.success('Subscription cancelled successfully! You will retain access until the end of your current billing period.');
-          return;
-
-        } catch (functionError) {
-          console.warn('cancel-subscription function not available:', functionError);
-          // Fall back to profile-only update
         }
+      } else {
+        console.debug('Subscriptions table does not exist, using profile-only update');
       }
     } catch (tableError) {
       console.warn('Subscriptions table not available yet:', tableError);
@@ -149,25 +159,35 @@ export const checkSubscriptionStatus = async (): Promise<SubscriptionProfile | n
 
     // Try to get detailed subscription info from subscriptions table if it exists
     try {
-      const { data: subscriptions, error: subscriptionError } = await supabase
+      // Check if subscriptions table exists first
+      const testResponse = await supabase
         .from('subscriptions')
-        .select('status, subscription_plan, trial_ends_at, expires_at')
-        .eq('user_id', user.id)
-        .in('status', ['active', 'on_trial', 'unpaid'])
-        .order('created_at', { ascending: false })
-        .limit(1);
+        .select('id')
+        .limit(0);
 
-      // If query succeeded and we have subscription data
-      if (!subscriptionError && subscriptions && subscriptions.length > 0) {
-        const subscription = subscriptions[0];
-        // Return enhanced profile with subscription details
-        return {
-          user_type: subscription.subscription_plan,
-          subscription_status: subscription.status,
-          subscription_id: profile.subscription_id,
-          trial_ends_at: subscription.trial_ends_at,
-          expires_at: subscription.expires_at
-        };
+      if (!testResponse.error) {
+        const { data: subscriptions, error: subscriptionError } = await supabase
+          .from('subscriptions')
+          .select('status, subscription_plan, trial_ends_at, expires_at')
+          .eq('user_id', user.id)
+          .in('status', ['active', 'on_trial', 'unpaid'])
+          .order('created_at', { ascending: false })
+          .limit(1);
+
+        // If query succeeded and we have subscription data
+        if (!subscriptionError && subscriptions && subscriptions.length > 0) {
+          const subscription = subscriptions[0];
+          // Return enhanced profile with subscription details
+          return {
+            user_type: subscription.subscription_plan,
+            subscription_status: subscription.status,
+            subscription_id: profile.subscription_id,
+            trial_ends_at: subscription.trial_ends_at,
+            expires_at: subscription.expires_at
+          };
+        }
+      } else {
+        console.debug('Subscriptions table does not exist, using profile data only');
       }
     } catch (subscriptionError) {
       // Subscriptions table doesn't exist, query failed, or no active subscription found

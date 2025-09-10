@@ -100,34 +100,37 @@ export async function validateSubscriptionAccess(
     let isLifetimePlan = false;
 
     try {
-      // Try with new grace period fields first
-      let subscriptionsData: any[] | null = null;
-      let subscriptionError: any = null;
-      
-      // Use basic query only since grace period columns don't exist yet
-      const response = await supabase
+      // Check if subscriptions table exists by trying a minimal query first
+      const testResponse = await supabase
         .from('subscriptions')
-        .select('status, trial_ends_at, expires_at, subscription_plan')
-        .eq('user_id', userId)
-        .in('status', ['active', 'on_trial', 'unpaid'])
-        .order('created_at', { ascending: false })
-        .limit(1);
+        .select('id')
+        .limit(0);
       
-      subscriptionsData = response.data;
-      subscriptionError = response.error;
+      // If the table exists (no error), proceed with actual query
+      if (!testResponse.error) {
+        const response = await supabase
+          .from('subscriptions')
+          .select('status, trial_ends_at, expires_at, subscription_plan')
+          .eq('user_id', userId)
+          .in('status', ['active', 'on_trial', 'unpaid'])
+          .order('created_at', { ascending: false })
+          .limit(1);
 
-      // If query succeeded and we have subscription data
-      if (!subscriptionError && subscriptionsData && subscriptionsData.length > 0) {
-        subscriptions = subscriptionsData;
-        const subscription = subscriptionsData[0];
-        actualStatus = subscription.status;
-        trialEndsAt = subscription.trial_ends_at ? new Date(subscription.trial_ends_at) : null;
-        expiresAt = subscription.expires_at ? new Date(subscription.expires_at) : null;
-        isLifetimePlan = false; // Grace period features not available yet
+        // If query succeeded and we have subscription data
+        if (!response.error && response.data && response.data.length > 0) {
+          subscriptions = response.data;
+          const subscription = response.data[0];
+          actualStatus = subscription.status;
+          trialEndsAt = subscription.trial_ends_at ? new Date(subscription.trial_ends_at) : null;
+          expiresAt = subscription.expires_at ? new Date(subscription.expires_at) : null;
+          isLifetimePlan = false; // Grace period features not available yet
+        }
+      } else {
+        console.debug('Subscriptions table does not exist, using profile data only');
       }
     } catch (subscriptionError) {
-      // Subscriptions table doesn't exist or no active subscription
-      console.debug('Subscription validation using profile data only');
+      // Subscriptions table doesn't exist or query failed
+      console.debug('Subscription validation using profile data only:', subscriptionError);
     }
 
     // Calculate subscription state with grace periods
