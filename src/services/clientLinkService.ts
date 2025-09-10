@@ -15,7 +15,7 @@ interface SendClientLinkParams {
 export const sendClientLink = async (params: SendClientLinkParams) => {
   // Use the new EnhancedEmailService with React Email templates
   const emailService = new EnhancedEmailService(null, {
-    useReactEmailTemplates: true,
+    useReactEmailTemplates: false, // Temporarily disabled due to client-side bundle issues
     fallbackToEdgeFunctions: true,
     defaultLanguage: params.language || 'en'
   });

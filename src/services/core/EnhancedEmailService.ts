@@ -1,7 +1,6 @@
 import { User } from '@supabase/supabase-js';
 import { BaseService } from './BaseService';
 import { UserService } from './UserService';
-import { EmailRenderService } from './EmailRenderService';
 import { 
   ContractApprovalEmailParams, 
   PaymentNotificationParams, 
@@ -16,15 +15,13 @@ export interface EmailServiceConfig {
 
 export class EnhancedEmailService extends BaseService {
   private userService: UserService;
-  private emailRenderService: EmailRenderService;
   private config: EmailServiceConfig;
 
   constructor(user: User | null, config: EmailServiceConfig = {}) {
     super(user);
     this.userService = new UserService(user);
-    this.emailRenderService = new EmailRenderService(user);
     this.config = {
-      useReactEmailTemplates: true,
+      useReactEmailTemplates: false, // Temporarily disabled due to client-side bundle issues
       fallbackToEdgeFunctions: true,
       defaultLanguage: 'en',
       ...config
@@ -69,25 +66,32 @@ export class EnhancedEmailService extends BaseService {
         throw new Error('Project not found');
       }
 
-      // Render the email template
-      const renderedEmail = await this.emailRenderService.renderContractApprovalEmail({
-        projectName: projectData.name,
-        projectBrief: projectData.brief,
-        clientName: projectData.client?.name || 'Client',
-        clientEmail: params.clientEmail,
-        freelancerName: projectData.freelancer.full_name,
-        freelancerCompany: projectData.freelancer.company,
-        contractUrl: projectData.contractUrl,
-        approvalToken: projectData.contract_approval_token,
-        totalAmount: projectData.total_amount || 0,
-        currency: projectData.currency || 'USD',
-        milestones: projectData.milestones || [],
-        language: params.language || this.config.defaultLanguage,
-        brandingColor: params.brandingColor
+      // Send template data to React Email Edge Function for server-side rendering
+      const { error } = await this.supabase.functions.invoke('send-react-email', {
+        body: {
+          template: 'contract-approval',
+          to: params.clientEmail,
+          language: params.language || this.config.defaultLanguage,
+          brandingColor: params.brandingColor,
+          data: {
+            projectName: projectData.name,
+            projectBrief: projectData.brief,
+            clientName: projectData.client?.name || 'Client',
+            clientEmail: params.clientEmail,
+            freelancerName: projectData.freelancer.full_name,
+            freelancerCompany: projectData.freelancer.company,
+            contractUrl: projectData.contractUrl,
+            approvalToken: projectData.contract_approval_token,
+            totalAmount: projectData.total_amount || 0,
+            currency: projectData.currency || 'USD',
+            milestones: projectData.milestones || []
+          }
+        }
       });
 
-      // Send via Edge Function with rendered HTML
-      await this.sendRenderedEmail(renderedEmail, 'contract-approval');
+      if (error) {
+        throw new Error(error.message);
+      }
 
       this.logOperation('contract_approval_email_sent_react', { 
         projectId: params.projectId,
@@ -156,24 +160,31 @@ export class EnhancedEmailService extends BaseService {
         throw new Error('Project not found');
       }
 
-      // Render the email template
-      const renderedEmail = await this.emailRenderService.renderPaymentNotificationEmail({
-        projectName: params.projectName,
-        clientName: projectData.client?.name || 'Client',
-        clientEmail: params.clientEmail,
-        freelancerName: projectData.freelancer.full_name,
-        freelancerCompany: projectData.freelancer.company,
-        milestoneName: params.milestoneName,
-        amount: projectData.milestones?.find(m => m.title === params.milestoneName)?.price || 0,
-        currency: projectData.currency || 'USD',
-        isApproved: params.isApproved,
-        projectUrl: `${process.env.VITE_APP_URL}/client/${params.clientToken}`,
-        language: params.language || this.config.defaultLanguage,
-        brandingColor: params.brandingColor
+      // Send template data to React Email Edge Function for server-side rendering
+      const { error } = await this.supabase.functions.invoke('send-react-email', {
+        body: {
+          template: 'payment-notification',
+          to: params.clientEmail,
+          language: params.language || this.config.defaultLanguage,
+          brandingColor: params.brandingColor,
+          data: {
+            projectName: params.projectName,
+            clientName: projectData.client?.name || 'Client',
+            clientEmail: params.clientEmail,
+            freelancerName: projectData.freelancer.full_name,
+            freelancerCompany: projectData.freelancer.company,
+            milestoneName: params.milestoneName,
+            amount: projectData.milestones?.find(m => m.title === params.milestoneName)?.price || 0,
+            currency: projectData.currency || 'USD',
+            isApproved: params.isApproved,
+            projectUrl: `${process.env.VITE_APP_URL}/client/${params.clientToken}`
+          }
+        }
       });
 
-      // Send via Edge Function with rendered HTML
-      await this.sendRenderedEmail(renderedEmail, 'payment-notification');
+      if (error) {
+        throw new Error(error.message);
+      }
 
       this.logOperation('payment_notification_sent_react', { 
         projectId: params.projectId,
@@ -238,20 +249,27 @@ export class EnhancedEmailService extends BaseService {
     inviteMessage?: string;
   }): Promise<void> {
     try {
-      // Render the email template
-      const renderedEmail = await this.emailRenderService.renderClientInviteEmail({
-        projectName: params.projectName,
-        clientName: params.clientEmail.split('@')[0], // Fallback to email prefix
-        clientEmail: params.clientEmail,
-        freelancerName: params.freelancerName,
-        projectUrl: `${process.env.VITE_APP_URL}/client/${params.clientToken}`,
-        language: params.language || this.config.defaultLanguage,
-        inviteMessage: params.inviteMessage,
-        brandingColor: params.brandingColor
+      // Send template data to React Email Edge Function for server-side rendering
+      const { error } = await this.supabase.functions.invoke('send-react-email', {
+        body: {
+          template: 'client-invite',
+          to: params.clientEmail,
+          language: params.language || this.config.defaultLanguage,
+          brandingColor: params.brandingColor,
+          data: {
+            projectName: params.projectName,
+            clientName: params.clientEmail.split('@')[0], // Fallback to email prefix
+            clientEmail: params.clientEmail,
+            freelancerName: params.freelancerName,
+            projectUrl: `${process.env.VITE_APP_URL}/client/${params.clientToken}`,
+            inviteMessage: params.inviteMessage
+          }
+        }
       });
 
-      // Send via Edge Function with rendered HTML
-      await this.sendRenderedEmail(renderedEmail, 'client-invite');
+      if (error) {
+        throw new Error(error.message);
+      }
 
       this.logOperation('client_link_sent_react', { 
         clientEmail: params.clientEmail,
@@ -282,27 +300,6 @@ export class EnhancedEmailService extends BaseService {
     }
   }
 
-  /**
-   * Send rendered email via existing Edge Functions
-   * For now, we'll use the existing Edge Functions as fallback
-   * In the future, we can create a generic send-rendered-email function
-   */
-  private async sendRenderedEmail(
-    renderedEmail: { to: string; subject: string; html: string; text: string; preview: string },
-    emailType: string
-  ): Promise<void> {
-    // For now, log the rendered email and use the existing Edge Function approach
-    console.log('Rendered Email Preview:', {
-      to: renderedEmail.to,
-      subject: renderedEmail.subject,
-      preview: renderedEmail.preview,
-      emailType
-    });
-
-    // Fallback to existing Edge Functions
-    // This will be handled by the individual template methods
-    throw new Error('Rendered email sending not yet implemented - using fallback');
-  }
 
   /**
    * Fetch project data for email templates
