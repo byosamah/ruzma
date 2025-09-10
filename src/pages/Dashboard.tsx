@@ -13,7 +13,7 @@ import { Button } from '@/components/ui/button';
 import { useT } from '@/lib/i18n';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 import { useIsMobile } from '@/hooks/use-mobile';
-import { GracePeriodWarning } from '@/components/subscription/GracePeriodWarning';
+import { GracePeriodWarning } from '@/components/Subscription/GracePeriodWarning';
 
 const Dashboard = () => {
   const { navigate } = useLanguageNavigation();
