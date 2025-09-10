@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import { ExternalLink, CheckCircle, XCircle, Eye } from 'lucide-react';
 import { isPdfFile, copyToClipboard } from './utils';
+import { useT } from '@/lib/i18n';
 
 interface PaymentProofModalProps {
   open: boolean;
@@ -22,6 +23,7 @@ const PaymentProofModal = ({
   onReject,
   milestoneId
 }: PaymentProofModalProps) => {
+  const t = useT();
   const [imageLoadError, setImageLoadError] = useState(false);
 
   const handleImageError = () => {
@@ -86,8 +88,8 @@ const PaymentProofModal = ({
                       <Eye className="w-8 h-8" />
                     </div>
                     <div className="text-center">
-                      <p className="font-medium">Unable to load image</p>
-                      <p className="text-sm">The image may be corrupted or the link is invalid</p>
+                      <p className="font-medium">{t('unableToLoadImage')}</p>
+                      <p className="text-sm">{t('imageCorruptedOrInvalid')}</p>
                       <p className="text-xs mt-2 break-all max-w-md">{paymentProofUrl}</p>
                     </div>
                     <div className="flex space-x-2">

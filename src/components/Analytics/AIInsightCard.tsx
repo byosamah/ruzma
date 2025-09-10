@@ -2,6 +2,7 @@ import { memo } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Lightbulb, TrendingUp, Users, DollarSign, AlertTriangle, Target } from "lucide-react";
+import { useT } from '@/lib/i18n';
 
 interface AIInsight {
   category: 'revenue' | 'efficiency' | 'clients' | 'growth' | 'risks';
@@ -19,6 +20,7 @@ interface AIInsightCardProps {
 }
 
 function AIInsightCard({ insight, onImplement }: AIInsightCardProps) {
+  const t = useT();
   const getCategoryIcon = () => {
     switch (insight.category) {
       case 'revenue': return <DollarSign className="h-4 w-4" />;
@@ -76,7 +78,7 @@ function AIInsightCard({ insight, onImplement }: AIInsightCardProps) {
             </div>
           </div>
           <div className="text-right sm:text-right text-left flex-shrink-0">
-            <div className="text-xs text-gray-500">Confidence</div>
+            <div className="text-xs text-gray-500">{t('confidence')}</div>
             <div className="text-sm font-medium">{insight.confidence}%</div>
           </div>
         </div>
@@ -85,19 +87,19 @@ function AIInsightCard({ insight, onImplement }: AIInsightCardProps) {
       <CardContent className="space-y-4">
         {/* Analysis */}
         <div>
-          <h4 className="text-sm font-medium text-gray-700 mb-2">📊 Analysis</h4>
+          <h4 className="text-sm font-medium text-gray-700 mb-2">📊 {t('analysis')}</h4>
           <p className="text-sm text-gray-600 break-words leading-relaxed">{insight.description}</p>
         </div>
 
         {/* Recommendation */}
         <div>
-          <h4 className="text-sm font-medium text-gray-700 mb-2">💡 Recommendation</h4>
+          <h4 className="text-sm font-medium text-gray-700 mb-2">💡 {t('recommendation')}</h4>
           <p className="text-sm text-gray-600 break-words leading-relaxed">{insight.recommendation}</p>
         </div>
 
         {/* Expected Impact */}
         <div>
-          <h4 className="text-sm font-medium text-gray-700 mb-2">🎯 Expected Impact</h4>
+          <h4 className="text-sm font-medium text-gray-700 mb-2">🎯 {t('expectedImpact')}</h4>
           <p className="text-sm text-gray-600 break-words leading-relaxed">{insight.impact}</p>
         </div>
 

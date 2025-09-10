@@ -13,8 +13,28 @@ interface ExchangeRateAPI {
 }
 
 const SUPPORTED_CURRENCIES = [
-  'USD', 'EUR', 'GBP', 'SAR', 'AED', 'JOD', 'EGP', 'KWD', 'QAR', 
-  'BHD', 'OMR', 'LBP', 'MAD', 'TND', 'DZD', 'CAD', 'AUD', 'CHF', 'JPY'
+  // Major Currencies
+  'USD', 'EUR', 'GBP', 'JPY', 'CNY', 'CAD', 'AUD', 'CHF', 'SEK', 'NOK',
+  
+  // MENA Currencies  
+  'SAR', 'AED', 'QAR', 'KWD', 'BHD', 'OMR', 'JOD', 'EGP', 'LBP', 'MAD', 
+  'TND', 'DZD', 'ILS', 'IQD', 'SYP', 'YER', 'LYD', 'IRR',
+  
+  // Asia Pacific
+  'INR', 'KRW', 'SGD', 'HKD', 'MYR', 'THB', 'IDR', 'PHP', 'VND', 'TWD',
+  'BDT', 'PKR', 'LKR', 'NPR', 'AFN', 'MMK', 'KHR', 'LAK', 'MNT',
+  
+  // Europe
+  'DKK', 'PLN', 'CZK', 'HUF', 'RON', 'BGN', 'HRK', 'RUB', 'UAH', 'TRY', 'ISK',
+  
+  // Africa
+  'ZAR', 'NGN', 'KES', 'GHS', 'UGX', 'TZS', 'ZMW', 'BWP', 'XOF', 'XAF',
+  
+  // Americas
+  'BRL', 'MXN', 'ARS', 'CLP', 'COP', 'PEN', 'UYU', 'NZD',
+  
+  // Crypto (if supported by exchange API)
+  'BTC', 'ETH', 'USDC', 'USDT',
 ];
 
 serve(async (req) => {

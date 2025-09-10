@@ -32,30 +32,31 @@ interface DashboardAnalyticsChartsProps {
   userCurrency: CurrencyCode;
 }
 
-const chartConfig = {
-  revenue: {
-    label: "Revenue",
-    color: "hsl(var(--chart-1))",
-  },
-  projects: {
-    label: "Projects",
-    color: "hsl(var(--chart-2))",
-  },
-  completed: {
-    label: "Completed",
-    color: "hsl(var(--chart-3))",
-  },
-  pending: {
-    label: "Pending",
-    color: "hsl(var(--chart-4))",
-  },
-};
 
 const DashboardAnalyticsCharts = ({
   data,
   userCurrency,
 }: DashboardAnalyticsChartsProps) => {
   const t = useT();
+  
+  const chartConfig = {
+    revenue: {
+      label: t("revenue"),
+      color: "hsl(var(--chart-1))",
+    },
+    projects: {
+      label: t("chartProjects"),
+      color: "hsl(var(--chart-2))",
+    },
+    completed: {
+      label: t("chartCompleted"),
+      color: "hsl(var(--chart-3))",
+    },
+    pending: {
+      label: t("chartPending"),
+      color: "hsl(var(--chart-4))",
+    },
+  };
 
   return (
     <div className="space-y-6">

@@ -18,14 +18,14 @@ export function canAccessDeliverables(
 }
 
 /**
- * Gets the appropriate message to display when deliverable access is denied
+ * Gets the appropriate translation key for the message to display when deliverable access is denied
  */
 export function getAccessDeniedMessage(paymentProofRequired: boolean): string {
   if (paymentProofRequired) {
-    return '🔒 Deliverables will be accessible after payment is approved by the freelancer.';
+    return 'deliverablesAccessibleAfterPayment';
   }
   
-  return 'Deliverables are not yet available.';
+  return 'deliverablesNotYetAvailable';
 }
 
 /**

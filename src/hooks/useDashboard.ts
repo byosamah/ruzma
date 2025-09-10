@@ -10,12 +10,9 @@ export const useDashboard = () => {
   const { user, loading: authLoading } = useAuth();
   const { data, isLoading: dataLoading, refetch } = useDashboardDataQuery(user);
   
-  console.log('useDashboard - user:', user);
-  console.log('useDashboard - data:', data);
-  console.log('useDashboard - projects from data:', data?.projects);
   
   const userCurrency = useUserCurrency(data?.profile);
-  const stats = useDashboardStats(data?.projects || []);
+  const stats = useDashboardStats(data?.projects || [], userCurrency.currency);
 
   const projectService = ServiceRegistry.getInstance().getProjectService(user);
   const {

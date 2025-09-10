@@ -53,36 +53,36 @@ const ClientView = ({
       {/* Status-based messages */}
       {milestone.status === 'pending' && (
         <div className="text-sm text-gray-600 bg-gray-50 p-3 rounded-lg">
-          Waiting for work to begin.
+          {t('waitingForWorkToBegin')}
         </div>
       )}
 
       {milestone.status === 'payment_submitted' && (
         <div className="text-sm text-blue-600 bg-blue-50 p-3 rounded-lg border border-blue-200">
-          💰 Your payment proof has been submitted and is being reviewed.
+          💰 {t('paymentProofSubmittedBeingReviewed')}
         </div>
       )}
 
       {milestone.status === 'approved' && (
         <div className="text-sm text-green-600 bg-green-50 p-3 rounded-lg border border-green-200">
-          ✅ Payment approved! Work will begin soon.
+          ✅ {t('paymentApprovedWorkWillBegin')}
         </div>
       )}
 
       {milestone.status === 'rejected' && (
         <div className="text-sm text-red-600 bg-red-50 p-3 rounded-lg border border-red-200">
-          ❌ Payment proof was rejected. Please resubmit with correct details.
+          ❌ {t('paymentProofRejectedResubmit')}
         </div>
       )}
 
       {/* Payment Upload Section */}
       {showPaymentUpload && (
         <div className="space-y-3">
-          <h4 className="text-sm font-medium text-gray-700">Upload Payment Proof:</h4>
+          <h4 className="text-sm font-medium text-gray-700">{t('uploadPaymentProof')}</h4>
           <div className="border-2 border-dashed border-gray-300 rounded-lg p-4 text-center">
             <Upload className="w-6 h-6 text-gray-400 mx-auto mb-2" />
             <p className="text-sm text-gray-600 mb-2">
-              Upload screenshot or receipt of your payment
+              {t('uploadScreenshotReceiptPayment')}
             </p>
             <input
               type="file"
@@ -98,7 +98,7 @@ const ClientView = ({
               className="gap-2"
             >
               <Upload className="w-4 h-4" />
-              Choose File
+              {t('chooseFile')}
             </Button>
           </div>
         </div>
@@ -108,7 +108,7 @@ const ClientView = ({
       {links.length ? (
         <div className="space-y-3">
           <div className="flex items-center justify-between">
-            <h4 className="text-sm font-medium text-gray-700">Deliverables:</h4>
+            <h4 className="text-sm font-medium text-gray-700">{t('deliverables')}</h4>
             {hasDeliverableAccess && (
               <div className="flex gap-2">
                 {revisionData.requests.length && (
@@ -119,7 +119,7 @@ const ClientView = ({
                     className="gap-2 text-xs"
                   >
                     <Eye className="w-3 h-3" />
-                    View Revision History ({revisionData.requests.length})
+                    {t('viewRevisionHistory')} ({revisionData.requests.length})
                   </Button>
                 )}
                 {onRevisionRequest && (
@@ -131,7 +131,7 @@ const ClientView = ({
                     className="gap-2 text-xs"
                   >
                     <MessageSquare className="w-3 h-3" />
-                    {canRequest ? 'Request Revision' : 'Revision Limit Reached'}
+                    {canRequest ? t('requestRevision') : t('revisionLimitReached')}
                   </Button>
                 )}
               </div>
@@ -141,7 +141,7 @@ const ClientView = ({
           {/* Revision Counter */}
           {hasDeliverableAccess && onRevisionRequest && (
             <div className="text-xs text-muted-foreground">
-              Revisions: {remainingRevisions === null ? 'Unlimited' : `${remainingRevisions} remaining`}
+              {t('revisions')}: {remainingRevisions === null ? t('unlimited') : `${remainingRevisions} ${t('remaining')}`}
             </div>
           )}
           
@@ -163,7 +163,7 @@ const ClientView = ({
                   >
                     <a href={link.url} target="_blank" rel="noopener noreferrer">
                       <ExternalLink className="w-4 h-4" />
-                      View
+                      {t('view')}
                     </a>
                   </Button>
                 </div>
@@ -173,7 +173,7 @@ const ClientView = ({
             <div className="p-4 bg-gray-50 rounded-lg border border-gray-200 text-center">
               <Lock className="w-6 h-6 text-gray-400 mx-auto mb-2" />
               <p className="text-sm text-gray-600">
-                {getAccessDeniedMessage(paymentProofRequired)}
+                🔒 {t(getAccessDeniedMessage(paymentProofRequired))}
               </p>
             </div>
           )}
@@ -181,11 +181,11 @@ const ClientView = ({
       ) : (
         !hasDeliverableAccess && paymentProofRequired && (
           <div className="space-y-3">
-            <h4 className="text-sm font-medium text-gray-700">Deliverables:</h4>
+            <h4 className="text-sm font-medium text-gray-700">{t('deliverables')}</h4>
             <div className="p-4 bg-gray-50 rounded-lg border border-gray-200 text-center">
               <Lock className="w-6 h-6 text-gray-400 mx-auto mb-2" />
               <p className="text-sm text-gray-600">
-                {getAccessDeniedMessage(paymentProofRequired)}
+                🔒 {t(getAccessDeniedMessage(paymentProofRequired))}
               </p>
             </div>
           </div>

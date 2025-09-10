@@ -62,9 +62,9 @@ function EditProject() {
 
       if (error) throw error;
       
-      toast.success('Contract resent successfully');
+      toast.success(t('contractResentSuccess'));
     } catch (error) {
-      toast.error('Failed to resend contract');
+      toast.error(t('contractResendFailed'));
     } finally {
       setIsResendingContract(false);
     }

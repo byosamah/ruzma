@@ -171,7 +171,8 @@ const Dashboard = () => {
                       onViewClick={() => handleViewProject(project.slug)} 
                       onEditClick={() => handleEditProjectCard(project.slug)} 
                       onDeleteClick={handleDeleteProject} 
-                      currency={userCurrency.currency} 
+                      currency={userCurrency.currency}
+                      convertFrom={project.currency || project.freelancer_currency} 
                       isVerticalLayout={true} 
                     />
                   </div>

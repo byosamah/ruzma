@@ -4,7 +4,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { Input } from '@/components/ui/input';
 import { FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { ShadcnFormDialog } from '@/components/shared/dialogs/ShadcnFormDialog';
-import { createClientSchema } from '@/lib/validators/client';
+import { clientSchema, CreateClientFormData } from '@/lib/validators/client';
 import { useT } from '@/lib/i18n';
 
 interface AddClientDialogProps {
@@ -21,7 +21,7 @@ function AddClientDialog({
   const t = useT();
   
   const form = useForm<CreateClientFormData>({
-    resolver: zodResolver(createClientSchema),
+    resolver: zodResolver(clientSchema),
     defaultValues: {
       name: '',
       email: '',

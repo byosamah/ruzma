@@ -35,12 +35,18 @@ export const EnhancedCurrencySelect = ({
   const t = useT();
   const [searchQuery, setSearchQuery] = useState('');
 
-  const filteredCurrencies = useMemo(() => {
-    if (searchQuery) {
-      return searchCurrencies(searchQuery, language);
-    } else {
-      return getAllCurrencies();
-    }
+  const { popularCurrencies, otherCurrencies } = useMemo(() => {
+    const allFiltered = searchQuery 
+      ? searchCurrencies(searchQuery, language)
+      : getAllCurrencies();
+    
+    const popular = allFiltered.filter(code => CURRENCIES[code].popular);
+    const others = allFiltered.filter(code => !CURRENCIES[code].popular);
+    
+    return {
+      popularCurrencies: popular,
+      otherCurrencies: others,
+    };
   }, [searchQuery, language]);
 
   const getCurrencyDisplayInfo = (currencyCode: CurrencyCode) => {
@@ -99,24 +105,65 @@ export const EnhancedCurrencySelect = ({
           </div>
           
           <div className="max-h-60 overflow-y-auto">
-            {filteredCurrencies.map((currencyCode) => {
-              const info = getCurrencyDisplayInfo(currencyCode);
-              return (
-                <SelectItem key={currencyCode} value={currencyCode} className="flex items-center justify-between">
-                  <div className="flex items-center gap-2 flex-1">
-                    {showCountryFlags && info.flag && (
-                      <span className="text-sm">{info.flag}</span>
-                    )}
-                    <span className="font-medium">{info.symbol}</span>
-                    <span className="text-muted-foreground">{info.name}</span>
-                    <span className="text-xs text-muted-foreground">({currencyCode})</span>
+            {/* Popular Currencies */}
+            {popularCurrencies.length > 0 && (
+              <div>
+                {!searchQuery && (
+                  <div className="px-2 py-1 text-xs font-medium text-muted-foreground uppercase tracking-wider">
+                    {t('popular')}
                   </div>
-                </SelectItem>
-              );
-            })}
+                )}
+                {popularCurrencies.map((currencyCode) => {
+                  const info = getCurrencyDisplayInfo(currencyCode);
+                  return (
+                    <SelectItem key={currencyCode} value={currencyCode} className="flex items-center justify-between">
+                      <div className="flex items-center gap-2 flex-1">
+                        {showCountryFlags && info.flag && (
+                          <span className="text-sm">{info.flag}</span>
+                        )}
+                        <span className="font-medium">{info.symbol}</span>
+                        <span className="text-muted-foreground">{info.name}</span>
+                        <span className="text-xs text-muted-foreground">({currencyCode})</span>
+                      </div>
+                    </SelectItem>
+                  );
+                })}
+              </div>
+            )}
+
+            {/* Other Currencies */}
+            {otherCurrencies.length > 0 && (
+              <div>
+                {!searchQuery && popularCurrencies.length > 0 && (
+                  <div className="px-2 py-1 text-xs font-medium text-muted-foreground uppercase tracking-wider border-t border-muted/20 mt-1">
+                    {t('allCurrencies')}
+                  </div>
+                )}
+                {otherCurrencies.map((currencyCode) => {
+                  const info = getCurrencyDisplayInfo(currencyCode);
+                  return (
+                    <SelectItem key={currencyCode} value={currencyCode} className="flex items-center justify-between">
+                      <div className="flex items-center gap-2 flex-1">
+                        {showCountryFlags && info.flag && (
+                          <span className="text-sm">{info.flag}</span>
+                        )}
+                        <span className="font-medium">{info.symbol}</span>
+                        <span className="text-muted-foreground">{info.name}</span>
+                        <span className="text-xs text-muted-foreground">({currencyCode})</span>
+                        {CURRENCIES[currencyCode].region && (
+                          <span className="text-xs text-muted-foreground/70">
+                            {CURRENCIES[currencyCode].region}
+                          </span>
+                        )}
+                      </div>
+                    </SelectItem>
+                  );
+                })}
+              </div>
+            )}
           </div>
           
-          {!filteredCurrencies.length && (
+          {!popularCurrencies.length && !otherCurrencies.length && (
             <div className="p-4 text-center text-muted-foreground text-sm">
               {t('noCurrenciesFound')}
             </div>

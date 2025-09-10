@@ -97,7 +97,7 @@ const ModernProjectOverview = ({
         <CardContent className="p-6">
           <div className="space-y-4">
             <div className="flex items-center justify-between">
-              <h3 className="text-lg font-semibold">Project Progress</h3>
+              <h3 className="text-lg font-semibold">{t('projectProgress')}</h3>
               <Badge variant="secondary">
                 {completedMilestones} of {totalMilestones} complete
               </Badge>

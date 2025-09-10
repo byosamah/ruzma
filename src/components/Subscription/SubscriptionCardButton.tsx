@@ -74,7 +74,7 @@ export function SubscriptionCardButton({
   };
 
   const isButtonDisabled = () => {
-    return isLoading || isCurrentPlan || planId === 'pro';
+    return isLoading || isCurrentPlan;
   };
 
   const getTrialText = () => {

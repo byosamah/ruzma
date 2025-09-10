@@ -3,6 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Sparkles, CheckCircle, ChevronDown, ChevronUp } from "lucide-react";
+import { useT } from '@/lib/i18n';
 
 interface AIRecommendationsProps {
   title: string;
@@ -19,6 +20,7 @@ function AIRecommendations({
   icon, 
   color 
 }: AIRecommendationsProps) {
+  const t = useT();
   const [isExpanded, setIsExpanded] = useState(false);
   
   // Check if any recommendation appears to be truncated
@@ -29,7 +31,7 @@ function AIRecommendations({
   // Process recommendations to handle truncation
   const processedRecommendations = recommendations.map(rec => {
     if (rec === '---' || rec.trim() === '') {
-      return 'Content is being generated. Please check back in a moment for complete recommendations.';
+      return t('contentBeingGenerated');
     }
     return rec;
   }).filter(rec => rec.length > 10); // Filter out very short or empty content
@@ -56,7 +58,7 @@ function AIRecommendations({
           </div>
           <div className="mt-4 flex items-center gap-2 text-sm text-gray-500">
             <Sparkles className="h-4 w-4" />
-            <span>AI is analyzing your data...</span>
+            <span>{t('aiAnalyzing')}</span>
           </div>
         </CardContent>
       </Card>
@@ -76,7 +78,7 @@ function AIRecommendations({
           <div className="text-center py-8">
             <Sparkles className="h-8 w-8 text-gray-400 mx-auto mb-3" />
             <p className="text-sm text-gray-500">
-              AI recommendations will appear here once you have more project data.
+              {t('aiRecommendationsWillAppear')}
             </p>
           </div>
         </CardContent>
@@ -94,7 +96,7 @@ function AIRecommendations({
           </CardTitle>
           <Badge variant="secondary" className="text-xs">
             <Sparkles className="h-3 w-3 mr-1" />
-            AI Powered
+            {t('aiPowered')}
           </Badge>
         </div>
       </CardHeader>
@@ -125,12 +127,12 @@ function AIRecommendations({
                 {isExpanded ? (
                   <>
                     <ChevronUp className="h-3 w-3 mr-1" />
-                    Show Less
+                    {t('showLess')}
                   </>
                 ) : (
                   <>
                     <ChevronDown className="h-3 w-3 mr-1" />
-                    Show More ({processedRecommendations.length - 3} more)
+                    {t('showMore')} ({processedRecommendations.length - 3} more)
                   </>
                 )}
               </Button>
@@ -142,12 +144,12 @@ function AIRecommendations({
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2 text-xs text-gray-500">
               <CheckCircle className="h-3 w-3" />
-              <span>Recommendations generated using advanced AI analysis</span>
+              <span>{t('recommendationsGenerated')}</span>
             </div>
             {hasTruncatedContent && (
               <div className="flex items-center gap-1 text-xs text-amber-600">
                 <Sparkles className="h-3 w-3" />
-                <span>AI is still processing...</span>
+                <span>{t('aiStillProcessing')}</span>
               </div>
             )}
           </div>

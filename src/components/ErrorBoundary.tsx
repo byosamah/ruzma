@@ -2,6 +2,7 @@ import { Component, ReactNode, ErrorInfo } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { AlertTriangle, RefreshCw, Home } from 'lucide-react';
+import { ErrorBoundaryTitle, ErrorBoundaryDetails, ErrorBoundaryMessage, ErrorBoundaryButtons } from './ErrorBoundary/ErrorBoundaryText';
 
 interface ErrorBoundaryProps {
   children: ReactNode;
@@ -89,16 +90,14 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
               <div className="mx-auto w-16 h-16 bg-destructive/10 rounded-full flex items-center justify-center mb-4">
                 <AlertTriangle className="w-8 h-8 text-destructive" />
               </div>
-              <CardTitle className="text-destructive">Something went wrong</CardTitle>
+              <ErrorBoundaryTitle />
             </CardHeader>
             <CardContent className="space-y-4">
-              <p className="text-sm text-muted-foreground text-center">
-                We're sorry, but something went wrong. The error has been logged and we're working on a fix.
-              </p>
+              <ErrorBoundaryMessage />
               
               {process.env.NODE_ENV === 'development' && this.state.error && (
                 <details className="mt-4 p-3 bg-muted rounded text-xs">
-                  <summary className="cursor-pointer font-medium">Error Details (dev only)</summary>
+                  <ErrorBoundaryDetails />
                   <pre className="mt-2 whitespace-pre-wrap">
                     {this.state.error.toString()}
                     {this.state.errorInfo?.componentStack}
@@ -106,34 +105,10 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
                 </details>
               )}
               
-              <div className="flex flex-col sm:flex-row gap-2">
-                <Button 
-                  onClick={this.handleReset} 
-                  variant="outline" 
-                  size="sm" 
-                  className="flex-1"
-                >
-                  <RefreshCw className="w-4 h-4 mr-2" />
-                  Try Again
-                </Button>
-                <Button 
-                  onClick={this.handleRefresh} 
-                  variant="outline" 
-                  size="sm"
-                  className="flex-1"
-                >
-                  <RefreshCw className="w-4 h-4 mr-2" />
-                  Refresh Page
-                </Button>
-                <Button 
-                  onClick={this.handleGoHome} 
-                  size="sm"
-                  className="flex-1"
-                >
-                  <Home className="w-4 h-4 mr-2" />
-                  Go Home
-                </Button>
-              </div>
+              <ErrorBoundaryButtons 
+                onTryAgain={this.handleReset}
+                onGoHome={this.handleRefresh}
+              />
             </CardContent>
           </Card>
         </div>

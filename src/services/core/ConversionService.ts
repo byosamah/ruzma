@@ -128,6 +128,7 @@ export class ConversionService extends BaseService {
 
   /**
    * Convert multiple amounts in batch (for performance)
+   * Ensures all conversions use the same exchange rates for consistency
    */
   async convertBatch(
     amounts: Array<{ amount: number; fromCurrency: CurrencyCode }>,
@@ -137,19 +138,51 @@ export class ConversionService extends BaseService {
     // Get unique currencies to minimize API calls
     const uniqueCurrencies = [...new Set(amounts.map(a => a.fromCurrency))];
     
-    // Preload rates for all currencies
-    await Promise.all(
-      uniqueCurrencies.map(currency => 
-        this.exchangeRateService.getExchangeRates(currency)
-      )
-    );
+    // Preload rates for all currencies to ensure consistency
+    const ratesCache: Record<string, Record<string, number>> = {};
+    
+    for (const currency of uniqueCurrencies) {
+      if (currency !== toCurrency) {
+        ratesCache[currency] = await this.exchangeRateService.getExchangeRates(currency);
+      }
+    }
 
-    // Convert all amounts
-    const results = await Promise.all(
-      amounts.map(({ amount, fromCurrency }) =>
-        this.convertWithFormatting(amount, fromCurrency, toCurrency, options)
-      )
-    );
+    // Convert all amounts using the same cached rates
+    const results: ConversionResult[] = [];
+    
+    for (const { amount, fromCurrency } of amounts) {
+      if (fromCurrency === toCurrency) {
+        const formatted = formatCurrencyUtil(amount, fromCurrency, options.language || 'en');
+        results.push({
+          originalAmount: amount,
+          originalCurrency: fromCurrency,
+          convertedAmount: amount,
+          convertedCurrency: toCurrency,
+          conversionRate: 1,
+          formattedOriginal: formatted,
+          formattedConverted: formatted,
+          isConverted: false,
+        });
+      } else {
+        const rates = ratesCache[fromCurrency];
+        const conversionRate = rates?.[toCurrency] || 1;
+        const convertedAmount = amount * conversionRate;
+        
+        const formattedOriginal = formatCurrencyUtil(amount, fromCurrency, options.language || 'en');
+        const formattedConverted = formatCurrencyUtil(convertedAmount, toCurrency, options.language || 'en');
+
+        results.push({
+          originalAmount: amount,
+          originalCurrency: fromCurrency,
+          convertedAmount,
+          convertedCurrency: toCurrency,
+          conversionRate,
+          formattedOriginal,
+          formattedConverted,
+          isConverted: true,
+        });
+      }
+    }
 
     return results;
   }
@@ -269,11 +302,31 @@ export class ConversionService extends BaseService {
   }
 
   /**
-   * Clear all cached rates (useful for testing)
+   * Clear all cached rates (useful for testing and fixing rate inconsistencies)
    */
   clearConversionCache(): void {
     this.exchangeRateService.clearCache();
     this.logOperation('conversion_cache_cleared', {});
+  }
+
+  /**
+   * Force refresh exchange rates to ensure consistency
+   */
+  async forceRefreshRates(baseCurrency: CurrencyCode = 'USD'): Promise<void> {
+    // Clear cache first
+    this.clearConversionCache();
+    
+    // Force fetch fresh rates
+    await this.exchangeRateService.getExchangeRates(baseCurrency);
+    
+    this.logOperation('rates_force_refreshed', { baseCurrency });
+  }
+
+  /**
+   * Get the underlying exchange rate service instance
+   */
+  getExchangeRateService(): ExchangeRateService {
+    return this.exchangeRateService;
   }
 
   /**

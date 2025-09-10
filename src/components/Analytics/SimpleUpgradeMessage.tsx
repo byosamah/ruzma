@@ -2,12 +2,14 @@ import { memo } from "react";
 import { Button } from "@/components/ui/button";
 import { Crown } from "lucide-react";
 import { useLanguageNavigation } from "@/hooks/useLanguageNavigation";
+import { useT } from '@/lib/i18n';
 
 interface SimpleUpgradeMessageProps {
   message: string;
 }
 
 function SimpleUpgradeMessage({ message }: SimpleUpgradeMessageProps) {
+  const t = useT();
   const { navigate } = useLanguageNavigation();
 
   const handleUpgrade = () => {
@@ -28,7 +30,7 @@ function SimpleUpgradeMessage({ message }: SimpleUpgradeMessageProps) {
         className="text-xs min-h-[44px] px-4"
       >
         <Crown className="h-3 w-3 mr-1" />
-        Upgrade to Pro
+        {t('upgradeToPro')}
       </Button>
     </div>
   );

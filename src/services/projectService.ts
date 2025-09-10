@@ -113,8 +113,11 @@ export class ProjectService {
     const baseSlug = generateSlug(sanitizedName);
     const uniqueSlug = await ensureUniqueSlug(baseSlug, this.user!.id);
 
-    // Use project currency from form data, fallback to user's preferred currency
-    const projectCurrency = data.currency || await this.currencyService.getUserCurrency();
+    // Get project currency (chosen by user for this specific project)
+    const projectCurrency = data.currency || 'USD';
+    
+    // Get freelancer's profile currency (for dashboard conversions)
+    const freelancerCurrency = await this.currencyService.getUserCurrency();
 
     // Create project
     const { data: project, error: projectError } = await supabase
@@ -135,7 +138,8 @@ export class ProjectService {
         payment_terms: data.paymentTerms || null,
         project_scope: data.projectScope || null,
         revision_policy: data.revisionPolicy || null,
-        freelancer_currency: projectCurrency
+        currency: projectCurrency,              // Project-specific currency
+        freelancer_currency: freelancerCurrency // User's profile currency
       })
       .select()
       .single();

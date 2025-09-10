@@ -1,21 +1,21 @@
 {
-  "timestamp": "2025-09-03T19:44:46.955Z",
+  "timestamp": "2025-09-09T11:12:54.663Z",
   "tables": {
     "profiles": {
       "exists": true,
-      "row_count": 23
+      "row_count": 28
     },
     "projects": {
       "exists": true,
-      "row_count": 10
+      "row_count": 13
     },
     "milestones": {
       "exists": true,
-      "row_count": 18
+      "row_count": 21
     },
     "clients": {
       "exists": true,
-      "row_count": 18
+      "row_count": 20
     },
     "invoices": {
       "exists": true,
@@ -27,11 +27,11 @@
     },
     "project_templates": {
       "exists": true,
-      "row_count": 15
+      "row_count": 16
     },
     "freelancer_branding": {
       "exists": true,
-      "row_count": 6
+      "row_count": 9
     },
     "notifications": {
       "exists": true,
@@ -153,7 +153,8 @@
         "project_scope": null,
         "revision_policy": null,
         "contract_required": true,
-        "freelancer_currency": "USD"
+        "freelancer_currency": "USD",
+        "currency": "USD"
       },
       {
         "id": "9096020b-c0f9-4a3e-8ac0-70ab5bc67675",
@@ -179,33 +180,35 @@
         "project_scope": null,
         "revision_policy": null,
         "contract_required": true,
-        "freelancer_currency": "SAR"
+        "freelancer_currency": "SAR",
+        "currency": "SAR"
       },
       {
-        "id": "f99b33c5-b2c2-4f91-a634-33ba02a569ac",
-        "user_id": "c0f7bd73-a399-4249-8720-4656a73f402d",
-        "name": "Stylus Media العلامة ااتجارية",
-        "brief": "بناء العلامة التجارية لشركة Stylus المتخصصة في صناعة المحتوى الرقمي المرئي، بهدف سرد قصص الآخرين بصريًا.",
-        "created_at": "2025-07-30T10:36:41.035647+00:00",
-        "updated_at": "2025-07-31T15:13:32.966+00:00",
-        "client_access_token": "456df336-ebf2-4a5f-93b3-3213d168a452",
-        "client_email": "info@stylus-media.com",
-        "start_date": "2025-07-30",
-        "end_date": "2025-08-31",
-        "slug": "stylus-media",
-        "client_id": "0cce7e15-fa1a-4e56-a5ad-037aea975e99",
-        "payment_proof_required": false,
-        "contract_status": "approved",
+        "id": "a7608014-0120-48b0-97f5-b8e2c2da33d0",
+        "user_id": "0cda2abe-1c38-41c9-9bd2-b318740c4ddd",
+        "name": "Osama Khalilaaaa",
+        "brief": "aaaaaaaaaaaaaa",
+        "created_at": "2025-09-07T18:39:42.183853+00:00",
+        "updated_at": "2025-09-07T18:39:42.183853+00:00",
+        "client_access_token": "3935bc35-c99e-44ef-b608-5c3c807f0e99",
+        "client_email": null,
+        "start_date": "2025-09-07",
+        "end_date": "2025-09-26",
+        "slug": "osama-khalilaaaa",
+        "client_id": null,
+        "payment_proof_required": true,
+        "contract_status": null,
         "contract_sent_at": null,
-        "contract_approved_at": "2025-07-31T15:13:32.967+00:00",
+        "contract_approved_at": null,
         "contract_rejection_reason": null,
-        "contract_approval_token": "9bd92125-bd8f-436e-94bf-18c6b0836d5b",
+        "contract_approval_token": "693ef5bf-d395-4a0d-8b59-1331cbadee6f",
         "contract_terms": null,
         "payment_terms": null,
         "project_scope": null,
         "revision_policy": null,
-        "contract_required": true,
-        "freelancer_currency": "SAR"
+        "contract_required": false,
+        "freelancer_currency": "USD",
+        "currency": "USD"
       }
     ],
     "milestones": [
@@ -263,6 +266,14 @@
     ],
     "clients": [
       {
+        "id": "4b50e893-2fe0-4337-9564-347abca5f5c0",
+        "user_id": "56295006-8ddf-43f1-bea1-45ac3474f944",
+        "name": "Osama Khalil",
+        "email": "osamah96@gmail.com",
+        "created_at": "2025-09-07T16:12:12.80579+00:00",
+        "updated_at": "2025-09-07T16:12:12.80579+00:00"
+      },
+      {
         "id": "b2c8624a-5847-4c37-9801-3a7de61db6e7",
         "user_id": "9f90dfda-3c91-449c-989f-cb98ce13f2d9",
         "name": "Mohammad",
@@ -277,14 +288,6 @@
         "email": "abbas.ai90@gmail.com",
         "created_at": "2025-06-30T11:50:52.414786+00:00",
         "updated_at": "2025-06-30T11:50:52.414786+00:00"
-      },
-      {
-        "id": "65ea2d73-60ee-4530-a27c-0c52e9931fed",
-        "user_id": "f7e4c0fe-5cbd-491e-895a-3f6913ca10c1",
-        "name": "Osama",
-        "email": "osamah96@gmail.com",
-        "created_at": "2025-07-12T06:43:58.988489+00:00",
-        "updated_at": "2025-07-12T06:43:58.988489+00:00"
       }
     ],
     "invoices": [
@@ -408,6 +411,18 @@
     ],
     "freelancer_branding": [
       {
+        "id": "2f3ca27c-1f20-42d0-85ef-02b366973559",
+        "user_id": "0cda2abe-1c38-41c9-9bd2-b318740c4ddd",
+        "logo_url": "",
+        "primary_color": "#1d3981",
+        "secondary_color": "#1D3770",
+        "freelancer_name": "L'Oud UG",
+        "freelancer_title": "aaaaaaaa",
+        "freelancer_bio": "aaaaaaaa",
+        "created_at": "2025-09-07T18:52:27.670252+00:00",
+        "updated_at": "2025-09-07T18:52:54.926+00:00"
+      },
+      {
         "id": "f67876dd-a376-4c9a-8cf0-b6bdcb50e86c",
         "user_id": "c0f7bd73-a399-4249-8720-4656a73f402d",
         "logo_url": "",
@@ -420,28 +435,16 @@
         "updated_at": "2025-08-03T18:32:30.674+00:00"
       },
       {
-        "id": "2fc7c127-fe18-465b-bc61-dd413eff8357",
-        "user_id": "b7cb52a6-ba10-461e-8ff3-9cd392722a0f",
-        "logo_url": "https://***REMOVED***.supabase.co/storage/v1/object/public/branding-logos/b7cb52a6-ba10-461e-8ff3-9cd392722a0f/1754299507047_Untitled-3.png",
-        "primary_color": "#E8CBA5",
+        "id": "5a82e736-8986-4c0f-b777-66ad476032a8",
+        "user_id": "56295006-8ddf-43f1-bea1-45ac3474f944",
+        "logo_url": "https://***REMOVED***.supabase.co/storage/v1/object/public/branding-logos/56295006-8ddf-43f1-bea1-45ac3474f944/1757261649489_my-notion-face-portrait.png",
+        "primary_color": "#194dd2",
         "secondary_color": "#1D3770",
-        "freelancer_name": "عبد الرحمن جمال الجارية",
-        "freelancer_title": "مصمم موشن جرافيك",
-        "freelancer_bio": "أنا عبد الرحمن مصمم محترف في مجال إنتاج الفيديوهات الإبداعية\nصممت أكتر من 500 فيديو في المجالات التالية \nموشن جرافيك\nمونتاج \nوايت بورد أنيميشن",
-        "created_at": "2025-08-04T09:24:58.271344+00:00",
-        "updated_at": "2025-08-04T09:34:03.777+00:00"
-      },
-      {
-        "id": "3941d500-aa87-43df-9cfc-532cf51337c2",
-        "user_id": "758818b8-237c-49bd-a0c8-16f5b0c7611f",
-        "logo_url": "",
-        "primary_color": "#2258e2",
-        "secondary_color": "#1D3770",
-        "freelancer_name": "Raad Kloob",
-        "freelancer_title": "",
-        "freelancer_bio": "",
-        "created_at": "2025-08-11T18:15:45.092332+00:00",
-        "updated_at": "2025-08-11T18:15:44.813+00:00"
+        "freelancer_name": "Ftoor Designer فطور ديزاينر",
+        "freelancer_title": "graphic designer",
+        "freelancer_bio": "playing game to design",
+        "created_at": "2025-09-07T16:14:22.161791+00:00",
+        "updated_at": "2025-09-09T07:51:07.674+00:00"
       }
     ],
     "user_plan_limits": [
@@ -487,7 +490,7 @@
           "metadata": null
         },
         {
-          "name": "3c286abe-9ceb-4b24-b768-90e4b52cfa6e",
+          "name": "1f77181b-c219-481a-a67d-9db851b0a919",
           "id": null,
           "updated_at": null,
           "created_at": null,
@@ -495,7 +498,7 @@
           "metadata": null
         },
         {
-          "name": "67b7803e-b6cd-4fef-9579-6abdcacf5635",
+          "name": "3c286abe-9ceb-4b24-b768-90e4b52cfa6e",
           "id": null,
           "updated_at": null,
           "created_at": null,
@@ -578,7 +581,7 @@
       "id": "profile-pictures",
       "name": "profile-pictures",
       "public": true,
-      "file_count": 9,
+      "file_count": 10,
       "sample_files": [
         {
           "name": "0f34b55c-4e5c-428a-9f92-d5e413523069",
@@ -589,7 +592,7 @@
           "metadata": null
         },
         {
-          "name": "67b7803e-b6cd-4fef-9579-6abdcacf5635",
+          "name": "1f77181b-c219-481a-a67d-9db851b0a919",
           "id": null,
           "updated_at": null,
           "created_at": null,
@@ -597,7 +600,7 @@
           "metadata": null
         },
         {
-          "name": "77fd7928-97bb-4d1b-883c-453906977479",
+          "name": "67b7803e-b6cd-4fef-9579-6abdcacf5635",
           "id": null,
           "updated_at": null,
           "created_at": null,
@@ -612,8 +615,8 @@
   "auth_users_count": 0,
   "summary": {
     "existing_tables": 12,
-    "total_application_rows": 103,
+    "total_application_rows": 120,
     "storage_buckets": 4,
-    "analysis_timestamp": "2025-09-03T19:44:56.966Z"
+    "analysis_timestamp": "2025-09-09T11:13:03.366Z"
   }
 }

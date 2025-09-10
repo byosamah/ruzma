@@ -74,7 +74,7 @@ const Projects = () => {
               <p className="text-sm text-gray-500">
                 {!projects.length 
                   ? t('noProjectsYet') 
-                  : `${projects.length} ${projects.length === 1 ? 'project' : 'projects'}`
+                  : `${projects.length} ${projects.length === 1 ? t('project') : t('projects')}`
                 }
               </p>
             </div>
@@ -121,6 +121,7 @@ const Projects = () => {
                   onEditClick={() => handleEditProjectCard(project.slug)}
                   onDeleteClick={() => handleDeleteProjectCard(project.id)}
                   currency={userCurrency.currency}
+                  convertFrom={project.currency || project.freelancer_currency}
                   isVerticalLayout={true}
                 />
               </div>

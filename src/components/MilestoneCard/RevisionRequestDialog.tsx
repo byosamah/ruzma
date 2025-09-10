@@ -84,7 +84,7 @@ const RevisionRequestDialog = ({
 
   const handleSubmit = async () => {
     if (!feedback.trim()) {
-      toast.error('Please provide feedback for the revision');
+      toast.error(t('pleaseProvideFeedbackRevision'));
       return;
     }
 
@@ -108,10 +108,10 @@ const RevisionRequestDialog = ({
       setImages([]);
       onClose();
       
-      toast.success('Revision request sent successfully');
+      toast.success(t('revisionRequestSentSuccessfully'));
     } catch (error) {
       // Error submitting revision request handled by UI
-      toast.error('Failed to submit revision request');
+      toast.error(t('pleaseProvideFeedbackRevision'));
     } finally {
       setUploading(false);
     }
@@ -123,26 +123,26 @@ const RevisionRequestDialog = ({
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <Send className="w-5 h-5 text-primary" />
-            Request Revision - {milestoneTitle}
+            {t('requestRevisionTitle')} - {milestoneTitle}
           </DialogTitle>
-          <DialogDescription>Provide feedback and request changes to this milestone</DialogDescription>
+          <DialogDescription>{t('provideFeedbackRequestChanges')}</DialogDescription>
         </DialogHeader>
 
         <div className="space-y-6">
           {/* Revision Counter */}
           <div className="bg-muted/50 rounded-lg p-4">
             <div className="flex items-center justify-between">
-              <span className="text-sm font-medium">Revisions Available</span>
+              <span className="text-sm font-medium">{t('revisionsAvailable')}</span>
               <span className="text-sm">
                 {remainingRevisions === null 
-                  ? 'Unlimited' 
-                  : `${remainingRevisions} remaining`
+                  ? t('unlimited') 
+                  : `${remainingRevisions} ${t('remaining')}`
                 }
               </span>
             </div>
             {!canRequest && (
               <p className="text-sm text-destructive mt-2">
-                You have reached the maximum number of revisions for this milestone.
+                {t('maxRevisionsReachedMessage')}
               </p>
             )}
           </div>
@@ -150,10 +150,10 @@ const RevisionRequestDialog = ({
           {/* Feedback Textarea */}
           <div className="space-y-2">
             <label className="text-sm font-medium">
-              Revision Feedback <span className="text-destructive">*</span>
+              {t('revisionFeedback')} <span className="text-destructive">*</span>
             </label>
             <Textarea
-              placeholder="Please describe what changes you'd like to see..."
+              placeholder={t('revisionFeedbackPlaceholder')}
               value={feedback}
               onChange={(e) => setFeedback(e.target.value)}
               rows={6}
@@ -164,7 +164,7 @@ const RevisionRequestDialog = ({
 
           {/* Image Upload */}
           <div className="space-y-3">
-            <label className="text-sm font-medium">Attach Reference Images (Optional)</label>
+            <label className="text-sm font-medium">{t('attachReferenceImagesOptional')}</label>
             
             {/* Upload Button */}
             <div className="flex items-center gap-3">
@@ -176,10 +176,10 @@ const RevisionRequestDialog = ({
                 className="gap-2"
               >
                 <Upload className="w-4 h-4" />
-                Upload Images
+                {t('uploadImages')}
               </Button>
               <span className="text-xs text-muted-foreground">
-                Max 5 images, 10MB each
+                {t('maxImagesSize')}
               </span>
             </div>
 
@@ -231,7 +231,7 @@ const RevisionRequestDialog = ({
               onClick={onClose}
               disabled={uploading}
             >
-              Cancel
+              {t('cancel')}
             </Button>
             <Button
               type="button"
@@ -242,12 +242,12 @@ const RevisionRequestDialog = ({
               {uploading ? (
                 <>
                   <div className="w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin" />
-                  Sending...
+                  {t('sending')}
                 </>
               ) : (
                 <>
                   <Send className="w-4 h-4" />
-                  Send Revision Request
+                  {t('sendRevisionRequest')}
                 </>
               )}
             </Button>

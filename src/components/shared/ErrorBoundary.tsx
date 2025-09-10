@@ -3,6 +3,23 @@ import { AlertTriangle, RefreshCw, Home, Bug } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import {
+  CriticalErrorTitle,
+  ComponentErrorTitle,
+  ApplicationErrorAlertTitle,
+  ComponentErrorAlertTitle,
+  CriticalErrorDescription,
+  ComponentErrorDescription,
+  TryAgainText,
+  RefreshPageText,
+  GoHomeText,
+  ErrorDetailsText,
+  RetryAttemptText,
+  ErrorIdText,
+  ErrorText,
+  StackTraceText,
+  ComponentStackText
+} from './ErrorBoundaryText';
 
 interface ErrorBoundaryState {
   hasError: boolean;
@@ -150,6 +167,7 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
           body: JSON.stringify(errorReport),
         }).catch(() => {
           // Silently fail if error reporting fails
+          // Note: This is a hardcoded console message for development only
           console.warn('Failed to report error to monitoring service');
         });
       }
@@ -219,18 +237,18 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
       <details className="mt-4 p-4 bg-gray-50 dark:bg-gray-900 rounded-md">
         <summary className="cursor-pointer text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
           <Bug className="inline w-4 h-4 mr-2" />
-          Error Details (ID: {errorId})
+          <ErrorDetailsText errorId={errorId} />
         </summary>
         <div className="space-y-3 text-xs font-mono">
           <div>
-            <strong className="text-red-600 dark:text-red-400">Error:</strong>
+            <strong className="text-red-600 dark:text-red-400"><ErrorText /></strong>
             <pre className="mt-1 p-2 bg-red-50 dark:bg-red-950 text-red-800 dark:text-red-200 rounded overflow-x-auto">
               {error.message}
             </pre>
           </div>
           {error.stack && (
             <div>
-              <strong className="text-orange-600 dark:text-orange-400">Stack Trace:</strong>
+              <strong className="text-orange-600 dark:text-orange-400"><StackTraceText /></strong>
               <pre className="mt-1 p-2 bg-orange-50 dark:bg-orange-950 text-orange-800 dark:text-orange-200 rounded overflow-x-auto max-h-32">
                 {error.stack}
               </pre>
@@ -238,7 +256,7 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
           )}
           {errorInfo?.componentStack && (
             <div>
-              <strong className="text-blue-600 dark:text-blue-400">Component Stack:</strong>
+              <strong className="text-blue-600 dark:text-blue-400"><ComponentStackText /></strong>
               <pre className="mt-1 p-2 bg-blue-50 dark:bg-blue-950 text-blue-800 dark:text-blue-200 rounded overflow-x-auto max-h-32">
                 {errorInfo.componentStack}
               </pre>
@@ -265,27 +283,24 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
         <CardHeader>
           <CardTitle className="flex items-center gap-2 text-destructive">
             <AlertTriangle className="w-5 h-5" />
-            {isCritical ? 'Critical Error' : 'Something went wrong'}
+            {isCritical ? <CriticalErrorTitle /> : <ComponentErrorTitle />}
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
           <Alert variant="destructive">
             <AlertTriangle className="h-4 w-4" />
             <AlertTitle>
-              {isCritical ? 'Application Error' : 'Component Error'}
+              {isCritical ? <ApplicationErrorAlertTitle /> : <ComponentErrorAlertTitle />}
             </AlertTitle>
             <AlertDescription>
-              {isCritical 
-                ? 'A critical error has occurred. Please refresh the page or contact support if the problem persists.'
-                : 'This component encountered an unexpected error. You can try refreshing or return to the home page.'
-              }
+              {isCritical ? <CriticalErrorDescription /> : <ComponentErrorDescription />}
             </AlertDescription>
           </Alert>
 
           {retryCount > 0 && (
             <Alert>
               <AlertDescription>
-                Retry attempt {retryCount} of {maxRetries}
+                <RetryAttemptText retryCount={retryCount} maxRetries={maxRetries} />
               </AlertDescription>
             </Alert>
           )}
@@ -299,7 +314,7 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
                 className="flex items-center gap-2"
               >
                 <RefreshCw className="w-4 h-4" />
-                Try Again
+                <TryAgainText />
               </Button>
             )}
             
@@ -310,7 +325,7 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
               className="flex items-center gap-2"
             >
               <RefreshCw className="w-4 h-4" />
-              Refresh Page
+              <RefreshPageText />
             </Button>
 
             <Button
@@ -320,14 +335,14 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
               className="flex items-center gap-2"
             >
               <Home className="w-4 h-4" />
-              Go Home
+              <GoHomeText />
             </Button>
           </div>
 
           {this.renderErrorDetails()}
 
           <div className="text-xs text-muted-foreground">
-            Error ID: {errorId}
+            <ErrorIdText errorId={errorId} />
           </div>
         </CardContent>
       </Card>

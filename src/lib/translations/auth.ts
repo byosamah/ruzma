@@ -78,6 +78,7 @@ export const authTranslations = {
     googleSignupError: "Failed to sign up with Google. Please try again.",
     googleSigninError: "Failed to sign in with Google. Please try again.",
     googleUnexpectedError: "Something went wrong. Please try again.",
+    or: "or",
   },
   ar: {
     login: "تسجيل الدخول",
@@ -157,5 +158,6 @@ export const authTranslations = {
     googleSignupError: "فشل في إنشاء الحساب باستخدام جوجل. يرجى المحاولة مرة أخرى.",
     googleSigninError: "فشل في تسجيل الدخول باستخدام جوجل. يرجى المحاولة مرة أخرى.",
     googleUnexpectedError: "حدث خطأ ما. يرجى المحاولة مرة أخرى.",
+    or: "أو",
   },
 };

@@ -8,6 +8,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import { DatabaseProject } from '@/hooks/projectTypes';
 import { formatCurrency } from '@/lib/currency';
+import { useT } from '@/lib/i18n';
 
 interface ContractApprovalModalProps {
   isOpen: boolean;
@@ -24,16 +25,17 @@ function ContractApprovalModal({
   onApprovalComplete,
   onRejectionComplete
 }: ContractApprovalModalProps) {
+  const t = useT();
   const [submitting, setSubmitting] = useState(false);
   const [rejectionReason, setRejectionReason] = useState('');
   const [showRejectionForm, setShowRejectionForm] = useState(false);
 
   const totalValue = project.milestones.reduce((sum, milestone) => sum + Number(milestone.price), 0);
-  const freelancerName = 'Freelancer'; // We'll get this from the project data if available
+  const freelancerName = t('freelancer'); // We'll get this from the project data if available
 
   const handleApproval = async (action: 'approve' | 'reject') => {
     if (action === 'reject' && !rejectionReason.trim()) {
-      toast.error('Please provide a reason for rejection');
+      toast.error(t('pleaseProvideRejectionReason'));
       return;
     }
 
@@ -53,17 +55,17 @@ function ContractApprovalModal({
       }
 
       if (action === 'approve') {
-        toast.success('Contract approved successfully! You now have access to the project.');
+        toast.success(t('contractApprovedSuccess'));
         onApprovalComplete();
         onClose();
       } else {
-        toast.success('Feedback sent to freelancer successfully');
+        toast.success(t('feedbackSentSuccess'));
         onRejectionComplete();
       }
       
     } catch (error: Error | unknown) {
       // Error processing contract handled by UI
-      toast.error(error instanceof Error ? error.message : 'Failed to process contract approval');
+      toast.error(error instanceof Error ? error.message : t('failedToProcessContract'));
     } finally {
       setSubmitting(false);
     }
@@ -82,14 +84,14 @@ function ContractApprovalModal({
           <div className="text-center space-y-2">
             <span className="text-4xl">📋</span>
             <Badge variant="outline" className="text-orange-600 border-orange-200 bg-orange-50">
-              Pending Approval
+              {t('pendingApproval')}
             </Badge>
           </div>
           <DialogTitle className="text-xl sm:text-2xl font-medium text-gray-900 text-center">
-            Project Contract Review
+            {t('projectContractReview')}
           </DialogTitle>
           <DialogDescription className="text-sm text-gray-500 text-center max-w-md mx-auto">
-            {freelancerName} has submitted a project proposal for your review and approval.
+            {freelancerName} {t('freelancerSubmittedProposal')}
           </DialogDescription>
         </DialogHeader>
 
@@ -99,7 +101,7 @@ function ContractApprovalModal({
             <CardHeader className="pb-3">
               <div className="flex items-center space-x-2">
                 <span className="text-lg">💼</span>
-                <CardTitle className="text-base font-medium text-gray-900">Project Details</CardTitle>
+                <CardTitle className="text-base font-medium text-gray-900">{t('projectDetails')}</CardTitle>
               </div>
             </CardHeader>
             <CardContent className="space-y-4">
@@ -113,7 +115,7 @@ function ContractApprovalModal({
                 <div className="flex items-center space-x-3">
                   <span className="text-lg">💰</span>
                   <div>
-                    <p className="text-xs text-gray-500">Total Value</p>
+                    <p className="text-xs text-gray-500">{t('totalValue')}</p>
                     <p className="text-sm font-medium text-gray-900">
                       {formatCurrency(totalValue, 'USD')}
                     </p>
@@ -124,7 +126,7 @@ function ContractApprovalModal({
                   <div className="flex items-center space-x-3">
                     <span className="text-lg">📅</span>
                     <div>
-                      <p className="text-xs text-gray-500">Start Date</p>
+                      <p className="text-xs text-gray-500">{t('startDate')}</p>
                       <p className="text-sm font-medium text-gray-900">
                         {new Date(project.start_date).toLocaleDateString()}
                       </p>
@@ -136,7 +138,7 @@ function ContractApprovalModal({
                   <div className="flex items-center space-x-3">
                     <span className="text-lg">🎯</span>
                     <div>
-                      <p className="text-xs text-gray-500">End Date</p>
+                      <p className="text-xs text-gray-500">{t('endDate')}</p>
                       <p className="text-sm font-medium text-gray-900">
                         {new Date(project.end_date).toLocaleDateString()}
                       </p>
@@ -153,14 +155,14 @@ function ContractApprovalModal({
               <div className="flex items-center justify-between">
                 <div className="flex items-center space-x-2">
                   <span className="text-lg">📊</span>
-                  <CardTitle className="text-base font-medium text-gray-900">Project Milestones</CardTitle>
+                  <CardTitle className="text-base font-medium text-gray-900">{t('projectMilestones')}</CardTitle>
                 </div>
                 <Badge variant="secondary" className="text-xs">
-                  {project.milestones.length} milestones
+                  {project.milestones.length} {t('milestones')}
                 </Badge>
               </div>
               <CardDescription className="text-xs text-gray-500">
-                Review the project breakdown and deliverables
+                {t('reviewProjectBreakdown')}
               </CardDescription>
             </CardHeader>
             <CardContent>
@@ -176,10 +178,10 @@ function ContractApprovalModal({
                           {(milestone.start_date || milestone.end_date) && (
                             <div className="flex items-center gap-3 text-xs text-gray-400">
                               {milestone.start_date && (
-                                <span>From: {new Date(milestone.start_date).toLocaleDateString()}</span>
+                                <span>{t('from')} {new Date(milestone.start_date).toLocaleDateString()}</span>
                               )}
                               {milestone.end_date && (
-                                <span>To: {new Date(milestone.end_date).toLocaleDateString()}</span>
+                                <span>{t('to')} {new Date(milestone.end_date).toLocaleDateString()}</span>
                               )}
                             </div>
                           )}
@@ -200,10 +202,10 @@ function ContractApprovalModal({
             <CardHeader className="pb-3">
               <div className="flex items-center space-x-2">
                 <span className="text-lg">📄</span>
-                <CardTitle className="text-base font-medium text-gray-900">Contract Terms & Conditions</CardTitle>
+                <CardTitle className="text-base font-medium text-gray-900">{t('contractTermsConditions')}</CardTitle>
               </div>
               <CardDescription className="text-xs text-gray-500">
-                Review the detailed terms and conditions for this project
+                {t('reviewDetailedTerms')}
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
@@ -211,40 +213,40 @@ function ContractApprovalModal({
                 <div className="bg-white rounded-lg p-4">
                   <div className="flex items-center space-x-2 mb-3">
                     <span className="text-sm">📋</span>
-                    <h4 className="text-sm font-medium text-gray-900">General Terms</h4>
+                    <h4 className="text-sm font-medium text-gray-900">{t('generalTerms')}</h4>
                   </div>
                   <div className="text-xs text-gray-600 leading-relaxed">
-                    {project.contract_terms || "Not specified"}
+                    {project.contract_terms || t('notSpecified')}
                   </div>
                 </div>
                 
                 <div className="bg-white rounded-lg p-4">
                   <div className="flex items-center space-x-2 mb-3">
                     <span className="text-sm">💳</span>
-                    <h4 className="text-sm font-medium text-gray-900">Payment Terms</h4>
+                    <h4 className="text-sm font-medium text-gray-900">{t('paymentTerms')}</h4>
                   </div>
                   <div className="text-xs text-gray-600 leading-relaxed">
-                    {project.payment_terms || "Not specified"}
+                    {project.payment_terms || t('notSpecified')}
                   </div>
                 </div>
                 
                 <div className="bg-white rounded-lg p-4">
                   <div className="flex items-center space-x-2 mb-3">
                     <span className="text-sm">🎯</span>
-                    <h4 className="text-sm font-medium text-gray-900">Project Scope</h4>
+                    <h4 className="text-sm font-medium text-gray-900">{t('projectScope')}</h4>
                   </div>
                   <div className="text-xs text-gray-600 leading-relaxed">
-                    {project.project_scope || "Not specified"}
+                    {project.project_scope || t('notSpecified')}
                   </div>
                 </div>
                 
                 <div className="bg-white rounded-lg p-4">
                   <div className="flex items-center space-x-2 mb-3">
                     <span className="text-sm">🔄</span>
-                    <h4 className="text-sm font-medium text-gray-900">Revision Policy</h4>
+                    <h4 className="text-sm font-medium text-gray-900">{t('revisionPolicy')}</h4>
                   </div>
                   <div className="text-xs text-gray-600 leading-relaxed">
-                    {project.revision_policy || "Not specified"}
+                    {project.revision_policy || t('notSpecified')}
                   </div>
                 </div>
               </div>
@@ -257,10 +259,10 @@ function ContractApprovalModal({
               <CardHeader className="pb-3">
                 <div className="flex items-center space-x-2">
                   <span className="text-lg">✅</span>
-                  <CardTitle className="text-base font-medium text-gray-900">Contract Decision</CardTitle>
+                  <CardTitle className="text-base font-medium text-gray-900">{t('contractDecision')}</CardTitle>
                 </div>
                 <CardDescription className="text-xs text-gray-500">
-                  Please review the project details above and make your decision
+                  {t('reviewProjectDecision')}
                 </CardDescription>
               </CardHeader>
               <CardContent>
@@ -272,7 +274,7 @@ function ContractApprovalModal({
                     size="lg"
                   >
                     <span className="text-sm mr-2">✅</span>
-                    Approve Contract
+                    {t('approveContract')}
                   </Button>
                   <Button 
                     variant="outline" 
@@ -282,7 +284,7 @@ function ContractApprovalModal({
                     size="lg"
                   >
                     <span className="text-sm mr-2">📝</span>
-                    Request Changes
+                    {t('requestChanges')}
                   </Button>
                 </div>
               </CardContent>
@@ -292,15 +294,15 @@ function ContractApprovalModal({
               <CardHeader className="pb-3">
                 <div className="flex items-center space-x-2">
                   <span className="text-lg">📝</span>
-                  <CardTitle className="text-base font-medium text-gray-900">Request Changes</CardTitle>
+                  <CardTitle className="text-base font-medium text-gray-900">{t('requestChanges')}</CardTitle>
                 </div>
                 <CardDescription className="text-xs text-gray-500">
-                  Please provide feedback on what needs to be changed
+                  {t('provideChangeFeedback')}
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
                 <Textarea
-                  placeholder="Please explain what changes you'd like to see in the project proposal..."
+                  placeholder={t('explainChangesPlaceholder')}
                   value={rejectionReason}
                   onChange={(e) => setRejectionReason(e.target.value)}
                   rows={4}
@@ -313,7 +315,7 @@ function ContractApprovalModal({
                     className="flex-1 bg-orange-600 hover:bg-orange-700 text-white font-medium border-0 shadow-none"
                   >
                     <span className="text-sm mr-2">📤</span>
-                    Send Feedback
+                    {t('sendFeedback')}
                   </Button>
                   <Button 
                     variant="outline" 
@@ -325,7 +327,7 @@ function ContractApprovalModal({
                     className="flex-1 border-gray-300 bg-white text-gray-900 hover:bg-gray-50"
                   >
                     <span className="text-sm mr-2">❌</span>
-                    Cancel
+                    {t('cancel')}
                   </Button>
                 </div>
               </CardContent>

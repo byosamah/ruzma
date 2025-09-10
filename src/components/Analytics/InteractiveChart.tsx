@@ -1,5 +1,6 @@
 import { memo, useState, useCallback } from "react";
 import { formatCurrency } from "@/lib/currency";
+import { useT } from '@/lib/i18n';
 
 interface ChartDataPoint {
   value: number;
@@ -31,6 +32,7 @@ function InteractiveChart({
   animated = true,
   gradientFill = false
 }: InteractiveChartProps) {
+  const t = useT();
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
   const [tooltipPosition, setTooltipPosition] = useState<{x: number, y: number} | null>(null);
 
@@ -55,7 +57,7 @@ function InteractiveChart({
       <div className={`flex items-center justify-center text-gray-400 ${className}`} style={{ width, height }}>
         <div className="text-center">
           <div className="text-2xl mb-2">📊</div>
-          <div className="text-sm">No data available</div>
+          <div className="text-sm">{t('noDataAvailable')}</div>
         </div>
       </div>
     );

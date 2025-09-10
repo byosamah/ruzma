@@ -1,5 +1,21 @@
 import { z } from 'zod';
+import { useValidationMessages } from './i18n';
 
+// Create a factory function for login schema that uses current language
+export const createLoginSchema = () => {
+  const messages = useValidationMessages();
+  
+  return z.object({
+    email: z.string()
+      .min(1, messages.required)
+      .email(messages.invalidEmail),
+    password: z.string()
+      .min(1, messages.required)
+      .min(6, messages.passwordMinLength),
+  });
+};
+
+// Backward compatibility export
 export const loginSchema = z.object({
   email: z.string()
     .min(1, 'Email is required')
@@ -9,6 +25,77 @@ export const loginSchema = z.object({
     .min(6, 'Password must be at least 6 characters'),
 });
 
+export const createSignUpSchema = () => {
+  const messages = useValidationMessages();
+  
+  return z.object({
+    name: z.string()
+      .min(1, messages.fullNameRequired)
+      .max(100, messages.nameMaxLength)
+      .trim(),
+    email: z.string()
+      .min(1, messages.required)
+      .email(messages.invalidEmail)
+      .trim()
+      .toLowerCase(),
+    country: z.string()
+      .min(1, messages.selectCountry),
+    password: z.string()
+      .min(6, messages.passwordMinLength)
+      .regex(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/, messages.passwordRequirements),
+    confirmPassword: z.string()
+      .min(1, messages.confirmPasswordRequired),
+  }).refine((data) => data.password === data.confirmPassword, {
+    message: messages.passwordsNoMatch,
+    path: ['confirmPassword'],
+  });
+};
+
+export const createChangePasswordSchema = () => {
+  const messages = useValidationMessages();
+  
+  return z.object({
+    currentPassword: z.string()
+      .min(1, messages.currentPasswordRequired),
+    newPassword: z.string()
+      .min(6, messages.passwordMinLength)
+      .regex(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/, messages.passwordRequirements),
+    confirmNewPassword: z.string()
+      .min(1, messages.confirmNewPasswordRequired),
+  }).refine((data) => data.newPassword === data.confirmNewPassword, {
+    message: messages.passwordsNoMatch,
+    path: ['confirmNewPassword'],
+  });
+};
+
+export const createForgotPasswordSchema = () => {
+  const messages = useValidationMessages();
+  
+  return z.object({
+    email: z.string()
+      .min(1, messages.required)
+      .email(messages.invalidEmail)
+      .trim()
+      .toLowerCase(),
+  });
+};
+
+export const createResetPasswordSchema = () => {
+  const messages = useValidationMessages();
+  
+  return z.object({
+    password: z.string()
+      .min(6, messages.passwordMinLength)
+      .regex(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/, messages.passwordRequirements),
+    confirmPassword: z.string()
+      .min(1, messages.confirmPasswordRequired),
+  }).refine((data) => data.password === data.confirmPassword, {
+    message: messages.passwordsNoMatch,
+    path: ['confirmPassword'],
+  });
+};
+
+// Backward compatibility export
 export const signUpSchema = z.object({
   name: z.string()
     .min(1, 'Full name is required')

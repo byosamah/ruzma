@@ -67,13 +67,13 @@ const Analytics = () => {
 
         {/* Revenue Overview */}
         <section aria-label="Revenue overview">
-          <h2 className="text-lg sm:text-xl font-medium text-gray-900 mb-3 sm:mb-4">📈 Revenue Overview</h2>
+          <h2 className="text-lg sm:text-xl font-medium text-gray-900 mb-3 sm:mb-4">📈 {t('revenueOverview')}</h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-3 sm:gap-4">
             <SimpleAnalyticsCard
               emoji="💰"
-              title="This Month"
+              title={t('thisMonth')}
               value={analytics.revenue.thisMonth}
-              subtitle="Current month earnings"
+              subtitle={t('currentMonthEarnings')}
               trend={analytics.revenue.trend}
               chart={{
                 data: analytics.revenue.chartData,
@@ -83,34 +83,34 @@ const Analytics = () => {
             />
             <SimpleAnalyticsCard
               emoji="📅"
-              title="Last Month"
+              title={t('lastMonth')}
               value={analytics.revenue.lastMonth}
-              subtitle="Previous month"
+              subtitle={t('previousMonth')}
             />
             <SimpleAnalyticsCard
               emoji="📊"
-              title="Average Project"
+              title={t('averageProject')}
               value={analytics.revenue.averageProject}
-              subtitle="Per project value"
+              subtitle={t('perProjectValue')}
             />
             <SimpleAnalyticsCard
               emoji="⚡"
-              title="Collection Speed"
+              title={t('collectionSpeed')}
               value={analytics.revenue.collectionSpeed}
-              subtitle="Average payment time"
+              subtitle={t('averagePaymentTime')}
             />
           </div>
         </section>
 
         {/* Time & Productivity */}
         <section aria-label="Time and productivity">
-          <h2 className="text-lg sm:text-xl font-medium text-gray-900 mb-3 sm:mb-4">⏱️ Time & Productivity</h2>
+          <h2 className="text-lg sm:text-xl font-medium text-gray-900 mb-3 sm:mb-4">⏱️ {t('timeAndProductivity')}</h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-3 sm:gap-4">
             <SimpleAnalyticsCard
               emoji="📈"
-              title="Avg Duration"
+              title={t('avgDuration')}
               value={analytics.time.averageProjectDuration}
-              subtitle="Per project"
+              subtitle={t('perProject')}
               chart={{
                 data: analytics.time.durationTrend,
                 type: 'bar',
@@ -119,34 +119,34 @@ const Analytics = () => {
             />
             <SimpleAnalyticsCard
               emoji="🔄"
-              title="Active Projects"
+              title={t('activeProjects')}
               value={analytics.time.activeProjectsTime}
-              subtitle="Currently working on"
+              subtitle={t('currentlyWorkingOn')}
             />
             <SimpleAnalyticsCard
               emoji="🚀"
-              title="Fastest Project"
+              title={t('fastestProject')}
               value={analytics.time.fastestProject}
-              subtitle="Record completion"
+              subtitle={t('recordCompletion')}
             />
             <SimpleAnalyticsCard
               emoji="⏰"
-              title="This Month"
+              title={t('thisMonth')}
               value={analytics.time.currentMonthHours}
-              subtitle="Estimated hours"
+              subtitle={t('estimatedHours')}
             />
           </div>
         </section>
 
         {/* Client Insights */}
         <section aria-label="Client insights">
-          <h2 className="text-lg sm:text-xl font-medium text-gray-900 mb-3 sm:mb-4">👥 Client Insights</h2>
+          <h2 className="text-lg sm:text-xl font-medium text-gray-900 mb-3 sm:mb-4">👥 {t('clientInsights')}</h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-3 sm:gap-4">
             <SimpleAnalyticsCard
               emoji="👤"
-              title="Total Clients"
+              title={t('totalClients')}
               value={analytics.clients.totalClients}
-              subtitle="All time"
+              subtitle={t('allTime')}
               chart={{
                 data: analytics.clients.growthTrend,
                 type: 'line',
@@ -155,34 +155,34 @@ const Analytics = () => {
             />
             <SimpleAnalyticsCard
               emoji="🔄"
-              title="Repeat Clients"
+              title={t('repeatClients')}
               value={analytics.clients.repeatClients}
-              subtitle="Return customers"
+              subtitle={t('returnCustomers')}
             />
             <SimpleAnalyticsCard
               emoji="⭐"
-              title="Best Client"
+              title={t('bestClient')}
               value={analytics.clients.bestClient}
-              subtitle="Highest revenue"
+              subtitle={t('highestRevenue')}
             />
             <SimpleAnalyticsCard
               emoji="✨"
-              title="New This Month"
+              title={t('newThisMonth')}
               value={analytics.clients.newClientsThisMonth}
-              subtitle="Fresh clients"
+              subtitle={t('freshClients')}
             />
           </div>
         </section>
 
         {/* Performance Metrics */}
         <section aria-label="Performance metrics">
-          <h2 className="text-lg sm:text-xl font-medium text-gray-900 mb-3 sm:mb-4">🎯 Performance Metrics</h2>
+          <h2 className="text-lg sm:text-xl font-medium text-gray-900 mb-3 sm:mb-4">🎯 {t('performanceMetrics')}</h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-3 sm:gap-4">
             <SimpleAnalyticsCard
               emoji="✅"
-              title="Success Rate"
+              title={t('successRate')}
               value={analytics.performance.successRate}
-              subtitle="Completed milestones"
+              subtitle={t('completedMilestones')}
               chart={{
                 data: analytics.performance.successTrend,
                 type: 'line',
@@ -191,15 +191,15 @@ const Analytics = () => {
             />
             <SimpleAnalyticsCard
               emoji="⏰"
-              title="On-Time Delivery"
+              title={t('onTimeDelivery')}
               value={analytics.performance.onTimeDelivery}
-              subtitle="Meeting deadlines"
+              subtitle={t('meetingDeadlines')}
             />
             <SimpleAnalyticsCard
               emoji="😊"
-              title="Client Satisfaction"
+              title={t('clientSatisfaction')}
               value={analytics.performance.clientSatisfaction}
-              subtitle="Estimated score"
+              subtitle={t('estimatedScore')}
               chart={{
                 data: [analytics.performance.satisfactionScore],
                 type: 'progress',
@@ -208,21 +208,21 @@ const Analytics = () => {
             />
             <SimpleAnalyticsCard
               emoji="📈"
-              title="Monthly Growth"
+              title={t('monthlyGrowth')}
               value={analytics.performance.monthlyGrowth}
-              subtitle="Revenue change"
+              subtitle={t('revenueChange')}
             />
           </div>
         </section>
 
         {/* Financial Analysis */}
         <section aria-label="Financial analysis">
-          <h2 className="text-lg sm:text-xl font-medium text-gray-900 mb-3 sm:mb-4">💰 Financial Analysis</h2>
+          <h2 className="text-lg sm:text-xl font-medium text-gray-900 mb-3 sm:mb-4">💰 {t('financialAnalysis')}</h2>
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
             <Card className="border-0 shadow-none bg-gray-50">
               <CardHeader className="pb-2">
                 <CardTitle className="text-base flex items-center gap-2">
-                  <span>📈</span> Cash Flow Trend
+                  <span>📈</span> {t('cashFlowTrend')}
                 </CardTitle>
               </CardHeader>
               <CardContent>
@@ -245,27 +245,27 @@ const Analytics = () => {
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
               <SimpleAnalyticsCard
                 emoji="💳"
-                title="Avg Invoice"
+                title={t('avgInvoice')}
                 value={analytics.financial.averageInvoiceValue}
-                subtitle="Per invoice value"
+                subtitle={t('perInvoiceValue')}
               />
               <SimpleAnalyticsCard
                 emoji="⚡"
-                title="Conversion Rate"
+                title={t('conversionRate')}
                 value={analytics.financial.conversionRate}
-                subtitle="Milestone approval"
+                subtitle={t('milestoneApproval')}
               />
               <SimpleAnalyticsCard
                 emoji="🎯"
-                title="Profit Margin"
+                title={t('profitMargin')}
                 value={analytics.financial.profitMargin}
-                subtitle="Estimated profit"
+                subtitle={t('estimatedProfit')}
               />
               <SimpleAnalyticsCard
                 emoji="⏰"
-                title="Pending Ratio"
+                title={t('pendingRatio')}
                 value={analytics.financial.overduePendingRatio}
-                subtitle="Pending milestones"
+                subtitle={t('pendingMilestones')}
               />
             </div>
           </div>
@@ -273,13 +273,13 @@ const Analytics = () => {
 
         {/* Detailed Charts Section */}
         <section aria-label="Detailed analytics charts">
-          <h2 className="text-lg sm:text-xl font-medium text-gray-900 mb-3 sm:mb-4">📊 Detailed Analytics</h2>
+          <h2 className="text-lg sm:text-xl font-medium text-gray-900 mb-3 sm:mb-4">📊 {t('detailedAnalytics')}</h2>
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
             {/* Top Clients Chart */}
             <Card className="border-0 shadow-none bg-gray-50">
               <CardHeader className="pb-2">
                 <CardTitle className="text-base flex items-center gap-2">
-                  <span>👥</span> Top Clients by Revenue
+                  <span>👥</span> {t('topClientsByRevenue')}
                 </CardTitle>
               </CardHeader>
               <CardContent>
@@ -303,7 +303,7 @@ const Analytics = () => {
             <Card className="border-0 shadow-none bg-gray-50">
               <CardHeader className="pb-2">
                 <CardTitle className="text-base flex items-center gap-2">
-                  <span>🎨</span> Project Types
+                  <span>🎨</span> {t('projectTypes')}
                 </CardTitle>
               </CardHeader>
               <CardContent>
@@ -329,7 +329,7 @@ const Analytics = () => {
             <Card className="border-0 shadow-none bg-gray-50">
               <CardHeader className="pb-2">
                 <CardTitle className="text-base flex items-center gap-2">
-                  <span>⭐</span> Quality Metrics
+                  <span>⭐</span> {t('qualityMetrics')}
                 </CardTitle>
               </CardHeader>
               <CardContent>
@@ -353,7 +353,7 @@ const Analytics = () => {
             <Card className="border-0 shadow-none bg-gray-50">
               <CardHeader className="pb-2">
                 <CardTitle className="text-base flex items-center gap-2">
-                  <span>⚖️</span> Workload Balance
+                  <span>⚖️</span> {t('workloadBalance')}
                 </CardTitle>
               </CardHeader>
               <CardContent>
@@ -377,13 +377,13 @@ const Analytics = () => {
 
         {/* Trends Analysis */}
         <section aria-label="Trends analysis">
-          <h2 className="text-lg sm:text-xl font-medium text-gray-900 mb-3 sm:mb-4">📈 Trends & Growth</h2>
+          <h2 className="text-lg sm:text-xl font-medium text-gray-900 mb-3 sm:mb-4">📈 {t('trendsAndGrowth')}</h2>
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6">
             <div className="lg:col-span-2">
               <Card className="border-0 shadow-none bg-gray-50">
                 <CardHeader className="pb-2">
                   <CardTitle className="text-base flex items-center gap-2">
-                    <span>📅</span> Year-over-Year Growth
+                    <span>📅</span> {t('yearOverYearGrowth')}
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
@@ -407,21 +407,21 @@ const Analytics = () => {
             <div className="space-y-3 sm:space-y-4">
               <SimpleAnalyticsCard
                 emoji="📊"
-                title="Growth Rate"
+                title={t('growthRate')}
                 value={analytics.trends.growthRate}
-                subtitle="Monthly growth"
+                subtitle={t('monthlyGrowth')}
               />
               <SimpleAnalyticsCard
                 emoji="🏆"
-                title="Market Position"
+                title={t('marketPosition')}
                 value={analytics.trends.marketPosition}
-                subtitle="Performance level"
+                subtitle={t('performanceLevel')}
               />
               <SimpleAnalyticsCard
                 emoji="🎯"
-                title="Productivity"
+                title={t('productivity')}
                 value={`${analytics.time.productivityScore}%`}
-                subtitle="Overall score"
+                subtitle={t('overallScore')}
                 chart={{
                   data: [analytics.time.productivityScore],
                   type: 'progress',
@@ -434,31 +434,31 @@ const Analytics = () => {
 
         {/* Additional Insights */}
         <section aria-label="Additional insights">
-          <h2 className="text-lg sm:text-xl font-medium text-gray-900 mb-3 sm:mb-4">🔍 Additional Insights</h2>
+          <h2 className="text-lg sm:text-xl font-medium text-gray-900 mb-3 sm:mb-4">🔍 {t('additionalInsights')}</h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-3 sm:gap-4">
             <SimpleAnalyticsCard
               emoji="🔄"
-              title="Client Retention"
+              title={t('clientRetention')}
               value={analytics.clients.clientRetention}
-              subtitle="Repeat client rate"
+              subtitle={t('repeatClientRate')}
             />
             <SimpleAnalyticsCard
               emoji="💎"
-              title="Avg Client Value"
+              title={t('avgClientValue')}
               value={analytics.clients.avgClientValue}
-              subtitle="Revenue per client"
+              subtitle={t('revenuePerClient')}
             />
             <SimpleAnalyticsCard
               emoji="🚀"
-              title="Projected Revenue"
+              title={t('projectedRevenue')}
               value={analytics.revenue.projectedRevenue}
-              subtitle="Next month forecast"
+              subtitle={t('nextMonthForecast')}
             />
             <SimpleAnalyticsCard
               emoji="⏱️"
-              title="Weekly Hours"
+              title={t('weeklyHours')}
               value={`${analytics.time.weeklyHours.reduce((sum, w) => sum + w.value, 0) / analytics.time.weeklyHours.length}h`}
-              subtitle="Average per week"
+              subtitle={t('averagePerWeek')}
               chart={{
                 data: analytics.time.weeklyHours.map(w => w.value),
                 type: 'bar',
@@ -470,12 +470,12 @@ const Analytics = () => {
 
         {/* AI-Powered Business Insights */}
         <section aria-label="AI business insights">
-          <h2 className="text-lg sm:text-xl font-medium text-gray-900 mb-3 sm:mb-4">🤖 AI Business Insights</h2>
+          <h2 className="text-lg sm:text-xl font-medium text-gray-900 mb-3 sm:mb-4">🤖 {t('aiBusinessInsights')}</h2>
           
           {aiInsights.upgradeRequired ? (
             <div className="text-center py-12">
               <SimpleUpgradeMessage 
-                message="AI business insights and recommendations are available for Pro users"
+                message={t('aiInsightsForPro')}
               />
             </div>
           ) : aiInsights.isLoading ? (
@@ -509,9 +509,9 @@ const Analytics = () => {
             <Card className="border-0 shadow-none bg-gray-50">
               <CardContent className="p-8 text-center">
                 <Brain className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-                <h3 className="text-lg font-medium text-gray-600 mb-2">AI Insights Coming Soon</h3>
+                <h3 className="text-lg font-medium text-gray-600 mb-2">{t('aiInsightsComingSoon')}</h3>
                 <p className="text-sm text-gray-500 max-w-md mx-auto">
-                  Complete more projects to unlock AI-powered business insights and recommendations.
+                  {t('completeMoreProjects')}
                 </p>
               </CardContent>
             </Card>
@@ -520,17 +520,17 @@ const Analytics = () => {
 
         {/* AI Recommendations */}
         <section aria-label="AI recommendations">
-          <h2 className="text-lg sm:text-xl font-medium text-gray-900 mb-3 sm:mb-4">💡 Smart Recommendations</h2>
+          <h2 className="text-lg sm:text-xl font-medium text-gray-900 mb-3 sm:mb-4">💡 {t('smartRecommendations')}</h2>
           {aiInsights.upgradeRequired ? (
             <div className="text-center py-12">
               <SimpleUpgradeMessage 
-                message="Smart recommendations are available for Pro users"
+                message={t('smartRecommendationsForPro')}
               />
             </div>
           ) : (
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
               <AIRecommendations
-                title="Project Portfolio Optimization"
+                title={t('projectPortfolioOptimization')}
                 recommendations={aiInsights.projectRecommendations}
                 isLoading={aiInsights.isLoading}
                 icon={<Target className="h-4 w-4" />}
@@ -538,7 +538,7 @@ const Analytics = () => {
               />
               
               <AIRecommendations
-                title="Revenue Growth Strategies"
+                title={t('revenueGrowthStrategies')}
                 recommendations={aiInsights.revenueOptimizationTips}
                 isLoading={aiInsights.isLoading}
                 icon={<TrendingUp className="h-4 w-4" />}
@@ -552,9 +552,9 @@ const Analytics = () => {
         {projects.length === 0 && (
           <div className="text-center py-8 sm:py-12 bg-gray-50 rounded-lg">
             <span className="text-4xl sm:text-6xl text-gray-300 block mb-4">📊</span>
-            <h3 className="text-lg font-medium text-gray-600 mb-2">No Analytics Yet</h3>
+            <h3 className="text-lg font-medium text-gray-600 mb-2">{t('noAnalyticsYet')}</h3>
             <p className="text-sm text-gray-500 max-w-md mx-auto">
-              Complete a few projects to see your analytics and performance metrics here.
+              {t('completeProjectsForAnalytics')}
             </p>
           </div>
         )}

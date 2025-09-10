@@ -4,6 +4,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { authService } from '@/services/api/authService';
 import { toast } from 'sonner';
 import { logSecurityEvent } from '@/lib/authSecurity';
+import { useT } from '@/lib/i18n';
 
 interface AuthState {
   user: User | null;
@@ -34,6 +35,7 @@ interface AuthProviderProps {
 }
 
 export const AuthProvider = ({ children }: AuthProviderProps) => {
+  const t = useT();
   const [user, setUser] = useState<User | null>(null);
   const [session, setSession] = useState<Session | null>(null);
   const [loading, setLoading] = useState(true);
@@ -47,7 +49,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         if (error) {
           // Error logged for debugging purposes only
           logSecurityEvent('auth_session_error', { error: error.message });
-          toast.error('Authentication error');
+          toast.error(t('authenticationError'));
           return;
         }
 

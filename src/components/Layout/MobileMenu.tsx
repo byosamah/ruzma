@@ -13,6 +13,7 @@ import NavigationMenu from './NavigationMenu';
 import { NotificationBell } from '@/components/notifications/NotificationBell';
 import { Notification } from '@/types/notifications';
 import { UserProfile } from '@/types/profile';
+import { useT } from '@/lib/i18n';
 
 interface NotificationData {
   notifications: Notification[];
@@ -43,6 +44,7 @@ const MobileMenu = ({
   onSignOut,
   notificationsData
 }) => {
+  const t = useT();
   if (!user) return null;
 
   return (
@@ -57,7 +59,7 @@ const MobileMenu = ({
         </SheetTrigger>
         <SheetContent side="right" className="w-80 sm:w-96 max-w-[90vw]">
           <SheetHeader className="pb-4">
-            <SheetTitle className="text-lg text-left">Menu</SheetTitle>
+            <SheetTitle className="text-lg text-left">{t('menu')}</SheetTitle>
           </SheetHeader>
           <div className="mt-6 space-y-4">
             <NavigationMenu

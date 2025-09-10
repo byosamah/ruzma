@@ -57,7 +57,7 @@ export const plansTranslations = {
     // Plan benefits
     oneProject: "1 project",
     unlimitedProjectsBenefit: "Unlimited projects",
-    aiAssistant: "AI Assistant (Coming soon)",
+    aiAssistant: "AI-powered Analytics",
     paymentProof: "Asking for Payment Proof",
     emailReminder: "Client Email Reminder System",
     brandedPortal: "Branded Client Portal",
@@ -128,7 +128,7 @@ export const plansTranslations = {
     // Plan benefits
     oneProject: "مشروع واحد",
     unlimitedProjectsBenefit: "مشاريع غير محدودة",
-    aiAssistant: "المساعد الذكي (قريباً)",
+    aiAssistant: "تحليلات مدعومة بالذكاء الاصطناعي",
     paymentProof: "طلب إثبات الدفع",
     emailReminder: "نظام تذكير العملاء بالبريد الإلكتروني",
     brandedPortal: "بوابة عملاء مخصصة",

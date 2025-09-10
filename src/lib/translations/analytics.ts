@@ -140,6 +140,111 @@ export const analyticsTranslations = {
     trendUp: "Up",
     trendDown: "Down",
     trendStable: "Stable",
+    
+    // NEW: Analytics Page Section Headers
+    revenueOverview: "Revenue Overview",
+    timeAndProductivity: "Time & Productivity",
+    clientInsights: "Client Insights", 
+    performanceMetrics: "Performance Metrics",
+    financialAnalysis: "Financial Analysis",
+    detailedAnalytics: "Detailed Analytics",
+    trendsAndGrowth: "Trends & Growth",
+    additionalInsights: "Additional Insights",
+    aiBusinessInsights: "AI Business Insights",
+    smartRecommendations: "Smart Recommendations",
+    
+    // NEW: Revenue Overview Cards
+    currentMonthEarnings: "Current month earnings",
+    previousMonth: "Previous month", 
+    averageProject: "Average Project",
+    perProjectValue: "Per project value",
+    collectionSpeed: "Collection Speed",
+    averagePaymentTime: "Average payment time",
+    
+    // NEW: Time & Productivity Cards
+    avgDuration: "Avg Duration",
+    activeProjects: "Active Projects",
+    currentlyWorkingOn: "Currently working on",
+    fastestProject: "Fastest Project", 
+    recordCompletion: "Record completion",
+    estimatedHours: "Estimated hours",
+    
+    // NEW: Client Insights Cards
+    totalClients: "Total Clients",
+    repeatClients: "Repeat Clients",
+    returnCustomers: "Return customers",
+    bestClient: "Best Client",
+    highestRevenue: "Highest revenue", 
+    newThisMonth: "New This Month",
+    freshClients: "Fresh clients",
+    
+    // NEW: Performance Metrics Cards
+    successRate: "Success Rate",
+    meetingDeadlines: "Meeting deadlines",
+    estimatedScore: "Estimated score",
+    monthlyGrowth: "Monthly Growth", 
+    revenueChange: "Revenue change",
+    
+    // NEW: Financial Analysis Cards
+    cashFlowTrend: "Cash Flow Trend",
+    avgInvoice: "Avg Invoice",
+    perInvoiceValue: "Per invoice value",
+    conversionRate: "Conversion Rate",
+    milestoneApproval: "Milestone approval",
+    estimatedProfit: "Estimated profit", 
+    pendingRatio: "Pending Ratio",
+    
+    // NEW: Detailed Charts
+    topClientsByRevenue: "Top Clients by Revenue",
+    projectTypes: "Project Types", 
+    qualityMetrics: "Quality Metrics",
+    workloadBalance: "Workload Balance",
+    yearOverYearGrowth: "Year-over-Year Growth",
+    
+    // NEW: Additional Cards
+    clientRetention: "Client Retention",
+    repeatClientRate: "Repeat client rate",
+    avgClientValue: "Avg Client Value",
+    revenuePerClient: "Revenue per client",
+    projectedRevenue: "Projected Revenue",
+    nextMonthForecast: "Next month forecast",
+    weeklyHours: "Weekly Hours",
+    averagePerWeek: "Average per week",
+    
+    // NEW: AI & Upgrade Messages
+    aiInsightsForPro: "AI business insights and recommendations are available for Pro users",
+    aiInsightsComingSoon: "AI Insights Coming Soon",
+    completeMoreProjects: "Complete more projects to unlock AI-powered business insights and recommendations.",
+    smartRecommendationsForPro: "Smart recommendations are available for Pro users",
+    projectPortfolioOptimization: "Project Portfolio Optimization", 
+    revenueGrowthStrategies: "Revenue Growth Strategies",
+    noAnalyticsYet: "No Analytics Yet",
+    completeProjectsForAnalytics: "Complete a few projects to see your analytics and performance metrics here.",
+    upgradeToPro: "Upgrade to Pro",
+    
+    // NEW: AI Components
+    analysis: "Analysis",
+    recommendation: "Recommendation", 
+    expectedImpact: "Expected Impact",
+    aiPowered: "AI Powered",
+    showLess: "Show Less",
+    showMore: "Show More",
+    aiAnalyzing: "AI is analyzing your data...",
+    aiRecommendationsWillAppear: "AI recommendations will appear here once you have more project data.",
+    recommendationsGenerated: "Recommendations generated using advanced AI analysis",
+    aiStillProcessing: "AI is still processing...",
+    contentBeingGenerated: "Content is being generated. Please check back in a moment for complete recommendations.",
+    
+    // NEW: Project Types List
+    noProjectTypesToDisplay: "No project types to display yet. Start adding projects to see your service distribution.",
+    project: "project",
+    projects: "projects",
+    
+    // NEW: Missing Trend Analytics
+    marketPosition: "Market Position",
+    performanceLevel: "Performance level",
+    productivity: "Productivity", 
+    overallScore: "Overall score",
   },
   ar: {
     analytics: "التحليلات",
@@ -280,7 +385,112 @@ export const analyticsTranslations = {
     monthOverMonth: "مقارنة بالشهر السابق",
     currentPeriod: "الفترة الحالية",
     trendUp: "صاعد",
-    trendDown: "هابط",
+    trendDown: "هابط", 
     trendStable: "مستقر",
+    
+    // NEW: Analytics Page Section Headers 
+    revenueOverview: "نظرة عامة على الإيرادات",
+    timeAndProductivity: "الوقت والإنتاجية",
+    clientInsights: "رؤى العملاء",
+    performanceMetrics: "مقاييس الأداء", 
+    financialAnalysis: "التحليل المالي",
+    detailedAnalytics: "تحليلات مفصلة",
+    trendsAndGrowth: "الاتجاهات والنمو",
+    additionalInsights: "رؤى إضافية",
+    aiBusinessInsights: "رؤى الأعمال بالذكاء الاصطناعي",
+    smartRecommendations: "التوصيات الذكية",
+    
+    // NEW: Revenue Overview Cards
+    currentMonthEarnings: "أرباح الشهر الحالي",
+    previousMonth: "الشهر السابق",
+    averageProject: "متوسط المشروع", 
+    perProjectValue: "قيمة كل مشروع",
+    collectionSpeed: "سرعة التحصيل",
+    averagePaymentTime: "متوسط وقت الدفع",
+    
+    // NEW: Time & Productivity Cards
+    avgDuration: "متوسط المدة",
+    activeProjects: "المشاريع النشطة",
+    currentlyWorkingOn: "العمل عليها حالياً",
+    fastestProject: "أسرع مشروع",
+    recordCompletion: "إنجاز قياسي", 
+    estimatedHours: "الساعات المقدرة",
+    
+    // NEW: Client Insights Cards
+    totalClients: "إجمالي العملاء",
+    repeatClients: "العملاء المتكررون", 
+    returnCustomers: "العملاء العائدون",
+    bestClient: "أفضل عميل",
+    highestRevenue: "أعلى إيرادات",
+    newThisMonth: "جديد هذا الشهر",
+    freshClients: "عملاء جدد",
+    
+    // NEW: Performance Metrics Cards
+    successRate: "معدل النجاح",
+    meetingDeadlines: "الالتزام بالمواعيد",
+    estimatedScore: "النقاط المقدرة", 
+    monthlyGrowth: "النمو الشهري",
+    revenueChange: "تغيير الإيرادات",
+    
+    // NEW: Financial Analysis Cards
+    cashFlowTrend: "اتجاه التدفق النقدي",
+    avgInvoice: "متوسط الفاتورة",
+    perInvoiceValue: "قيمة كل فاتورة", 
+    conversionRate: "معدل التحويل",
+    milestoneApproval: "موافقة المراحل",
+    estimatedProfit: "الربح المقدر",
+    pendingRatio: "نسبة المعلق",
+    
+    // NEW: Detailed Charts
+    topClientsByRevenue: "أفضل العملاء حسب الإيرادات",
+    projectTypes: "أنواع المشاريع",
+    qualityMetrics: "مقاييس الجودة", 
+    workloadBalance: "توازن العمل",
+    yearOverYearGrowth: "نمو سنوي",
+    
+    // NEW: Additional Cards
+    clientRetention: "الاحتفاظ بالعملاء",
+    repeatClientRate: "معدل تكرار العملاء",
+    avgClientValue: "متوسط قيمة العميل", 
+    revenuePerClient: "الإيرادات لكل عميل",
+    projectedRevenue: "الإيرادات المتوقعة",
+    nextMonthForecast: "توقعات الشهر القادم",
+    weeklyHours: "الساعات الأسبوعية",
+    averagePerWeek: "المتوسط أسبوعياً",
+    
+    // NEW: AI & Upgrade Messages
+    aiInsightsForPro: "رؤى الأعمال بالذكاء الاصطناعي والتوصيات متاحة لمستخدمي Pro",
+    aiInsightsComingSoon: "رؤى الذكاء الاصطناعي قريباً",
+    completeMoreProjects: "أكمل المزيد من المشاريع لإلغاء قفل رؤى الأعمال والتوصيات المدعومة بالذكاء الاصطناعي.",
+    smartRecommendationsForPro: "التوصيات الذكية متاحة لمستخدمي Pro", 
+    projectPortfolioOptimization: "تحسين محفظة المشاريع",
+    revenueGrowthStrategies: "استراتيجيات نمو الإيرادات",
+    noAnalyticsYet: "لا توجد تحليلات بعد",
+    completeProjectsForAnalytics: "أكمل بعض المشاريع لرؤية التحليلات ومقاييس الأداء هنا.",
+    upgradeToPro: "الترقية إلى Pro",
+    
+    // NEW: AI Components
+    analysis: "التحليل",
+    recommendation: "التوصية",
+    expectedImpact: "التأثير المتوقع",
+    aiPowered: "مدعوم بالذكاء الاصطناعي",
+    showLess: "عرض أقل", 
+    showMore: "عرض المزيد",
+    aiAnalyzing: "الذكاء الاصطناعي يحلل بياناتك...",
+    aiRecommendationsWillAppear: "ستظهر توصيات الذكاء الاصطناعي هنا بمجرد وجود المزيد من بيانات المشاريع.",
+    recommendationsGenerated: "تم إنشاء التوصيات باستخدام التحليل المتقدم بالذكاء الاصطناعي",
+    aiStillProcessing: "الذكاء الاصطناعي ما زال يعالج البيانات...",
+    contentBeingGenerated: "يتم إنشاء المحتوى. يرجى العودة خلال لحظات للحصول على التوصيات الكاملة.",
+    
+    // NEW: Project Types List
+    noProjectTypesToDisplay: "لا توجد أنواع مشاريع للعرض بعد. ابدأ بإضافة المشاريع لرؤية توزيع خدماتك.",
+    project: "مشروع",
+    projects: "مشاريع",
+    
+    // NEW: Missing Trend Analytics
+    marketPosition: "موقع السوق",
+    performanceLevel: "مستوى الأداء",
+    productivity: "الإنتاجية",
+    overallScore: "النقاط الإجمالية",
   },
 };

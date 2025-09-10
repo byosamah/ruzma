@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { createProjectFormSchema, CreateProjectFormData } from '@/lib/validators/project';
+import { createProjectFormSchemaStatic, CreateProjectFormData } from '@/lib/validators/project';
 import { ProjectTemplate } from '@/types/projectTemplate';
 import { DatabaseProject, DatabaseMilestone } from '@/hooks/projectTypes';
 
@@ -47,7 +47,7 @@ export const useProjectForm = (options: UseProjectFormOptions) => {
       name: data.name || '',
       brief: data.brief || '',
       clientEmail: isProject ? (data as DatabaseProject).client_email || '' : '',
-      currency: isProject ? (data as DatabaseProject).freelancer_currency || 'USD' : data.currency || 'USD',
+      currency: isProject ? (data as DatabaseProject).currency || (data as DatabaseProject).freelancer_currency || 'USD' : data.currency || 'USD',
       paymentProofRequired: data.payment_proof_required || false,
       contractRequired: data.contract_required || false,
       contractTerms: data.contract_terms || '',
@@ -74,7 +74,7 @@ export const useProjectForm = (options: UseProjectFormOptions) => {
 
   // Initialize form with appropriate data
   const form = useForm<CreateProjectFormData>({
-    resolver: zodResolver(createProjectFormSchema),
+    resolver: zodResolver(createProjectFormSchemaStatic),
     defaultValues: formatDataForForm(mode === 'edit' ? existingProject : templateData),
   });
 

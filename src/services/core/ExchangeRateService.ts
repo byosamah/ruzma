@@ -111,6 +111,7 @@ export class ExchangeRateService extends BaseService {
         throw new Error('Invalid API response format');
       }
 
+
       this.logOperation('fetch_rates_success', { 
         baseCurrency, 
         rateCount: Object.keys(data.rates).length 
@@ -215,7 +216,10 @@ export class ExchangeRateService extends BaseService {
     }
 
     const rates = await this.getExchangeRates(fromCurrency);
-    return rates[toCurrency] || 1;
+    const rate = rates[toCurrency] || 1;
+    
+    
+    return rate;
   }
 
   /**

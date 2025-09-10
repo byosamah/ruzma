@@ -4,7 +4,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { Input } from '@/components/ui/input';
 import { FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { ShadcnFormDialog } from '@/components/shared/dialogs/ShadcnFormDialog';
-import { changePasswordSchema } from '@/lib/validators/auth';
+import { changePasswordSchema, ChangePasswordFormData } from '@/lib/validators/auth';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import { useT } from '@/lib/i18n';

@@ -103,10 +103,11 @@ const InvoiceForm = ({ invoiceData, setInvoiceData }: InvoiceFormProps) => {
       dueDate = new Date(selectedProject.end_date);
     }
     
-    // Update invoice data
+    // Update invoice data with project currency inheritance
     const newInvoiceData = {
       ...invoiceData,
       projectId: targetProjectId,
+      currency: selectedProject.currency || selectedProject.freelancer_currency || invoiceData.currency,
       invoiceDate,
       dueDate,
       billedTo: {

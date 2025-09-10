@@ -5,6 +5,7 @@ import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { RevisionData } from '@/lib/revisionUtils';
+import { useT } from '@/lib/i18n';
 
 interface RevisionSettingsDropdownProps {
   revisionData: RevisionData;
@@ -15,6 +16,7 @@ const RevisionSettingsDropdown = ({
   revisionData,
   onUpdateMaxRevisions
 }) => {
+  const t = useT();
   const [isOpen, setIsOpen] = useState(false);
   const [selectedValue, setSelectedValue] = useState(
     revisionData.maxRevisions?.toString() ?? 'unlimited'
@@ -51,7 +53,7 @@ const RevisionSettingsDropdown = ({
       <PopoverContent className="w-64" align="end">
         <div className="space-y-4">
           <div className="space-y-2">
-            <Label className="text-sm font-medium">Revision Limit</Label>
+            <Label className="text-sm font-medium">{t('revisionLimit')}</Label>
             <p className="text-xs text-muted-foreground">
               Set how many times the client can request revisions for this milestone.
             </p>

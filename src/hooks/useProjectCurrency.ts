@@ -22,7 +22,12 @@ export const useProjectCurrency = (
   const { currency: userCurrency, language } = useUserCurrencyPreference();
 
   return useMemo(() => {
-    const projectCurrency = (project?.freelancer_currency as CurrencyCode) || 'USD';
+    // Use project currency first (what was chosen for the project), fallback to freelancer currency
+    const rawCurrency = project?.currency || project?.freelancer_currency;
+    const projectCurrency = (rawCurrency && rawCurrency.trim() && rawCurrency !== 'undefined' && rawCurrency !== 'null') 
+      ? rawCurrency as CurrencyCode 
+      : 'USD';
+      
     const isUserProject = project?.user_id === userId;
     const needsConversion = projectCurrency !== userCurrency && isUserProject;
 
@@ -108,7 +113,10 @@ export const useInvoiceCurrency = (
 
     // Invoice linked to project - use project currency
     if (invoice?.project) {
-      const projectCurrency = (invoice.project.freelancer_currency as CurrencyCode) || 'USD';
+      const rawCurrency = invoice.project.currency || invoice.project.freelancer_currency;
+      const projectCurrency = (rawCurrency && rawCurrency.trim() && rawCurrency !== 'undefined' && rawCurrency !== 'null') 
+        ? rawCurrency as CurrencyCode 
+        : 'USD';
       return {
         sourceCurrency: projectCurrency,
         displayCurrency: userCurrency,
@@ -138,7 +146,10 @@ export const useProjectTotals = (
 
   return useMemo(() => {
     const projectsWithCurrency = projects.map(project => {
-      const projectCurrency = (project.freelancer_currency as CurrencyCode) || 'USD';
+      const rawCurrency = project.currency || project.freelancer_currency;
+      const projectCurrency = (rawCurrency && rawCurrency.trim() && rawCurrency !== 'undefined' && rawCurrency !== 'null') 
+        ? rawCurrency as CurrencyCode 
+        : 'USD';
       const milestoneTotal = project.milestones?.reduce((sum, milestone) => sum + milestone.price, 0) || 0;
 
       return {

@@ -112,6 +112,22 @@ export const useClientProject = (token?: string | null, isHybrid?: boolean) => {
     }
   };
 
+  // Debug project currency data
+  if (project) {
+    console.log('🔍 useClientProject Debug:', {
+      projectId: project.id,
+      projectName: project.name,
+      storedFreelancerCurrency: project.freelancer_currency,
+      projectCurrency: project.currency,
+      milestones: project.milestones.map(m => ({ 
+        id: m.id, 
+        title: m.title, 
+        price: m.price,
+        status: m.status 
+      }))
+    });
+  }
+
   return {
     project,
     loading,

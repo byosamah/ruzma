@@ -1,6 +1,7 @@
 
 import { SubscriptionCard } from './SubscriptionCard';
-import { useSubscription } from '@/hooks/subscription/useSubscription';
+import { useSubscriptionStatus } from '@/hooks/subscription/useSubscription';
+import { createCheckoutSession } from '@/hooks/subscription/subscriptionService';
 import { supabase } from '@/integrations/supabase/client';
 import { useState, useEffect } from 'react';
 import { User } from '@supabase/supabase-js';
@@ -9,11 +10,13 @@ import { useUserCurrency } from '@/hooks/useUserCurrency';
 import { useT } from '@/lib/i18n';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { getSubscriptionPlans } from '@/hooks/subscription/planUtils';
+import { toast } from 'sonner';
 
 export function SubscriptionPlans() {
   const t = useT();
   const { language } = useLanguage();
-  const { createCheckout, isLoading } = useSubscription();
+  const [isLoading, setIsLoading] = useState(false);
+  const { subscription } = useSubscriptionStatus();
   const [user, setUser] = useState<User | null>(null);
   const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
   const [profileLoading, setProfileLoading] = useState(true);
@@ -104,7 +107,17 @@ export function SubscriptionPlans() {
             popularText={getPopularText(currentPlanId, plan.id)}
             isCurrentPlan={currentPlanId === plan.id}
             currentUserType={currentPlanId}
-            onSelectPlan={createCheckout}
+            onSelectPlan={async (planId: string) => {
+              setIsLoading(true);
+              try {
+                await createCheckoutSession(planId);
+              } catch (error) {
+                console.error('Subscription error:', error);
+                toast.error(error instanceof Error ? error.message : 'Failed to start subscription');
+              } finally {
+                setIsLoading(false);
+              }
+            }}
             isLoading={isLoading}
           />
         ))}

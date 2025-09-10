@@ -30,3 +30,39 @@ export const EXCHANGE_RATES: Record<CurrencyCode, number> = {
   CHF: 0.88,
   JPY: 148,
 };
+
+// Grace period constants (in days)
+export const GRACE_PERIODS = {
+  TRIAL_GRACE_DAYS: 3,        // Grace period after trial expires
+  PAYMENT_GRACE_DAYS: 7,      // Grace period after payment failure
+  REMINDER_DAYS: [3, 6],      // Send reminders on these days during grace period
+} as const;
+
+// Subscription status definitions
+export const SUBSCRIPTION_STATUS = {
+  ACTIVE: 'active',
+  ON_TRIAL: 'on_trial',
+  UNPAID: 'unpaid',
+  CANCELLED: 'cancelled',
+  EXPIRED: 'expired',
+  PAUSED: 'paused',
+} as const;
+
+// Plan definitions with trial days
+export const PLAN_CONFIG = {
+  free: {
+    trial_days: 0,
+    max_projects: 1,
+    max_clients: 5,
+  },
+  plus: {
+    trial_days: 7,
+    max_projects: 50,
+    max_clients: 100,
+  },
+  pro: {
+    trial_days: 14,
+    max_projects: -1, // Unlimited
+    max_clients: -1,  // Unlimited
+  },
+} as const;

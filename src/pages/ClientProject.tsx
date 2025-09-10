@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { useClientProject } from '@/hooks/useClientProject';
 import { useClientBranding } from '@/hooks/useClientBranding';
@@ -10,11 +10,15 @@ import { useIsMobile } from '@/hooks/use-mobile';
 import { parseClientToken } from '@/lib/clientUrlUtils';
 import { CurrencyCode } from '@/lib/currency';
 import { formatCurrency } from '@/lib/currency';
+import { CurrencyDisplay } from '@/components/ui/currency-display';
 import ContractApprovalModal from '@/components/ProjectClient/ContractApprovalModal';
 import PaymentUploadDialog from '@/components/ProjectClient/PaymentUploadDialog';
 import { parseDeliverableLinks } from '@/lib/linkUtils';
+import { parseRevisionData, canRequestRevision, getRemainingRevisions } from '@/lib/revisionUtils';
 import { useT } from '@/lib/i18n';
+import ClientView from '@/components/MilestoneCard/ClientView';
 import ModernClientHeader from '@/components/ClientProject/ModernClientHeader';
+import { ServiceRegistry } from '@/services/core/ServiceRegistry';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -97,9 +101,9 @@ const ClientProject = () => {
         <div className="w-full mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6 lg:py-8 max-w-7xl">
           <div className="text-center py-8 sm:py-12 bg-gray-50 rounded-lg border-0 shadow-none">
             <span className="text-4xl sm:text-6xl text-gray-300 mx-auto mb-4 block">🔍</span>
-            <h1 className="text-lg sm:text-xl font-medium text-gray-900 mb-2">Project Not Found</h1>
+            <h1 className="text-lg sm:text-xl font-medium text-gray-900 mb-2">{t('projectNotFound')}</h1>
             <p className="text-sm text-gray-500 mb-6 max-w-md mx-auto leading-relaxed">
-              {error || 'The project link appears to be invalid or expired. Please contact your freelancer for a new link.'}
+              {error || t('projectLinkInvalidExpired')}
             </p>
           </div>
         </div>
@@ -112,12 +116,11 @@ const ClientProject = () => {
   const totalValue = project.milestones.reduce((sum, m) => sum + m.price, 0);
   const progressPercentage = totalMilestones > 0 ? (completedMilestones / totalMilestones) * 100 : 0;
 
-  // Safely extract currency values with proper type casting
-  const userCurrencyCode = userCurrency?.currency || 'USD';
-  const freelancerCurrencyCode = (freelancerCurrency as CurrencyCode) || userCurrencyCode;
+  // Use the project's stored currency (what was chosen when creating the project)
+  const projectCurrency = project.currency || project.freelancer_currency || 'USD';
   
-  // Always use freelancer's preferred currency if available, otherwise fall back to user currency
-  const displayCurrency = freelancerCurrencyCode || userCurrencyCode;
+  // Always use the project's original currency (no conversion)
+  const displayCurrency = projectCurrency;
 
   // Handle payment upload
   const handlePaymentUploadImpl = async (milestoneId: string, file: File): Promise<boolean> => {
@@ -191,7 +194,7 @@ const ClientProject = () => {
       </style>
       <div style="direction: ltr;">
         <h1 style="text-align: center; font-size: 24px; font-weight: bold; margin-bottom: 30px;">
-          PROJECT CONTRACT
+          ${t('projectContract')}
         </h1>
         
         <div style="margin-bottom: 30px;">
@@ -201,57 +204,57 @@ const ClientProject = () => {
           <p style="direction: ${containsArabic(project.client_name || '') ? 'rtl' : 'ltr'};">
             Client: ${shapeArabicText(project.client_name || 'N/A')}
           </p>
-          <p>Total Value: ${formatCurrency(totalValue, displayCurrency)}</p>
+          <p>Total Value: ${formatCurrency(totalValue, projectCurrency)}</p>
           <p>Date: ${new Date().toLocaleDateString()}</p>
         </div>
 
         <hr style="margin: 30px 0; border: 1px solid #ccc;" />
 
         <div style="margin-bottom: 25px;">
-          <h2 style="font-size: 16px; font-weight: bold; margin-bottom: 15px;">GENERAL CONTRACT TERMS</h2>
+          <h2 style="font-size: 16px; font-weight: bold; margin-bottom: 15px;">${t('generalContractTerms')}</h2>
           <div style="direction: ${containsArabic(project.contract_terms || '') ? 'rtl' : 'ltr'}; text-align: ${containsArabic(project.contract_terms || '') ? 'right' : 'left'}; white-space: pre-wrap; background: #f9f9f9; padding: 15px; border-radius: 5px;">
-            ${shapeArabicText(project.contract_terms || 'No contract terms specified.')}
+            ${shapeArabicText(project.contract_terms || t('noContractTermsSpecified'))}
           </div>
         </div>
 
         <div style="margin-bottom: 25px;">
-          <h2 style="font-size: 16px; font-weight: bold; margin-bottom: 15px;">PAYMENT TERMS AND SCHEDULE</h2>
+          <h2 style="font-size: 16px; font-weight: bold; margin-bottom: 15px;">${t('paymentTermsAndSchedule')}</h2>
           <div style="direction: ${containsArabic(project.payment_terms || '') ? 'rtl' : 'ltr'}; text-align: ${containsArabic(project.payment_terms || '') ? 'right' : 'left'}; white-space: pre-wrap; background: #f9f9f9; padding: 15px; border-radius: 5px;">
-            ${shapeArabicText(project.payment_terms || 'No payment terms specified.')}
+            ${shapeArabicText(project.payment_terms || t('noContractTermsSpecified'))}
           </div>
         </div>
 
         <div style="margin-bottom: 25px;">
-          <h2 style="font-size: 16px; font-weight: bold; margin-bottom: 15px;">PROJECT SCOPE AND DELIVERABLES</h2>
+          <h2 style="font-size: 16px; font-weight: bold; margin-bottom: 15px;">${t('projectScopeAndDeliverables')}</h2>
           <div style="direction: ${containsArabic(project.project_scope || '') ? 'rtl' : 'ltr'}; text-align: ${containsArabic(project.project_scope || '') ? 'right' : 'left'}; white-space: pre-wrap; background: #f9f9f9; padding: 15px; border-radius: 5px;">
-            ${shapeArabicText(project.project_scope || 'No project scope specified.')}
+            ${shapeArabicText(project.project_scope || t('noContractTermsSpecified'))}
           </div>
         </div>
 
         <div style="margin-bottom: 25px;">
-          <h2 style="font-size: 16px; font-weight: bold; margin-bottom: 15px;">REVISION POLICY</h2>
+          <h2 style="font-size: 16px; font-weight: bold; margin-bottom: 15px;">${t('revisionPolicyLabel')}</h2>
           <div style="direction: ${containsArabic(project.revision_policy || '') ? 'rtl' : 'ltr'}; text-align: ${containsArabic(project.revision_policy || '') ? 'right' : 'left'}; white-space: pre-wrap; background: #f9f9f9; padding: 15px; border-radius: 5px;">
-            ${shapeArabicText(project.revision_policy || 'No revision policy specified.')}
+            ${shapeArabicText(project.revision_policy || t('noContractTermsSpecified'))}
           </div>
         </div>
 
         <hr style="margin: 30px 0; border: 1px solid #ccc;" />
 
         <div style="margin-bottom: 25px;">
-          <h2 style="font-size: 16px; font-weight: bold; margin-bottom: 15px;">PROJECT MILESTONES</h2>
+          <h2 style="font-size: 16px; font-weight: bold; margin-bottom: 15px;">${t('projectMilestonesLabel')}</h2>
           ${project.milestones.map((milestone, index) => `
             <div style="margin-bottom: 20px; border: 1px solid #ddd; padding: 15px; border-radius: 5px;">
               <h3 style="font-weight: bold; margin-bottom: 10px; direction: ${containsArabic(milestone.title) ? 'rtl' : 'ltr'}; text-align: ${containsArabic(milestone.title) ? 'right' : 'left'};">
                 ${index + 1}. ${shapeArabicText(milestone.title)}
               </h3>
               <p style="margin-bottom: 8px; direction: ${containsArabic(milestone.description) ? 'rtl' : 'ltr'}; text-align: ${containsArabic(milestone.description) ? 'right' : 'left'};">
-                <strong>Description:</strong> ${shapeArabicText(milestone.description)}
+                <strong>${t('description')}</strong> ${shapeArabicText(milestone.description)}
               </p>
               <p style="margin-bottom: 8px;">
-                <strong>Price:</strong> ${formatCurrency(milestone.price, displayCurrency)}
+                <strong>${t('price')}</strong> ${formatCurrency(milestone.price, projectCurrency)}
               </p>
               <p style="margin-bottom: 0;">
-                <strong>Status:</strong> ${milestone.status.replace('_', ' ').charAt(0).toUpperCase() + milestone.status.replace('_', ' ').slice(1)}
+                <strong>${t('statusLabel')}</strong> ${milestone.status.replace('_', ' ').charAt(0).toUpperCase() + milestone.status.replace('_', ' ').slice(1)}
               </p>
             </div>
           `).join('')}
@@ -342,27 +345,32 @@ const ClientProject = () => {
   // Dashboard-style stats for project overview
   const projectStats = [
     {
-      title: 'Total Value',
-      value: formatCurrency(totalValue, displayCurrency),
-      subtitle: 'Project Budget',
+      title: t('totalValue'),
+      value: null, // Will be rendered as CurrencyDisplay component
+      subtitle: t('projectBudget'),
       emoji: '💰',
+      amount: totalValue,
+      currency: projectCurrency,
+      convertTo: undefined, // No conversion - show original project currency only
+      convertToUserCurrency: false, // CRITICAL: Disable automatic user currency conversion
+      debugInfo: `Project stats: ${totalValue} ${projectCurrency} (no conversion)`,
     },
     {
-      title: 'Progress',
+      title: t('progress'),
       value: `${completedMilestones}/${totalMilestones}`,
-      subtitle: 'Milestones Complete',
+      subtitle: t('milestonesComplete'),
       emoji: '📊',
     },
     {
-      title: 'Completion',
+      title: t('completion'),
       value: `${Math.round(progressPercentage)}%`,
-      subtitle: 'Overall Progress',
+      subtitle: t('overallProgress'),
       emoji: '✅',
     },
     {
-      title: 'Status',
-      value: project.contract_status === 'approved' ? 'Active' : 'Pending',
-      subtitle: 'Project Status',
+      title: t('status'),
+      value: project.contract_status === 'approved' ? t('active') : t('pending'),
+      subtitle: t('projectStatus'),
       emoji: project.contract_status === 'approved' ? '🟢' : '🟡',
     },
   ];
@@ -374,12 +382,12 @@ const ClientProject = () => {
         <div className="w-full mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6 lg:py-8 max-w-7xl">
           <div className="text-center py-8 sm:py-12 bg-gray-50 rounded-lg border-0 shadow-none">
             <span className="text-4xl sm:text-6xl text-gray-300 mx-auto mb-4 block">⏰</span>
-            <h2 className="text-lg sm:text-xl font-medium text-gray-900 mb-2">Feedback Sent Successfully</h2>
+            <h2 className="text-lg sm:text-xl font-medium text-gray-900 mb-2">{t('feedbackSentSuccessfully')}</h2>
             <p className="text-sm text-gray-500 mb-4 max-w-md mx-auto leading-relaxed">
-              Your feedback has been sent to the freelancer. Please wait while they review and update the contract based on your comments.
+              {t('yourFeedbackHasBeenSent')}
             </p>
             <Badge variant="secondary" className="text-xs">
-              You will receive a new email once the updated contract is ready for your review.
+              {t('thankYouForFeedback')}
             </Badge>
           </div>
         </div>
@@ -409,7 +417,7 @@ const ClientProject = () => {
                 {project.name}
               </h1>
               <p className="text-sm text-gray-500">
-                {project.brief || 'Project details and milestone tracking'}
+                {project.brief || t('projectDetailsAndMilestoneTracking')}
               </p>
             </div>
           </header>
@@ -426,7 +434,20 @@ const ClientProject = () => {
                       </div>
                       <div className="min-w-0 flex-1">
                         <p className="text-xs text-gray-500 truncate leading-tight">{stat.title}</p>
-                        <p className="text-base sm:text-lg font-medium text-gray-900 truncate leading-tight">{stat.value}</p>
+                        {stat.value ? (
+                          <p className="text-base sm:text-lg font-medium text-gray-900 truncate leading-tight">{stat.value}</p>
+                        ) : stat.amount !== undefined ? (
+                          <div className="text-base sm:text-lg font-medium text-gray-900 truncate leading-tight">
+                            <CurrencyDisplay
+                              amount={stat.amount}
+                              fromCurrency={projectCurrency}
+                              toCurrency={undefined}
+                              showConversionIndicator={false}
+                              convertToUserCurrency={false}
+                              className="text-base sm:text-lg font-medium text-gray-900"
+                            />
+                          </div>
+                        ) : null}
                         <p className="text-xs text-gray-400 truncate leading-tight">{stat.subtitle}</p>
                       </div>
                     </div>
@@ -505,7 +526,7 @@ const ClientProject = () => {
                       className="inline-flex items-center gap-2 text-sm font-medium border-gray-300 bg-white text-gray-700 hover:text-gray-900 hover:bg-gray-50 transition-colors ml-4"
                     >
                       <span>📄</span>
-                      <span>View Contract</span>
+                      <span>{t('viewContract')}</span>
                       <span className="transition-transform group-hover:translate-x-1">→</span>
                     </Button>
                   </div>
@@ -518,159 +539,99 @@ const ClientProject = () => {
           <main>
             <div className="space-y-3 sm:space-y-4">
               <div className="flex flex-col space-y-3 sm:flex-row sm:items-center sm:justify-between sm:space-y-0">
-                <h2 className="text-lg sm:text-xl font-medium text-gray-900">Project Milestones</h2>
+                <h2 className="text-lg sm:text-xl font-medium text-gray-900">{t('projectMilestones')}</h2>
                 <Badge variant="secondary" className="w-fit">
-                  {completedMilestones} of {totalMilestones} completed
+                  {completedMilestones} of {totalMilestones} {t('complete')}
                 </Badge>
               </div>
 
               {/* Client Actions Summary */}
               <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
-                <h3 className="text-sm font-medium text-blue-900 mb-2">📋 Your Actions</h3>
+                <h3 className="text-sm font-medium text-blue-900 mb-2">📋 {t('yourActions')}</h3>
                 <div className="text-sm text-blue-800">
                   {project.milestones.some(m => m.status === 'pending_payment' || m.status === 'review' || m.status === 'pending' || m.status === 'rejected') && (
-                    <p className="mb-2">• Upload payment proof for approved milestones below</p>
+                    <p className="mb-2">• {t('uploadPaymentProofForApproved')}</p>
                   )}
                   {project.milestones.some(m => {
                     const links = parseDeliverableLinks(m.deliverable_link);
                     return links.length > 0 && (m.status === 'approved' || m.status === 'review' || m.status === 'in_progress');
                   }) && (
-                    <p className="mb-2">• View and download deliverables for completed work</p>
+                    <p className="mb-2">• {t('viewDownloadDeliverablesCompleted')}</p>
                   )}
                   {!project.milestones.some(m => m.status === 'pending_payment' || m.status === 'review' || m.status === 'pending' || m.status === 'rejected') && 
                    !project.milestones.some(m => parseDeliverableLinks(m.deliverable_link).length > 0) && (
-                    <p className="text-blue-600">No actions required at this time. Check back for updates!</p>
+                    <p className="text-blue-600">{t('noActionsRequiredCheckBack')}</p>
                   )}
                 </div>
               </div>
 
               {/* Milestone Cards */}
               <section aria-label="Project milestones" className="space-y-3 sm:space-y-4">
-                {project.milestones.map((milestone, index) => (
-                  <Card key={milestone.id} className="border-0 shadow-none bg-gray-50">
-                    <CardContent className="p-4 sm:p-6">
-                      <div className="flex items-start justify-between">
-                        <div className="flex items-start space-x-3 flex-1">
-                          <div className="p-2 rounded-lg flex-shrink-0">
-                            <span className="text-xl">
-                              {milestone.status === 'approved' ? '✅' : 
-                               milestone.status === 'pending_payment' ? '💳' : 
-                               milestone.status === 'payment_submitted' ? '⏳' :
-                               milestone.status === 'rejected' ? '❌' :
-                               milestone.status === 'in_progress' ? '🔄' : '⏳'}
-                            </span>
-                          </div>
-                          <div className="min-w-0 flex-1">
-                            <h3 className="text-base font-medium text-gray-900 mb-1">{milestone.title}</h3>
-                            <p className="text-sm text-gray-500 mb-2 leading-relaxed">{milestone.description}</p>
-                            <div className="flex items-center gap-4 text-xs text-gray-400">
-                              <span>{formatCurrency(milestone.price, displayCurrency)}</span>
-                              <span className="capitalize">{milestone.status.replace('_', ' ')}</span>
-                            </div>
-                            
-                            {/* Show payment rejection notice */}
-                            {milestone.status === 'rejected' && (
-                              <div className="mt-3 p-3 bg-red-50 rounded-lg border border-red-200">
-                                <div className="flex items-center gap-2 mb-2">
-                                  <span className="text-red-600">❌</span>
-                                  <span className="text-sm font-medium text-red-800">Payment Proof Rejected</span>
-                                </div>
-                                <p className="text-sm text-red-700">
-                                  Your payment proof was rejected. Please upload a new payment proof with correct details.
-                                </p>
+                {project.milestones.map((milestone, index) => {
+                  // Parse revision data to show revision info
+                  const revisionData = parseRevisionData(milestone);
+                  const canRequest = canRequestRevision(revisionData);
+                  const remainingRevisions = getRemainingRevisions(revisionData);
+                  
+                  return (
+                    <Card key={milestone.id} className="border-0 shadow-none bg-gray-50">
+                      <CardContent className="p-4 sm:p-6">
+                        <div className="space-y-4">
+                          {/* Milestone Header */}
+                          <div className="flex items-start justify-between">
+                            <div className="flex items-start space-x-3 flex-1">
+                              <div className="p-2 rounded-lg flex-shrink-0">
+                                <span className="text-xl">
+                                  {milestone.status === 'approved' ? '✅' : 
+                                   milestone.status === 'pending_payment' ? '💳' : 
+                                   milestone.status === 'payment_submitted' ? '⏳' :
+                                   milestone.status === 'rejected' ? '❌' :
+                                   milestone.status === 'in_progress' ? '🔄' : '⏳'}
+                                </span>
                               </div>
-                            )}
-                            
-                            {/* Show deliverable links when milestone is completed or approved */}
-                            {milestone.deliverable_link && (milestone.status === 'approved' || milestone.status === 'review' || milestone.status === 'in_progress') && (() => {
-                              const deliverableLinks = parseDeliverableLinks(milestone.deliverable_link);
-                              if (deliverableLinks.length === 0) return null;
-                              
-                              return (
-                                <div className="mt-3 p-3 bg-green-50 rounded-lg border border-green-200">
-                                  <div className="flex items-center gap-2 mb-2">
-                                    <span className="text-green-600">📎</span>
-                                    <span className="text-sm font-medium text-green-800">
-                                      {deliverableLinks.length === 1 ? 'Deliverable Ready' : `${deliverableLinks.length} Deliverables Ready`}
-                                    </span>
+                              <div className="min-w-0 flex-1">
+                                <h3 className="text-base font-medium text-gray-900 mb-1">{milestone.title}</h3>
+                                <p className="text-sm text-gray-500 mb-2 leading-relaxed">{milestone.description}</p>
+                                <div className="flex items-center gap-4 text-xs text-gray-400">
+                                  <div className="text-xs">
+                                    <CurrencyDisplay
+                                      amount={milestone.price}
+                                      fromCurrency={projectCurrency}
+                                      toCurrency={undefined}
+                                      showConversionIndicator={false}
+                                      convertToUserCurrency={false}
+                                      className="text-xs text-gray-400"
+                                    />
                                   </div>
-                                  <div className="space-y-2">
-                                    {deliverableLinks.map((link, index) => (
-                                      <a 
-                                        key={index}
-                                        href={link.url} 
-                                        target="_blank" 
-                                        rel="noopener noreferrer"
-                                        className="inline-flex items-center gap-2 text-sm text-green-700 hover:text-green-900 underline block"
-                                      >
-                                        {link.title || 'View Deliverable'}
-                                        <span>↗️</span>
-                                      </a>
-                                    ))}
-                                  </div>
+                                  <span className="capitalize">{milestone.status.replace('_', ' ')}</span>
                                 </div>
-                              );
-                            })()}
+                              </div>
+                            </div>
+                            <Badge 
+                              variant={milestone.status === 'approved' ? 'default' : 
+                                      milestone.status === 'rejected' ? 'destructive' : 'secondary'}
+                            >
+                              {milestone.status === 'approved' ? t('complete') : 
+                               milestone.status === 'pending_payment' ? t('pendingPayment') : 
+                               milestone.status === 'payment_submitted' ? t('paymentUnderReview') :
+                               milestone.status === 'rejected' ? t('paymentRejected') :
+                               milestone.status === 'in_progress' ? t('inProgress') : t('pending')}
+                            </Badge>
                           </div>
+
+                          {/* ClientView Component with Revision Functionality */}
+                          <ClientView
+                            milestone={milestone}
+                            onPaymentUpload={handlePaymentUploadImpl}
+                            onRevisionRequest={handleRevisionRequest}
+                            token={parsedToken?.token}
+                            paymentProofRequired={true}
+                          />
                         </div>
-                        <div className="flex flex-col items-end gap-2">
-                          <Badge 
-                            variant={milestone.status === 'approved' ? 'default' : 
-                                    milestone.status === 'rejected' ? 'destructive' : 'secondary'}
-                          >
-                            {milestone.status === 'approved' ? 'Complete' : 
-                             milestone.status === 'pending_payment' ? 'Pending Payment' : 
-                             milestone.status === 'payment_submitted' ? 'Payment Under Review' :
-                             milestone.status === 'rejected' ? 'Payment Rejected' :
-                             milestone.status === 'in_progress' ? 'In Progress' : 'Pending'}
-                          </Badge>
-                          
-                          {/* Payment upload for milestones that need payment */}
-                          {(milestone.status === 'pending_payment' || milestone.status === 'review' || milestone.status === 'pending' || milestone.status === 'rejected') && (
-                            <PaymentUploadDialog
-                              milestoneId={milestone.id}
-                              onPaymentUpload={handlePaymentUploadImpl}
-                              trigger={
-                                <Button 
-                                  size="sm" 
-                                  variant="outline"
-                                  className={`text-xs px-3 py-1 h-7 ${
-                                    milestone.status === 'rejected' 
-                                      ? 'bg-red-50 hover:bg-red-100 text-red-700 border-red-200' 
-                                      : 'bg-blue-50 hover:bg-blue-100 text-blue-700 border-blue-200'
-                                  }`}
-                                >
-                                  {milestone.status === 'rejected' ? '🔄 Re-upload Payment' : '💳 Upload Payment'}
-                                </Button>
-                              }
-                            />
-                          )}
-                          
-                          {/* Show payment submitted status */}
-                          {milestone.status === 'payment_submitted' && (
-                            <div className="text-xs px-3 py-1 bg-yellow-50 text-yellow-700 border border-yellow-200 rounded">
-                              ⏳ Payment Under Review
-                            </div>
-                          )}
-                          
-                          {/* Show payment rejected status */}
-                          {milestone.status === 'rejected' && (
-                            <div className="text-xs px-3 py-1 bg-red-50 text-red-700 border border-red-200 rounded">
-                              ❌ Payment Rejected
-                            </div>
-                          )}
-                          
-                          {/* Show paid status */}
-                          {milestone.status === 'paid' && (
-                            <div className="text-xs px-3 py-1 bg-green-50 text-green-700 border border-green-200 rounded">
-                              ✅ Payment Confirmed
-                            </div>
-                          )}
-                        </div>
-                      </div>
-                    </CardContent>
-                  </Card>
-                ))}
+                      </CardContent>
+                    </Card>
+                  );
+                })}
               </section>
             </div>
           </main>
@@ -683,7 +644,7 @@ const ClientProject = () => {
           <DialogHeader>
             <DialogTitle className="text-xl font-medium text-gray-900 flex items-center gap-2">
               <span className="text-xl">📄</span>
-              Project Contract
+              {t('projectContract')}
             </DialogTitle>
           </DialogHeader>
           
@@ -753,14 +714,14 @@ const ClientProject = () => {
               className="border-gray-300 bg-white text-gray-700 hover:bg-gray-50 flex items-center gap-2"
             >
               <span className="text-lg">📄</span>
-              Download as PDF
+              {t('downloadAsPdf')}
             </Button>
             <Button
               variant="outline"
               onClick={() => setShowContractModal(false)}
               className="border-gray-300 bg-white text-gray-700 hover:bg-gray-50"
             >
-              Close
+              {t('close')}
             </Button>
           </div>
         </DialogContent>

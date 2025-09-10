@@ -26,16 +26,9 @@ export function SubscriptionCardBadge({
   }
   
   if (isPopular) {
-    // Show "Coming Soon" for Free and Plus users looking at Pro plan
-    const shouldShowComingSoon = (currentUserType === 'free' || currentUserType === 'plus') && planId === 'pro';
-    
     return (
-      <Badge className={`absolute -top-3 left-1/2 transform -translate-x-1/2 px-3 py-1 ${
-        shouldShowComingSoon 
-          ? 'bg-gray-500 text-white hover:bg-gray-600' 
-          : 'bg-gray-900 text-white hover:bg-gray-800'
-      }`}>
-        {shouldShowComingSoon ? t('comingSoon') : t('recommended')}
+      <Badge className="absolute -top-3 left-1/2 transform -translate-x-1/2 bg-gray-900 text-white hover:bg-gray-800 px-3 py-1">
+        {t('recommended')}
       </Badge>
     );
   }

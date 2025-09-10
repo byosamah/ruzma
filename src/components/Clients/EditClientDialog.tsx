@@ -5,7 +5,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { Input } from '@/components/ui/input';
 import { FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { ShadcnFormDialog } from '@/components/shared/dialogs/ShadcnFormDialog';
-import { editClientSchema } from '@/lib/validators/client';
+import { clientSchema, EditClientFormData } from '@/lib/validators/client';
 import { ClientWithProjectCount } from '@/types/client';
 import { useT } from '@/lib/i18n';
 
@@ -25,7 +25,7 @@ function EditClientDialog({
   const t = useT();
   
   const form = useForm<EditClientFormData>({
-    resolver: zodResolver(editClientSchema),
+    resolver: zodResolver(clientSchema),
     defaultValues: {
       name: '',
       email: '',

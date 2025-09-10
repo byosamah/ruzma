@@ -4,6 +4,7 @@ import { useProfileQuery } from '@/hooks/core/useProfileQuery';
 import { ServiceRegistry } from '@/services/core/ServiceRegistry';
 import { CurrencyCode } from '@/lib/currency';
 import { ConversionResult } from '@/services/core/ConversionService';
+import { CurrencyConversionCoordinator } from '@/services/core/CurrencyConversionCoordinator';
 
 export interface CurrencyDisplayOptions {
   showConversionIndicator?: boolean;
@@ -41,6 +42,14 @@ export const useCurrencyDisplay = ({
   toCurrency,
   options = {}
 }: UseCurrencyDisplayParams): CurrencyDisplayResult => {
+  // Validate fromCurrency to prevent undefined currencies from reaching the API
+  const validatedFromCurrency = (fromCurrency && fromCurrency.trim() && fromCurrency !== 'undefined' && fromCurrency !== 'null') 
+    ? fromCurrency 
+    : 'USD' as CurrencyCode;
+    
+  if (fromCurrency !== validatedFromCurrency) {
+    console.warn(`Invalid fromCurrency '${fromCurrency}' replaced with '${validatedFromCurrency}'`);
+  }
   const { user } = useAuth();
   const { data: profile } = useProfileQuery(user);
   const [conversionResult, setConversionResult] = useState<ConversionResult | null>(null);
@@ -50,7 +59,7 @@ export const useCurrencyDisplay = ({
     showConversionIndicator = true,
     showOriginalAmount = false,
     compactFormat = false,
-    convertToUserCurrency = true,
+    convertToUserCurrency = false,
   } = options;
 
   const conversionService = useMemo(() => {
@@ -60,8 +69,8 @@ export const useCurrencyDisplay = ({
   const targetCurrency = useMemo(() => {
     if (toCurrency) return toCurrency;
     if (convertToUserCurrency && profile?.currency) return profile.currency as CurrencyCode;
-    return fromCurrency;
-  }, [toCurrency, convertToUserCurrency, profile?.currency, fromCurrency]);
+    return validatedFromCurrency;
+  }, [toCurrency, convertToUserCurrency, profile?.currency, validatedFromCurrency]);
 
   const language = useMemo(() => {
     // Determine language from profile country or default to English
@@ -74,13 +83,31 @@ export const useCurrencyDisplay = ({
     const performConversion = async () => {
       setLoading(true);
       
+      
       try {
-        const result = await conversionService.convertWithFormatting(
-          amount,
-          fromCurrency,
+        // Use the coordinator to ensure consistent rates with dashboard stats
+        const coordinator = CurrencyConversionCoordinator.getInstance();
+        const coordinatedResults = await coordinator.coordinatedBatchConversion(
+          [{ amount, fromCurrency: validatedFromCurrency }],
           targetCurrency,
-          { language: language as 'en' | 'ar' }
+          user
         );
+        
+        const coordinatedResult = coordinatedResults[0];
+        
+        // Create full conversion result for display with proper formatting
+        const conversionService = ServiceRegistry.getInstance().getConversionService(user);
+        
+        const result: ConversionResult = {
+          originalAmount: amount,
+          originalCurrency: validatedFromCurrency,
+          convertedAmount: coordinatedResult.convertedAmount,
+          convertedCurrency: targetCurrency,
+          conversionRate: coordinatedResult.rate,
+          formattedOriginal: conversionService.formatAmountWithCurrency(amount, validatedFromCurrency, language as 'en' | 'ar'),
+          formattedConverted: conversionService.formatAmountWithCurrency(coordinatedResult.convertedAmount, targetCurrency, language as 'en' | 'ar'),
+          isConverted: validatedFromCurrency !== targetCurrency,
+        };
 
         if (!isCancelled) {
           setConversionResult(result);
@@ -90,14 +117,15 @@ export const useCurrencyDisplay = ({
         
         if (!isCancelled) {
           // Fallback to original currency if conversion fails
+          const conversionService = ServiceRegistry.getInstance().getConversionService(user);
           const fallbackResult: ConversionResult = {
             originalAmount: amount,
-            originalCurrency: fromCurrency,
+            originalCurrency: validatedFromCurrency,
             convertedAmount: amount,
-            convertedCurrency: fromCurrency,
+            convertedCurrency: validatedFromCurrency,
             conversionRate: 1,
-            formattedOriginal: `${amount}`,
-            formattedConverted: `${amount}`,
+            formattedOriginal: conversionService.formatAmountWithCurrency(amount, validatedFromCurrency, language as 'en' | 'ar'),
+            formattedConverted: conversionService.formatAmountWithCurrency(amount, validatedFromCurrency, language as 'en' | 'ar'),
             isConverted: false,
           };
           setConversionResult(fallbackResult);
@@ -114,7 +142,7 @@ export const useCurrencyDisplay = ({
     return () => {
       isCancelled = true;
     };
-  }, [amount, fromCurrency, targetCurrency, language, conversionService]);
+  }, [amount, validatedFromCurrency, targetCurrency, language, user]);
 
   const result = useMemo((): CurrencyDisplayResult => {
     if (!conversionResult) {
@@ -122,8 +150,8 @@ export const useCurrencyDisplay = ({
         formattedAmount: `${amount}`,
         originalAmount: amount,
         displayAmount: amount,
-        originalCurrency: fromCurrency,
-        displayCurrency: fromCurrency,
+        originalCurrency: validatedFromCurrency,
+        displayCurrency: validatedFromCurrency,
         isConverted: false,
         conversionRate: 1,
         loading: true,
@@ -159,7 +187,7 @@ export const useCurrencyDisplay = ({
     compactFormat,
     language,
     amount,
-    fromCurrency,
+    validatedFromCurrency,
   ]);
 
   return result;
@@ -190,7 +218,7 @@ export const useBatchCurrencyDisplay = (
 
   const targetCurrency = useMemo(() => {
     if (toCurrency) return toCurrency;
-    if (options.convertToUserCurrency !== false && profile?.currency) {
+    if (options.convertToUserCurrency === true && profile?.currency) {
       return profile.currency as CurrencyCode;
     }
     return 'USD';
@@ -203,8 +231,21 @@ export const useBatchCurrencyDisplay = (
       setLoading(true);
 
       try {
+        // Validate and clean currency codes before batch conversion
+        const validatedItems = items.map(item => {
+          const validatedCurrency = (item.fromCurrency && item.fromCurrency.trim() && item.fromCurrency !== 'undefined' && item.fromCurrency !== 'null') 
+            ? item.fromCurrency 
+            : 'USD' as CurrencyCode;
+          
+          if (item.fromCurrency !== validatedCurrency) {
+            console.warn(`Invalid fromCurrency '${item.fromCurrency}' for item '${item.id}' replaced with '${validatedCurrency}'`);
+          }
+          
+          return { amount: item.amount, fromCurrency: validatedCurrency };
+        });
+
         const batchResults = await conversionService.convertBatch(
-          items.map(item => ({ amount: item.amount, fromCurrency: item.fromCurrency })),
+          validatedItems,
           targetCurrency,
           { language: profile?.country === 'SA' || profile?.country === 'AE' ? 'ar' : 'en' }
         );

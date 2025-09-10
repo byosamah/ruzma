@@ -11,7 +11,8 @@ function VerticalProjectCard({
   onViewClick,
   onEditClick,
   onDeleteClick,
-  currency
+  currency,
+  convertFrom
 }: ProjectCardProps) {
   const stats = calculateProjectStats(project);
   const actions = useProjectCardActions(project, onViewClick, onEditClick, onDeleteClick);
@@ -43,6 +44,7 @@ function VerticalProjectCard({
           project={project}
           stats={stats}
           currency={currency}
+          convertFrom={convertFrom}
           isVerticalLayout={true}
         />
         

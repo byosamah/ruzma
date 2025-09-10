@@ -1,4 +1,5 @@
 import { memo } from "react";
+import { useT } from '@/lib/i18n';
 
 interface ProjectType {
   label: string;
@@ -11,6 +12,7 @@ interface ProjectTypesListProps {
 }
 
 function ProjectTypesList({ data }: ProjectTypesListProps) {
+  const t = useT();
   // Get emoji for project type
   const getProjectTypeEmoji = (label: string) => {
     const lowerLabel = label.toLowerCase();
@@ -36,7 +38,7 @@ function ProjectTypesList({ data }: ProjectTypesListProps) {
       <div className="text-center py-8">
         <div className="text-4xl mb-3">🎨</div>
         <p className="text-sm text-gray-500">
-          No project types to display yet. Start adding projects to see your service distribution.
+          {t('noProjectTypesToDisplay')}
         </p>
       </div>
     );
@@ -55,7 +57,7 @@ function ProjectTypesList({ data }: ProjectTypesListProps) {
               <div className="min-w-0 flex-1">
                 <div className="font-medium text-gray-900 break-words">{item.label}</div>
                 <div className="text-xs text-gray-500">
-                  {item.value} project{item.value !== 1 ? 's' : ''}
+                  {item.value} {item.value === 1 ? t('project') : t('projects')}
                 </div>
               </div>
             </div>
@@ -75,11 +77,11 @@ function ProjectTypesList({ data }: ProjectTypesListProps) {
       {/* Summary */}
       <div className="mt-4 pt-4 border-t border-gray-200">
         <div className="flex items-center justify-between text-sm">
-          <span className="text-gray-600">Total Projects</span>
+          <span className="text-gray-600">{t('totalProjects')}</span>
           <span className="font-medium text-gray-900">{total}</span>
         </div>
         <div className="flex items-center justify-between text-sm mt-1">
-          <span className="text-gray-600">Service Categories</span>
+          <span className="text-gray-600">{t('serviceCategories')}</span>
           <span className="font-medium text-gray-900">{sortedData.length}</span>
         </div>
       </div>

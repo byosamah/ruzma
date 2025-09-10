@@ -2,6 +2,7 @@
 import { Badge } from '@/components/ui/badge';
 import { Calendar, Clock, Coins } from 'lucide-react';
 import { formatCurrency, CurrencyCode } from '@/lib/currency';
+import { CurrencyDisplay } from '@/components/ui/currency-display';
 import { DatabaseProject } from '@/hooks/projectTypes';
 import { ProjectStats } from './types';
 import { useT } from '@/lib/i18n';
@@ -11,13 +12,15 @@ interface ProjectCardContentProps {
   project: DatabaseProject;
   stats: ProjectStats;
   currency: CurrencyCode;
+  convertFrom?: CurrencyCode;
   isVerticalLayout: boolean;
 }
 
 function ProjectCardContent({ 
   project, 
   stats, 
-  currency, 
+  currency,
+  convertFrom, 
   isVerticalLayout 
 }: ProjectCardContentProps) {
   const t = useT();
@@ -53,7 +56,19 @@ function ProjectCardContent({
         
         <div className="flex items-center gap-1 text-slate-600">
           <Coins className="w-3 h-3 flex-shrink-0" />
-          <span className="whitespace-nowrap">{formatCurrency(stats.totalValue, currency)}</span>
+          <span className="whitespace-nowrap">
+            {convertFrom && convertFrom !== currency ? (
+              <CurrencyDisplay
+                amount={stats.totalValue}
+                fromCurrency={convertFrom}
+                toCurrency={currency}
+                showConversionIndicator={true}
+                className="text-xs"
+              />
+            ) : (
+              formatCurrency(stats.totalValue, currency)
+            )}
+          </span>
         </div>
       </div>
 
