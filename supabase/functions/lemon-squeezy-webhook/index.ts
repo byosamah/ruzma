@@ -4,6 +4,18 @@ import type { LemonSqueezyWebhookPayload } from "../_shared/types.ts"
 import { createLogger, getRequestIdFromHeaders } from "../_shared/logger.ts"
 import { createServiceRoleSupabaseClient } from "../_shared/supabase-client.ts"
 
+// Plan configuration constants
+const PLAN_CONFIG = {
+  free: { trial_days: 0 },
+  plus: { trial_days: 7 },
+  pro: { trial_days: 14 }
+} as const
+
+const GRACE_PERIODS = {
+  TRIAL_GRACE_DAYS: 3,
+  PAYMENT_GRACE_DAYS: 7
+} as const
+
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
@@ -109,12 +121,12 @@ serve(async (req) => {
       const trialEndsAt = subscription.attributes?.trial_ends_at ? 
         new Date(subscription.attributes.trial_ends_at) : 
         (status === 'on_trial' && subscriptionPlan !== 'free' ? 
-          new Date(Date.now() + (subscriptionPlan === 'plus' ? 7 : 14) * 24 * 60 * 60 * 1000) : 
+          new Date(Date.now() + PLAN_CONFIG[subscriptionPlan as keyof typeof PLAN_CONFIG].trial_days * 24 * 60 * 60 * 1000) : 
           null);
 
       // Calculate grace period end dates
       const gracePeriodEndsAt = trialEndsAt && status === 'on_trial' ? 
-        new Date(trialEndsAt.getTime() + (3 * 24 * 60 * 60 * 1000)) : null; // 3 days grace period
+        new Date(trialEndsAt.getTime() + (GRACE_PERIODS.TRIAL_GRACE_DAYS * 24 * 60 * 60 * 1000)) : null;
 
       // For subscription_updated events, handle potential cancellation of old subscriptions
       if (eventName === 'subscription_updated') {
@@ -338,7 +350,7 @@ serve(async (req) => {
         operation.step('Processing payment failure', { userId });
 
         // Update subscription status to unpaid with payment grace period
-        const paymentGraceEndsAt = new Date(Date.now() + (7 * 24 * 60 * 60 * 1000)); // 7 days grace period
+        const paymentGraceEndsAt = new Date(Date.now() + (GRACE_PERIODS.PAYMENT_GRACE_DAYS * 24 * 60 * 60 * 1000));
         
         const { error: subError } = await supabase
           .from('subscriptions')
@@ -561,6 +573,112 @@ serve(async (req) => {
         }
       } else {
         logger.warn('No user_id in custom_data for subscription resume event');
+      }
+    }
+
+    // Handle order created (for lifetime plans - one-time payments)
+    if (eventName === 'order_created') {
+      const operation = logger.startOperation('handle_order_created');
+      const order = data;
+      const customData = meta?.custom_data;
+      
+      if (customData?.user_id) {
+        const userId = customData.user_id;
+        const variantId = order.attributes?.first_order_item?.variant_id?.toString();
+        
+        operation.step('Processing lifetime order', { userId, variantId });
+
+        // Check if this is a Pro plan (lifetime) order
+        if (variantId === '697237') { // Pro plan variant
+          operation.step('Creating lifetime subscription for Pro plan');
+
+          // Create a lifetime subscription record
+          const subscriptionData = {
+            lemon_squeezy_id: order.id, // Use order ID for lifetime plans
+            user_id: userId,
+            status: 'active',
+            product_id: order.attributes?.first_order_item?.product_id?.toString(),
+            variant_id: variantId,
+            subscription_plan: 'pro',
+            payment_type: 'lifetime',
+            lifetime_purchased_at: new Date().toISOString(),
+            trial_ends_at: null, // No trial for lifetime plans
+            expires_at: null,    // Never expires
+            updated_at: new Date().toISOString()
+          };
+
+          // Insert lifetime subscription
+          const { error: insertError } = await supabase
+            .from('subscriptions')
+            .insert(subscriptionData);
+
+          if (insertError) {
+            logger.error('Failed to create lifetime subscription', insertError, { 
+              orderId: order.id,
+              userId 
+            });
+          } else {
+            logger.info('Lifetime subscription created successfully', { 
+              orderId: order.id,
+              userId 
+            });
+          }
+
+          // Update user profile to Pro
+          const { error: profileError } = await supabase
+            .from('profiles')
+            .update({
+              user_type: 'pro',
+              subscription_status: 'active',
+              subscription_id: order.id,
+              updated_at: new Date().toISOString()
+            })
+            .eq('id', userId);
+
+          if (profileError) {
+            operation.failure(profileError, 'Failed to upgrade user to Pro lifetime', { userId });
+          } else {
+            operation.success('User upgraded to Pro lifetime successfully', { userId });
+          }
+
+          // Log lifetime purchase event
+          try {
+            await supabase.rpc('log_subscription_event', {
+              p_subscription_id: order.id,
+              p_user_id: userId,
+              p_event_type: 'lifetime_purchased',
+              p_old_status: 'free',
+              p_new_status: 'active',
+              p_metadata: {
+                subscription_plan: 'pro',
+                variant_id: variantId,
+                payment_type: 'lifetime',
+                lifetime_purchased_at: new Date().toISOString()
+              }
+            });
+          } catch (logError) {
+            logger.warn('Failed to log lifetime purchase event', logError);
+          }
+
+          // Send welcome notification for lifetime plan
+          try {
+            await supabase.functions.invoke('send-payment-notification', {
+              body: {
+                userId: userId,
+                type: 'lifetime_purchased',
+                subscriptionId: order.id,
+                planType: 'pro'
+              }
+            });
+            logger.info('Lifetime purchase notification sent', { userId });
+          } catch (notificationError) {
+            logger.error('Failed to send lifetime purchase notification', notificationError, { userId });
+          }
+        } else {
+          logger.info('Order created for non-lifetime plan, skipping', { variantId });
+        }
+      } else {
+        logger.warn('No user_id in custom_data for order created event');
       }
     }
 

@@ -4,7 +4,7 @@ export interface SubscriptionPlan {
   name: string;
   price: number;
   originalPrice?: number;
-  interval: 'month' | 'year';
+  interval: 'month' | 'year' | 'lifetime';
   features: string[];
   storeId?: string;
   variantId?: string;

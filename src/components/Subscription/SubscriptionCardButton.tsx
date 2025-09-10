@@ -84,7 +84,7 @@ export function SubscriptionCardButton({
       case 'plus':
         return t('freeTrialSevenDays');
       case 'pro':
-        return t('freeTrialFourteenDays');
+        return t('freeTrialSevenDays'); // 7 days trial for lifetime plan
       default:
         return null;
     }

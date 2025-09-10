@@ -12,7 +12,7 @@ interface AIUsageRecord {
 }
 
 interface UserPlan {
-  user_type: 'free' | 'pro' | 'enterprise';
+  user_type: 'free' | 'plus' | 'pro' | 'enterprise';
   ai_features_enabled: boolean;
   daily_ai_calls_limit: number;
 }
@@ -52,19 +52,19 @@ export class AIUsageService {
 
       const userType = profile?.user_type || 'free';
       
-      // Define plan limits - default to pro for now during development
+      // Define plan limits - AI features enabled for Plus, disabled for Pro (lifetime)
       const planLimits = {
         free: { ai_features_enabled: false, daily_ai_calls_limit: 0 },
-        pro: { ai_features_enabled: true, daily_ai_calls_limit: 1 },
-        enterprise: { ai_features_enabled: true, daily_ai_calls_limit: 5 }
+        plus: { ai_features_enabled: true, daily_ai_calls_limit: 3 }, // Plus gets AI features
+        pro: { ai_features_enabled: false, daily_ai_calls_limit: 0 }, // Pro (lifetime) NO AI
+        enterprise: { ai_features_enabled: true, daily_ai_calls_limit: 10 }
       };
 
-      // Default to pro for development - in production this should check actual subscription
-      const actualUserType = userType || 'pro';
-      const limits = planLimits[actualUserType as keyof typeof planLimits] || planLimits.pro;
+      const actualUserType = userType || 'free';
+      const limits = planLimits[actualUserType as keyof typeof planLimits] || planLimits.free;
 
       return {
-        user_type: actualUserType as 'free' | 'pro' | 'enterprise',
+        user_type: actualUserType as 'free' | 'plus' | 'pro' | 'enterprise',
         ai_features_enabled: limits.ai_features_enabled,
         daily_ai_calls_limit: limits.daily_ai_calls_limit
       };

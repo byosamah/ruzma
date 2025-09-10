@@ -26,6 +26,7 @@ export const getSubscriptionPlans = (currency: CurrencyCode = 'USD', language: '
       originalPrice: Math.round(39 * rate * 100) / 100,
       interval: 'month',
       features: [
+        `🎁 ${translate('freeTrialSevenDays', language)}`,
         `✅ ${translate('unlimitedProjectsBenefit', language)}`,
         `💡 ${translate('aiAssistant', language)}`,
         `💰 ${translate('paymentProof', language)}`,
@@ -42,7 +43,7 @@ export const getSubscriptionPlans = (currency: CurrencyCode = 'USD', language: '
       name: translate('pro', language),
       price: Math.round(349 * rate * 100) / 100,
       originalPrice: Math.round(450 * rate * 100) / 100,
-      interval: 'month',
+      interval: 'lifetime', // Changed from 'month' to 'lifetime'
       features: [
         `🔓 ${translate('accessForever', language)}`,
         `✅ ${translate('unlimitedProjectsBenefit', language)}`,
@@ -51,6 +52,7 @@ export const getSubscriptionPlans = (currency: CurrencyCode = 'USD', language: '
         `🖼️ ${translate('brandedPortal', language)}`,
         `🧾 ${translate('invoiceGenerator', language)}`,
         `📊 ${translate('analyticsDashboard', language)}`,
+        // Note: AI features removed from Pro plan
       ],
       storeId: '148628',
       variantId: '697237',

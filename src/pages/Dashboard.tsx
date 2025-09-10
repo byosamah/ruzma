@@ -13,6 +13,7 @@ import { Button } from '@/components/ui/button';
 import { useT } from '@/lib/i18n';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 import { useIsMobile } from '@/hooks/use-mobile';
+import { GracePeriodWarning } from '@/components/subscription/GracePeriodWarning';
 
 const Dashboard = () => {
   const { navigate } = useLanguageNavigation();
@@ -55,6 +56,7 @@ const Dashboard = () => {
   const handleEditProjectCard = (projectSlug: string) => {
     navigate(`/edit-project/${projectSlug}`);
   };
+
 
   if (loading) {
     return (
@@ -121,9 +123,12 @@ const Dashboard = () => {
           <DashboardHeader 
             displayName={displayName} 
             onNewProject={handleNewProject} 
-            canCreateProject={usage.canCreateProject} 
+            canCreateProject={usage.canCreateProject}
           />
         </header>
+        
+        {/* Grace Period Warning */}
+        <GracePeriodWarning variant="card" className="w-full" />
         
         {/* Usage Indicators */}
         <section aria-label="Usage indicators">

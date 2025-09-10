@@ -19,7 +19,7 @@ const Layout = ({
   children,
   user,
   onSignOut = () => {}
-}) => {
+}: LayoutProps) => {
   const {
     mobileMenuOpen,
     isLandingPage,

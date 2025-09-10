@@ -48,21 +48,27 @@ export const SUBSCRIPTION_STATUS = {
   PAUSED: 'paused',
 } as const;
 
-// Plan definitions with trial days
+// Plan definitions with trial days and payment types
 export const PLAN_CONFIG = {
   free: {
     trial_days: 0,
     max_projects: 1,
     max_clients: 5,
+    payment_type: 'free',
+    ai_features: false,
   },
   plus: {
     trial_days: 7,
     max_projects: 50,
     max_clients: 100,
+    payment_type: 'recurring',
+    ai_features: true,  // AI features enabled for Plus
   },
   pro: {
-    trial_days: 14,
-    max_projects: -1, // Unlimited
-    max_clients: -1,  // Unlimited
+    trial_days: 0,      // No trial for lifetime plan
+    max_projects: -1,   // Unlimited
+    max_clients: -1,    // Unlimited  
+    payment_type: 'lifetime',
+    ai_features: false, // AI features disabled for lifetime plan
   },
 } as const;

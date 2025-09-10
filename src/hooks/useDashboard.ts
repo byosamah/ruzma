@@ -10,7 +10,6 @@ export const useDashboard = () => {
   const { user, loading: authLoading } = useAuth();
   const { data, isLoading: dataLoading, refetch } = useDashboardDataQuery(user);
   
-  
   const userCurrency = useUserCurrency(data?.profile);
   const stats = useDashboardStats(data?.projects || [], userCurrency.currency);
 

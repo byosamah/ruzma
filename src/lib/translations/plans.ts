@@ -69,6 +69,15 @@ export const plansTranslations = {
     // Trial notes
     freeTrialSevenDays: "Free trial for 7 days.",
     freeTrialFourteenDays: "Free trial for 14 days.",
+    // Grace period messages
+    trialGracePeriod: "Trial Grace Period",
+    paymentGracePeriod: "Payment Grace Period",
+    trialGraceMessage: "Your trial has expired, but you have {days} days left to complete payment.",
+    paymentGraceMessage: "Payment failed. You have {days} days left to update your payment method.",
+    gracePeriodEnding: "Grace period ending soon",
+    updatePaymentMethod: "Update Payment Method",
+    daysRemaining: "{days} days remaining",
+    dayRemaining: "{days} day remaining",
   },
   ar: {
     choosePlan: "اختر خطتك",
@@ -140,5 +149,14 @@ export const plansTranslations = {
     // Trial notes
     freeTrialSevenDays: "تجربة مجانية لمدة 7 أيام.",
     freeTrialFourteenDays: "تجربة مجانية لمدة 14 يوماً.",
+    // Grace period messages
+    trialGracePeriod: "فترة سماح التجربة",
+    paymentGracePeriod: "فترة سماح الدفع",
+    trialGraceMessage: "انتهت فترة التجربة، لكن لديك {days} أيام متبقية لإكمال الدفع.",
+    paymentGraceMessage: "فشل في الدفع. لديك {days} أيام متبقية لتحديث طريقة الدفع.",
+    gracePeriodEnding: "فترة السماح تنتهي قريباً",
+    updatePaymentMethod: "تحديث طريقة الدفع",
+    daysRemaining: "{days} أيام متبقية",
+    dayRemaining: "{days} يوم متبقي",
   },
 };

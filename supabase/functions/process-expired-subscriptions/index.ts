@@ -135,8 +135,65 @@ serve(async (req) => {
 
         // Only downgrade to free if no other active subscriptions
         if (!activeSubscriptions || activeSubscriptions.length === 0) {
-          operation.step('Downgrading user to free plan');
+          operation.step('Downgrading user to free plan and handling excess projects');
           
+          // First, handle excess projects by archiving them
+          try {
+            const { data: projects, error: projectsError } = await supabase
+              .from('projects')
+              .select('id, name, slug, updated_at, status')
+              .eq('user_id', subscription.user_id)
+              .neq('status', 'archived')
+              .order('updated_at', { ascending: false });
+
+            if (projectsError) {
+              logger.warn('Failed to fetch user projects for archival', projectsError, {
+                userId: subscription.user_id
+              });
+            } else if (projects && projects.length > 1) {
+              // Free plan allows only 1 project, archive the rest
+              const projectsToArchive = projects.slice(1);
+              const projectIdsToArchive = projectsToArchive.map(p => p.id);
+
+              operation.step('Archiving excess projects', {
+                totalProjects: projects.length,
+                projectsToArchive: projectsToArchive.length,
+                projectsKeptActive: 1
+              });
+
+              const { error: archiveError } = await supabase
+                .from('projects')
+                .update({
+                  status: 'archived',
+                  archived_at: now.toISOString(),
+                  archive_reason: 'plan_downgrade_to_free',
+                  updated_at: now.toISOString()
+                })
+                .in('id', projectIdsToArchive);
+
+              if (archiveError) {
+                logger.error('Failed to archive excess projects', archiveError, {
+                  userId: subscription.user_id,
+                  projectIdsToArchive
+                });
+              } else {
+                operation.step('Successfully archived excess projects', {
+                  archivedProjectIds: projectIdsToArchive
+                });
+              }
+            } else {
+              operation.step('No excess projects to archive', {
+                totalProjects: projects?.length || 0
+              });
+            }
+          } catch (projectArchiveError) {
+            logger.warn('Error during project archival process', projectArchiveError, {
+              userId: subscription.user_id
+            });
+            // Continue with downgrade even if project archival fails
+          }
+
+          // Now downgrade the user
           const { error: profileError } = await supabase
             .from('profiles')
             .update({

@@ -7,7 +7,7 @@ interface SubscriptionCardHeaderProps {
   planId: string;
   price: number;
   originalPrice?: number;
-  interval: 'month' | 'year';
+  interval: 'month' | 'year' | 'lifetime';
   currency: CurrencyCode;
   language: 'en' | 'ar';
 }
@@ -51,9 +51,14 @@ export function SubscriptionCardHeader({
             {formatCurrency(price, currency, language)}
           </span>
         </div>
-        {planId !== 'free' && (
+        {planId !== 'free' && interval !== 'lifetime' && (
           <p className="text-sm text-gray-500">
             /{interval === 'month' ? t('month') : t('year')}
+          </p>
+        )}
+        {interval === 'lifetime' && (
+          <p className="text-sm text-gray-500 font-medium">
+            {t('accessForever')}
           </p>
         )}
       </div>

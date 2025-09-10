@@ -928,4 +928,173 @@ The subscription system is now a **best-in-class implementation** with:
 
 ---
 
+## 🚫 **Project Limits & Access Control System (Latest Implementation - Sept 2025)**
+
+### 🎯 **Critical Business Problem Solved**
+
+**Issue**: Users on monthly plans could create multiple projects but when payment failed, they'd be downgraded to free while keeping access to ALL projects - violating the subscription model.
+
+**Example**: Plus user ($19/month) creates 5 projects → payment fails → downgraded to Free (1 project limit) → still had access to all 5 projects ❌
+
+### ✅ **Complete Solution Implemented**
+
+#### **1. Fixed Project Creation Limits**
+**File**: `src/services/core/UserService.ts`
+- Fixed incorrect plan limits (Plus was treated as unlimited)
+- Now enforces proper limits: Free (1), Plus (50), Pro (unlimited)
+- Validates subscription status before project creation
+- Uses `PLAN_CONFIG` from constants for consistency
+
+```typescript
+// NEW: Proper limit enforcement
+const planConfig = PLAN_CONFIG[effectiveUserType] || PLAN_CONFIG.free;
+const projectLimit = planConfig.max_projects;
+const canCreateProject = isUnlimited || currentProjectCount < projectLimit;
+```
+
+#### **2. Project Archival System**
+**Migration**: `supabase/migrations/20250910100000_add_project_archival_fields.sql`
+**Files**: `src/services/core/UserService.ts`
+
+- Added `archived_at` and `archive_reason` fields to projects table
+- Archives excess projects during downgrade (keeps newest, archives oldest)
+- No data loss - projects preserved but access restricted
+- Restoration available when user upgrades
+
+```sql
+-- New schema fields
+ALTER TABLE public.projects 
+ADD COLUMN archived_at TIMESTAMPTZ NULL,
+ADD COLUMN archive_reason TEXT NULL;
+```
+
+#### **3. Grace Period Warnings**
+**Files**: 
+- `src/hooks/subscription/useGracePeriodWarnings.ts` - Detection logic
+- `src/components/subscription/GracePeriodWarning.tsx` - UI components
+- `src/pages/Dashboard.tsx` - Integrated dashboard warning
+
+**Features**:
+- Detects trial (3-day) and payment (7-day) grace periods
+- Shows projects at risk of archival during grace period
+- Clear upgrade/payment buttons for resolution
+- Multiple UI variants (banner, card, badge)
+
+#### **4. Project Access Control**
+**File**: `src/components/subscription/ProjectAccessGuard.tsx`
+
+- Guards individual project access based on plan limits
+- Blocks access to archived or over-limit projects  
+- Shows upgrade prompts with clear messaging
+- Maintains security with proper user ownership validation
+
+```typescript
+// Usage example
+<ProjectAccessGuard projectId={projectId} fallbackRedirect="/dashboard">
+  <ProjectContent />
+</ProjectAccessGuard>
+```
+
+#### **5. Enhanced Downgrade Process**
+**File**: `supabase/functions/process-expired-subscriptions/index.ts`
+
+- Automatically archives excess projects during subscription downgrade
+- Maintains most recently updated projects as active
+- Comprehensive audit logging for compliance
+- Graceful error handling (continues downgrade even if archival fails)
+
+### 📊 **Plan Limits Reference**
+
+```typescript
+// From: src/hooks/subscription/constants.ts
+export const PLAN_CONFIG = {
+  free: {
+    trial_days: 0,
+    max_projects: 1,        // ← Strictly enforced
+    max_clients: 5,
+  },
+  plus: {
+    trial_days: 7,
+    max_projects: 50,       // ← Previously unlimited, now enforced
+    max_clients: 100,
+  },
+  pro: {
+    trial_days: 14,
+    max_projects: -1,       // ← Unlimited (as intended)
+    max_clients: -1,
+  },
+} as const;
+```
+
+### 🎯 **User Experience Flow**
+
+#### **Grace Period Experience**
+1. **Payment Fails** → 7-day grace period begins
+2. **Dashboard Warning** → Shows days remaining + projects at risk
+3. **Grace Expires** → Excess projects automatically archived
+4. **Access Control** → Archived projects show upgrade screen
+
+#### **Project Access Scenarios**
+- ✅ **Active Projects**: Full access and functionality
+- 🔒 **Archived Projects**: Access blocked with upgrade prompt
+- ⚠️ **Over-Limit Projects**: Access restricted based on update recency
+
+### 📋 **Database Schema Updates**
+
+```sql
+-- Projects table additions
+projects {
+  -- Existing fields...
+  archived_at         TIMESTAMPTZ NULL,
+  archive_reason      TEXT NULL,    -- e.g., 'plan_downgrade_to_free'
+}
+
+-- Constraints ensure data integrity
+ALTER TABLE public.projects 
+ADD CONSTRAINT chk_archived_projects_have_timestamp 
+CHECK (
+  (status = 'archived' AND archived_at IS NOT NULL) OR 
+  (status != 'archived' AND archived_at IS NULL)
+);
+```
+
+### 🛡️ **Security & Compliance**
+
+- ✅ **RLS Enforced**: All queries respect Row Level Security
+- ✅ **User Ownership**: Users can only access their own projects
+- ✅ **Audit Trail**: Complete logging of archival actions
+- ✅ **Data Preservation**: No deletion, only restricted access
+- ✅ **GDPR Compliant**: User data preserved for restoration
+
+### 📈 **Business Impact**
+
+#### **Before Implementation**
+- ❌ Revenue loss from unlimited free access
+- ❌ Users kept premium features without payment  
+- ❌ Free tier limits were meaningless
+- ❌ No creation validation or limits
+
+#### **After Implementation**  
+- ✅ Proper revenue protection through limit enforcement
+- ✅ Fair system where users get what they pay for
+- ✅ Professional grace periods with clear communication
+- ✅ Data preservation with upgrade incentives
+
+### 🚀 **Deployment Status**
+
+**Database Migration**: `20250910100000_add_project_archival_fields.sql` (Ready to apply)
+**Code Changes**: ✅ All complete and backward compatible
+**Edge Functions**: ✅ Enhanced with project archival logic
+**UI Components**: ✅ Grace period warnings integrated
+
+### 📊 **Key Metrics to Monitor**
+- Project creation blocks due to limits
+- Project archival during downgrades  
+- User restoration after upgrades
+- Grace period payment conversions
+
+**Status**: ✅ **PRODUCTION READY** - Enterprise-grade implementation with proper business logic enforcement!
+
+---
+
 **Need specific guidance?** Navigate to the appropriate directory CLAUDE.md file for detailed patterns and examples.

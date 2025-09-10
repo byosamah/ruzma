@@ -97,6 +97,7 @@ export async function validateSubscriptionAccess(
     let expiresAt: Date | null = null;
     let actualStatus = status;
     let subscriptions: any[] | null = null;
+    let isLifetimePlan = false;
 
     try {
       // Try with new grace period fields first
@@ -113,7 +114,9 @@ export async function validateSubscriptionAccess(
             subscription_plan,
             grace_period_ends_at,
             payment_grace_ends_at,
-            retry_count
+            retry_count,
+            payment_type,
+            lifetime_purchased_at
           `)
           .eq('user_id', userId)
           .in('status', ['active', 'on_trial', 'unpaid'])
@@ -145,6 +148,7 @@ export async function validateSubscriptionAccess(
         actualStatus = subscription.status;
         trialEndsAt = subscription.trial_ends_at ? new Date(subscription.trial_ends_at) : null;
         expiresAt = subscription.expires_at ? new Date(subscription.expires_at) : null;
+        isLifetimePlan = subscription.payment_type === 'lifetime';
       }
     } catch (subscriptionError) {
       // Subscriptions table doesn't exist or no active subscription
@@ -204,11 +208,12 @@ export async function validateSubscriptionAccess(
       daysUntilExpiry = expiresAt ? Math.ceil((expiresAt.getTime() - now.getTime()) / (1000 * 60 * 60 * 24)) : undefined;
     }
 
-    // Determine if subscription is valid (including grace periods)
+    // Determine if subscription is valid (including grace periods and lifetime plans)
     const isSubscriptionValid = 
       userType !== 'free' && 
-      ['active', 'on_trial', 'unpaid'].includes(actualStatus) &&
-      (!isTrialExpired || isGracePeriod || actualStatus === 'active');
+      (isLifetimePlan || // Lifetime plans are always valid
+       (['active', 'on_trial', 'unpaid'].includes(actualStatus) &&
+        (!isTrialExpired || isGracePeriod || actualStatus === 'active')));
 
     // Check feature access
     let canAccessFeature = true;
