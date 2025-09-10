@@ -104,42 +104,17 @@ export async function validateSubscriptionAccess(
       let subscriptionsData: any[] | null = null;
       let subscriptionError: any = null;
       
-      try {
-        const response = await supabase
-          .from('subscriptions')
-          .select(`
-            status, 
-            trial_ends_at, 
-            expires_at, 
-            subscription_plan,
-            grace_period_ends_at,
-            payment_grace_ends_at,
-            retry_count,
-            payment_type,
-            lifetime_purchased_at
-          `)
-          .eq('user_id', userId)
-          .in('status', ['active', 'on_trial', 'unpaid'])
-          .order('created_at', { ascending: false })
-          .limit(1);
-        
-        subscriptionsData = response.data;
-        subscriptionError = response.error;
-      } catch (newFieldsError) {
-        // New fields don't exist yet, fallback to original query
-        console.debug('Grace period fields not available, using basic subscription query');
-        
-        const response = await supabase
-          .from('subscriptions')
-          .select('status, trial_ends_at, expires_at, subscription_plan')
-          .eq('user_id', userId)
-          .in('status', ['active', 'on_trial', 'unpaid'])
-          .order('created_at', { ascending: false })
-          .limit(1);
-        
-        subscriptionsData = response.data;
-        subscriptionError = response.error;
-      }
+      // Use basic query only since grace period columns don't exist yet
+      const response = await supabase
+        .from('subscriptions')
+        .select('status, trial_ends_at, expires_at, subscription_plan')
+        .eq('user_id', userId)
+        .in('status', ['active', 'on_trial', 'unpaid'])
+        .order('created_at', { ascending: false })
+        .limit(1);
+      
+      subscriptionsData = response.data;
+      subscriptionError = response.error;
 
       // If query succeeded and we have subscription data
       if (!subscriptionError && subscriptionsData && subscriptionsData.length > 0) {
@@ -148,7 +123,7 @@ export async function validateSubscriptionAccess(
         actualStatus = subscription.status;
         trialEndsAt = subscription.trial_ends_at ? new Date(subscription.trial_ends_at) : null;
         expiresAt = subscription.expires_at ? new Date(subscription.expires_at) : null;
-        isLifetimePlan = subscription.payment_type === 'lifetime';
+        isLifetimePlan = false; // Grace period features not available yet
       }
     } catch (subscriptionError) {
       // Subscriptions table doesn't exist or no active subscription
@@ -163,50 +138,21 @@ export async function validateSubscriptionAccess(
     let gracePeriodEndsAt: string | undefined;
     let daysUntilExpiry: number | undefined;
 
-    if (subscriptions && subscriptions.length > 0) {
-      const subscription = subscriptions[0];
-      
-      // Check trial expiration and grace periods
-      if (subscription.trial_ends_at) {
-        const trialEndDate = new Date(subscription.trial_ends_at);
-        isTrialExpired = now > trialEndDate;
-        
-        // Check trial grace period
-        if (isTrialExpired && subscription.grace_period_ends_at) {
-          const trialGraceEnd = new Date(subscription.grace_period_ends_at);
-          if (now <= trialGraceEnd) {
-            isGracePeriod = true;
-            gracePeriodType = 'trial';
-            gracePeriodEndsAt = subscription.grace_period_ends_at;
-            daysUntilExpiry = Math.ceil((trialGraceEnd.getTime() - now.getTime()) / (1000 * 60 * 60 * 24));
-          }
-        } else if (!isTrialExpired) {
-          // Trial still active
-          daysUntilExpiry = Math.ceil((trialEndDate.getTime() - now.getTime()) / (1000 * 60 * 60 * 24));
-        }
+    // Simplified logic without grace period columns
+    if (trialEndsAt) {
+      isTrialExpired = now > trialEndsAt;
+      if (!isTrialExpired) {
+        daysUntilExpiry = Math.ceil((trialEndsAt.getTime() - now.getTime()) / (1000 * 60 * 60 * 24));
       }
-      
-      // Check payment grace period
-      if (actualStatus === 'unpaid' && subscription.payment_grace_ends_at) {
-        const paymentGraceEnd = new Date(subscription.payment_grace_ends_at);
-        if (now <= paymentGraceEnd) {
-          isGracePeriod = true;
-          gracePeriodType = 'payment';
-          gracePeriodEndsAt = subscription.payment_grace_ends_at;
-          daysUntilExpiry = Math.ceil((paymentGraceEnd.getTime() - now.getTime()) / (1000 * 60 * 60 * 24));
-        }
-      }
-      
-      // Calculate expiry for active subscriptions
-      if (actualStatus === 'active' && expiresAt) {
-        daysUntilExpiry = Math.ceil((expiresAt.getTime() - now.getTime()) / (1000 * 60 * 60 * 24));
-      }
-    } else {
-      // Fallback to original logic if no subscription data
-      isTrialExpired = trialEndsAt ? now > trialEndsAt : false;
-      isGracePeriod = actualStatus === 'unpaid';
-      daysUntilExpiry = expiresAt ? Math.ceil((expiresAt.getTime() - now.getTime()) / (1000 * 60 * 60 * 24)) : undefined;
     }
+
+    if (expiresAt && actualStatus === 'active') {
+      daysUntilExpiry = Math.ceil((expiresAt.getTime() - now.getTime()) / (1000 * 60 * 60 * 24));
+    }
+
+    // Simple grace period logic for unpaid status
+    isGracePeriod = actualStatus === 'unpaid';
+    gracePeriodType = isGracePeriod ? 'payment' : null;
 
     // Determine if subscription is valid (including grace periods and lifetime plans)
     const isSubscriptionValid = 
