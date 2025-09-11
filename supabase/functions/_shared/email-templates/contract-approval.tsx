@@ -7,7 +7,7 @@ import {
   Hr,
 } from '@react-email/components';
 import React from 'react';
-import { BaseTemplate } from './base-template';
+import { BaseTemplate } from './base-template.tsx';
 
 interface ContractApprovalTemplateProps {
   projectName: string;

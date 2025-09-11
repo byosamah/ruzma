@@ -2,9 +2,9 @@ import { render } from '@react-email/render';
 import React from 'react';
 
 // Template imports
-import { ContractApprovalTemplate } from './contract-approval';
-import { PaymentNotificationTemplate } from './payment-notification';
-import { ClientInviteTemplate } from './client-invite';
+import { ContractApprovalTemplate } from './contract-approval.tsx';
+import { PaymentNotificationTemplate } from './payment-notification.tsx';
+import { ClientInviteTemplate } from './client-invite.tsx';
 
 // Template types
 export interface TemplateData {
