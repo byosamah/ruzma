@@ -15,7 +15,7 @@ interface SendPaymentNotificationParams {
 export const sendPaymentNotification = async (params: SendPaymentNotificationParams) => {
   // Use the new EnhancedEmailService with React Email templates
   const emailService = new EnhancedEmailService(null, {
-    useReactEmailTemplates: true, // ✅ ENABLED: Now using server-side React Email templates
+    useReactEmailTemplates: false, // ❌ DISABLED: Using legacy Edge Functions
     fallbackToEdgeFunctions: true,
     defaultLanguage: params.language || 'en'
   });

@@ -21,7 +21,7 @@ export class EnhancedEmailService extends BaseService {
     super(user);
     this.userService = new UserService(user);
     this.config = {
-      useReactEmailTemplates: true, // ✅ ENABLED: Now using server-side React Email templates
+      useReactEmailTemplates: false, // ❌ DISABLED: Using legacy Edge Functions
       fallbackToEdgeFunctions: true,
       defaultLanguage: 'en',
       ...config
@@ -177,7 +177,7 @@ export class EnhancedEmailService extends BaseService {
             amount: projectData.milestones?.find(m => m.title === params.milestoneName)?.price || 0,
             currency: projectData.currency || 'USD',
             isApproved: params.isApproved,
-            projectUrl: `${process.env.VITE_APP_URL}/client/${params.clientToken}`
+            projectUrl: `${import.meta.env.VITE_APP_BASE_URL}/client/${params.clientToken}`
           }
         }
       });
@@ -261,7 +261,7 @@ export class EnhancedEmailService extends BaseService {
             clientName: params.clientEmail.split('@')[0], // Fallback to email prefix
             clientEmail: params.clientEmail,
             freelancerName: params.freelancerName,
-            projectUrl: `${process.env.VITE_APP_URL}/client/${params.clientToken}`,
+            projectUrl: `${import.meta.env.VITE_APP_BASE_URL}/client/${params.clientToken}`,
             inviteMessage: params.inviteMessage
           }
         }
@@ -323,7 +323,7 @@ export class EnhancedEmailService extends BaseService {
 
       return {
         ...project,
-        contractUrl: `${process.env.VITE_APP_URL}/contract/${project.contract_approval_token}`,
+        contractUrl: `${import.meta.env.VITE_APP_BASE_URL}/contract/${project.contract_approval_token}`,
       };
     } catch (error) {
       console.error('Error fetching project data for email:', error);

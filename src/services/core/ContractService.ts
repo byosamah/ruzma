@@ -18,7 +18,7 @@ export class ContractService extends BaseService {
   constructor(user: User | null) {
     super(user);
     this.emailService = new EnhancedEmailService(user, {
-      useReactEmailTemplates: true, // ✅ ENABLED: Now using server-side React Email templates
+      useReactEmailTemplates: false, // ❌ DISABLED: Using legacy Edge Functions
       fallbackToEdgeFunctions: true,
       defaultLanguage: 'en'
     });
