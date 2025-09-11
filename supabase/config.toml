@@ -1,0 +1,104 @@
+[project]
+# A string used to distinguish different Supabase projects on the same host. Defaults to the
+# working directory name when running `supabase init`.
+name = "ruzma"
+
+[api]
+enabled = true
+# Port to use for the API URL.
+port = 54321
+# Schemas to expose in your API. Tables, views and stored procedures in this schema will get API
+# endpoints. public and storage are always included.
+schemas = ["public", "storage", "graphql_public"]
+# Extra schemas to add to the search_path of every request. public is always included.
+extra_search_path = ["public", "extensions"]
+# The maximum number of rows returned from a table or view. Limits payload size for accidental or
+# malicious requests.
+max_rows = 1000
+
+[db]
+enabled = true
+# Port to use for the local database URL.
+port = 54322
+# Port used by db diff command to initialize the shadow database.
+shadow_port = 54320
+# The database major version to use. This has to be the same as your remote database's. Run `SHOW
+# server_version_num;` on the remote database to check.
+major_version = 15
+
+[realtime]
+enabled = true
+# Bind realtime via either IPv4 or IPv6. (default: IPv4)
+ip_version = "IPv4"
+# The maximum length in bytes of HTTP request headers. (default: 4096)
+max_header_length = 4096
+
+[storage]
+enabled = true
+# The maximum file size allowed (e.g. "5MB", "500KB").
+file_size_limit = "50MiB"
+
+[auth]
+enabled = true
+# The base URL of your website. Used as an allow-list for redirects and for constructing URLs used
+# in emails.
+site_url = "http://localhost:5173"
+# A list of *exact* URLs that auth providers are permitted to redirect to post authentication.
+additional_redirect_urls = ["https://ruzma.co", "https://app.ruzma.co"]
+# How long tokens are valid for, in seconds. Defaults to 3600 (1 hour), maximum 604800 (1 week).
+jwt_expiry = 3600
+# If disabled, the refresh token will never expire.
+enable_refresh_token_rotation = true
+# Allows refresh tokens to be reused after expiry, up to the specified interval in seconds.
+# Requires enable_refresh_token_rotation = true.
+refresh_token_reuse_interval = 10
+# Allow/disallow new user signups to your project.
+enable_signup = true
+
+[auth.email]
+# Allow/disallow new user signups via email to your project.
+enable_signup = true
+# If enabled, a user will be required to confirm any email change on both the old, and new email
+# addresses. If disabled, only the new email is required to confirm.
+double_confirm_changes = true
+# If enabled, users need to confirm their email address before signing in.
+enable_confirmations = false
+# Controls the minimum amount of time that must pass before sending another signup confirmation or password reset email.
+secure_email_change_enabled = true
+# Use a production-ready SMTP server
+# smtp_admin_email = ""
+# smtp_host = ""
+# smtp_port = 587
+# smtp_user = ""
+# smtp_pass = ""
+# smtp_sender_name = ""
+
+# Use pre-defined map of SMTP configuration
+# enabled_confirmations = true
+
+[[auth.external]]
+enabled = false
+provider = "github"
+client_id = ""
+secret = ""
+# url = ""
+# redirect_uri = ""
+
+[edge_functions]
+# A list of environment variables that are made available to all functions.
+env = [
+  "SUPABASE_URL",
+  "SUPABASE_ANON_KEY", 
+  "SUPABASE_SERVICE_ROLE_KEY",
+  "EMAIL_SERVICE",
+  "RESEND_API_KEY",
+  "SENDGRID_API_KEY",
+  "FROM_EMAIL"
+]
+import_map = "./supabase/functions/send-react-email/import_map.json"
+
+[analytics]
+enabled = false
+
+[functions.send-react-email]
+import_map = "./supabase/functions/send-react-email/import_map.json"

@@ -21,7 +21,7 @@ export class EnhancedEmailService extends BaseService {
     super(user);
     this.userService = new UserService(user);
     this.config = {
-      useReactEmailTemplates: false, // Temporarily disabled due to client-side bundle issues
+      useReactEmailTemplates: true, // ✅ ENABLED: Now using server-side React Email templates
       fallbackToEdgeFunctions: true,
       defaultLanguage: 'en',
       ...config

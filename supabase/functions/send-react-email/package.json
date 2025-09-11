@@ -1,0 +1,13 @@
+{
+  "name": "send-react-email",
+  "version": "1.0.0",
+  "description": "Supabase Edge Function for sending React Email templates",
+  "main": "index.ts",
+  "type": "module",
+  "dependencies": {
+    "@react-email/components": "^0.0.25",
+    "@react-email/html": "^0.0.8",
+    "@react-email/render": "^1.0.1",
+    "react": "^18.2.0"
+  }
+}
