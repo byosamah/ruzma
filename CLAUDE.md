@@ -1,224 +1,290 @@
-# Ruzma - Claude Code Navigation Hub
+# CLAUDE.md
 
-**Project**: Ruzma - Freelancer Project Management Platform
-**Architecture**: React 18 + TypeScript + Supabase + Tailwind CSS + Edge Functions
-**Status**: Production-ready, lifetime plan system, 20+ users
+This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
-## 📂 Directory Documentation
+## Project Overview
 
-### Core Structure
-- **[src/components/CLAUDE.md](src/components/CLAUDE.md)** - UI components, shadcn/ui patterns
-- **[src/hooks/CLAUDE.md](src/hooks/CLAUDE.md)** - Custom React hooks
-- **[src/services/CLAUDE.md](src/services/CLAUDE.md)** - Service layer, business logic
-- **[src/types/CLAUDE.md](src/types/CLAUDE.md)** - TypeScript definitions
-- **[src/lib/CLAUDE.md](src/lib/CLAUDE.md)** - Utilities, translations
-- **[supabase/CLAUDE.md](supabase/CLAUDE.md)** - Database schema, migrations
+**Ruzma** is a freelancer project management platform built with React 18, TypeScript, Supabase, and Tailwind CSS. The platform enables freelancers to manage clients, projects, invoices, and contracts with internationalization support (English/Arabic RTL).
 
-### New Structure
-- **[specs/](specs/)** - Spec Kit feature specifications for spec-driven development
-- **[.specify/](./specify/)** - Spec Kit configuration, templates, and project constitution
-- **[supabase/functions/](supabase/functions/)** - Edge Functions for email services
-- **[cypress/](cypress/)** - E2E testing suite with auth and project tests
+## Development Commands
 
-## 🔒 Critical Rules
+### Essential Commands
+```bash
+npm run dev              # Start Vite dev server on port 8080
+npm run build            # Production build with code splitting
+npm run lint             # ESLint validation
+npm run typecheck        # TypeScript type checking (must pass before commits)
+npm test                 # Run Vitest unit tests
+npm run test:coverage    # Generate test coverage report
+```
 
-### Security & Type Safety
-- **RLS Required**: All database queries must respect Row Level Security
-- **TypeScript Strict**: Use proper types, no `any`
-- **Function Components**: Use `function Component() {}`, not `React.FC`
+### Supabase Commands
+```bash
+npx supabase start       # Start local Supabase (Docker required)
+npx supabase stop        # Stop local Supabase
+npx supabase db reset    # Reset database with migrations and seed data
+npx supabase functions deploy <function-name>  # Deploy Edge Function
+npx supabase migration new <name>              # Create new migration
+```
 
-### Design System
-- Use shadcn/ui components
-- CSS custom properties only
-- Mobile-first responsive design
-- Minimum 44px touch targets
+## Architecture & Patterns
 
-### i18n & Routing
-- Use `/:lang/route` structure
-- Use `useLanguageNavigation()` for navigation
-- Use `useT()` for translations
+### Service-Oriented Architecture
 
-### Spec-Driven Development
-- Follow Spec Kit constitution in `.specify/memory/constitution.md`
-- Create specifications before implementation using `/specify` command
-- Use `/plan`, `/tasks`, `/implement` for structured development
+The codebase follows a strict service layer pattern with dependency injection:
 
-## ⚙️ Common Patterns
+```typescript
+// All services extend BaseService and are accessed via ServiceRegistry
+const { user } = useAuth();
+const projectService = ServiceRegistry.getInstance().getProjectService(user);
+const result = await projectService.createProject(data);
+```
 
-### Authentication
+**Critical Rules:**
+- ALL business logic must be in service classes (`src/services/`)
+- Services MUST extend `BaseService` for authentication and error handling
+- Services accessed via `ServiceRegistry.getInstance()` (singleton pattern)
+- Use `this.requireAuth()` in services to validate authentication
+- Use `this.executeQuery()` for all database operations (provides error handling)
+
+### Internationalization (i18n)
+
+**Route Structure:** All routes follow `/:lang/route` pattern (e.g., `/en/dashboard`, `/ar/projects`)
+
+```typescript
+// Always use these hooks for i18n
+import { useT } from '@/hooks/useT';                    // For translations
+import { useLanguageNavigation } from '@/hooks/useLanguageNavigation'; // For navigation
+
+// Usage
+const t = useT();
+const navigate = useLanguageNavigation();
+
+<h1>{t('project.title')}</h1>  // Automatically uses current language
+navigate('/dashboard');         // Automatically prefixes with /:lang
+```
+
+**Translation Files:** Located in `src/lib/translations/` (en.ts, ar.ts)
+
+### Component Guidelines
+
+- Use **shadcn/ui** components exclusively - never create custom base UI components
+- Function components only: `function Component() {}` (NOT `React.FC`)
+- Mobile-first responsive design (minimum 44px touch targets)
+- CSS custom properties only - use `src/lib/colorUtils.ts` for dynamic colors
+- Always use `@/` path alias (configured in vite.config.ts and tsconfig.json)
+
+### Database & Security
+
+**Row Level Security (RLS):**
+- RLS policies are MANDATORY for all tables
+- Services explicitly filter by `user_id` even though RLS enforces it
+- Never bypass RLS or use service role keys inappropriately
+
+**Type Safety:**
+- TypeScript strict mode enabled (`noImplicitAny`, `strictNullChecks`)
+- NO `any` types allowed
+- All database types in `src/types/`
+
+### React Query Configuration
+
+Optimized caching strategy in App.tsx:
+- `staleTime: 5 minutes` (default)
+- `gcTime: 15 minutes` (garbage collection)
+- `retry: 1` with exponential backoff
+- `refetchOnWindowFocus: false`
+
+## Key Features & Business Logic
+
+### Currency System
+Projects use project-specific currency OR freelancer's profile currency:
+```typescript
+const currency = project.currency || project.freelancer_currency || 'USD';
+```
+- Dashboard converts all amounts to user's profile currency
+- Project pages display amounts in project currency
+
+### Subscription Plans
+- **Free:** 1 project, no AI features
+- **Plus:** $19/month, 50 projects, AI features
+- **Pro:** $349 lifetime, unlimited projects, no AI
+
+**Project Limits Enforcement:**
+- Strictly enforced via `userLimitsService.ts`
+- Excess projects archived (not deleted) during downgrade
+- 3-day trial grace period, 7-day payment grace period
+
+### Email System (Edge Functions)
+
+Email sending is handled server-side via Supabase Edge Functions:
+
+```typescript
+// Client-side: Invoke Edge Function
+const { data, error } = await supabase.functions.invoke('send-client-link', {
+  body: { projectId, clientEmail, language: 'en' }
+});
+```
+
+**Edge Functions:** (`supabase/functions/`)
+- `send-client-link` - Project invitation emails
+- `send-contract-approval` - Contract approval notifications
+- `send-payment-notification` - Payment status updates
+
+**Email Templates:** Server-side React Email templates in `supabase/functions/_shared/email-templates/`
+
+**Email Logging:** All emails tracked in `email_logs` table for audit compliance
+
+### Client Portal Access
+
+Clients access projects via secure tokenized URLs:
+```
+/client/:token  or  /client/project/:token
+```
+- Tokens generated via `ClientService.generateClientProjectToken()`
+- 90-day expiry, single-use validation
+- No authentication required (token-based security)
+
+## Directory Structure
+
+```
+src/
+├── components/       # UI components (shadcn/ui based)
+├── hooks/           # Custom React hooks (useAuth, useT, useLanguageNavigation, etc.)
+├── services/        # Business logic layer
+│   ├── core/       # BaseService, ServiceRegistry, UserService, ClientService, etc.
+│   └── ...         # Domain services (projectService, invoiceService, etc.)
+├── lib/            # Utilities (colorUtils, currency, translations, validators)
+├── pages/          # Route components (lazy loaded in App.tsx)
+├── types/          # TypeScript type definitions
+├── contexts/       # React contexts (LanguageContext, InvoiceContext)
+└── integrations/   # External API integrations (Supabase client)
+
+supabase/
+├── migrations/     # Database schema migrations (sequential)
+├── functions/      # Edge Functions for server-side operations
+│   ├── _shared/   # Shared utilities and email templates
+│   └── send-*/    # Individual function deployments
+└── config.toml    # Local Supabase configuration
+
+.specify/          # Spec Kit configuration (spec-driven development)
+├── memory/        # Project constitution and development principles
+└── templates/     # Feature specification templates
+```
+
+## Critical Files
+
+- **src/App.tsx** - Route definitions, lazy loading, React Query setup
+- **src/services/core/ServiceRegistry.ts** - Service dependency injection
+- **src/services/core/BaseService.ts** - Base class for all services
+- **src/lib/colorUtils.ts** - WCAG-compliant color utilities
+- **src/integrations/supabase/client.ts** - Supabase client configuration
+- **.specify/memory/constitution.md** - Development principles and coding standards
+
+## Testing
+
+### Unit Tests
+- Component tests with Vitest and React Testing Library
+- Test setup in `src/test/setup.ts`
+- Run with `npm test` or `npm run test:coverage`
+
+## Development Workflow
+
+### Feature Development (Spec-Driven)
+1. Create specification: `/specify` command
+2. Generate plan: `/plan` command
+3. Break into tasks: `/tasks` command
+4. Implement: `/implement` command
+5. Test: `npm run typecheck && npm run lint && npm test`
+
+### Database Migrations
+```bash
+npx supabase migration new add_table_name
+# Edit migration file in supabase/migrations/
+npx supabase db reset  # Test migration locally
+```
+
+### Deploying Edge Functions
+```bash
+npx supabase functions deploy send-client-link
+# Requires RESEND_API_KEY environment variable
+```
+
+## Common Patterns
+
+### Authentication Pattern
 ```typescript
 const { user, loading, authChecked } = useAuth();
+
 if (loading || !authChecked) return <LoadingSpinner />;
 if (!user) return <Navigate to="/login" />;
 ```
 
-### Service Layer
+### Form Pattern
 ```typescript
-const projectService = ServiceRegistry.getInstance().getProjectService(user);
-```
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
 
-### Forms
-```typescript
 const form = useForm<FormData>({
   resolver: zodResolver(schema),
   defaultValues: { /* ... */ }
 });
 ```
 
-### Email Services (Edge Functions)
+### Service Usage Pattern
 ```typescript
-// Server-side email rendering with React Email
-const { data, error } = await supabase.functions.invoke('send-client-link', {
-  body: { projectId, clientEmail, language: 'en' }
-});
+try {
+  const result = await projectService.createProject(data);
+  toast.success(t('project.created'));
+} catch (error) {
+  if (error instanceof AppError) {
+    toast.error(error.message);
+  } else {
+    toast.error(t('error.unexpected'));
+  }
+}
 ```
 
-## 🗄️ Database
+## Environment Variables
 
-### Core Tables
-- `profiles` - User accounts
-- `projects` - Main business entity
-- `milestones` - Project phases
-- `clients` - Customer data
-- `invoices` - Payment tracking
-- `email_logs` - Email delivery tracking and audit trail
-
-### Commands
+Required in `.env.local`:
 ```bash
-npm run dev          # Development
-npm run build        # Production build
-npm run lint         # Code linting
-npm test             # Component tests
-npm run cypress:record # E2E tests with recording
+VITE_SUPABASE_URL=your_supabase_url
+VITE_SUPABASE_ANON_KEY=your_anon_key
+VITE_APP_URL=http://localhost:8080
+RESEND_API_KEY=your_resend_key  # For Edge Functions
 ```
 
-## 📧 Email System Architecture
+## Build Optimization
 
-### Edge Functions (Server-Side)
-- **`send-client-link`** - Project invitation emails to clients
-- **`send-contract-approval`** - Contract approval notifications
-- **`send-payment-notification`** - Payment status updates
-- All emails use React Email templates with server-side rendering
+Vite is configured with manual code splitting:
+- **vendor:** React, React Router
+- **ui:** Radix UI components
+- **supabase:** Supabase client
+- **charts:** Recharts
+- **query:** React Query
+- **forms:** React Hook Form, Zod
 
-### Email Templates
-Located in `supabase/functions/_shared/email-templates/`:
-- `client-invite.tsx` - Project access invitation
-- `contract-approval.tsx` - Contract approval workflow
-- `payment-notification.tsx` - Payment status updates
-- `base-template.tsx` - Shared email layout
+Bundle analysis: `npm run analyze` (generates `dist/stats.html`)
 
-### Email Logging
-- All email sends tracked in `email_logs` table
-- Status monitoring (pending, sent, failed)
-- Language support for multilingual emails
+## Constitution & Standards
 
-## 🎨 Color System
+The project follows strict development principles in `.specify/memory/constitution.md`:
 
-### Utilities in `src/lib/colorUtils.ts`
-- `getBestTextColor(backgroundColor)` - Optimal text color
-- `getBestSecondaryTextColor(backgroundColor)` - Semi-transparent text
-- `getBadgeColors(backgroundColor)` - Complete badge color scheme
-- All functions follow WCAG accessibility guidelines
+1. **Security First:** RLS mandatory, no `any` types, auth validation required
+2. **Design Consistency:** shadcn/ui only, mobile-first, 44px touch targets
+3. **i18n Ready:** `/:lang/route` structure, useT() for all text, RTL support
+4. **Service-Oriented:** Business logic in services, ServiceRegistry for DI
+5. **Accessibility:** WCAG compliance, proper semantic HTML, keyboard navigation
 
-## 🧪 Testing Architecture
+**Breaking Changes:** Require architectural review and migration planning
 
-### Cypress E2E Testing
-- **Auth tests**: Login, signup, session management
-- **Project tests**: CRUD operations, client portal access
-- **Recording**: `CYPRESS_RECORD_KEY` for cloud test recording
-- **Configuration**: `cypress.config.ts` with custom commands
+## Notes for AI Assistants
 
-### Test Commands
-```bash
-npm run cypress:record                    # Run recorded tests
-npx cypress run --spec "cypress/e2e/*"   # Run specific specs
-```
-
-## 🚦 Development Guidelines
-
-### 🟢 Safe to Edit
-- UI components (following patterns)
-- New pages (using existing layouts)
-- New hooks (following naming conventions)
-- Spec Kit specifications and plans
-
-### 🟡 Edit with Caution
-- Database migrations
-- Authentication flows
-- RLS policies
-- Edge Functions (affect email delivery)
-
-### 🔴 High Risk - Review First
-- Core services (UserService, AuthService)
-- Database schema changes
-- Security implementations
-- Email template modifications
-
-## 💰 Key Features
-
-### Currency System
-- Project-specific currency vs user profile currency
-- Pattern: `project.currency || project.freelancer_currency || 'USD'`
-- Dashboard converts to user currency, project pages use project currency
-
-### Subscription Plans (Sept 2025)
-- **Free**: $0 - 1 project, no AI
-- **Plus**: $19/month - 50 projects, AI features
-- **Pro**: $349 lifetime - unlimited projects, no AI
-
-### Project Limits & Access Control
-- Plan limits strictly enforced
-- Excess projects archived during downgrade (not deleted)
-- Grace periods: 3-day trial, 7-day payment
-- Project access guards prevent unauthorized access
-
-### Email Notifications
-- Server-side rendering with React Email templates
-- Multilingual support (English/Arabic)
-- Delivery tracking and audit logging
-- Secure client portal access via email tokens
-
-## 📋 Recent Updates (Updated: 2025-09-21)
-
-### Major Changes
-- **Email System Overhaul**: Migrated from client-side React Email to Edge Functions with server-side rendering
-- **Spec Kit Integration**: Added spec-driven development workflow with constitution and feature specifications
-- **Cypress Testing**: Implemented comprehensive E2E testing suite with auth and project workflows
-- **Enhanced Email Logging**: Added `email_logs` table for delivery tracking and audit compliance
-
-### New Features
-- Server-side email template rendering for better reliability
-- Spec-driven development commands (`/specify`, `/plan`, `/tasks`, `/implement`)
-- E2E test recording and monitoring capabilities
-- Enhanced accessibility with `visually-hidden` component
-
-### Breaking Changes
-- Removed client-side email components (`src/emails/` directory)
-- All email functionality now handled by Edge Functions
-- Email templates moved to `supabase/functions/_shared/email-templates/`
-
-### Architecture Improvements
-- Centralized email service architecture
-- Better error handling and logging for email operations
-- Improved test coverage with Cypress integration
-- Structured development workflow with Spec Kit constitution
-
-## 🔧 Environment Setup
-
-### Required Environment Variables
-```bash
-# Email service configuration
-RESEND_API_KEY=your_resend_key
-VITE_APP_URL=your_app_url
-
-# Cypress testing
-CYPRESS_RECORD_KEY=your_cypress_key
-```
-
-### Development Workflow
-1. Create specifications using `/specify` command
-2. Generate implementation plans with `/plan`
-3. Break down tasks with `/tasks`
-4. Implement features with `/implement`
-5. Run tests with `npm run cypress:record`
-6. Deploy Edge Functions for email services
+- ALWAYS use ServiceRegistry pattern - never instantiate services directly
+- NEVER bypass authentication with `this.requireAuth()` in services
+- ALWAYS use `useT()` hook for user-facing text (never hardcode strings)
+- ALWAYS use `useLanguageNavigation()` for navigation (never `useNavigate()` directly)
+- TypeScript compilation MUST pass before considering work complete
+- Test edge cases: Arabic RTL, mobile viewports, subscription limits
+- When modifying database schema, create a migration file
+- When modifying email logic, test via Edge Functions (not client-side)

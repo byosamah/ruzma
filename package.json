@@ -17,10 +17,7 @@
     "analyze": "vite build --mode production && npx vite-bundle-analyzer",
     "size": "size-limit",
     "perf:test": "vitest run src/test/performance",
-    "perf:profile": "NODE_ENV=test vitest run --reporter=verbose src/test/performance",
-    "cypress:open": "cypress open",
-    "cypress:run": "cypress run",
-    "cypress:record": "cypress run --record"
+    "perf:profile": "NODE_ENV=test vitest run --reporter=verbose src/test/performance"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.9.0",
@@ -82,7 +79,6 @@
     "@types/react-dom": "^18.3.0",
     "@vitejs/plugin-react-swc": "^3.5.0",
     "autoprefixer": "^10.4.20",
-    "cypress": "^15.2.0",
     "eslint": "^9.9.0",
     "eslint-plugin-react-hooks": "^5.1.0-rc.0",
     "eslint-plugin-react-refresh": "^0.4.9",
