@@ -1,11 +1,12 @@
 import '@testing-library/jest-dom';
 import { vi } from 'vitest';
 
-// Check if we're in a browser environment (browser mode has these APIs natively)
-const isBrowser = typeof window !== 'undefined' && typeof IntersectionObserver !== 'undefined';
+// Check if we're in a DOM environment (jsdom or browser)
+const hasDOM = typeof window !== 'undefined';
+const isBrowser = hasDOM && typeof IntersectionObserver !== 'undefined';
 
-// Only mock browser APIs in jsdom environment (not needed in browser mode)
-if (!isBrowser) {
+// Only mock browser APIs in jsdom environment (not in browser mode or node)
+if (hasDOM && !isBrowser) {
   // Mock IntersectionObserver
   globalThis.IntersectionObserver = class IntersectionObserver {
     constructor() {}
@@ -26,8 +27,8 @@ if (!isBrowser) {
   globalThis.scrollTo = vi.fn();
 }
 
-// Mock matchMedia (needed in both environments)
-if (!window.matchMedia) {
+// Mock matchMedia only if window exists
+if (hasDOM && !window.matchMedia) {
   Object.defineProperty(window, 'matchMedia', {
     writable: true,
     value: vi.fn().mockImplementation(query => ({
@@ -43,8 +44,8 @@ if (!window.matchMedia) {
   });
 }
 
-// Mock localStorage only in jsdom (browser mode has real localStorage)
-if (!isBrowser && !globalThis.localStorage) {
+// Mock localStorage only in jsdom (browser mode has real localStorage, node has none)
+if (hasDOM && !isBrowser && !globalThis.localStorage) {
   const localStorageMock = {
     getItem: vi.fn(),
     setItem: vi.fn(),

@@ -64,10 +64,25 @@ export default defineConfig(({ mode }) => ({
     css: true,
     browser: {
       enabled: false, // Enable with --browser flag
-      name: 'chromium', // or 'firefox', 'webkit'
       provider: 'playwright',
       headless: true,
       screenshotOnFailure: true,
+      // Vitest 3 browser instances configuration
+      instances: [
+        {
+          browser: 'chromium',
+        },
+      ],
     },
+    // Exclude performance tests from browser mode (they use Node.js APIs)
+    exclude: [
+      '**/node_modules/**',
+      '**/dist/**',
+      '**/cypress/**',
+      '**/.{idea,git,cache,output,temp}/**',
+      '**/{karma,rollup,webpack,vite,vitest,jest,ava,babel,nyc,cypress,tsup,build}.config.*',
+      // Exclude performance tests when running in browser mode
+      ...(process.env.VITEST_BROWSER ? ['**/performance/**'] : []),
+    ],
   },
 }));

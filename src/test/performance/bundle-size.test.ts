@@ -1,6 +1,18 @@
+/**
+ * @vitest-environment node
+ */
+
 import { describe, it, expect } from 'vitest';
-import { readFileSync, existsSync, readdirSync, statSync } from 'fs';
-import { join, resolve } from 'path';
+
+// Skip this test file in browser mode (requires Node.js fs module)
+if (typeof window !== 'undefined' && typeof process === 'undefined') {
+  describe.skip('Bundle Size Analysis (Node.js only)', () => {
+    it('skipped in browser mode', () => {});
+  });
+} else {
+  // Only import Node.js modules when not in browser
+  const { readFileSync, existsSync, readdirSync, statSync } = require('fs');
+  const { join, resolve } = require('path');
 
 // Bundle size thresholds (in bytes)
 // Updated to reflect realistic sizes for a feature-rich React app
@@ -312,3 +324,5 @@ describe('Bundle Size Analysis', () => {
     expect(metrics.bundleCount).toBeGreaterThan(0);
   });
 });
+
+} // End of else block (Node.js environment only)

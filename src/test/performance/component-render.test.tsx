@@ -1,6 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen, act } from '@testing-library/react';
-import { performance } from 'perf_hooks';
 
 // Import key components for performance testing
 import { Button } from '../../components/ui/button';
@@ -25,22 +24,22 @@ function measureRenderPerformance(
   renderFn: () => void,
   reRenderFn?: () => void
 ): PerformanceResult {
-  // Measure initial render
-  const renderStart = performance.now();
+  // Measure initial render using browser's performance API (available in jsdom)
+  const renderStart = window.performance.now();
   renderFn();
-  const renderEnd = performance.now();
+  const renderEnd = window.performance.now();
   
   const renderTime = renderEnd - renderStart;
   const mountTime = renderTime; // For simple components, these are the same
   
   let reRenderTime: number | undefined;
-  
+
   if (reRenderFn) {
-    const reRenderStart = performance.now();
+    const reRenderStart = window.performance.now();
     act(() => {
       reRenderFn();
     });
-    const reRenderEndTime = performance.now();
+    const reRenderEndTime = window.performance.now();
     reRenderTime = reRenderEndTime - reRenderStart;
   }
   
@@ -195,8 +194,8 @@ describe('Component Render Performance', () => {
 
   describe('Memory Usage Monitoring', () => {
     it('should not cause memory leaks during multiple renders', () => {
-      const initialMemory = (performance as any).memory?.usedJSHeapSize || 0;
-      
+      const initialMemory = (window.performance as any).memory?.usedJSHeapSize || 0;
+
       // Render and unmount components multiple times
       for (let i = 0; i < 20; i++) {
         const { unmount } = render(
@@ -209,16 +208,16 @@ describe('Component Render Performance', () => {
             <Badge>Badge {i}</Badge>
           </div>
         );
-        
+
         unmount();
       }
-      
+
       // Force garbage collection if available
-      if ((global as any).gc) {
-        (global as any).gc();
+      if ((globalThis as any).gc) {
+        (globalThis as any).gc();
       }
-      
-      const finalMemory = (performance as any).memory?.usedJSHeapSize || 0;
+
+      const finalMemory = (window.performance as any).memory?.usedJSHeapSize || 0;
       const memoryGrowth = finalMemory - initialMemory;
       
       // Memory growth should be reasonable (less than 5MB)
