@@ -6,13 +6,13 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-**Ruzma** (رزمة) is a bilingual (Arabic/English) SaaS platform for freelancers to manage client projects, contracts, milestones, invoices, and payments. It's built as a modern React SPA with Supabase backend.
+**Ruzma** (رزمة) is a bilingual (Arabic/English) SaaS platform for freelancers to manage client projects, contracts, milestones, invoices, and payments. It's built as a modern React SPA with Supabase backend and Lemon Squeezy payment integration.
 
 **Current Version**: 0.0.0 (in active development)
 
 ## Technology Stack
 
-- **Frontend Framework**: React 18.3 + TypeScript 5.5 + Vite 5.4
+- **Frontend Framework**: React 18.3 + TypeScript 5.5 + Vite 7.1.9
 - **UI Components**: ShadcN UI (Radix UI primitives) with Tailwind CSS 3.4
 - **Database/Backend**: Supabase 2.50 (PostgreSQL + Authentication + Storage + Edge Functions)
 - **State Management**: TanStack Query v5.56 for server state
@@ -22,6 +22,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - **PDF Generation**: jsPDF 3.0 + html2canvas 1.4 for invoice/contract PDFs
 - **Charts**: Recharts 2.12 for analytics visualizations
 - **Testing**: Vitest 3.2 + React Testing Library + jsdom
+- **Payments**: Lemon Squeezy for subscription management
 
 ## Development Commands
 
@@ -395,6 +396,9 @@ npm test -- path/to/test.test.ts
 - `send-payment-notification/` - Send payment notifications
 - `send-client-link/` - Send client portal access links
 - `send-react-email/` - Generic React Email template sender
+- `create-checkout/` - Create Lemon Squeezy checkout sessions
+- `cancel-subscription/` - Cancel active subscriptions
+- `lemon-squeezy-webhook/` - Handle payment webhooks from Lemon Squeezy
 
 **Email templates**: Located in `supabase/functions/_shared/email-templates/`
 - `base-template.tsx` - Base email layout
@@ -413,14 +417,44 @@ cd supabase/functions
 supabase functions deploy send-contract-approval
 supabase functions deploy send-payment-notification
 supabase functions deploy send-client-link
+supabase functions deploy create-checkout
+supabase functions deploy cancel-subscription
+supabase functions deploy lemon-squeezy-webhook
 ```
 
 ## Project Subscription System
 
-**User Types**:
-- `free` - 1 project, 5 clients, 5 invoices, 100MB storage
-- `pro` - 50 projects, 100 clients, 500 invoices, 10GB storage
-- `enterprise` - Unlimited everything + white-label
+**Subscription Plans** (via Lemon Squeezy):
+- **Free** - 1 project, 5 clients, 5 invoices, 100MB storage
+- **Plus** ($19/month) - Unlimited projects, AI assistant, all premium features, 7-day trial
+- **Pro** ($349 lifetime) - One-time payment, lifetime access, all Plus features (except AI)
+
+**Lemon Squeezy Integration**:
+- Store ID: `148628`
+- Plus Variant ID: `697231`
+- Pro Variant ID: `697237`
+
+**Edge Functions**:
+- `create-checkout` - Creates Lemon Squeezy checkout sessions with customer data
+- `cancel-subscription` - Cancels active subscriptions via API
+- `lemon-squeezy-webhook` - Processes subscription events:
+  - `subscription_created` - New subscription activated
+  - `subscription_updated` - Subscription modified
+  - `subscription_cancelled` - Subscription cancelled
+  - `subscription_expired` - Subscription expired
+  - `subscription_payment_success` - Payment succeeded
+  - `subscription_payment_failed` - Payment failed
+
+**Database Tables**:
+- `subscriptions` - Tracks Lemon Squeezy subscriptions
+  - `lemon_squeezy_id` - Subscription ID from Lemon Squeezy
+  - `variant_id` - Product variant (maps to plan)
+  - `status` - Current subscription status
+  - `expires_at` - Subscription expiry date
+- `profiles` - User profile with subscription info
+  - `user_type` - Current plan (free, plus, pro)
+  - `subscription_status` - Active, cancelled, expired, etc.
+  - `subscription_id` - Link to Lemon Squeezy subscription
 
 **Limits enforcement**:
 - `userLimitsService.ts` checks limits before operations
@@ -431,11 +465,41 @@ supabase functions deploy send-client-link
 **Features by tier**:
 ```typescript
 {
-  free: { customBranding: false, advancedAnalytics: false, prioritySupport: false },
-  pro: { customBranding: true, advancedAnalytics: true, prioritySupport: true },
-  enterprise: { customBranding: true, advancedAnalytics: true, prioritySupport: true, whiteLabel: true }
+  free: {
+    maxProjects: 1,
+    customBranding: false,
+    advancedAnalytics: false,
+    prioritySupport: false
+  },
+  plus: {
+    maxProjects: -1, // Unlimited
+    customBranding: true,
+    advancedAnalytics: true,
+    prioritySupport: true,
+    aiAssistant: true,
+    emailReminders: true
+  },
+  pro: {
+    maxProjects: -1, // Unlimited
+    customBranding: true,
+    advancedAnalytics: true,
+    prioritySupport: true,
+    lifetimeAccess: true
+  }
 }
 ```
+
+**Environment Variables** (Supabase Edge Functions):
+```bash
+LEMON_SQUEEZY_API_KEY        # API key for Lemon Squeezy
+LEMON_SQUEEZY_WEBHOOK_SECRET # Webhook signature verification
+```
+
+**Webhook Configuration**:
+- URL: `https://***REMOVED***.supabase.co/functions/v1/lemon-squeezy-webhook`
+- Configured in Lemon Squeezy Dashboard → Settings → Webhooks
+- Verifies signature for security
+- Automatically updates user profiles and subscription status
 
 ## Deployment
 
@@ -456,6 +520,7 @@ supabase functions deploy send-client-link
 **Environment variables** (set in Vercel dashboard):
 - `VITE_SUPABASE_URL` - Supabase project URL
 - `VITE_SUPABASE_ANON_KEY` - Supabase anonymous key
+- `VITE_APP_BASE_URL` - Application base URL (production: https://app.ruzma.co)
 
 **Supabase Edge Functions**: Located in `supabase/functions/`
 - Deployed separately via Supabase CLI
@@ -627,6 +692,35 @@ Client portal routes (`/client/:token`) are:
 
 ### Major Changes
 
+**Lemon Squeezy Payment Integration** ⭐ NEW:
+- **Added**: Complete subscription payment system
+- 3 new Edge Functions:
+  - `create-checkout` - Creates payment checkout sessions
+  - `cancel-subscription` - Handles subscription cancellations
+  - `lemon-squeezy-webhook` - Processes payment webhooks
+- Database schema updated with `subscriptions` table
+- Webhook signature verification for security
+- Automatic user profile upgrades/downgrades
+- Plus plan ($19/mo) and Pro plan ($349 lifetime)
+- Full webhook integration (6 events supported)
+- Store ID: 148628, Variants: 697231 (Plus), 697237 (Pro)
+
+**Vite 7 Upgrade** ⭐ NEW:
+- **Updated**: Vite from 5.4.20 → 7.1.9
+- **Updated**: @vitejs/plugin-react-swc from 3.7.1 → 4.1.0
+- **Updated**: lovable-tagger from 1.1.7 → 1.1.11 (Vite 7 compatibility)
+- All builds passing with zero breaks
+- Improved build performance
+- Modern ESBuild optimizations
+
+**Security Enhancements** ⭐ NEW:
+- **Migrated**: All Supabase credentials to environment variables
+- Removed hardcoded credentials from source code
+- Added runtime validation for missing env vars
+- Enhanced `.env.example` with comprehensive documentation
+- Configured Vercel environment variables via CLI
+- Added `.env.production` to gitignore
+
 **Testing Framework Migration**:
 - **Removed**: Cypress E2E testing framework completely
 - Deleted 10+ test files, fixtures, screenshots
@@ -644,6 +738,7 @@ Client portal routes (`/client/:token`) are:
 - Created comprehensive `README.md` with setup instructions
 - Updated `CLAUDE.md` with current architecture and patterns
 - Cleaned up legacy documentation files (20+ deleted)
+- Enhanced `.env.example` with Lemon Squeezy setup instructions
 
 **Email System Enhancement**:
 - New migration: `001_email_logs.sql` for email tracking
@@ -653,7 +748,7 @@ Client portal routes (`/client/:token`) are:
 
 ### Breaking Changes
 
-None - This update primarily removes unused testing framework and adds development tooling.
+None - All updates maintain backward compatibility.
 
 ### Configuration Changes
 
@@ -662,20 +757,63 @@ None - This update primarily removes unused testing framework and adds developme
 - `@badeball/cypress-cucumber-preprocessor`
 - `@bahmutov/cypress-esbuild-preprocessor`
 
+**Dependencies updated**:
+- `vite`: 5.4.20 → 7.1.9
+- `@vitejs/plugin-react-swc`: 3.7.1 → 4.1.0
+- `lovable-tagger`: 1.1.7 → 1.1.11
+
+**New Edge Functions**:
+- `create-checkout` - Lemon Squeezy checkout creation
+- `cancel-subscription` - Subscription cancellation
+- `lemon-squeezy-webhook` - Payment webhook handler
+
+**New Environment Variables**:
+```bash
+# Frontend (Vercel)
+VITE_APP_BASE_URL=https://app.ruzma.co
+
+# Edge Functions (Supabase)
+LEMON_SQUEEZY_API_KEY=<your-key>
+LEMON_SQUEEZY_WEBHOOK_SECRET=<your-secret>
+```
+
 **New structure**:
 - `.specify/` - Feature specification system
 - `.claude/commands/` - Custom slash commands
+- `supabase/functions/create-checkout/` - Checkout function
+- `supabase/functions/cancel-subscription/` - Cancellation function
+- `supabase/functions/lemon-squeezy-webhook/` - Webhook function
 
 ### Migration Notes
 
 **For developers**:
-1. Run `npm install` to update dependencies
-2. Review new `/specify`, `/plan`, `/tasks` commands for feature development
-3. Continue using Vitest for unit/integration tests
-4. Use new email logging system for email debugging
+1. Run `npm install` to update dependencies (Vite 7, React SWC 4.1)
+2. Copy `.env.example` to `.env` and fill in Supabase credentials
+3. Review new `/specify`, `/plan`, `/tasks` commands for feature development
+4. Continue using Vitest for unit/integration tests
+5. Use new email logging system for email debugging
+6. Configure Lemon Squeezy webhook in dashboard (instructions in `.env.example`)
+
+**For deployment**:
+1. Set environment variables in Vercel Dashboard:
+   - `VITE_SUPABASE_URL`
+   - `VITE_SUPABASE_ANON_KEY`
+   - `VITE_APP_BASE_URL`
+2. Set Edge Function secrets in Supabase Dashboard:
+   - `LEMON_SQUEEZY_API_KEY`
+   - `LEMON_SQUEEZY_WEBHOOK_SECRET`
+   - `RESEND_API_KEY` (for emails)
+3. Deploy Edge Functions:
+   ```bash
+   supabase functions deploy create-checkout
+   supabase functions deploy cancel-subscription
+   supabase functions deploy lemon-squeezy-webhook
+   ```
+4. Configure webhook URL in Lemon Squeezy Dashboard
 
 **For CI/CD**:
 - Remove any Cypress-related CI jobs
+- Ensure Node.js ≥18 for Vite 7 compatibility
 - No other pipeline changes needed
 
 **Upgrading from earlier versions?** See **[MIGRATION_GUIDE.md](MIGRATION_GUIDE.md)** for detailed migration instructions and file replacement mappings.
