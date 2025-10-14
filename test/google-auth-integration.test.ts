@@ -1,6 +1,7 @@
 // Google Authentication Integration Test
 
 import { describe, test, expect, vi } from 'vitest';
+import { useT } from '@/lib/i18n';
 
 // Mock Supabase client
 const mockSignInWithOAuth = vi.fn();
@@ -61,9 +62,9 @@ describe('Google Authentication', () => {
   });
 
   test('Translation keys are correctly mapped', () => {
-    // Mock the translation function
-    const t = vi.mocked(require('@/lib/i18n').useT)();
-    
+    // Use the mocked translation function
+    const t = useT();
+
     expect(t('googleSignupWith')).toBe('Sign up with Google');
     expect(t('googleSigninWith')).toBe('Sign in with Google');
     expect(t('googleLoading')).toBe('Connecting...');

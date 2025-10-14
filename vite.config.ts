@@ -62,5 +62,12 @@ export default defineConfig(({ mode }) => ({
     environment: 'jsdom',
     setupFiles: ['./src/test/setup.ts'],
     css: true,
+    browser: {
+      enabled: false, // Enable with --browser flag
+      name: 'chromium', // or 'firefox', 'webkit'
+      provider: 'playwright',
+      headless: true,
+      screenshotOnFailure: true,
+    },
   },
 }));
