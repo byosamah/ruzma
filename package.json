@@ -14,6 +14,7 @@
     "test:ui": "vitest --ui",
     "test:run": "vitest run",
     "test:coverage": "vitest run --coverage",
+    "test:manual": "echo '\n📋 Manual Testing Checklist\n\nSee TESTING.md for complete manual testing procedures.\n\n🔗 Opening TESTING.md...\n' && open TESTING.md || cat TESTING.md",
     "analyze": "vite build --mode production && npx vite-bundle-analyzer",
     "size": "size-limit",
     "perf:test": "vitest run src/test/performance",
