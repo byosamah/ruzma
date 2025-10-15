@@ -238,7 +238,6 @@ export const analyticsTranslations = {
     // NEW: Project Types List
     noProjectTypesToDisplay: "No project types to display yet. Start adding projects to see your service distribution.",
     project: "project",
-    projects: "projects",
     
     // NEW: Missing Trend Analytics
     marketPosition: "Market Position",
@@ -485,7 +484,6 @@ export const analyticsTranslations = {
     // NEW: Project Types List
     noProjectTypesToDisplay: "لا توجد أنواع مشاريع للعرض بعد. ابدأ بإضافة المشاريع لرؤية توزيع خدماتك.",
     project: "مشروع",
-    projects: "مشاريع",
     
     // NEW: Missing Trend Analytics
     marketPosition: "موقع السوق",
