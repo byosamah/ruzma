@@ -2,7 +2,7 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
-**Last Updated**: 2025-10-14
+**Last Updated**: 2025-10-15
 
 ## Project Overview
 
@@ -688,7 +688,7 @@ Client portal routes (`/client/:token`) are:
 - Service operations: `logOperation()` in `BaseService`
 - Email sends: Logged to `email_logs` table
 
-## Recent Updates (Updated: 2025-10-14)
+## Recent Updates (Updated: 2025-10-15)
 
 ### Major Changes
 
@@ -746,6 +746,30 @@ Client portal routes (`/client/:token`) are:
 - Tracks template, recipient, status, errors
 - Service role-only access for security
 
+**Test Coverage Expansion** ⭐ NEW (2025-10-15):
+- **Added**: 222 new tests for core services and utilities
+- **Coverage**: Expanded from ~0.8% to 9.33% overall coverage
+- **Test Files Created**:
+  - `src/lib/__tests__/utils.test.ts` (38 tests) - Utility functions
+  - `src/lib/__tests__/i18n.test.ts` (29 tests) - Translation system
+  - `src/lib/__tests__/inputValidation.test.ts` (60 tests) - XSS prevention
+  - `src/services/core/__tests__/BaseService.test.ts` (30 tests) - Service foundation
+  - `src/services/core/__tests__/ServiceRegistry.test.ts` (36 tests) - DI container
+  - `src/services/__tests__/projectService.test.ts` (29 tests) - Project business logic
+- **Quality**: 66.22% branch coverage, 60% function coverage
+- **Framework**: Vitest 3.2.4 with browser mode support
+- **Dependencies**: Added `@vitest/coverage-v8` for coverage reporting
+- Total: 281 tests passing
+
+**Translation System Quality Improvements** ⭐ NEW (2025-10-15):
+- **Fixed**: Removed 11 duplicate translation keys causing build warnings
+- **Files Updated**:
+  - `src/lib/translations/analytics.ts` - Removed 2 duplicates
+  - `src/lib/translations/common.ts` - Removed 9 duplicates
+- **Consistency**: Updated "Project Not Found" → "Project not found" (sentence case)
+- **Build Result**: Zero warnings, clean builds
+- **Impact**: Improved maintainability and reduced confusion
+
 ### Breaking Changes
 
 None - All updates maintain backward compatibility.
@@ -761,6 +785,9 @@ None - All updates maintain backward compatibility.
 - `vite`: 5.4.20 → 7.1.9
 - `@vitejs/plugin-react-swc`: 3.7.1 → 4.1.0
 - `lovable-tagger`: 1.1.7 → 1.1.11
+
+**Dependencies added**:
+- `@vitest/coverage-v8`: ^3.2.4 - Coverage reporting for tests
 
 **New Edge Functions**:
 - `create-checkout` - Lemon Squeezy checkout creation
