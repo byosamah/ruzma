@@ -23,6 +23,7 @@ interface ProfileUpdateData {
   website: string;
   bio: string;
   currency: string;
+  country?: string;
   professionalTitle?: string;
   shortBio?: string;
   primaryColor?: string;
@@ -80,6 +81,7 @@ export const useProfileActions = (user: User | null) => {
           website: profileData.website,
           bio: profileData.bio,
           currency: profileData.currency,
+          country: profileData.country,
           updated_at: new Date().toISOString()
         })
         .eq('id', user.id);

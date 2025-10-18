@@ -1,5 +1,44 @@
 import { z } from 'zod';
 
+// Custom URL validator that accepts URLs with or without protocol
+const flexibleUrl = () => z.string()
+  .optional()
+  .or(z.literal(''))
+  .transform((val) => {
+    // Handle empty, undefined, or whitespace
+    if (!val || val.trim() === '') return undefined;
+
+    const trimmedVal = val.trim();
+
+    // If it already has a protocol, return as is
+    if (trimmedVal.match(/^https?:\/\//i)) {
+      return trimmedVal;
+    }
+
+    // If it starts with www, add https://
+    if (trimmedVal.match(/^www\./i)) {
+      return `https://${trimmedVal}`;
+    }
+
+    // Otherwise, add https:// to the domain
+    return `https://${trimmedVal}`;
+  })
+  .refine((val) => {
+    // Allow empty/undefined values
+    if (!val) return true;
+
+    // Validate it's a proper URL after transformation
+    try {
+      const url = new URL(val);
+      // Check that it has a valid hostname
+      return url.hostname.includes('.');
+    } catch {
+      return false;
+    }
+  }, {
+    message: 'Please enter a valid website URL (e.g., example.com or https://example.com)'
+  });
+
 export const personalInformationSchema = z.object({
   first_name: z.string()
     .min(1, 'First name is required')
@@ -48,15 +87,13 @@ export const brandingSchema = z.object({
     .max(100, 'Company name must be less than 100 characters')
     .trim()
     .optional(),
-  website_url: z.string()
-    .url('Please enter a valid URL')
-    .optional(),
+  website_url: flexibleUrl(),
   social_links: z.object({
-    linkedin: z.string().url('Please enter a valid LinkedIn URL').optional(),
-    twitter: z.string().url('Please enter a valid Twitter URL').optional(),
-    instagram: z.string().url('Please enter a valid Instagram URL').optional(),
-    behance: z.string().url('Please enter a valid Behance URL').optional(),
-    dribbble: z.string().url('Please enter a valid Dribbble URL').optional(),
+    linkedin: flexibleUrl(),
+    twitter: flexibleUrl(),
+    instagram: flexibleUrl(),
+    behance: flexibleUrl(),
+    dribbble: flexibleUrl(),
   }).optional(),
 });
 

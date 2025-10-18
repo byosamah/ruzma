@@ -29,7 +29,7 @@ interface BrandingData {
 export const fetchExistingProfile = async (userId: string) => {
   const { data: profileData, error: profileError } = await supabase
     .from('profiles')
-    .select('id, full_name, email, currency, user_type, project_count, storage_used, avatar_url, created_at, updated_at')
+    .select('id, full_name, email, company, website, bio, currency, country, user_type, project_count, storage_used, avatar_url, created_at, updated_at')
     .eq('id', userId)
     .maybeSingle();
 
@@ -46,9 +46,19 @@ export const createNewProfile = async (user: User, userCurrency: string) => {
     })
     .select()
     .single();
-    
+
   if (createError) {
     logSecurityEvent('profile_creation_failed', { error: createError.message });
+
+    // If error is 409 (Conflict) or 406 (Not Acceptable), auth user may be deleted
+    // Sign out to prevent infinite loop
+    if (createError.code === '409' || createError.code === '406' || createError.code === 'PGRST301') {
+      console.error('Auth user appears to be deleted. Signing out...');
+      await supabase.auth.signOut();
+      window.location.href = '/en/login';
+      return { newProfile: null, createError };
+    }
+
     toast.error("Profile setup error");
   } else {
     logSecurityEvent('profile_created', { userId: user.id });

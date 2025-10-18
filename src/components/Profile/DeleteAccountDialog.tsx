@@ -36,39 +36,53 @@ export const DeleteAccountDialog = ({ open, onOpenChange }: DeleteAccountDialogP
     setIsLoading(true);
 
     try {
-      // First, delete user profile and related data
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) return;
+      // Get current session for auth token
+      const { data: { session } } = await supabase.auth.getSession();
 
-      // Delete projects and milestones (cascade will handle milestones)
-      const { error: projectsError } = await supabase
-        .from('projects')
-        .delete()
-        .eq('user_id', user.id);
-
-      if (projectsError) throw projectsError;
-
-      // Delete profile
-      const { error: profileError } = await supabase
-        .from('profiles')
-        .delete()
-        .eq('id', user.id);
-
-      if (profileError) throw profileError;
-
-      // Finally, delete the auth user (this will sign them out)
-      const { error: deleteError } = await supabase.auth.admin.deleteUser(user.id);
-
-      if (deleteError) {
-        // If admin deletion fails, just sign out
-        await supabase.auth.signOut();
+      if (!session?.access_token) {
+        toast.error('Session expired. Please log in again.');
+        return;
       }
 
+      // Get Supabase URL from environment
+      const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
+
+      // Call delete-account Edge Function
+      const response = await fetch(`${supabaseUrl}/functions/v1/delete-account`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${session.access_token}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          confirmation: confirmText
+        })
+      });
+
+      const result = await response.json();
+
+      if (!response.ok) {
+        throw new Error(result.error || 'Failed to delete account');
+      }
+
+      // Success! Sign out and redirect
       toast.success('Account deleted successfully');
-      navigate('/');
+
+      // CRITICAL: Sign out FIRST to clear session
+      await supabase.auth.signOut();
+
+      // Clear local storage to remove any cached data
+      localStorage.clear();
+      sessionStorage.clear();
+
+      // Small delay to ensure sign-out completes
+      await new Promise(resolve => setTimeout(resolve, 500));
+
+      // Force redirect to login page (not homepage to avoid auth loops)
+      window.location.href = '/en/login';
     } catch (error: Error | unknown) {
-      // Error deleting account handled by UI
-      toast.error('Failed to delete account. Please contact support.');
+      console.error('Delete account error:', error);
+      toast.error(error instanceof Error ? error.message : 'Failed to delete account. Please contact support.');
     } finally {
       setIsLoading(false);
     }

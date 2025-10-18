@@ -6,6 +6,7 @@ import { ProjectTemplate } from '@/types/projectTemplate';
 import { generateSlug, ensureUniqueSlug } from '@/lib/slugUtils';
 import { trackProjectCreated, trackMilestoneApproved, trackPaymentProofUploaded, trackDeliverableUploaded, trackMilestoneCreated } from '@/lib/analytics';
 import { sendPaymentNotification } from '@/services/emailNotifications';
+import { emailNotificationService } from '@/services/emailNotificationService';
 import { toast } from 'sonner';
 import { ServiceRegistry } from './core/ServiceRegistry';
 import { UserService } from './core/UserService';
@@ -168,6 +169,21 @@ export class ProjectService {
       } catch (emailError) {
         // Don't fail project creation if email fails
       }
+    }
+
+    // Send project creation notification to client (non-blocking)
+    if (sanitizedClientEmail) {
+      // Send email in background without blocking project creation
+      emailNotificationService.sendProjectUpdate({
+        projectId: project.id,
+        clientEmail: sanitizedClientEmail,
+        updateType: 'general',
+        updateDetails: `Your project "${sanitizedName}" has been created! You can now view the project details, milestones, and deliverables.`,
+        language: 'en' // TODO: Get from user/client preferences
+      }).catch(emailError => {
+        // Log error but don't fail project creation
+        console.error('Failed to send project creation notification:', emailError);
+      });
     }
 
     return {
@@ -586,7 +602,9 @@ export class ProjectService {
 
   async updateMilestoneStatusGeneral(
     milestoneId: string,
-    status: 'pending' | 'payment_submitted' | 'approved' | 'rejected'
+    status: 'pending' | 'payment_submitted' | 'approved' | 'rejected',
+    oldStatus?: 'pending' | 'payment_submitted' | 'approved' | 'rejected',
+    message?: string
   ): Promise<boolean> {
     if (!this.user) {
       toast.error('You must be logged in to update milestone status');
@@ -594,13 +612,16 @@ export class ProjectService {
     }
 
     try {
-      // First verify the user owns this milestone
+      // First verify the user owns this milestone and get full details
       const { data: milestone, error: fetchError } = await supabase
         .from('milestones')
         .select(`
           *,
           projects!inner (
-            user_id
+            id,
+            name,
+            user_id,
+            client_email
           )
         `)
         .eq('id', milestoneId)
@@ -617,10 +638,13 @@ export class ProjectService {
         return false;
       }
 
+      // Determine old status (use provided or current status)
+      const previousStatus = oldStatus || milestone.status;
+
       // Update the milestone status
       const { error: updateError } = await supabase
         .from('milestones')
-        .update({ 
+        .update({
           status,
           updated_at: new Date().toISOString()
         })
@@ -629,6 +653,29 @@ export class ProjectService {
       if (updateError) {
         toast.error('Failed to update milestone status');
         return false;
+      }
+
+      // Send milestone status change notification to client
+      if (milestone.projects.client_email && previousStatus !== status) {
+        try {
+          // Map database status to email template status
+          const mapStatus = (s: string) => {
+            if (s === 'payment_submitted') return 'review';
+            return s as 'pending' | 'in_progress' | 'review' | 'completed';
+          };
+
+          await emailNotificationService.sendMilestoneUpdate({
+            milestoneId,
+            clientEmail: milestone.projects.client_email,
+            oldStatus: mapStatus(previousStatus),
+            newStatus: mapStatus(status),
+            message,
+            language: 'en' // TODO: Get from user/client preferences
+          });
+        } catch (emailError) {
+          // Don't fail the status update if email fails
+          console.error('Failed to send milestone update notification:', emailError);
+        }
       }
 
       toast.success('Status updated successfully');

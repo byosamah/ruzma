@@ -28,11 +28,30 @@ export function ChangePasswordDialog({ open, onOpenChange }: ChangePasswordDialo
 
   const handleSubmit = async (data: ChangePasswordFormData) => {
     try {
-      const { error } = await supabase.auth.updateUser({
+      // Step 1: Get current user's email from session
+      const { data: { user }, error: userError } = await supabase.auth.getUser();
+
+      if (userError || !user?.email) {
+        throw new Error('Unable to verify user session');
+      }
+
+      // Step 2: Re-authenticate with current password to verify it's correct
+      const { error: signInError } = await supabase.auth.signInWithPassword({
+        email: user.email,
+        password: data.currentPassword,
+      });
+
+      if (signInError) {
+        // Current password is incorrect
+        throw new Error(t('incorrectCurrentPassword') || 'Current password is incorrect');
+      }
+
+      // Step 3: Only if current password is correct, update to new password
+      const { error: updateError } = await supabase.auth.updateUser({
         password: data.newPassword
       });
 
-      if (error) throw error;
+      if (updateError) throw updateError;
 
       toast.success(t('passwordUpdated') || 'Password updated successfully!');
       form.reset();

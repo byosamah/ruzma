@@ -83,7 +83,7 @@ export const PersonalInfoSection = ({
           <Input
             id="website"
             name="website"
-            type="url"
+            type="text"
             placeholder={t('websiteUrl')}
             value={formData.website}
             onChange={onFormChange}

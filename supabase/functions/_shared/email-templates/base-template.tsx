@@ -10,8 +10,8 @@ import {
   Img,
   Column,
   Row,
-} from '@react-email/components';
-import React from 'react';
+} from 'https://esm.sh/@react-email/components@0.0.25';
+import React from 'https://esm.sh/react@18.2.0';
 
 interface BaseTemplateProps {
   children: React.ReactNode;

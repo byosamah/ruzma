@@ -688,7 +688,75 @@ Client portal routes (`/client/:token`) are:
 - Service operations: `logOperation()` in `BaseService`
 - Email sends: Logged to `email_logs` table
 
-## Recent Updates (Updated: 2025-10-15)
+## Recent Updates (Updated: 2025-10-18)
+
+### Testing Session Improvements ⭐ NEW (2025-10-18):
+
+**Comprehensive Manual Testing & Bug Fixes**:
+- **Testing Journey**: Completed full user testing flow covering authentication, profile management, and account deletion
+- **Critical Bugs Fixed**:
+  - Fixed password change security vulnerability - now validates current password before allowing change
+  - Fixed profile data persistence issues (website, company, country fields)
+  - Fixed website URL validation to accept flexible formats (with/without https://, www.)
+  - Fixed account deletion infinite loop and redirect issues
+  - Fixed profile creation error handling for deleted auth users
+
+**Account Deletion System** ⭐ NEW:
+- **Created**: Secure `delete-account` Edge Function with proper data cleanup
+- **Features**:
+  - Service role authentication for admin operations
+  - Complete data deletion: invoices, milestones, projects, clients, subscriptions, branding, profile
+  - Storage file cleanup (avatars, logos, deliverables, payment proofs)
+  - Auth user deletion via admin API
+  - Proper error handling and audit logging
+- **Frontend**: Updated DeleteAccountDialog to use Edge Function instead of broken client-side admin call
+- **Safety**: Added confirmation dialog, proper sign-out flow, session cleanup
+- **Deployed**: Function live at `https://***REMOVED***.supabase.co/functions/v1/delete-account`
+
+**Security Enhancements**:
+- **Password Change**: Added current password verification via re-authentication
+  - Prevents unauthorized password changes from hijacked sessions
+  - Shows clear error if current password is incorrect
+  - Added translations for error messages
+- **Profile Data**: Fixed missing fields in fetch/save operations
+  - Added `company`, `website`, `bio`, `country` to fetch query
+  - Added `country` to update mutation
+  - Prevents data loss on page refresh
+
+**URL Validation Improvements**:
+- **Flexible URL Input**: Website field now accepts multiple formats
+  - `example.com` → automatically converts to `https://example.com`
+  - `www.example.com` → converts to `https://www.example.com`
+  - `https://example.com` → keeps as-is
+  - `http://example.com` → keeps as-is
+- **Changed**: Input type from `url` to `text` to prevent browser validation conflicts
+- **Applied to**: Website field and all social links (LinkedIn, Twitter, Instagram, Behance, Dribbble)
+
+**Profile Data Persistence**:
+- **Fixed**: `fetchExistingProfile` now includes `company`, `website`, `bio`, `country` fields
+- **Fixed**: `updateProfile` now saves `country` field
+- **Fixed**: Environment variable loading (`.env.local` was overriding `.env`)
+
+**Error Handling**:
+- **Infinite Loop Prevention**: Profile creation now detects deleted auth users (409/406 errors)
+- **Auto Recovery**: Signs out and redirects to login if auth user is deleted
+- **Better Messages**: Clear error messages for profile setup failures
+
+**Files Modified**:
+- `src/components/Profile/ChangePasswordDialog.tsx` - Added password verification
+- `src/components/Profile/DeleteAccountDialog.tsx` - Edge Function integration, better cleanup
+- `src/components/Profile/PersonalInfoSection.tsx` - URL field type change
+- `src/hooks/profile/useProfileActions.ts` - Added country to save, fixed interface
+- `src/hooks/profile/utils/profileFetchers.ts` - Added missing fields to fetch, error handling
+- `src/lib/validators/profile.ts` - Flexible URL validator with transform/refine
+- `src/lib/translations/profile.ts` - New translation keys for errors
+- `supabase/functions/delete-account/index.ts` - New Edge Function (261 lines)
+
+**Deployment**:
+- Edge Function deployed successfully via `supabase functions deploy delete-account`
+- Tested with real account deletion (designbattlefield@gmail.com)
+- Verified complete data removal from all tables
+- Confirmed proper redirect flow and session cleanup
 
 ### Major Changes
 
