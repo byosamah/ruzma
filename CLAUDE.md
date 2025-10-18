@@ -2,7 +2,7 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
-**Last Updated**: 2025-10-15
+**Last Updated**: 2025-10-18
 
 ## Project Overview
 
@@ -172,15 +172,20 @@ const { data: projects, isLoading } = useQuery({
 
 **RLS Security**: Row Level Security policies enforce data isolation per user. Always include `user_id` in queries even though RLS enforces it.
 
-**Common tables**:
-- `profiles` - User profile data (with currency, branding preferences)
+**Common tables** (13 confirmed tables):
+- `profiles` - User profile data (currency, branding, subscription info)
 - `projects` - Project information with milestones
 - `clients` - Client contacts and relationships
 - `milestones` - Project milestones/deliverables
 - `invoices` - Invoice records
+- `subscriptions` - Lemon Squeezy subscription tracking (webhook-synced)
+- `active_subscriptions` - Legacy subscription table (15 columns, not used in code)
 - `freelancer_branding` - Custom branding per user
 - `client_project_tokens` - Secure tokens for client portal access
-- `email_logs` - Email delivery tracking (new in recent migration)
+- `project_templates` - Reusable project templates
+- `notifications` - User notifications
+- `email_logs` - Email delivery tracking
+- `security_events` - Audit logging
 
 **Query pattern with relations**:
 ```typescript
@@ -445,16 +450,36 @@ supabase functions deploy lemon-squeezy-webhook
   - `subscription_payment_success` - Payment succeeded
   - `subscription_payment_failed` - Payment failed
 
-**Database Tables**:
-- `subscriptions` - Tracks Lemon Squeezy subscriptions
-  - `lemon_squeezy_id` - Subscription ID from Lemon Squeezy
-  - `variant_id` - Product variant (maps to plan)
-  - `status` - Current subscription status
-  - `expires_at` - Subscription expiry date
-- `profiles` - User profile with subscription info
-  - `user_type` - Current plan (free, plus, pro)
-  - `subscription_status` - Active, cancelled, expired, etc.
-  - `subscription_id` - Link to Lemon Squeezy subscription
+**Database Tables - Two-Table Subscription Architecture**:
+
+The system uses **two tables** for optimal performance:
+
+1. **`profiles` table** (denormalized for speed):
+   - `user_type` - Current plan (free, plus, pro)
+   - `subscription_status` - Active, cancelled, expired, etc.
+   - `subscription_id` - Link to Lemon Squeezy subscription
+   - **Purpose**: Fast permission checks without JOINs
+   - **Usage**: 150+ code references for quick access
+
+2. **`subscriptions` table** (normalized tracking):
+   - `lemon_squeezy_id` - Subscription ID from Lemon Squeezy (UNIQUE)
+   - `variant_id` - Product variant (697231=Plus, 697237=Pro)
+   - `status` - Current subscription status
+   - `expires_at` - Subscription expiry/renewal date
+   - `user_id` - Foreign key to profiles
+   - **Purpose**: Full subscription lifecycle management
+   - **Usage**: 15 code references for detailed operations
+   - **Updated by**: Lemon Squeezy webhook events
+
+**Why two tables?**
+- `profiles` = Fast queries (no JOINs needed for "can user do X?")
+- `subscriptions` = Complete subscription data (webhooks, renewals, history)
+- Webhook updates **BOTH** tables simultaneously
+
+**Legacy table**: `active_subscriptions` (15 columns, 1 record, 0 code references)
+- Not created by migrations (manual creation)
+- Contains test subscription data
+- Safe to keep (no impact on system)
 
 **Limits enforcement**:
 - `userLimitsService.ts` checks limits before operations
@@ -689,6 +714,37 @@ Client portal routes (`/client/:token`) are:
 - Email sends: Logged to `email_logs` table
 
 ## Recent Updates (Updated: 2025-10-18)
+
+### Database Schema Analysis ⭐ NEW (2025-10-18):
+
+**Complete Subscription System Investigation**:
+- **Analyzed**: All 13 database tables via Supabase JavaScript client
+- **Discovered**: Two-table subscription architecture explained
+- **Verified**: `active_subscriptions` is a legacy table (not a VIEW)
+- **Documented**: Complete table relationships and usage patterns
+
+**Key Findings**:
+- **`subscriptions` table**: Empty (webhook-based, will populate on next payment)
+- **`active_subscriptions` table**: Has 1 test subscription, 0 code references
+- **Two-table pattern**: `profiles` (fast) + `subscriptions` (complete)
+- **RLS policies**: Working correctly (anon key sees 0 records as expected)
+
+**Documentation Created**:
+- `DATABASE_SCHEMA_ANALYSIS.md` (300+ lines) - All tables documented
+- `DATABASE_ANALYSIS_FINDINGS.md` - Investigation report with recommendations
+- `SUBSCRIPTION_SYSTEM_COMPLETE_ANALYSIS.md` - Executive summary
+- `ANALYZE_ALL_TABLES.sql` - Verification queries
+
+**Subscription Architecture Confirmed**:
+```
+Payment Flow:
+1. User pays → Lemon Squeezy webhook fires
+2. Webhook updates profiles.user_type = 'plus'
+3. Webhook inserts into subscriptions table
+4. Both tables stay in sync automatically
+```
+
+**Status**: ✅ System verified working, documentation complete
 
 ### Testing Session Improvements ⭐ NEW (2025-10-18):
 
@@ -1033,3 +1089,14 @@ Additional documentation files in the repository:
 - `src/*/CLAUDE.md` - Component/directory-specific guidelines
 - `.specify/` - Feature specifications and development workflow
 - `supabase/functions/README.md` - Edge Functions documentation
+
+**Database Documentation** (NEW):
+- `DATABASE_SCHEMA_ANALYSIS.md` - Complete schema reference (all 13 tables)
+- `DATABASE_ANALYSIS_FINDINGS.md` - Investigation report and recommendations
+- `SUBSCRIPTION_SYSTEM_COMPLETE_ANALYSIS.md` - Subscription architecture explained
+- `ANALYZE_ALL_TABLES.sql` - Database verification queries
+
+**Payment System Documentation**:
+- `PAYMENT_SUBSCRIPTION_ANALYSIS.md` - Payment flow analysis
+- `DEBUG_PAYMENT_ISSUE.md` - Webhook configuration guide
+- `UPGRADE_ACCOUNT_MANUALLY.sql` - Manual account upgrade template
