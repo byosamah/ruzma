@@ -497,18 +497,54 @@ Supabase RLS policies ensure data isolation:
 
 ## 🚀 Deployment
 
-### Deploying to Vercel
+Ruzma has **two environments** for safe development and testing:
 
-#### Using the Deploy Script (Recommended)
+| Environment | Branch | URL | Deployment Script |
+|------------|--------|-----|-------------------|
+| **Test** | `test` | https://test-ruzma.vercel.app | `./deploy-test.sh` |
+| **Production** | `main` | https://app.ruzma.co | `./deploy.sh` |
 
+### 🧪 Test Environment Workflow
+
+**For testing features before production:**
+
+```bash
+# 1. Switch to test branch
+git checkout test
+
+# 2. Make changes and commit
+git add .
+git commit -m "feat: your feature"
+
+# 3. Push to test (auto-deploys to https://test-ruzma.vercel.app)
+git push origin test
+
+# 4. Test your changes, if good:
+git checkout main
+git merge test
+git push origin main  # Deploys to production
+```
+
+📖 **See [TEST_ENVIRONMENT.md](TEST_ENVIRONMENT.md) for complete guide**
+
+### 🚀 Deploying to Vercel
+
+#### Using the Deploy Scripts (Recommended)
+
+**Test Environment:**
+```bash
+./deploy-test.sh
+```
+
+**Production Environment:**
 ```bash
 ./deploy.sh
 ```
 
-This script:
-1. Sets up Vercel project configuration
-2. Builds the application
-3. Deploys to production with the correct settings
+Both scripts:
+1. Verify you're on the correct branch
+2. Build the application
+3. Deploy to the correct Vercel project
 
 #### Manual Deployment
 
