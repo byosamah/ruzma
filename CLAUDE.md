@@ -713,7 +713,52 @@ Client portal routes (`/client/:token`) are:
 - Service operations: `logOperation()` in `BaseService`
 - Email sends: Logged to `email_logs` table
 
-## Recent Updates (Updated: 2025-10-18)
+## Recent Updates (Updated: 2025-10-19)
+
+### Pro Plan Webhook Fix ⭐ CRITICAL FIX (2025-10-19):
+
+**Critical Bug Fixed**: Pro plan upgrades were not processing due to missing `order_created` event handler.
+
+**The Problem**:
+- Pro plan ($349 lifetime) is a ONE-TIME PURCHASE (not subscription)
+- One-time purchases trigger `order_created` webhook event from Lemon Squeezy
+- Webhook function ONLY handled subscription events (`subscription_created`, etc.)
+- Pro purchases were completely ignored by the system ❌
+- Users paid but accounts were never upgraded
+
+**The Fix**:
+- **Added `order_created` event handler** to `supabase/functions/lemon-squeezy-webhook/index.ts`
+- Extracts variant_id from order.first_order_item
+- Maps variant 697237 → 'pro' user type
+- Automatically cancels existing Plus subscriptions on Pro upgrade
+- Logs security events for audit trail
+- Deployed successfully ✅
+
+**Action Required**:
+1. **Configure Lemon Squeezy webhook** to include `order_created` event
+2. See `LEMON_SQUEEZY_WEBHOOK_SETUP.md` for complete guide
+3. See `FIX_PRO_UPGRADE_ISSUE.md` for technical details
+
+**Webhook Events Now Handled**:
+- ✅ `order_created` (Pro purchases) ← **NEW**
+- ✅ `order_refunded` ← **NEW**
+- ✅ `subscription_created` (Plus subscriptions)
+- ✅ `subscription_updated`
+- ✅ `subscription_cancelled`
+- ✅ `subscription_expired`
+- ✅ `subscription_payment_success`
+- ✅ `subscription_payment_failed`
+
+**Prevention**:
+- Plus → Pro upgrade flow marked as "TO TEST" in docs but was never tested
+- Always test BOTH subscription AND one-time purchase flows
+- Monitor webhook deliveries in Lemon Squeezy dashboard
+
+**Documentation Created**:
+- `FIX_PRO_UPGRADE_ISSUE.md` - Complete technical analysis
+- `LEMON_SQUEEZY_WEBHOOK_SETUP.md` - Webhook configuration guide
+- `UPGRADE_TO_PRO_SUMMARY.md` - Quick reference for affected users
+- `upgrade-to-pro-manual.sql` - Manual account upgrade script
 
 ### Database Schema Analysis ⭐ NEW (2025-10-18):
 

@@ -62,11 +62,12 @@ serve(async (req) => {
     // Parse webhook payload
     const payload = JSON.parse(rawBody)
     const eventName = payload.meta?.event_name
-    const subscription = payload.data?.attributes
+    const dataAttributes = payload.data?.attributes
     const customData = payload.meta?.custom_data
 
     console.log(`Webhook received: ${eventName}`, {
-      subscriptionId: subscription?.id,
+      dataId: payload.data?.id,
+      dataType: payload.data?.type,
       userId: customData?.user_id,
     })
 
@@ -85,9 +86,100 @@ serve(async (req) => {
 
     // Handle different webhook events
     switch (eventName) {
+      case 'order_created': {
+        // Handle one-time purchases (e.g., Pro lifetime plan)
+        console.log('Processing order_created event', {
+          orderId: payload.data?.id,
+          orderAttributes: dataAttributes
+        })
+
+        // Extract variant_id from first_order_item
+        const firstOrderItem = dataAttributes?.first_order_item
+        const variantId = firstOrderItem?.variant_id?.toString()
+
+        if (!variantId) {
+          console.error('No variant_id found in order', { firstOrderItem })
+          throw new Error('Missing variant_id in order')
+        }
+
+        const userType = VARIANT_TO_USER_TYPE[variantId]
+
+        if (!userType) {
+          console.error(`Unknown variant_id: ${variantId}`)
+          throw new Error(`Unknown variant_id: ${variantId}`)
+        }
+
+        console.log(`Order for variant ${variantId} → user_type: ${userType}`)
+
+        // For Pro (lifetime) purchases, cancel existing subscriptions
+        if (userType === 'pro') {
+          console.log('Pro purchase detected - cancelling existing subscriptions')
+
+          // Get user's active subscriptions
+          const { data: existingSubs } = await supabaseClient
+            .from('subscriptions')
+            .select('lemon_squeezy_id, status')
+            .eq('user_id', userId)
+            .in('status', ['active', 'on_trial'])
+
+          if (existingSubs && existingSubs.length > 0) {
+            console.log(`Found ${existingSubs.length} active subscription(s) to cancel`)
+
+            // Mark subscriptions as cancelled in our DB
+            const { error: cancelError } = await supabaseClient
+              .from('subscriptions')
+              .update({
+                status: 'cancelled',
+                updated_at: new Date().toISOString(),
+              })
+              .eq('user_id', userId)
+              .in('status', ['active', 'on_trial'])
+
+            if (cancelError) {
+              console.error('Failed to cancel subscriptions in DB:', cancelError)
+            }
+          }
+        }
+
+        // Update user profile
+        const { error: profileError } = await supabaseClient
+          .from('profiles')
+          .update({
+            user_type: userType,
+            subscription_status: 'active',
+            updated_at: new Date().toISOString(),
+          })
+          .eq('id', userId)
+
+        if (profileError) {
+          console.error('Failed to update profile:', profileError)
+          throw profileError
+        }
+
+        // Log security event
+        await supabaseClient
+          .from('security_events')
+          .insert({
+            user_id: userId,
+            event_type: 'order_completed',
+            details: {
+              order_id: payload.data?.id,
+              variant_id: variantId,
+              user_type: userType,
+              order_number: dataAttributes?.order_number,
+              total: dataAttributes?.total,
+              currency: dataAttributes?.currency,
+            },
+            created_at: new Date().toISOString(),
+          })
+
+        console.log(`Order processed - User ${userId} upgraded to ${userType}`)
+        break
+      }
+
       case 'subscription_created':
       case 'subscription_updated': {
-        const variantId = subscription?.variant_id?.toString()
+        const variantId = dataAttributes?.variant_id?.toString()
         const userType = VARIANT_TO_USER_TYPE[variantId] || 'free'
 
         // Upsert subscription record
@@ -95,12 +187,12 @@ serve(async (req) => {
           .from('subscriptions')
           .upsert({
             user_id: userId,
-            lemon_squeezy_id: subscription.id.toString(),
-            status: subscription.status,
+            lemon_squeezy_id: dataAttributes.id.toString(),
+            status: dataAttributes.status,
             variant_id: variantId,
-            created_at: subscription.created_at,
+            created_at: dataAttributes.created_at,
             updated_at: new Date().toISOString(),
-            expires_at: subscription.renews_at || subscription.ends_at || null,
+            expires_at: dataAttributes.renews_at || dataAttributes.ends_at || null,
           }, {
             onConflict: 'lemon_squeezy_id'
           })
@@ -115,8 +207,8 @@ serve(async (req) => {
           .from('profiles')
           .update({
             user_type: userType,
-            subscription_status: subscription.status,
-            subscription_id: subscription.id.toString(),
+            subscription_status: dataAttributes.status,
+            subscription_id: dataAttributes.id.toString(),
             updated_at: new Date().toISOString(),
           })
           .eq('id', userId)
@@ -136,10 +228,10 @@ serve(async (req) => {
         const { error: subError } = await supabaseClient
           .from('subscriptions')
           .update({
-            status: subscription.status,
+            status: dataAttributes.status,
             updated_at: new Date().toISOString(),
           })
-          .eq('lemon_squeezy_id', subscription.id.toString())
+          .eq('lemon_squeezy_id', dataAttributes.id.toString())
 
         if (subError) {
           console.error('Failed to update subscription:', subError)
@@ -150,7 +242,7 @@ serve(async (req) => {
           .from('profiles')
           .update({
             user_type: 'free',
-            subscription_status: subscription.status,
+            subscription_status: dataAttributes.status,
             updated_at: new Date().toISOString(),
           })
           .eq('id', userId)
