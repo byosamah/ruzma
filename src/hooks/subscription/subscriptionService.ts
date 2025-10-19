@@ -31,6 +31,12 @@ export const createCheckoutSession = async (planId: string) => {
       throw new Error('Failed to get user profile');
     }
 
+    // CRITICAL: Pro users cannot downgrade (Pro is lifetime)
+    if (profile.user_type === 'pro') {
+      toast.error('Pro plan is lifetime - you cannot downgrade.');
+      return;
+    }
+
     if (profile.user_type === 'free' || !profile.subscription_id) {
       // User is already on free plan
       toast.success('You are already on the free plan!');

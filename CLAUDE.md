@@ -2,7 +2,91 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
-**Last Updated**: 2025-10-18
+**Last Updated**: 2024-10-19
+
+## Table of Contents
+
+- [Project Overview](#project-overview)
+- [Technology Stack](#technology-stack)
+- [Development Commands](#development-commands)
+- [Architecture Highlights](#architecture-highlights)
+  - [Service Architecture Pattern](#service-architecture-pattern)
+  - [Context Providers](#context-providers)
+  - [Internationalization (i18n)](#internationalization-i18n)
+  - [Data Fetching with TanStack Query](#data-fetching-with-tanstack-query)
+  - [Database Integration (Supabase)](#database-integration-supabase)
+  - [Routing & Navigation](#routing--navigation)
+  - [Component Structure](#component-structure)
+  - [Custom Hooks](#custom-hooks)
+  - [Security Patterns](#security-patterns)
+  - [State Management Approach](#state-management-approach)
+  - [Styling Guidelines](#styling-guidelines)
+  - [PDF Generation](#pdf-generation)
+  - [Testing](#testing)
+- [Email System](#email-system)
+- [Project Subscription System](#project-subscription-system)
+- [Deployment](#deployment)
+- [Important Files](#important-files)
+- [Common Tasks](#common-tasks)
+- [Code Conventions](#code-conventions)
+- [Performance Optimizations](#performance-optimizations)
+- [Debugging](#debugging)
+- [Recent Updates](#recent-updates)
+- [Development Workflow](#development-workflow)
+- [Notes for AI Assistants](#notes-for-ai-assistants)
+- [Troubleshooting](#troubleshooting)
+- [Additional Resources](#additional-resources)
+- [Project-Specific Documentation](#project-specific-documentation)
+
+## Quick Reference
+
+### Most Common Commands
+
+```bash
+npm run dev                 # Start dev server (http://localhost:8080)
+npm run typecheck           # Type check before commits
+npm run build               # Production build
+npm test                    # Run tests in watch mode
+./deploy.sh                 # Deploy to production
+```
+
+### Essential Patterns
+
+**Getting authenticated user**:
+```typescript
+const { user, loading, authChecked } = useAuth();
+```
+
+**Using translations**:
+```typescript
+const t = useT();
+const text = t('your.translation.key');
+```
+
+**Fetching data with TanStack Query**:
+```typescript
+const { data, isLoading } = useQuery({
+  queryKey: ['projects', user?.id],
+  queryFn: () => projectService.getProjects(),
+  enabled: !!user,
+});
+```
+
+**Using services**:
+```typescript
+const registry = ServiceRegistry.getInstance();
+const projectService = registry.getProjectService(user);
+await projectService.createProject(data);
+```
+
+### Critical Rules
+
+- ✅ **Always** use `useT()` for user-facing text (never hardcode)
+- ✅ **Always** check `user` from `useAuth()` before protected operations
+- ✅ **Always** add translations for both English AND Arabic
+- ✅ **Always** test RTL layout when modifying UI components
+- ❌ **Never** edit `src/integrations/supabase/types.ts` manually (auto-generated)
+- ❌ **Never** use `any` types in TypeScript
 
 ## Project Overview
 
@@ -713,306 +797,27 @@ Client portal routes (`/client/:token`) are:
 - Service operations: `logOperation()` in `BaseService`
 - Email sends: Logged to `email_logs` table
 
-## Recent Updates (Updated: 2025-10-19)
+## Recent Updates
 
-### Pro Plan Webhook Fix ⭐ CRITICAL FIX (2025-10-19):
+**Last Updated**: 2024-10-19
 
-**Critical Bug Fixed**: Pro plan upgrades were not processing due to missing `order_created` event handler.
+### Latest Changes (October 2024)
 
-**The Problem**:
-- Pro plan ($349 lifetime) is a ONE-TIME PURCHASE (not subscription)
-- One-time purchases trigger `order_created` webhook event from Lemon Squeezy
-- Webhook function ONLY handled subscription events (`subscription_created`, etc.)
-- Pro purchases were completely ignored by the system ❌
-- Users paid but accounts were never upgraded
+**🔴 Critical Fixes Deployed**:
+- **Pro Plan Protection**: 4-layer protection system prevents Pro users from downgrading (database + webhook + UI + server)
+- **Webhook JWT Fix**: Disabled JWT verification for Lemon Squeezy webhooks (was blocking all payment processing)
+- **Pro Purchases**: Added `order_created` webhook handler for one-time Pro plan purchases
+- **Account Deletion**: New secure Edge Function with complete data cleanup
+- **Security**: Password changes now require current password verification
 
-**The Fix**:
-- **Added `order_created` event handler** to `supabase/functions/lemon-squeezy-webhook/index.ts`
-- Extracts variant_id from order.first_order_item
-- Maps variant 697237 → 'pro' user type
-- Automatically cancels existing Plus subscriptions on Pro upgrade
-- Logs security events for audit trail
-- Deployed successfully ✅
+**✅ Major Features**:
+- Lemon Squeezy payment integration (Plus $19/mo, Pro $349 lifetime)
+- Vite 7 upgrade with improved build performance
+- Test coverage expanded to 9.33% (281 tests)
+- Account deletion system with Edge Function
 
-**Action Required**:
-1. **Configure Lemon Squeezy webhook** to include `order_created` event
-2. See `LEMON_SQUEEZY_WEBHOOK_SETUP.md` for complete guide
-3. See `FIX_PRO_UPGRADE_ISSUE.md` for technical details
-
-**Webhook Events Now Handled**:
-- ✅ `order_created` (Pro purchases) ← **NEW**
-- ✅ `order_refunded` ← **NEW**
-- ✅ `subscription_created` (Plus subscriptions)
-- ✅ `subscription_updated`
-- ✅ `subscription_cancelled`
-- ✅ `subscription_expired`
-- ✅ `subscription_payment_success`
-- ✅ `subscription_payment_failed`
-
-**Prevention**:
-- Plus → Pro upgrade flow marked as "TO TEST" in docs but was never tested
-- Always test BOTH subscription AND one-time purchase flows
-- Monitor webhook deliveries in Lemon Squeezy dashboard
-
-**Documentation Created**:
-- `FIX_PRO_UPGRADE_ISSUE.md` - Complete technical analysis
-- `LEMON_SQUEEZY_WEBHOOK_SETUP.md` - Webhook configuration guide
-- `UPGRADE_TO_PRO_SUMMARY.md` - Quick reference for affected users
-- `upgrade-to-pro-manual.sql` - Manual account upgrade script
-
-### Database Schema Analysis ⭐ NEW (2025-10-18):
-
-**Complete Subscription System Investigation**:
-- **Analyzed**: All 13 database tables via Supabase JavaScript client
-- **Discovered**: Two-table subscription architecture explained
-- **Verified**: `active_subscriptions` is a legacy table (not a VIEW)
-- **Documented**: Complete table relationships and usage patterns
-
-**Key Findings**:
-- **`subscriptions` table**: Empty (webhook-based, will populate on next payment)
-- **`active_subscriptions` table**: Has 1 test subscription, 0 code references
-- **Two-table pattern**: `profiles` (fast) + `subscriptions` (complete)
-- **RLS policies**: Working correctly (anon key sees 0 records as expected)
-
-**Documentation Created**:
-- `DATABASE_SCHEMA_ANALYSIS.md` (300+ lines) - All tables documented
-- `DATABASE_ANALYSIS_FINDINGS.md` - Investigation report with recommendations
-- `SUBSCRIPTION_SYSTEM_COMPLETE_ANALYSIS.md` - Executive summary
-- `ANALYZE_ALL_TABLES.sql` - Verification queries
-
-**Subscription Architecture Confirmed**:
-```
-Payment Flow:
-1. User pays → Lemon Squeezy webhook fires
-2. Webhook updates profiles.user_type = 'plus'
-3. Webhook inserts into subscriptions table
-4. Both tables stay in sync automatically
-```
-
-**Status**: ✅ System verified working, documentation complete
-
-### Testing Session Improvements ⭐ NEW (2025-10-18):
-
-**Comprehensive Manual Testing & Bug Fixes**:
-- **Testing Journey**: Completed full user testing flow covering authentication, profile management, and account deletion
-- **Critical Bugs Fixed**:
-  - Fixed password change security vulnerability - now validates current password before allowing change
-  - Fixed profile data persistence issues (website, company, country fields)
-  - Fixed website URL validation to accept flexible formats (with/without https://, www.)
-  - Fixed account deletion infinite loop and redirect issues
-  - Fixed profile creation error handling for deleted auth users
-
-**Account Deletion System** ⭐ NEW:
-- **Created**: Secure `delete-account` Edge Function with proper data cleanup
-- **Features**:
-  - Service role authentication for admin operations
-  - Complete data deletion: invoices, milestones, projects, clients, subscriptions, branding, profile
-  - Storage file cleanup (avatars, logos, deliverables, payment proofs)
-  - Auth user deletion via admin API
-  - Proper error handling and audit logging
-- **Frontend**: Updated DeleteAccountDialog to use Edge Function instead of broken client-side admin call
-- **Safety**: Added confirmation dialog, proper sign-out flow, session cleanup
-- **Deployed**: Function live at `https://***REMOVED***.supabase.co/functions/v1/delete-account`
-
-**Security Enhancements**:
-- **Password Change**: Added current password verification via re-authentication
-  - Prevents unauthorized password changes from hijacked sessions
-  - Shows clear error if current password is incorrect
-  - Added translations for error messages
-- **Profile Data**: Fixed missing fields in fetch/save operations
-  - Added `company`, `website`, `bio`, `country` to fetch query
-  - Added `country` to update mutation
-  - Prevents data loss on page refresh
-
-**URL Validation Improvements**:
-- **Flexible URL Input**: Website field now accepts multiple formats
-  - `example.com` → automatically converts to `https://example.com`
-  - `www.example.com` → converts to `https://www.example.com`
-  - `https://example.com` → keeps as-is
-  - `http://example.com` → keeps as-is
-- **Changed**: Input type from `url` to `text` to prevent browser validation conflicts
-- **Applied to**: Website field and all social links (LinkedIn, Twitter, Instagram, Behance, Dribbble)
-
-**Profile Data Persistence**:
-- **Fixed**: `fetchExistingProfile` now includes `company`, `website`, `bio`, `country` fields
-- **Fixed**: `updateProfile` now saves `country` field
-- **Fixed**: Environment variable loading (`.env.local` was overriding `.env`)
-
-**Error Handling**:
-- **Infinite Loop Prevention**: Profile creation now detects deleted auth users (409/406 errors)
-- **Auto Recovery**: Signs out and redirects to login if auth user is deleted
-- **Better Messages**: Clear error messages for profile setup failures
-
-**Files Modified**:
-- `src/components/Profile/ChangePasswordDialog.tsx` - Added password verification
-- `src/components/Profile/DeleteAccountDialog.tsx` - Edge Function integration, better cleanup
-- `src/components/Profile/PersonalInfoSection.tsx` - URL field type change
-- `src/hooks/profile/useProfileActions.ts` - Added country to save, fixed interface
-- `src/hooks/profile/utils/profileFetchers.ts` - Added missing fields to fetch, error handling
-- `src/lib/validators/profile.ts` - Flexible URL validator with transform/refine
-- `src/lib/translations/profile.ts` - New translation keys for errors
-- `supabase/functions/delete-account/index.ts` - New Edge Function (261 lines)
-
-**Deployment**:
-- Edge Function deployed successfully via `supabase functions deploy delete-account`
-- Tested with real account deletion (designbattlefield@gmail.com)
-- Verified complete data removal from all tables
-- Confirmed proper redirect flow and session cleanup
-
-### Major Changes
-
-**Lemon Squeezy Payment Integration** ⭐ NEW:
-- **Added**: Complete subscription payment system
-- 3 new Edge Functions:
-  - `create-checkout` - Creates payment checkout sessions
-  - `cancel-subscription` - Handles subscription cancellations
-  - `lemon-squeezy-webhook` - Processes payment webhooks
-- Database schema updated with `subscriptions` table
-- Webhook signature verification for security
-- Automatic user profile upgrades/downgrades
-- Plus plan ($19/mo) and Pro plan ($349 lifetime)
-- Full webhook integration (6 events supported)
-- Store ID: 148628, Variants: 697231 (Plus), 697237 (Pro)
-
-**Vite 7 Upgrade** ⭐ NEW:
-- **Updated**: Vite from 5.4.20 → 7.1.9
-- **Updated**: @vitejs/plugin-react-swc from 3.7.1 → 4.1.0
-- **Updated**: lovable-tagger from 1.1.7 → 1.1.11 (Vite 7 compatibility)
-- All builds passing with zero breaks
-- Improved build performance
-- Modern ESBuild optimizations
-
-**Security Enhancements** ⭐ NEW:
-- **Migrated**: All Supabase credentials to environment variables
-- Removed hardcoded credentials from source code
-- Added runtime validation for missing env vars
-- Enhanced `.env.example` with comprehensive documentation
-- Configured Vercel environment variables via CLI
-- Added `.env.production` to gitignore
-
-**Testing Framework Migration**:
-- **Removed**: Cypress E2E testing framework completely
-- Deleted 10+ test files, fixtures, screenshots
-- Removed `cypress.config.ts` and all Cypress dependencies
-- Reduced bundle size significantly
-
-**Spec Kit Integration**:
-- **Added**: Comprehensive feature specification system in `.specify/`
-- New commands: `/specify`, `/plan`, `/tasks`, `/implement`, `/constitution`
-- Templates for specs, plans, tasks, and agent interactions
-- Bash scripts for feature management workflow
-- Constitution-based development guidance
-
-**Documentation Improvements**:
-- Created comprehensive `README.md` with setup instructions
-- Updated `CLAUDE.md` with current architecture and patterns
-- Cleaned up legacy documentation files (20+ deleted)
-- Enhanced `.env.example` with Lemon Squeezy setup instructions
-
-**Email System Enhancement**:
-- New migration: `001_email_logs.sql` for email tracking
-- Email logs table with RLS policies
-- Tracks template, recipient, status, errors
-- Service role-only access for security
-
-**Test Coverage Expansion** ⭐ NEW (2025-10-15):
-- **Added**: 222 new tests for core services and utilities
-- **Coverage**: Expanded from ~0.8% to 9.33% overall coverage
-- **Test Files Created**:
-  - `src/lib/__tests__/utils.test.ts` (38 tests) - Utility functions
-  - `src/lib/__tests__/i18n.test.ts` (29 tests) - Translation system
-  - `src/lib/__tests__/inputValidation.test.ts` (60 tests) - XSS prevention
-  - `src/services/core/__tests__/BaseService.test.ts` (30 tests) - Service foundation
-  - `src/services/core/__tests__/ServiceRegistry.test.ts` (36 tests) - DI container
-  - `src/services/__tests__/projectService.test.ts` (29 tests) - Project business logic
-- **Quality**: 66.22% branch coverage, 60% function coverage
-- **Framework**: Vitest 3.2.4 with browser mode support
-- **Dependencies**: Added `@vitest/coverage-v8` for coverage reporting
-- Total: 281 tests passing
-
-**Translation System Quality Improvements** ⭐ NEW (2025-10-15):
-- **Fixed**: Removed 11 duplicate translation keys causing build warnings
-- **Files Updated**:
-  - `src/lib/translations/analytics.ts` - Removed 2 duplicates
-  - `src/lib/translations/common.ts` - Removed 9 duplicates
-- **Consistency**: Updated "Project Not Found" → "Project not found" (sentence case)
-- **Build Result**: Zero warnings, clean builds
-- **Impact**: Improved maintainability and reduced confusion
-
-### Breaking Changes
-
-None - All updates maintain backward compatibility.
-
-### Configuration Changes
-
-**Dependencies removed**:
-- `cypress` (13.16.1)
-- `@badeball/cypress-cucumber-preprocessor`
-- `@bahmutov/cypress-esbuild-preprocessor`
-
-**Dependencies updated**:
-- `vite`: 5.4.20 → 7.1.9
-- `@vitejs/plugin-react-swc`: 3.7.1 → 4.1.0
-- `lovable-tagger`: 1.1.7 → 1.1.11
-
-**Dependencies added**:
-- `@vitest/coverage-v8`: ^3.2.4 - Coverage reporting for tests
-
-**New Edge Functions**:
-- `create-checkout` - Lemon Squeezy checkout creation
-- `cancel-subscription` - Subscription cancellation
-- `lemon-squeezy-webhook` - Payment webhook handler
-
-**New Environment Variables**:
-```bash
-# Frontend (Vercel)
-VITE_APP_BASE_URL=https://app.ruzma.co
-
-# Edge Functions (Supabase)
-LEMON_SQUEEZY_API_KEY=<your-key>
-LEMON_SQUEEZY_WEBHOOK_SECRET=<your-secret>
-```
-
-**New structure**:
-- `.specify/` - Feature specification system
-- `.claude/commands/` - Custom slash commands
-- `supabase/functions/create-checkout/` - Checkout function
-- `supabase/functions/cancel-subscription/` - Cancellation function
-- `supabase/functions/lemon-squeezy-webhook/` - Webhook function
-
-### Migration Notes
-
-**For developers**:
-1. Run `npm install` to update dependencies (Vite 7, React SWC 4.1)
-2. Copy `.env.example` to `.env` and fill in Supabase credentials
-3. Review new `/specify`, `/plan`, `/tasks` commands for feature development
-4. Continue using Vitest for unit/integration tests
-5. Use new email logging system for email debugging
-6. Configure Lemon Squeezy webhook in dashboard (instructions in `.env.example`)
-
-**For deployment**:
-1. Set environment variables in Vercel Dashboard:
-   - `VITE_SUPABASE_URL`
-   - `VITE_SUPABASE_ANON_KEY`
-   - `VITE_APP_BASE_URL`
-2. Set Edge Function secrets in Supabase Dashboard:
-   - `LEMON_SQUEEZY_API_KEY`
-   - `LEMON_SQUEEZY_WEBHOOK_SECRET`
-   - `RESEND_API_KEY` (for emails)
-3. Deploy Edge Functions:
-   ```bash
-   supabase functions deploy create-checkout
-   supabase functions deploy cancel-subscription
-   supabase functions deploy lemon-squeezy-webhook
-   ```
-4. Configure webhook URL in Lemon Squeezy Dashboard
-
-**For CI/CD**:
-- Remove any Cypress-related CI jobs
-- Ensure Node.js ≥18 for Vite 7 compatibility
-- No other pipeline changes needed
-
-**Upgrading from earlier versions?** See **[MIGRATION_GUIDE.md](MIGRATION_GUIDE.md)** for detailed migration instructions and file replacement mappings.
+**📋 For Complete Details**:
+See [CHANGELOG.md](CHANGELOG.md) for full technical details, migration guides, and deployment instructions.
 
 ## Development Workflow
 
@@ -1129,19 +934,32 @@ chore: Maintenance tasks
 
 ## Project-Specific Documentation
 
-Additional documentation files in the repository:
-- `README.md` - User-facing project documentation
-- `src/*/CLAUDE.md` - Component/directory-specific guidelines
+### Core Documentation
+- `README.md` - User-facing project setup and overview
+- `CHANGELOG.md` - Detailed version history and migration guides
 - `.specify/` - Feature specifications and development workflow
-- `supabase/functions/README.md` - Edge Functions documentation
+- `src/*/CLAUDE.md` - Component/directory-specific guidelines
 
-**Database Documentation** (NEW):
+### Technical References
+
+**Database & Architecture**:
 - `DATABASE_SCHEMA_ANALYSIS.md` - Complete schema reference (all 13 tables)
 - `DATABASE_ANALYSIS_FINDINGS.md` - Investigation report and recommendations
-- `SUBSCRIPTION_SYSTEM_COMPLETE_ANALYSIS.md` - Subscription architecture explained
+- `SUBSCRIPTION_SYSTEM_COMPLETE_ANALYSIS.md` - Subscription architecture
 - `ANALYZE_ALL_TABLES.sql` - Database verification queries
 
-**Payment System Documentation**:
+**Payment System (Lemon Squeezy)**:
 - `PAYMENT_SUBSCRIPTION_ANALYSIS.md` - Payment flow analysis
-- `DEBUG_PAYMENT_ISSUE.md` - Webhook configuration guide
+- `WEBHOOK_JWT_FIX.md` - Critical JWT verification fix
+- `FINAL_FIX_INSTRUCTIONS.md` - Pro plan protection system
+- `SUBSCRIPTION_WEBHOOK_QUICK_FIX.md` - Webhook troubleshooting
+- `LEMON_SQUEEZY_WEBHOOK_SETUP.md` - Webhook configuration
+- `FIX_PRO_UPGRADE_ISSUE.md` - Pro purchase handling
+
+**SQL Scripts & Utilities**:
 - `UPGRADE_ACCOUNT_MANUALLY.sql` - Manual account upgrade template
+- `FIX_PRO_ACCOUNT_SUBSCRIPTION_ID.sql` - SQL cleanup for Pro accounts
+- `upgrade-to-pro-manual.sql` - Pro upgrade script
+
+**Edge Functions**:
+- `supabase/functions/README.md` - Edge Functions documentation

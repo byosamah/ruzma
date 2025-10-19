@@ -51,15 +51,20 @@ const buildInvoicePDFData = async (invoice: Invoice): Promise<SharedInvoiceData>
 
   // Fetch user profile and branding
   const [profileResult, brandingResult] = await Promise.all([
-    supabase.from('profiles').select('full_name').eq('id', user.id).single(),
-    supabase.from('freelancer_branding').select('user_id, freelancer_name, freelancer_title, freelancer_bio, primary_color, secondary_color, logo_url, created_at, updated_at').eq('user_id', user.id).single()
+    supabase.from('profiles').select('full_name').eq('id', user.id).maybeSingle(),
+    supabase.from('freelancer_branding').select('user_id, freelancer_name, freelancer_title, freelancer_bio, primary_color, secondary_color, logo_url, created_at, updated_at').eq('user_id', user.id).maybeSingle()
   ]);
+
+  if (profileResult.error) {
+    console.error('Profile fetch error in invoice service:', profileResult.error);
+    throw new Error('Failed to fetch user profile');
+  }
 
   const profile = profileResult.data;
   const branding = brandingResult.data;
 
   if (!profile) {
-    throw new Error('User profile not found');
+    throw new Error('User profile not found - please complete your profile setup');
   }
 
   const originalData = parseInvoiceData(invoice.invoiceData);

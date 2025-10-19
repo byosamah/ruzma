@@ -11,6 +11,7 @@ export const plansTranslations = {
     currentPlan: "Current Plan",
     upgrade: "Upgrade",
     downgrade: "Downgrade",
+    lifetimeAccess: "Lifetime Access",
     choosePlanButton: "Choose Plan",
     processing: "Processing...",
     mostPopular: "Most Popular",
@@ -67,7 +68,7 @@ export const plansTranslations = {
     basicSupportBenefit: "Basic support",
     accessForever: "Access forever",
     // Trial notes
-    freeTrialSevenDays: "Unlimited projects. Access forever.",
+    freeTrialSevenDays: "Unlimited projects. Monthly Access.",
     freeTrialFourteenDays: "Free trial for 14 days.",
     // Grace period messages
     trialGracePeriod: "Trial Grace Period",
@@ -90,6 +91,7 @@ export const plansTranslations = {
     currentPlan: "الخطة الحالية",
     upgrade: "ترقية",
     downgrade: "تخفيض الدرجة",
+    lifetimeAccess: "وصول مدى الحياة",
     choosePlanButton: "اختيار الخطة",
     processing: "جاري المعالجة...",
     mostPopular: "الأكثر شيوعاً",
@@ -147,7 +149,7 @@ export const plansTranslations = {
     basicSupportBenefit: "دعم أساسي",
     accessForever: "وصول مدى الحياة",
     // Trial notes
-    freeTrialSevenDays: "مشاريع غير محدودة. وصول مدى الحياة.",
+    freeTrialSevenDays: "مشاريع غير محدودة. وصول شهري.",
     freeTrialFourteenDays: "تجربة مجانية لمدة 14 يوماً.",
     // Grace period messages
     trialGracePeriod: "فترة سماح التجربة",

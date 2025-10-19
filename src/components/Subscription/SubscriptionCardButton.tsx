@@ -54,6 +54,12 @@ export function SubscriptionCardButton({
     if (isLoading) {
       return t('processing');
     }
+
+    // Show clear message for Pro users viewing lower plans
+    if (currentUserType === 'pro' && (planId === 'free' || planId === 'plus')) {
+      return t('lifetimeAccess');  // "Lifetime Access" - indicates they already have better
+    }
+
     if (isDowngrade()) {
       return t('downgrade');
     }
@@ -74,7 +80,15 @@ export function SubscriptionCardButton({
   };
 
   const isButtonDisabled = () => {
-    return isLoading || isCurrentPlan;
+    // Always disable if loading or current plan
+    if (isLoading || isCurrentPlan) return true;
+
+    // CRITICAL: Pro users cannot downgrade to Free or Plus (Pro is lifetime)
+    if (currentUserType === 'pro' && (planId === 'free' || planId === 'plus')) {
+      return true;
+    }
+
+    return false;
   };
 
   const getTrialText = () => {

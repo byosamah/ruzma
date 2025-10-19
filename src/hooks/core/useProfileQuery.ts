@@ -22,13 +22,19 @@ interface UserProfile {
 const fetchProfile = async (userId: string): Promise<UserProfile | null> => {
   const { data: profileData, error } = await supabase
     .from('profiles')
-    .select('id, full_name, email, currency, user_type, project_count, storage_used, created_at, updated_at')
+    .select('id, full_name, email, currency, user_type, subscription_status, subscription_id, project_count, storage_used, created_at, updated_at, company, website, bio, country')
     .eq('id', userId)
-    .single();
+    .maybeSingle();
 
   if (error) {
     logSecurityEvent('profile_fetch_error', { userId, error: error.message });
+    console.error('Profile fetch error:', error);
     throw error;
+  }
+
+  if (!profileData) {
+    console.warn('No profile found for user:', userId);
+    return null;
   }
 
   logSecurityEvent('profile_fetched', { userId });
@@ -41,6 +47,15 @@ export const useProfileQuery = (user: User | null) => {
     queryFn: () => fetchProfile(user!.id),
     enabled: !!user?.id,
     staleTime: 5 * 60 * 1000, // 5 minutes
-    retry: 1,
+    retry: (failureCount, error: any) => {
+      // Don't retry on 406 errors (Not Acceptable)
+      if (error?.code === 'PGRST116' || error?.status === 406) {
+        console.error('Profile query failed with 406, not retrying:', error);
+        return false;
+      }
+      // Retry once for other errors
+      return failureCount < 1;
+    },
+    retryDelay: 1000, // Wait 1 second between retries
   });
 };

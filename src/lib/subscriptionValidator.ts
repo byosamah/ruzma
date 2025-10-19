@@ -76,9 +76,10 @@ export async function validateSubscriptionAccess(
       .from('profiles')
       .select('user_type, subscription_status, subscription_id')
       .eq('id', userId)
-      .single();
+      .maybeSingle();
 
-    if (profileError || !profile) {
+    if (profileError) {
+      console.error('Profile fetch error in subscription validator:', profileError);
       return {
         isValid: false,
         userType: 'free',
@@ -87,6 +88,19 @@ export async function validateSubscriptionAccess(
         isTrialExpired: false,
         isGracePeriod: false,
         error: 'Failed to get user profile'
+      };
+    }
+
+    if (!profile) {
+      console.warn('No profile found for user in subscription validator:', userId);
+      return {
+        isValid: false,
+        userType: 'free',
+        status: 'unknown',
+        canAccessFeature: false,
+        isTrialExpired: false,
+        isGracePeriod: false,
+        error: 'User profile not found'
       };
     }
 

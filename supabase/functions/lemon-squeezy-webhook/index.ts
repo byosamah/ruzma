@@ -65,21 +65,65 @@ serve(async (req) => {
     const dataAttributes = payload.data?.attributes
     const customData = payload.meta?.custom_data
 
+    // Enhanced logging for debugging
     console.log(`Webhook received: ${eventName}`, {
       dataId: payload.data?.id,
       dataType: payload.data?.type,
       userId: customData?.user_id,
+      hasCustomData: !!customData,
+      customDataKeys: customData ? Object.keys(customData) : [],
+      variantId: dataAttributes?.variant_id,
+      status: dataAttributes?.status,
     })
+
+    // Log full payload for failed events (for debugging)
+    if (!customData?.user_id) {
+      console.error('DIAGNOSTIC: Full payload for missing user_id:', JSON.stringify(payload, null, 2))
+    }
 
     // Create Supabase client
     const supabaseClient = createClient(supabaseUrl, supabaseServiceKey)
 
-    // Get user ID from custom data
-    const userId = customData?.user_id
+    // Get user ID from custom data (primary method)
+    let userId = customData?.user_id
+
+    // Fallback: If user_id is missing, try to find user by email
     if (!userId) {
-      console.error('No user_id in webhook custom data')
+      console.warn('No user_id in custom_data, attempting fallback via email')
+
+      const userEmail = dataAttributes?.user_email || dataAttributes?.customer_email
+      if (userEmail) {
+        console.log(`Attempting to find user by email: ${userEmail}`)
+
+        const { data: profile, error: profileError } = await supabaseClient
+          .from('profiles')
+          .select('id')
+          .eq('email', userEmail)
+          .single()
+
+        if (!profileError && profile) {
+          userId = profile.id
+          console.log(`Successfully found user via email fallback: ${userId}`)
+        } else {
+          console.error('Fallback failed: Could not find user by email', {
+            email: userEmail,
+            error: profileError
+          })
+        }
+      }
+    }
+
+    // Final check: If still no userId, reject the webhook
+    if (!userId) {
+      console.error('CRITICAL: No user_id in webhook custom data and email fallback failed')
       return new Response(
-        JSON.stringify({ error: 'Missing user_id in custom data' }),
+        JSON.stringify({
+          error: 'Missing user_id in custom data and email fallback failed',
+          debug: {
+            hasCustomData: !!customData,
+            hasUserEmail: !!(dataAttributes?.user_email || dataAttributes?.customer_email)
+          }
+        }),
         { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       )
     }
@@ -147,6 +191,7 @@ serve(async (req) => {
           .update({
             user_type: userType,
             subscription_status: 'active',
+            subscription_id: null,  // CRITICAL: Clear subscription_id for lifetime plans (Pro has no subscription)
             updated_at: new Date().toISOString(),
           })
           .eq('id', userId)

@@ -55,13 +55,6 @@ export function ProtectedFeature({
           icon: <Crown className="h-8 w-8 text-yellow-500" />,
           requiredPlan: userType === 'free' ? 'Plus' : 'Pro'
         };
-      case 'advancedAnalytics':
-        return {
-          title: title || 'Advanced Analytics',
-          description: description || 'Get detailed insights into your projects, earnings, and client behavior.',
-          icon: <Zap className="h-8 w-8 text-blue-500" />,
-          requiredPlan: userType === 'free' ? 'Plus' : 'Pro'
-        };
       case 'prioritySupport':
         return {
           title: title || 'Priority Support',

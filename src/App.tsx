@@ -22,7 +22,6 @@ const ForgotPassword = lazy(() => import("./pages/ForgotPassword"));
 const ResetPassword = lazy(() => import("./pages/ResetPassword"));
 const Dashboard = lazy(() => import("./pages/Dashboard"));
 const Projects = lazy(() => import("./pages/Projects"));
-const Analytics = lazy(() => import("./pages/Analytics"));
 const Profile = lazy(() => import("./pages/Profile"));
 const Plans = lazy(() => import("./pages/Plans"));
 const CreateProject = lazy(() => import("./pages/CreateProject"));
@@ -149,11 +148,6 @@ function App() {
                   <Route path="/:lang/create-invoice" element={
                     <LanguageLayout>
                       <ProtectedRoute><CreateInvoice /></ProtectedRoute>
-                    </LanguageLayout>
-                  } />
-                  <Route path="/:lang/analytics" element={
-                    <LanguageLayout>
-                      <ProtectedRoute><Analytics /></ProtectedRoute>
                     </LanguageLayout>
                   } />
                   <Route path="/:lang/profile" element={

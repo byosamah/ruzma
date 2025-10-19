@@ -7,7 +7,6 @@ import { clientTranslations } from "./translations/client";
 import { commonTranslations } from "./translations/common";
 import { profileTranslations } from "./translations/profile";
 import { clientsTranslations } from "./translations/clients";
-import { analyticsTranslations } from "./translations/analytics";
 import { plansTranslations } from "./translations/plans";
 
 // Combine all translations
@@ -20,7 +19,6 @@ const translations = {
     ...commonTranslations.en,
     ...profileTranslations.en,
     ...clientsTranslations.en,
-    ...analyticsTranslations.en,
     ...plansTranslations.en,
   },
   ar: {
@@ -31,7 +29,6 @@ const translations = {
     ...commonTranslations.ar,
     ...profileTranslations.ar,
     ...clientsTranslations.ar,
-    ...analyticsTranslations.ar,
     ...plansTranslations.ar,
   },
 };
