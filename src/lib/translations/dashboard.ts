@@ -1,11 +1,8 @@
 export const dashboardTranslations = {
   en: {
-    dashboard: {
-      trending: "Trending up",
-      onTrack: "On track",
-      inProgress: "In progress",
-      needsAttention: "Needs attention",
-    },
+    trendingUp: "Trending up",
+    onTrack: "On track",
+    inProgress: "In progress",
     profile: "Profile",
     welcomeBack: "Welcome back",
     dashboardSubtitle: "Manage your freelance projects and track payments",
@@ -58,12 +55,9 @@ export const dashboardTranslations = {
     viewProjects: "View Projects",
   },
   ar: {
-    dashboard: {
-      trending: "في ارتفاع",
-      onTrack: "على المسار الصحيح",
-      inProgress: "قيد التنفيذ",
-      needsAttention: "يحتاج انتباه",
-    },
+    trendingUp: "في ارتفاع",
+    onTrack: "على المسار الصحيح",
+    inProgress: "قيد التنفيذ",
     profile: "الملف الشخصي",
     welcomeBack: "مرحباً بعودتك",
     dashboardSubtitle: "قم بإدارة مشاريعك الحرة وتابع المدفوعات",

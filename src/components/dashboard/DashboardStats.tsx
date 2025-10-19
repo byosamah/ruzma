@@ -49,21 +49,21 @@ const DashboardStats = ({
       value: formatCurrency(totalEarnings, userCurrency),
       subtitle: t("fromCompletedMilestones"),
       trend: totalEarnings > 0 ? "up" : null,
-      trendLabel: totalEarnings > 0 ? t("dashboard.trending") : null,
+      trendLabel: totalEarnings > 0 ? t("trendingUp") : null,
     },
     {
       title: t("completed"),
       value: `${completedMilestones}/${totalMilestones}`,
       subtitle: `${completionRate}% ${t("milestonesCompleted")}`,
       trend: completionRate >= 50 ? "up" : completionRate > 0 ? "neutral" : null,
-      trendLabel: completionRate >= 50 ? t("dashboard.onTrack") : completionRate > 0 ? t("dashboard.inProgress") : null,
+      trendLabel: completionRate >= 50 ? t("onTrack") : completionRate > 0 ? t("inProgress") : null,
     },
     {
       title: t("pendingPayments"),
       value: pendingPayments.toString(),
       subtitle: t("awaitingApproval"),
       trend: pendingPayments > 0 ? "attention" : null,
-      trendLabel: pendingPayments > 0 ? t("dashboard.needsAttention") : null,
+      trendLabel: pendingPayments > 0 ? t("needsAttention") : null,
     },
   ];
 
