@@ -117,75 +117,76 @@ const Dashboard = () => {
         author={seoData.author}
         structuredData={seoData.structuredData}
       />
-      <div className="w-full mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6 lg:py-8 space-y-4 sm:space-y-6 lg:space-y-8 max-w-7xl">
-        {/* Dashboard Header with tutorial button integrated */}
-        <header>
-          <DashboardHeader 
-            displayName={displayName} 
-            onNewProject={handleNewProject} 
-            canCreateProject={usage.canCreateProject}
-          />
-        </header>
-        
-        {/* Grace Period Warning */}
-        <GracePeriodWarning variant="card" className="w-full" />
-        
-        {/* Usage Indicators */}
-        <section aria-label="Usage indicators">
-          <UsageIndicators userProfile={profile} projects={projects} />
-        </section>
-        
-        {/* Dashboard Statistics */}
-        <section aria-label="Dashboard statistics">
-          <DashboardStats 
-            totalProjects={stats.totalProjects} 
-            totalEarnings={stats.totalEarnings} 
-            completedMilestones={stats.completedMilestones} 
-            totalMilestones={stats.totalMilestones} 
-            pendingPayments={stats.pendingPayments} 
-            userCurrency={userCurrency.currency} 
-          />
-        </section>
-        
-        {/* Projects Section */}
-        <main>
-          <div className="space-y-3 sm:space-y-4">
-            <div className="flex flex-col space-y-3 sm:flex-row sm:items-center sm:justify-between sm:space-y-0">
-              <h2 className="text-lg sm:text-xl font-medium text-gray-900">{t('yourProjects')}</h2>
+      <div className="flex min-h-screen w-full flex-col">
+        <div className="flex flex-col sm:gap-4 sm:py-4">
+          <main className="grid flex-1 items-start gap-4 p-4 sm:px-6 sm:py-0 md:gap-8">
+            {/* Dashboard Header */}
+            <DashboardHeader
+              displayName={displayName}
+              onNewProject={handleNewProject}
+              canCreateProject={usage.canCreateProject}
+            />
+
+            {/* Grace Period Warning */}
+            <GracePeriodWarning variant="card" className="w-full" />
+
+            {/* Usage Indicators */}
+            <div className="space-y-4">
+              <UsageIndicators userProfile={profile} projects={projects} />
             </div>
 
-            {!projects.length ? (
-              <div className="text-center py-8 sm:py-12 bg-white rounded-lg border border-gray-100 mx-0">
-                <span className="text-4xl sm:text-6xl text-gray-300 mx-auto mb-4 block">📄</span>
-                <h3 className="text-base sm:text-lg font-medium text-gray-600 mb-2 px-4">
-                  {t('noProjectsYet')}
-                </h3>
-                <p className="text-sm text-gray-500 mb-6 px-4 max-w-md mx-auto leading-relaxed">
-                  {t('createFirstProjectDesc')}
-                </p>
-                <div className="px-4">
-                  <EmptyProjectsButton />
-                </div>
+            {/* Dashboard Statistics - 2x2 Grid */}
+            <div className="space-y-4">
+              <DashboardStats
+                totalProjects={stats.totalProjects}
+                totalEarnings={stats.totalEarnings}
+                completedMilestones={stats.completedMilestones}
+                totalMilestones={stats.totalMilestones}
+                pendingPayments={stats.pendingPayments}
+                userCurrency={userCurrency.currency}
+              />
+            </div>
+
+            {/* Projects Section */}
+            <div className="space-y-4">
+              <div className="flex items-center justify-between">
+                <h2 className="text-lg font-semibold md:text-xl">{t('yourProjects')}</h2>
               </div>
-            ) : (
-              <section aria-label="Your projects" className="space-y-3 sm:space-y-4">
-                {projects.map(project => (
-                  <div key={project.id}>
-                    <ProjectCard 
-                      project={project} 
-                      onViewClick={() => handleViewProject(project.slug)} 
-                      onEditClick={() => handleEditProjectCard(project.slug)} 
-                      onDeleteClick={handleDeleteProject} 
-                      currency={userCurrency.currency}
-                      convertFrom={project.currency || project.freelancer_currency} 
-                      isVerticalLayout={true} 
-                    />
+
+              {!projects.length ? (
+                <div className="rounded-lg border border-dashed p-8 text-center">
+                  <div className="mx-auto max-w-md space-y-4">
+                    <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-muted text-4xl">
+                      📄
+                    </div>
+                    <div className="space-y-2">
+                      <h3 className="text-lg font-semibold">{t('noProjectsYet')}</h3>
+                      <p className="text-sm text-muted-foreground">
+                        {t('createFirstProjectDesc')}
+                      </p>
+                    </div>
+                    <EmptyProjectsButton />
                   </div>
-                ))}
-              </section>
-            )}
-          </div>
-        </main>
+                </div>
+              ) : (
+                <div className="space-y-4">
+                  {projects.map(project => (
+                    <ProjectCard
+                      key={project.id}
+                      project={project}
+                      onViewClick={() => handleViewProject(project.slug)}
+                      onEditClick={() => handleEditProjectCard(project.slug)}
+                      onDeleteClick={handleDeleteProject}
+                      currency={userCurrency.currency}
+                      convertFrom={project.currency || project.freelancer_currency}
+                      isVerticalLayout={true}
+                    />
+                  ))}
+                </div>
+              )}
+            </div>
+          </main>
+        </div>
       </div>
     </Layout>
   );
