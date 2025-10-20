@@ -110,6 +110,60 @@ export const BaseTemplate: React.FC<BaseTemplateProps> = ({
                 </>
               )}
             </Text>
+
+            {/* Social Media Links */}
+            <Row style={{ marginTop: '20px' }}>
+              <Column align="center">
+                <table cellPadding="0" cellSpacing="0" style={{ margin: '0 auto' }}>
+                  <tr>
+                    <td style={{ padding: '0 8px' }}>
+                      <Link
+                        href="https://twitter.com/ruzmaco"
+                        style={{
+                          ...socialLinkStyle,
+                          fontFamily: isRTL ? 'Tajawal, Arial, sans-serif' : 'Inter, Arial, sans-serif'
+                        }}
+                      >
+                        Twitter
+                      </Link>
+                    </td>
+                    <td style={{ padding: '0 8px' }}>
+                      <Link
+                        href="https://www.linkedin.com/company/ruzma"
+                        style={{
+                          ...socialLinkStyle,
+                          fontFamily: isRTL ? 'Tajawal, Arial, sans-serif' : 'Inter, Arial, sans-serif'
+                        }}
+                      >
+                        LinkedIn
+                      </Link>
+                    </td>
+                    <td style={{ padding: '0 8px' }}>
+                      <Link
+                        href="https://www.instagram.com/ruzmaco"
+                        style={{
+                          ...socialLinkStyle,
+                          fontFamily: isRTL ? 'Tajawal, Arial, sans-serif' : 'Inter, Arial, sans-serif'
+                        }}
+                      >
+                        Instagram
+                      </Link>
+                    </td>
+                    <td style={{ padding: '0 8px' }}>
+                      <Link
+                        href="https://www.youtube.com/@ruzmaco"
+                        style={{
+                          ...socialLinkStyle,
+                          fontFamily: isRTL ? 'Tajawal, Arial, sans-serif' : 'Inter, Arial, sans-serif'
+                        }}
+                      >
+                        YouTube
+                      </Link>
+                    </td>
+                  </tr>
+                </table>
+              </Column>
+            </Row>
           </Section>
         </Container>
       </Body>
@@ -177,6 +231,16 @@ const hrStyle = {
 const linkStyle = {
   color: '#3B82F6',
   textDecoration: 'none',
+};
+
+const socialLinkStyle = {
+  color: '#64748b',
+  textDecoration: 'none',
+  fontSize: '13px',
+  fontWeight: '500',
+  padding: '6px 12px',
+  display: 'inline-block',
+  transition: 'color 0.2s ease',
 };
 
 export default BaseTemplate;
