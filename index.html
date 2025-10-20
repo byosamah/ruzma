@@ -5,22 +5,27 @@
     <meta charset="UTF-8" />
     <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    
-    <!-- Preconnect to external domains -->
+
+    <!-- Preconnect to external domains for performance -->
     <link rel="preconnect" href="https://www.googletagmanager.com">
     <link rel="preconnect" href="https://static.hotjar.com">
-    
-    <!-- Preload critical CSS -->
+    <link rel="preconnect" href="https://***REMOVED***.supabase.co">
+
+    <!-- DNS Prefetch for faster resource loading -->
+    <link rel="dns-prefetch" href="https://www.googletagmanager.com">
+    <link rel="dns-prefetch" href="https://static.hotjar.com">
+
+    <!-- Preload critical resources -->
     <link rel="modulepreload" href="/src/main.tsx" />
-    
-    <!-- Google tag (gtag.js) - Deferred -->
+
+    <!-- Google tag (gtag.js) - Deferred for performance -->
     <script>
       window.dataLayer = window.dataLayer || [];
       function gtag(){dataLayer.push(arguments);}
       gtag('js', new Date());
       gtag('config', 'G-5YGZMV1FD1');
-      
-      // Load Google Analytics script after page load
+
+      // Load Google Analytics script after page load to improve performance
       window.addEventListener('load', function() {
         const script = document.createElement('script');
         script.async = true;
@@ -31,7 +36,7 @@
 
     <!-- Hotjar Tracking Code for https://app.ruzma.co -->
     <script>
-        // Only load HotJar in production or on app.ruzma.co
+        // Only load HotJar in production environment
         if (location.protocol === 'https:' && (location.hostname === 'app.ruzma.co' || location.hostname.includes('vercel.app'))) {
             (function(h,o,t,j,a,r){
                 h.hj=h.hj||function(){(h.hj.q=h.hj.q||[]).push(arguments)};
@@ -43,18 +48,35 @@
             })(window,document,'https://static.hotjar.com/c/hotjar-','.js?sv=');
         }
     </script>
-    <title>Ruzma - Freelancers management system</title>
-    <meta name="description" content="Ruzma - A system for freelancers to manage projects, milestones, and payments with clients." />
-    <meta name="author" content="Lovable" />
 
-    <meta property="og:title" content="Ruzma - Freelancers management system" />
-    <meta property="og:description" content="Ruzma - A system for freelancers to manage projects, milestones, and payments with clients." />
+    <!--
+      SEO Meta Tags
+      Note: Dynamic meta tags are managed by react-helmet-async via SEOHead component
+      These fallback tags will be overridden by page-specific meta tags
+    -->
+    <title>Ruzma - Project Management for Freelancers</title>
+    <meta name="description" content="Manage projects, clients, invoices, and payments in one place. Built for freelancers who want to stay organized and professional." />
+
+    <!-- Open Graph fallback tags (overridden by SEOHead) -->
+    <meta property="og:title" content="Ruzma - Project Management for Freelancers" />
+    <meta property="og:description" content="Manage projects, clients, invoices, and payments in one place. Built for freelancers who want to stay organized and professional." />
     <meta property="og:type" content="website" />
-    <meta property="og:image" content="https://lovable.dev/opengraph-image-p98pqg.png" />
+    <meta property="og:image" content="https://app.ruzma.co/assets/social-preview.svg" />
+    <meta property="og:url" content="https://app.ruzma.co" />
+    <meta property="og:site_name" content="Ruzma" />
 
+    <!-- Twitter Card fallback tags (overridden by SEOHead) -->
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:site" content="@lovable_dev" />
-    <meta name="twitter:image" content="https://lovable.dev/opengraph-image-p98pqg.png" />
+    <meta name="twitter:site" content="@ruzma_app" />
+    <meta name="twitter:title" content="Ruzma - Project Management for Freelancers" />
+    <meta name="twitter:description" content="Manage projects, clients, invoices, and payments in one place." />
+    <meta name="twitter:image" content="https://app.ruzma.co/assets/social-preview.svg" />
+
+    <!-- Theme and mobile optimization -->
+    <meta name="theme-color" content="#ffffff" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
   </head>
 
   <body>

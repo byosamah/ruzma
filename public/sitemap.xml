@@ -1,0 +1,279 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:xhtml="http://www.w3.org/1999/xhtml"
+        xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
+
+  <!-- Homepage -->
+  <url>
+    <loc>https://app.ruzma.co/en/dashboard</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://app.ruzma.co/en/dashboard"/>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://app.ruzma.co/ar/dashboard"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://app.ruzma.co/en/dashboard"/>
+    <lastmod>2025-10-20</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>1.0</priority>
+  </url>
+
+  <url>
+    <loc>https://app.ruzma.co/ar/dashboard</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://app.ruzma.co/en/dashboard"/>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://app.ruzma.co/ar/dashboard"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://app.ruzma.co/en/dashboard"/>
+    <lastmod>2025-10-20</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>1.0</priority>
+  </url>
+
+  <!-- Projects -->
+  <url>
+    <loc>https://app.ruzma.co/en/projects</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://app.ruzma.co/en/projects"/>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://app.ruzma.co/ar/projects"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://app.ruzma.co/en/projects"/>
+    <lastmod>2025-10-20</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+
+  <url>
+    <loc>https://app.ruzma.co/ar/projects</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://app.ruzma.co/en/projects"/>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://app.ruzma.co/ar/projects"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://app.ruzma.co/en/projects"/>
+    <lastmod>2025-10-20</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+
+  <!-- Create Project -->
+  <url>
+    <loc>https://app.ruzma.co/en/create-project</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://app.ruzma.co/en/create-project"/>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://app.ruzma.co/ar/create-project"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://app.ruzma.co/en/create-project"/>
+    <lastmod>2025-10-20</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <url>
+    <loc>https://app.ruzma.co/ar/create-project</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://app.ruzma.co/en/create-project"/>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://app.ruzma.co/ar/create-project"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://app.ruzma.co/en/create-project"/>
+    <lastmod>2025-10-20</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <!-- Project Templates -->
+  <url>
+    <loc>https://app.ruzma.co/en/project-templates</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://app.ruzma.co/en/project-templates"/>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://app.ruzma.co/ar/project-templates"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://app.ruzma.co/en/project-templates"/>
+    <lastmod>2025-10-20</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <url>
+    <loc>https://app.ruzma.co/ar/project-templates</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://app.ruzma.co/en/project-templates"/>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://app.ruzma.co/ar/project-templates"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://app.ruzma.co/en/project-templates"/>
+    <lastmod>2025-10-20</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <!-- Clients -->
+  <url>
+    <loc>https://app.ruzma.co/en/clients</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://app.ruzma.co/en/clients"/>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://app.ruzma.co/ar/clients"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://app.ruzma.co/en/clients"/>
+    <lastmod>2025-10-20</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+
+  <url>
+    <loc>https://app.ruzma.co/ar/clients</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://app.ruzma.co/en/clients"/>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://app.ruzma.co/ar/clients"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://app.ruzma.co/en/clients"/>
+    <lastmod>2025-10-20</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+
+  <!-- Invoices -->
+  <url>
+    <loc>https://app.ruzma.co/en/invoices</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://app.ruzma.co/en/invoices"/>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://app.ruzma.co/ar/invoices"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://app.ruzma.co/en/invoices"/>
+    <lastmod>2025-10-20</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+
+  <url>
+    <loc>https://app.ruzma.co/ar/invoices</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://app.ruzma.co/en/invoices"/>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://app.ruzma.co/ar/invoices"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://app.ruzma.co/en/invoices"/>
+    <lastmod>2025-10-20</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+
+  <!-- Create Invoice -->
+  <url>
+    <loc>https://app.ruzma.co/en/create-invoice</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://app.ruzma.co/en/create-invoice"/>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://app.ruzma.co/ar/create-invoice"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://app.ruzma.co/en/create-invoice"/>
+    <lastmod>2025-10-20</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <url>
+    <loc>https://app.ruzma.co/ar/create-invoice</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://app.ruzma.co/en/create-invoice"/>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://app.ruzma.co/ar/create-invoice"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://app.ruzma.co/en/create-invoice"/>
+    <lastmod>2025-10-20</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <!-- Analytics -->
+  <url>
+    <loc>https://app.ruzma.co/en/analytics</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://app.ruzma.co/en/analytics"/>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://app.ruzma.co/ar/analytics"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://app.ruzma.co/en/analytics"/>
+    <lastmod>2025-10-20</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
+  <url>
+    <loc>https://app.ruzma.co/ar/analytics</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://app.ruzma.co/en/analytics"/>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://app.ruzma.co/ar/analytics"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://app.ruzma.co/en/analytics"/>
+    <lastmod>2025-10-20</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
+  <!-- Plans / Pricing -->
+  <url>
+    <loc>https://app.ruzma.co/en/plans</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://app.ruzma.co/en/plans"/>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://app.ruzma.co/ar/plans"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://app.ruzma.co/en/plans"/>
+    <lastmod>2025-10-20</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.95</priority>
+  </url>
+
+  <url>
+    <loc>https://app.ruzma.co/ar/plans</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://app.ruzma.co/en/plans"/>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://app.ruzma.co/ar/plans"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://app.ruzma.co/en/plans"/>
+    <lastmod>2025-10-20</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.95</priority>
+  </url>
+
+  <!-- Profile -->
+  <url>
+    <loc>https://app.ruzma.co/en/profile</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://app.ruzma.co/en/profile"/>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://app.ruzma.co/ar/profile"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://app.ruzma.co/en/profile"/>
+    <lastmod>2025-10-20</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+  <url>
+    <loc>https://app.ruzma.co/ar/profile</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://app.ruzma.co/en/profile"/>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://app.ruzma.co/ar/profile"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://app.ruzma.co/en/profile"/>
+    <lastmod>2025-10-20</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+  <!-- Contact Us -->
+  <url>
+    <loc>https://app.ruzma.co/en/contact</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://app.ruzma.co/en/contact"/>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://app.ruzma.co/ar/contact"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://app.ruzma.co/en/contact"/>
+    <lastmod>2025-10-20</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
+  <url>
+    <loc>https://app.ruzma.co/ar/contact</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://app.ruzma.co/en/contact"/>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://app.ruzma.co/ar/contact"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://app.ruzma.co/en/contact"/>
+    <lastmod>2025-10-20</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
+  <!-- Login (Public Page) -->
+  <url>
+    <loc>https://app.ruzma.co/en/login</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://app.ruzma.co/en/login"/>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://app.ruzma.co/ar/login"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://app.ruzma.co/en/login"/>
+    <lastmod>2025-10-20</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <url>
+    <loc>https://app.ruzma.co/ar/login</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://app.ruzma.co/en/login"/>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://app.ruzma.co/ar/login"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://app.ruzma.co/en/login"/>
+    <lastmod>2025-10-20</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <!-- Sign Up (Public Page) -->
+  <url>
+    <loc>https://app.ruzma.co/en/signup</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://app.ruzma.co/en/signup"/>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://app.ruzma.co/ar/signup"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://app.ruzma.co/en/signup"/>
+    <lastmod>2025-10-20</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <url>
+    <loc>https://app.ruzma.co/ar/signup</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://app.ruzma.co/en/signup"/>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://app.ruzma.co/ar/signup"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://app.ruzma.co/en/signup"/>
+    <lastmod>2025-10-20</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+</urlset>

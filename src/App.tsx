@@ -1,4 +1,3 @@
-
 import { Toaster } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
@@ -9,6 +8,7 @@ import ProtectedRoute from "@/components/ProtectedRoute";
 import { LanguageLayout } from "@/components/LanguageLayout";
 import { RedirectWithParams } from "@/components/RedirectWithParams";
 import ErrorBoundary from "@/components/ErrorBoundary";
+import GlobalSEO from "@/components/SEO/GlobalSEO";
 import { Suspense, lazy } from "react";
 
 
@@ -76,6 +76,7 @@ function App() {
           <LanguageProvider>
                   <TooltipProvider>
                     <Toaster />
+                    <GlobalSEO />
                     <InvoiceProvider>
                       <Suspense fallback={<PageLoader />}>
                     <Routes>
