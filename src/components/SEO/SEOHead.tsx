@@ -76,7 +76,7 @@ function SEOHead({
   modifiedTime,
   structuredData,
   noIndex = false,
-  twitterSite = 'ruzma_app',
+  twitterSite = 'ruzmaco',
   twitterCreator
 }: SEOHeadProps) {
   const { language } = useLanguage();

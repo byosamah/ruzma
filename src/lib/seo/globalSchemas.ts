@@ -19,10 +19,10 @@ export const organizationSchema = {
   logo: 'https://app.ruzma.co/assets/logo-full-en.svg',
   description: 'Complete project, client, and invoice management system for freelancers',
   sameAs: [
-    // Add social media profiles when available
-    // 'https://twitter.com/ruzma_app',
-    // 'https://www.linkedin.com/company/ruzma',
-    // 'https://www.facebook.com/ruzma'
+    'https://twitter.com/ruzmaco',
+    'https://www.linkedin.com/company/ruzma',
+    'https://www.instagram.com/ruzmaco',
+    'https://www.youtube.com/@ruzmaco'
   ],
   contactPoint: {
     '@type': 'ContactPoint',
