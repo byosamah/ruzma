@@ -2,6 +2,16 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-1JZY028BBR"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-1JZY028BBR');
+    </script>
+
     <meta charset="UTF-8" />
     <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -17,22 +27,6 @@
 
     <!-- Preload critical resources -->
     <link rel="modulepreload" href="/src/main.tsx" />
-
-    <!-- Google tag (gtag.js) - Deferred for performance -->
-    <script>
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
-      gtag('config', 'G-5YGZMV1FD1');
-
-      // Load Google Analytics script after page load to improve performance
-      window.addEventListener('load', function() {
-        const script = document.createElement('script');
-        script.async = true;
-        script.src = 'https://www.googletagmanager.com/gtag/js?id=G-5YGZMV1FD1';
-        document.head.appendChild(script);
-      });
-    </script>
 
     <!-- Hotjar Tracking Code for https://app.ruzma.co -->
     <script>
