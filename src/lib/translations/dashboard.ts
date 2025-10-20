@@ -1,5 +1,6 @@
 export const dashboardTranslations = {
   en: {
+    dashboard: "Dashboard",
     trendingUp: "Trending up",
     onTrack: "On track",
     inProgress: "In progress",
@@ -55,6 +56,7 @@ export const dashboardTranslations = {
     viewProjects: "View Projects",
   },
   ar: {
+    dashboard: "لوحة التحكم",
     trendingUp: "في ارتفاع",
     onTrack: "على المسار الصحيح",
     inProgress: "قيد التنفيذ",
