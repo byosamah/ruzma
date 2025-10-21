@@ -3,13 +3,12 @@
 <html lang="en">
   <head>
     <!-- Google tag (gtag.js) with Consent Mode v2 -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-1JZY028BBR"></script>
+    <!-- Step 1: Set consent BEFORE loading gtag.js (required for proper initialization) -->
     <script>
       window.dataLayer = window.dataLayer || [];
       function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
 
-      // Consent Mode v2 (required as of March 2024)
+      // Consent Mode v2 - Set BEFORE loading gtag.js to prevent uncontrolled tracking
       // Users consent during signup, so analytics granted by default
       gtag('consent', 'default', {
         'analytics_storage': 'granted',      // Granted - users already consented during signup
@@ -17,7 +16,14 @@
         'ad_user_data': 'denied',            // v2: We don't use ads
         'ad_personalization': 'denied',      // v2: We don't use ads
       });
+    </script>
 
+    <!-- Step 2: Load gtag.js script -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-1JZY028BBR"></script>
+
+    <!-- Step 3: Initialize and configure -->
+    <script>
+      gtag('js', new Date());
       gtag('config', 'G-1JZY028BBR', {
         'anonymize_ip': true  // Anonymize IP for additional privacy
       });
