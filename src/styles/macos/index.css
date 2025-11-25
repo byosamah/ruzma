@@ -1,0 +1,29 @@
+/**
+ * macOS Styles Master Index
+ *
+ * Import this file to include all macOS interface styles.
+ */
+
+/* Core Effects (must be first for CSS variables) */
+@import './macos-effects.css';
+
+/* Animations */
+@import './macos-animations.css';
+
+/* Desktop */
+@import './macos-desktop.css';
+
+/* Dock */
+@import './macos-dock.css';
+
+/* Menu Bar */
+@import './macos-menubar.css';
+
+/* Window */
+@import './macos-window.css';
+
+/* Tablet Mode */
+@import './macos-tablet.css';
+
+/* Mobile Mode */
+@import './macos-mobile.css';

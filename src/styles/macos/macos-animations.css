@@ -1,0 +1,475 @@
+/**
+ * macOS Animations Styles
+ *
+ * Framer Motion and CSS animations for the macOS interface.
+ * Includes:
+ * - Window open/close animations
+ * - Dock magnification
+ * - Menu dropdowns
+ * - Genie effect (minimize)
+ * - Spring animations
+ */
+
+/* =============================================================================
+   CSS ANIMATION VARIABLES
+   ============================================================================= */
+
+:root {
+  /* Spring animation timings */
+  --macos-spring-stiffness: 300;
+  --macos-spring-damping: 25;
+
+  /* Standard durations */
+  --macos-animation-fast: 150ms;
+  --macos-animation-normal: 250ms;
+  --macos-animation-slow: 400ms;
+
+  /* Easing functions */
+  --macos-ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --macos-ease-out-quint: cubic-bezier(0.22, 1, 0.36, 1);
+  --macos-ease-out-back: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --macos-ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
+  --macos-ease-spring: cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+/* =============================================================================
+   WINDOW ANIMATIONS
+   ============================================================================= */
+
+/* Window open animation */
+@keyframes window-open {
+  0% {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.window-opening {
+  animation: window-open var(--macos-animation-normal) var(--macos-ease-out-back) forwards;
+}
+
+/* Window close animation */
+@keyframes window-close {
+  0% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+}
+
+.window-closing {
+  animation: window-close var(--macos-animation-fast) var(--macos-ease-in-out) forwards;
+}
+
+/* Window minimize (genie effect approximation) */
+@keyframes window-minimize {
+  0% {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+    transform-origin: center bottom;
+  }
+  100% {
+    opacity: 0;
+    transform: scale(0.1) translateY(100vh);
+    transform-origin: center bottom;
+  }
+}
+
+.window-minimizing {
+  animation: window-minimize var(--macos-animation-slow) var(--macos-ease-in-out) forwards;
+  pointer-events: none;
+}
+
+/* Window restore from minimize */
+@keyframes window-restore {
+  0% {
+    opacity: 0;
+    transform: scale(0.1) translateY(100vh);
+    transform-origin: center bottom;
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+    transform-origin: center bottom;
+  }
+}
+
+.window-restoring {
+  animation: window-restore var(--macos-animation-slow) var(--macos-ease-out-back) forwards;
+}
+
+/* Window maximize animation */
+@keyframes window-maximize {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.02);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+.window-maximizing {
+  animation: window-maximize var(--macos-animation-normal) var(--macos-ease-out-expo) forwards;
+}
+
+/* Window shake (when trying to interact with blocked window) */
+@keyframes window-shake {
+  0%, 100% { transform: translateX(0); }
+  10%, 30%, 50%, 70%, 90% { transform: translateX(-4px); }
+  20%, 40%, 60%, 80% { transform: translateX(4px); }
+}
+
+.window-shake {
+  animation: window-shake 0.5s var(--macos-ease-in-out);
+}
+
+/* =============================================================================
+   DOCK ANIMATIONS
+   ============================================================================= */
+
+/* Dock bounce animation (app launching) */
+@keyframes dock-bounce {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  25% {
+    transform: translateY(-15px);
+  }
+  50% {
+    transform: translateY(0);
+  }
+  75% {
+    transform: translateY(-8px);
+  }
+}
+
+.dock-bouncing {
+  animation: dock-bounce 0.6s var(--macos-ease-out-quint) infinite;
+}
+
+/* Single bounce for app open */
+@keyframes dock-bounce-once {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+.dock-bounce-once {
+  animation: dock-bounce-once 0.3s var(--macos-ease-out-back);
+}
+
+/* Dock item hover effect */
+.dock-item-hover {
+  transition: transform var(--macos-animation-fast) var(--macos-ease-out-expo);
+}
+
+/* =============================================================================
+   MENU ANIMATIONS
+   ============================================================================= */
+
+/* Menu dropdown open */
+@keyframes menu-open {
+  0% {
+    opacity: 0;
+    transform: translateY(-4px) scale(0.98);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.menu-opening {
+  animation: menu-open var(--macos-animation-fast) var(--macos-ease-out-expo) forwards;
+}
+
+/* Menu dropdown close */
+@keyframes menu-close {
+  0% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-4px) scale(0.98);
+  }
+}
+
+.menu-closing {
+  animation: menu-close var(--macos-animation-fast) var(--macos-ease-in-out) forwards;
+}
+
+/* Menu item highlight */
+@keyframes menu-highlight {
+  0% {
+    background-color: transparent;
+  }
+  100% {
+    background-color: var(--macos-menu-highlight);
+  }
+}
+
+/* =============================================================================
+   DESKTOP ICON ANIMATIONS
+   ============================================================================= */
+
+/* Icon selection */
+@keyframes icon-select {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.1);
+  }
+  100% {
+    transform: scale(1.05);
+  }
+}
+
+.icon-selecting {
+  animation: icon-select var(--macos-animation-fast) var(--macos-ease-out-back);
+}
+
+/* Icon drag start */
+@keyframes icon-lift {
+  0% {
+    transform: scale(1);
+    box-shadow: none;
+  }
+  100% {
+    transform: scale(1.05);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+  }
+}
+
+.icon-dragging {
+  animation: icon-lift var(--macos-animation-fast) var(--macos-ease-out-expo) forwards;
+  opacity: 0.9;
+}
+
+/* Icon double-click (folder opening) */
+@keyframes icon-open {
+  0% {
+    transform: scale(1);
+  }
+  25% {
+    transform: scale(0.9);
+  }
+  50% {
+    transform: scale(1.1);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+.icon-opening {
+  animation: icon-open 0.4s var(--macos-ease-out-back);
+}
+
+/* =============================================================================
+   NOTIFICATION ANIMATIONS
+   ============================================================================= */
+
+/* Notification slide in */
+@keyframes notification-slide-in {
+  0% {
+    opacity: 0;
+    transform: translateX(100%);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+[dir="rtl"] .notification-entering {
+  animation: notification-slide-in-rtl var(--macos-animation-normal) var(--macos-ease-out-expo) forwards;
+}
+
+@keyframes notification-slide-in-rtl {
+  0% {
+    opacity: 0;
+    transform: translateX(-100%);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.notification-entering {
+  animation: notification-slide-in var(--macos-animation-normal) var(--macos-ease-out-expo) forwards;
+}
+
+/* Notification slide out */
+@keyframes notification-slide-out {
+  0% {
+    opacity: 1;
+    transform: translateX(0);
+  }
+  100% {
+    opacity: 0;
+    transform: translateX(100%);
+  }
+}
+
+.notification-exiting {
+  animation: notification-slide-out var(--macos-animation-fast) var(--macos-ease-in-out) forwards;
+}
+
+/* =============================================================================
+   LOADING ANIMATIONS
+   ============================================================================= */
+
+/* Spinning loader */
+@keyframes macos-spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.macos-spinner {
+  animation: macos-spin 1s linear infinite;
+}
+
+/* Pulsing dot loader */
+@keyframes macos-pulse {
+  0%, 100% {
+    opacity: 0.4;
+    transform: scale(0.8);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.macos-pulse {
+  animation: macos-pulse 1.5s var(--macos-ease-in-out) infinite;
+}
+
+/* Progress bar indeterminate */
+@keyframes progress-indeterminate {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(200%);
+  }
+}
+
+.progress-indeterminate {
+  animation: progress-indeterminate 1.5s var(--macos-ease-in-out) infinite;
+}
+
+/* =============================================================================
+   TRANSITION UTILITIES
+   ============================================================================= */
+
+/* Fade transition */
+.fade-enter {
+  opacity: 0;
+}
+
+.fade-enter-active {
+  opacity: 1;
+  transition: opacity var(--macos-animation-normal) var(--macos-ease-in-out);
+}
+
+.fade-exit {
+  opacity: 1;
+}
+
+.fade-exit-active {
+  opacity: 0;
+  transition: opacity var(--macos-animation-fast) var(--macos-ease-in-out);
+}
+
+/* Scale transition */
+.scale-enter {
+  opacity: 0;
+  transform: scale(0.95);
+}
+
+.scale-enter-active {
+  opacity: 1;
+  transform: scale(1);
+  transition: opacity var(--macos-animation-normal) var(--macos-ease-out-expo),
+              transform var(--macos-animation-normal) var(--macos-ease-out-back);
+}
+
+.scale-exit {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.scale-exit-active {
+  opacity: 0;
+  transform: scale(0.95);
+  transition: opacity var(--macos-animation-fast) var(--macos-ease-in-out),
+              transform var(--macos-animation-fast) var(--macos-ease-in-out);
+}
+
+/* Slide transitions */
+.slide-up-enter {
+  opacity: 0;
+  transform: translateY(20px);
+}
+
+.slide-up-enter-active {
+  opacity: 1;
+  transform: translateY(0);
+  transition: opacity var(--macos-animation-normal) var(--macos-ease-out-expo),
+              transform var(--macos-animation-normal) var(--macos-ease-out-expo);
+}
+
+.slide-down-enter {
+  opacity: 0;
+  transform: translateY(-20px);
+}
+
+.slide-down-enter-active {
+  opacity: 1;
+  transform: translateY(0);
+  transition: opacity var(--macos-animation-normal) var(--macos-ease-out-expo),
+              transform var(--macos-animation-normal) var(--macos-ease-out-expo);
+}
+
+/* =============================================================================
+   REDUCED MOTION
+   ============================================================================= */
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  .dock-bouncing,
+  .macos-spinner,
+  .macos-pulse,
+  .progress-indeterminate {
+    animation: none !important;
+  }
+}

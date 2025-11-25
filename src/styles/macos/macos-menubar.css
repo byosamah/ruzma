@@ -1,0 +1,266 @@
+/**
+ * macOS Menu Bar Styles
+ *
+ * Styles for the top menu bar including:
+ * - Menu bar container
+ * - Apple menu
+ * - App menus
+ * - System tray
+ * - Dropdown menus
+ */
+
+/* =============================================================================
+   MENU BAR CONTAINER
+   ============================================================================= */
+
+.menubar {
+  /* Typography */
+  font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Helvetica Neue', sans-serif;
+  font-size: 13px;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+
+  /* Colors */
+  color: rgba(0, 0, 0, 0.85);
+
+  /* User select */
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+/* RTL Typography */
+[dir='rtl'] .menubar {
+  font-family: 'IBM Plex Sans Arabic', -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+/* =============================================================================
+   APPLE MENU
+   ============================================================================= */
+
+.apple-menu {
+  height: 100%;
+}
+
+.apple-menu-trigger {
+  height: 100%;
+}
+
+.apple-menu-trigger svg {
+  filter: drop-shadow(0 1px 0 rgba(255, 255, 255, 0.3));
+}
+
+/* =============================================================================
+   APP MENU
+   ============================================================================= */
+
+.app-menu {
+  height: 100%;
+}
+
+.app-name {
+  height: 100%;
+  display: flex;
+  align-items: center;
+}
+
+.menu-bar-item {
+  height: 100%;
+  display: flex;
+  align-items: center;
+}
+
+.menu-bar-trigger {
+  height: 100%;
+  display: flex;
+  align-items: center;
+}
+
+/* =============================================================================
+   SYSTEM TRAY
+   ============================================================================= */
+
+.system-tray {
+  height: 100%;
+}
+
+.time-display {
+  font-variant-numeric: tabular-nums;
+}
+
+.language-switcher {
+  text-transform: uppercase;
+  font-weight: 500;
+}
+
+.notification-bell {
+  position: relative;
+}
+
+.user-avatar img {
+  border: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+/* =============================================================================
+   DROPDOWN MENUS
+   ============================================================================= */
+
+.menu-dropdown {
+  /* Typography */
+  font-size: 13px;
+
+  /* Animation */
+  transform-origin: top center;
+}
+
+.menu-item {
+  /* Reset button styles */
+  background: none;
+  border: none;
+  cursor: pointer;
+  text-align: left;
+}
+
+[dir='rtl'] .menu-item {
+  text-align: right;
+}
+
+.menu-item:disabled {
+  cursor: not-allowed;
+}
+
+.menu-item-label {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.menu-item-shortcut {
+  font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', sans-serif;
+  margin-left: auto;
+  padding-left: 16px;
+}
+
+[dir='rtl'] .menu-item-shortcut {
+  margin-left: 0;
+  margin-right: auto;
+  padding-left: 0;
+  padding-right: 16px;
+}
+
+.menu-separator {
+  pointer-events: none;
+}
+
+/* =============================================================================
+   HOVER STATES
+   ============================================================================= */
+
+.menubar button:hover {
+  background-color: rgba(0, 0, 0, 0.08);
+}
+
+.menubar button:active {
+  background-color: rgba(0, 0, 0, 0.12);
+}
+
+/* Menu item hover - system blue */
+.menu-item:not(:disabled):hover,
+.menu-item:not(:disabled):focus {
+  background-color: rgb(0, 122, 255) !important;
+  color: white !important;
+}
+
+.menu-item:not(:disabled):hover .menu-item-shortcut,
+.menu-item:not(:disabled):focus .menu-item-shortcut {
+  color: rgba(255, 255, 255, 0.75) !important;
+}
+
+/* =============================================================================
+   DARK MODE (Future)
+   ============================================================================= */
+
+@media (prefers-color-scheme: dark) {
+  .menubar {
+    color: rgba(255, 255, 255, 0.85);
+    background-color: rgba(40, 40, 40, 0.8) !important;
+    border-bottom-color: rgba(255, 255, 255, 0.1) !important;
+  }
+
+  .menubar button:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+  }
+
+  .menubar button:active {
+    background-color: rgba(255, 255, 255, 0.15);
+  }
+
+  .menu-dropdown {
+    background-color: rgba(40, 40, 40, 0.95) !important;
+    border-color: rgba(255, 255, 255, 0.1) !important;
+  }
+
+  .menu-item {
+    color: rgba(255, 255, 255, 0.85);
+  }
+
+  .menu-separator {
+    background-color: rgba(255, 255, 255, 0.1) !important;
+  }
+}
+
+/* =============================================================================
+   RESPONSIVE ADJUSTMENTS
+   ============================================================================= */
+
+/* Hide some menu items on smaller screens */
+@media (max-width: 1024px) {
+  .app-menu .menu-bar-item:nth-child(n + 5) {
+    display: none;
+  }
+}
+
+@media (max-width: 768px) {
+  .app-menu .menu-bar-item:nth-child(n + 3) {
+    display: none;
+  }
+
+  .time-display {
+    display: none;
+  }
+}
+
+@media (max-width: 640px) {
+  .menubar {
+    display: none;
+  }
+}
+
+/* =============================================================================
+   ANIMATION UTILITIES
+   ============================================================================= */
+
+.menu-dropdown {
+  will-change: transform, opacity;
+}
+
+/* Disable animations for users who prefer reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .menu-dropdown {
+    transition: none !important;
+    animation: none !important;
+  }
+}
+
+/* =============================================================================
+   ACCESSIBILITY
+   ============================================================================= */
+
+.menubar button:focus-visible {
+  outline: 2px solid rgb(0, 122, 255);
+  outline-offset: -2px;
+}
+
+.menu-item:focus-visible {
+  outline: 2px solid rgb(0, 122, 255);
+  outline-offset: -2px;
+}

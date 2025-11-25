@@ -36,6 +36,7 @@ const Invoices = lazy(() => import("./pages/Invoices"));
 const CreateInvoice = lazy(() => import("./pages/CreateInvoice"));
 const Clients = lazy(() => import("./pages/Clients"));
 const AuthCallback = lazy(() => import("./pages/AuthCallback"));
+const MacOSDesktop = lazy(() => import("./pages/MacOSDesktop"));
 
 // Optimized loading component
 const PageLoader = () => (
@@ -86,6 +87,10 @@ function App() {
                   <Route path="/client/:token" element={<ClientProject />} />
                   <Route path="/client/project/:token" element={<ClientProject />} />
                   <Route path="/contract/approve/:token" element={<ContractApproval />} />
+
+                  {/* macOS Desktop Preview - temporary test route */}
+                  <Route path="/macos" element={<MacOSDesktop />} />
+                  <Route path="/:lang/macos" element={<MacOSDesktop />} />
                   
                   {/* Language-specific auth routes */}
                   <Route path="/:lang/login" element={

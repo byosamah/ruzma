@@ -1,0 +1,478 @@
+/**
+ * macOS Window Styles
+ *
+ * Styles for the window management system including:
+ * - Window container styles
+ * - Title bar styles
+ * - Shadow and border effects
+ * - Animation keyframes
+ * - Focus and blur states
+ */
+
+/* =============================================================================
+   CSS VARIABLES
+   ============================================================================= */
+
+:root {
+  /* Window appearance */
+  --macos-window-radius: 10px;
+  --macos-window-shadow-focused:
+    0 22px 70px 4px rgba(0, 0, 0, 0.25),
+    0 8px 20px rgba(0, 0, 0, 0.15),
+    0 0 1px rgba(0, 0, 0, 0.2);
+  --macos-window-shadow-unfocused:
+    0 10px 30px rgba(0, 0, 0, 0.15),
+    0 4px 10px rgba(0, 0, 0, 0.1);
+  --macos-window-border: rgba(0, 0, 0, 0.12);
+
+  /* Title bar */
+  --macos-titlebar-height: 38px;
+  --macos-titlebar-bg: rgba(246, 246, 246, 0.85);
+  --macos-titlebar-bg-unfocused: rgba(246, 246, 246, 0.75);
+
+  /* Content area */
+  --macos-content-bg: #ffffff;
+
+  /* Animation timing */
+  --macos-window-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --macos-window-ease: cubic-bezier(0.25, 0.1, 0.25, 1);
+}
+
+/* =============================================================================
+   WINDOW CONTAINER
+   ============================================================================= */
+
+.macos-window {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  border-radius: var(--macos-window-radius);
+  overflow: hidden;
+  background: var(--macos-content-bg);
+  border: 1px solid var(--macos-window-border);
+  transition:
+    box-shadow 0.2s var(--macos-window-ease),
+    opacity 0.15s var(--macos-window-ease);
+}
+
+/* Focused window */
+.macos-window.focused {
+  box-shadow: var(--macos-window-shadow-focused);
+}
+
+/* Unfocused window */
+.macos-window.unfocused {
+  box-shadow: var(--macos-window-shadow-unfocused);
+}
+
+/* Maximized window */
+.macos-window.maximized {
+  border-radius: 0;
+  border: none;
+}
+
+/* Minimized window (preparing for dock animation) */
+.macos-window.minimizing {
+  transition:
+    transform 0.5s var(--macos-window-spring),
+    opacity 0.5s var(--macos-window-ease);
+}
+
+/* Dragging state */
+.macos-window.dragging {
+  cursor: grabbing;
+  opacity: 0.95;
+  user-select: none;
+}
+
+/* Resizing state */
+.macos-window.resizing {
+  user-select: none;
+}
+
+/* =============================================================================
+   TITLE BAR
+   ============================================================================= */
+
+.macos-window-titlebar {
+  flex-shrink: 0;
+  height: var(--macos-titlebar-height);
+  min-height: var(--macos-titlebar-height);
+  background: var(--macos-titlebar-bg);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+  border-top-left-radius: var(--macos-window-radius);
+  border-top-right-radius: var(--macos-window-radius);
+  display: flex;
+  align-items: center;
+  position: relative;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.macos-window.unfocused .macos-window-titlebar {
+  background: var(--macos-titlebar-bg-unfocused);
+}
+
+.macos-window.maximized .macos-window-titlebar {
+  border-radius: 0;
+}
+
+/* Title text */
+.macos-window-title {
+  flex: 1;
+  text-align: center;
+  font-size: 13px;
+  font-weight: 500;
+  color: #1d1d1f;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  padding: 0 80px; /* Space for traffic lights on both sides */
+  pointer-events: none;
+}
+
+.macos-window.unfocused .macos-window-title {
+  color: #8e8e93;
+}
+
+/* =============================================================================
+   TRAFFIC LIGHTS
+   ============================================================================= */
+
+.macos-traffic-lights {
+  position: absolute;
+  left: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  z-index: 10;
+}
+
+/* RTL support - traffic lights on right */
+[dir="rtl"] .macos-traffic-lights {
+  left: auto;
+  right: 14px;
+  flex-direction: row-reverse;
+}
+
+.macos-traffic-light {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: default;
+  transition:
+    background-color 0.1s ease,
+    transform 0.1s ease;
+}
+
+.macos-traffic-light:hover {
+  transform: scale(1.05);
+}
+
+.macos-traffic-light:active {
+  transform: scale(0.95);
+}
+
+/* Close button */
+.macos-traffic-light.close {
+  background-color: #FF5F57;
+}
+
+.macos-traffic-light.close:hover {
+  background-color: #FF3B30;
+}
+
+/* Minimize button */
+.macos-traffic-light.minimize {
+  background-color: #FFBD2E;
+}
+
+.macos-traffic-light.minimize:hover {
+  background-color: #FF9500;
+}
+
+/* Maximize button */
+.macos-traffic-light.maximize {
+  background-color: #28C840;
+}
+
+.macos-traffic-light.maximize:hover {
+  background-color: #28CD41;
+}
+
+/* Inactive/unfocused state */
+.macos-window.unfocused .macos-traffic-light {
+  background-color: #DCDCDC;
+}
+
+/* Traffic light symbols (shown on hover) */
+.macos-traffic-light-symbol {
+  font-size: 9px;
+  font-weight: bold;
+  line-height: 1;
+  opacity: 0;
+  transition: opacity 0.1s ease;
+  color: rgba(0, 0, 0, 0.5);
+}
+
+.macos-traffic-lights:hover .macos-traffic-light-symbol {
+  opacity: 1;
+}
+
+.macos-window.unfocused .macos-traffic-lights:hover .macos-traffic-light-symbol {
+  opacity: 0;
+}
+
+/* =============================================================================
+   CONTENT AREA
+   ============================================================================= */
+
+.macos-window-content {
+  flex: 1;
+  overflow: auto;
+  background: var(--macos-content-bg);
+  position: relative;
+}
+
+/* Maximized content fills screen */
+.macos-window.maximized .macos-window-content {
+  border-radius: 0;
+}
+
+/* =============================================================================
+   RESIZE HANDLES
+   ============================================================================= */
+
+.macos-resize-handle {
+  position: absolute;
+  z-index: 50;
+  /* Uncomment for debugging */
+  /* background: rgba(255, 0, 0, 0.1); */
+}
+
+/* Edge handles */
+.macos-resize-handle.n {
+  top: 0;
+  left: 12px;
+  right: 12px;
+  height: 4px;
+  cursor: ns-resize;
+}
+
+.macos-resize-handle.s {
+  bottom: 0;
+  left: 12px;
+  right: 12px;
+  height: 4px;
+  cursor: ns-resize;
+}
+
+.macos-resize-handle.e {
+  right: 0;
+  top: 12px;
+  bottom: 12px;
+  width: 4px;
+  cursor: ew-resize;
+}
+
+.macos-resize-handle.w {
+  left: 0;
+  top: 12px;
+  bottom: 12px;
+  width: 4px;
+  cursor: ew-resize;
+}
+
+/* Corner handles */
+.macos-resize-handle.ne {
+  top: 0;
+  right: 0;
+  width: 12px;
+  height: 12px;
+  cursor: nesw-resize;
+}
+
+.macos-resize-handle.nw {
+  top: 0;
+  left: 0;
+  width: 12px;
+  height: 12px;
+  cursor: nwse-resize;
+}
+
+.macos-resize-handle.se {
+  bottom: 0;
+  right: 0;
+  width: 12px;
+  height: 12px;
+  cursor: nwse-resize;
+}
+
+.macos-resize-handle.sw {
+  bottom: 0;
+  left: 0;
+  width: 12px;
+  height: 12px;
+  cursor: nesw-resize;
+}
+
+/* Hide resize handles when maximized */
+.macos-window.maximized .macos-resize-handle {
+  display: none;
+}
+
+/* =============================================================================
+   ANIMATIONS
+   ============================================================================= */
+
+/* Window open animation */
+@keyframes macos-window-open {
+  0% {
+    opacity: 0;
+    transform: scale(0.9) translateY(20px);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+.macos-window.opening {
+  animation: macos-window-open 0.25s var(--macos-window-spring) forwards;
+}
+
+/* Window close animation */
+@keyframes macos-window-close {
+  0% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+}
+
+.macos-window.closing {
+  animation: macos-window-close 0.2s var(--macos-window-ease) forwards;
+  pointer-events: none;
+}
+
+/* Minimize animation (scales down to dock) */
+@keyframes macos-window-minimize {
+  0% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(0.2) translateY(100vh);
+  }
+}
+
+.macos-window.minimizing {
+  animation: macos-window-minimize 0.5s var(--macos-window-spring) forwards;
+  pointer-events: none;
+}
+
+/* Restore animation (from minimized) */
+@keyframes macos-window-restore {
+  0% {
+    opacity: 0;
+    transform: scale(0.2) translateY(100vh);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+.macos-window.restoring {
+  animation: macos-window-restore 0.35s var(--macos-window-spring) forwards;
+}
+
+/* Maximize animation */
+@keyframes macos-window-maximize {
+  0% {
+    border-radius: var(--macos-window-radius);
+  }
+  100% {
+    border-radius: 0;
+  }
+}
+
+/* Focus pulse animation */
+@keyframes macos-window-focus-pulse {
+  0%, 100% {
+    box-shadow: var(--macos-window-shadow-focused);
+  }
+  50% {
+    box-shadow:
+      0 24px 75px 6px rgba(0, 0, 0, 0.28),
+      0 10px 24px rgba(0, 0, 0, 0.18),
+      0 0 1px rgba(0, 0, 0, 0.2);
+  }
+}
+
+.macos-window.focus-pulse {
+  animation: macos-window-focus-pulse 0.3s var(--macos-window-ease);
+}
+
+/* =============================================================================
+   SCROLLBAR STYLING (macOS-like)
+   ============================================================================= */
+
+.macos-window-content::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+.macos-window-content::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.macos-window-content::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 4px;
+  border: 2px solid transparent;
+  background-clip: padding-box;
+}
+
+.macos-window-content::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 0, 0, 0.35);
+  border: 2px solid transparent;
+  background-clip: padding-box;
+}
+
+/* Only show scrollbar on hover (macOS behavior) */
+.macos-window-content {
+  scrollbar-width: thin;
+  scrollbar-color: transparent transparent;
+}
+
+.macos-window-content:hover {
+  scrollbar-color: rgba(0, 0, 0, 0.2) transparent;
+}
+
+/* =============================================================================
+   UTILITY CLASSES
+   ============================================================================= */
+
+/* Prevent selection during window operations */
+.macos-no-select {
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+/* Hardware acceleration hint */
+.macos-accelerated {
+  will-change: transform;
+  transform: translateZ(0);
+}
