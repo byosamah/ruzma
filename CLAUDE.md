@@ -821,33 +821,6 @@ See [CHANGELOG.md](CHANGELOG.md) for full technical details, migration guides, a
 
 ## Development Workflow
 
-### Feature Development with Spec Kit
-
-1. **Specify**: Create feature specification
-   ```bash
-   /specify "Add export functionality to projects"
-   ```
-
-2. **Plan**: Generate implementation plan
-   ```bash
-   /plan
-   ```
-
-3. **Tasks**: Break down into actionable tasks
-   ```bash
-   /tasks
-   ```
-
-4. **Implement**: Execute the implementation
-   ```bash
-   /implement
-   ```
-
-5. **Constitution**: Review against project principles
-   ```bash
-   /constitution
-   ```
-
 ### Standard Development Flow
 
 1. **Branch**: Create feature branch from `main`
@@ -937,7 +910,6 @@ chore: Maintenance tasks
 ### Core Documentation
 - `README.md` - User-facing project setup and overview
 - `CHANGELOG.md` - Detailed version history and migration guides
-- `.specify/` - Feature specifications and development workflow
 - `src/*/CLAUDE.md` - Component/directory-specific guidelines
 
 ### Technical References
