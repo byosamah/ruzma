@@ -1,0 +1,375 @@
+/**
+ * macOS Effects Styles
+ *
+ * Visual effects for the macOS interface:
+ * - Glass morphism (frosted glass)
+ * - Shadows and depth
+ * - Blur effects
+ * - Vibrancy
+ */
+
+/* =============================================================================
+   CSS EFFECT VARIABLES
+   ============================================================================= */
+
+:root {
+  /* Glass backgrounds */
+  --macos-glass-light: rgba(255, 255, 255, 0.72);
+  --macos-glass-dark: rgba(30, 30, 30, 0.72);
+  --macos-glass-dock: rgba(40, 40, 40, 0.4);
+  --macos-glass-menu: rgba(30, 30, 30, 0.8);
+
+  /* Blur amounts */
+  --macos-blur-subtle: 10px;
+  --macos-blur-medium: 20px;
+  --macos-blur-heavy: 40px;
+
+  /* Saturation for vibrancy */
+  --macos-saturation: 180%;
+
+  /* Shadows */
+  --macos-shadow-small: 0 2px 8px rgba(0, 0, 0, 0.15);
+  --macos-shadow-medium: 0 10px 40px rgba(0, 0, 0, 0.2);
+  --macos-shadow-large: 0 22px 70px 4px rgba(0, 0, 0, 0.28);
+  --macos-shadow-window: 0 22px 70px 4px rgba(0, 0, 0, 0.28), 0 0 0 1px rgba(0, 0, 0, 0.1);
+  --macos-shadow-dock: 0 10px 60px rgba(0, 0, 0, 0.4);
+
+  /* Border colors */
+  --macos-border-light: rgba(255, 255, 255, 0.15);
+  --macos-border-dark: rgba(0, 0, 0, 0.1);
+
+  /* Menu highlight */
+  --macos-menu-highlight: rgba(0, 122, 255, 0.8);
+}
+
+/* =============================================================================
+   GLASS MORPHISM CLASSES
+   ============================================================================= */
+
+/* Standard glass panel - light */
+.glass-panel {
+  background: var(--macos-glass-light);
+  backdrop-filter: blur(var(--macos-blur-medium)) saturate(var(--macos-saturation));
+  -webkit-backdrop-filter: blur(var(--macos-blur-medium)) saturate(var(--macos-saturation));
+}
+
+/* Glass panel - dark */
+.glass-panel-dark {
+  background: var(--macos-glass-dark);
+  backdrop-filter: blur(var(--macos-blur-medium)) saturate(var(--macos-saturation));
+  -webkit-backdrop-filter: blur(var(--macos-blur-medium)) saturate(var(--macos-saturation));
+}
+
+/* Glass panel for dock */
+.glass-dock {
+  background: var(--macos-glass-dock);
+  backdrop-filter: blur(var(--macos-blur-heavy)) saturate(200%);
+  -webkit-backdrop-filter: blur(var(--macos-blur-heavy)) saturate(200%);
+  border: 1px solid var(--macos-border-light);
+}
+
+/* Glass panel for menu bar */
+.glass-menubar {
+  background: var(--macos-glass-menu);
+  backdrop-filter: blur(var(--macos-blur-medium)) saturate(var(--macos-saturation));
+  -webkit-backdrop-filter: blur(var(--macos-blur-medium)) saturate(var(--macos-saturation));
+}
+
+/* Glass panel for windows title bar */
+.glass-titlebar {
+  background: rgba(255, 255, 255, 0.5);
+  backdrop-filter: blur(var(--macos-blur-subtle));
+  -webkit-backdrop-filter: blur(var(--macos-blur-subtle));
+}
+
+.dark .glass-titlebar {
+  background: rgba(50, 50, 50, 0.5);
+}
+
+/* Glass panel for menus */
+.glass-menu {
+  background: var(--macos-glass-dark);
+  backdrop-filter: blur(var(--macos-blur-heavy)) saturate(200%);
+  -webkit-backdrop-filter: blur(var(--macos-blur-heavy)) saturate(200%);
+  border: 1px solid var(--macos-border-light);
+}
+
+/* =============================================================================
+   SHADOW CLASSES
+   ============================================================================= */
+
+/* Small shadow for buttons, icons */
+.shadow-macos-sm {
+  box-shadow: var(--macos-shadow-small);
+}
+
+/* Medium shadow for cards, dropdowns */
+.shadow-macos-md {
+  box-shadow: var(--macos-shadow-medium);
+}
+
+/* Large shadow for windows */
+.shadow-macos-lg {
+  box-shadow: var(--macos-shadow-large);
+}
+
+/* Window shadow with border */
+.shadow-macos-window {
+  box-shadow: var(--macos-shadow-window);
+}
+
+/* Dock shadow */
+.shadow-macos-dock {
+  box-shadow: var(--macos-shadow-dock);
+}
+
+/* Elevated shadow (for dragging, focused elements) */
+.shadow-macos-elevated {
+  box-shadow: 0 30px 90px rgba(0, 0, 0, 0.35), 0 0 0 1px rgba(0, 0, 0, 0.12);
+}
+
+/* Inner shadow for inset elements */
+.shadow-macos-inset {
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+/* =============================================================================
+   VIBRANCY EFFECTS
+   ============================================================================= */
+
+/* Light vibrancy */
+.vibrancy-light {
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.9) 0%,
+    rgba(255, 255, 255, 0.8) 100%
+  );
+  backdrop-filter: blur(var(--macos-blur-medium)) saturate(var(--macos-saturation));
+  -webkit-backdrop-filter: blur(var(--macos-blur-medium)) saturate(var(--macos-saturation));
+}
+
+/* Dark vibrancy */
+.vibrancy-dark {
+  background: linear-gradient(
+    180deg,
+    rgba(40, 40, 40, 0.9) 0%,
+    rgba(30, 30, 30, 0.8) 100%
+  );
+  backdrop-filter: blur(var(--macos-blur-medium)) saturate(var(--macos-saturation));
+  -webkit-backdrop-filter: blur(var(--macos-blur-medium)) saturate(var(--macos-saturation));
+}
+
+/* Ultra-thin material */
+.vibrancy-ultra-thin {
+  background: rgba(255, 255, 255, 0.3);
+  backdrop-filter: blur(var(--macos-blur-heavy)) saturate(250%);
+  -webkit-backdrop-filter: blur(var(--macos-blur-heavy)) saturate(250%);
+}
+
+.dark .vibrancy-ultra-thin {
+  background: rgba(0, 0, 0, 0.3);
+}
+
+/* =============================================================================
+   BORDER EFFECTS
+   ============================================================================= */
+
+/* Subtle border for glass panels */
+.border-macos-subtle {
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.dark .border-macos-subtle {
+  border: 1px solid rgba(0, 0, 0, 0.2);
+}
+
+/* Inner glow border */
+.border-macos-glow {
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.1);
+}
+
+/* Window border */
+.border-macos-window {
+  border: 1px solid rgba(0, 0, 0, 0.12);
+}
+
+.dark .border-macos-window {
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+/* =============================================================================
+   HOVER EFFECTS
+   ============================================================================= */
+
+/* Hover highlight for interactive elements */
+.hover-highlight {
+  transition: background-color 0.15s ease;
+}
+
+.hover-highlight:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.dark .hover-highlight:hover {
+  background-color: rgba(255, 255, 255, 0.05);
+}
+
+/* Menu item hover */
+.menu-hover:hover {
+  background-color: var(--macos-menu-highlight);
+  border-radius: 4px;
+}
+
+/* Icon hover effect */
+.icon-hover {
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.icon-hover:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+/* =============================================================================
+   FOCUS EFFECTS
+   ============================================================================= */
+
+/* Focus ring for accessibility */
+.focus-ring-macos:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(0, 122, 255, 0.5);
+}
+
+/* Focus ring for dark mode */
+.dark .focus-ring-macos:focus {
+  box-shadow: 0 0 0 3px rgba(10, 132, 255, 0.5);
+}
+
+/* Focus within for containers */
+.focus-within-ring:focus-within {
+  box-shadow: 0 0 0 3px rgba(0, 122, 255, 0.3);
+}
+
+/* =============================================================================
+   ACTIVE/PRESSED STATES
+   ============================================================================= */
+
+/* Button press effect */
+.press-effect:active {
+  transform: scale(0.98);
+  box-shadow: var(--macos-shadow-small);
+}
+
+/* Dock item press */
+.dock-press:active {
+  transform: scale(0.85);
+}
+
+/* =============================================================================
+   DISABLED STATES
+   ============================================================================= */
+
+/* Disabled element */
+.disabled-macos {
+  opacity: 0.5;
+  pointer-events: none;
+  filter: grayscale(30%);
+}
+
+/* =============================================================================
+   SELECTION EFFECTS
+   ============================================================================= */
+
+/* Selection highlight */
+.selection-highlight {
+  background: rgba(0, 122, 255, 0.2);
+  border-radius: 4px;
+}
+
+/* Multi-selection box */
+.selection-box {
+  background: rgba(0, 122, 255, 0.15);
+  border: 1px solid rgba(0, 122, 255, 0.5);
+  border-radius: 2px;
+}
+
+/* =============================================================================
+   GRADIENT OVERLAYS
+   ============================================================================= */
+
+/* Top fade for scroll areas */
+.gradient-fade-top::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 24px;
+  background: linear-gradient(to bottom, var(--macos-glass-light), transparent);
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* Bottom fade for scroll areas */
+.gradient-fade-bottom::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 24px;
+  background: linear-gradient(to top, var(--macos-glass-light), transparent);
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* =============================================================================
+   WINDOW CONTENT EFFECTS
+   ============================================================================= */
+
+/* Inset content area */
+.content-inset {
+  background: rgba(0, 0, 0, 0.03);
+  border-radius: 8px;
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.08);
+}
+
+.dark .content-inset {
+  background: rgba(0, 0, 0, 0.2);
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.3);
+}
+
+/* Raised content area */
+.content-raised {
+  background: rgba(255, 255, 255, 0.5);
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.dark .content-raised {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+/* =============================================================================
+   BROWSER FALLBACKS
+   ============================================================================= */
+
+/* Fallback for browsers without backdrop-filter support */
+@supports not (backdrop-filter: blur(20px)) {
+  .glass-panel,
+  .glass-panel-dark,
+  .glass-dock,
+  .glass-menubar,
+  .glass-titlebar,
+  .glass-menu {
+    background: rgba(40, 40, 40, 0.95);
+  }
+
+  .glass-panel {
+    background: rgba(250, 250, 250, 0.98);
+  }
+
+  .dark .glass-panel {
+    background: rgba(40, 40, 40, 0.98);
+  }
+}

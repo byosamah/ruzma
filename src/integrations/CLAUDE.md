@@ -16,7 +16,7 @@ src/integrations/
 import { createClient } from '@supabase/supabase-js';
 import type { Database } from './types';
 
-const SUPABASE_URL = "https://***REMOVED***.supabase.co";
+const SUPABASE_URL = "https://YOUR-PROJECT-ID.supabase.co";
 const SUPABASE_PUBLISHABLE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...";
 
 // ✅ ALWAYS use this client for database operations
@@ -361,10 +361,10 @@ const presence = supabase.channel('project-collaboration')
 ### Regenerating Types
 ```bash
 # ✅ Generate types from Supabase CLI
-supabase gen types typescript --project-id ***REMOVED*** > src/integrations/supabase/types.ts
+supabase gen types typescript --project-id YOUR-PROJECT-ID > src/integrations/supabase/types.ts
 
 # ✅ Or using npx
-npx supabase gen types typescript --project-id ***REMOVED*** > src/integrations/supabase/types.ts
+npx supabase gen types typescript --project-id YOUR-PROJECT-ID > src/integrations/supabase/types.ts
 ```
 
 ### Using Generated Types

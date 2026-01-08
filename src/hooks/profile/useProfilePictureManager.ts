@@ -63,8 +63,9 @@ export const useProfilePictureManager = ({ user, onSuccess }: UseProfilePictureM
         throw new Error('Not authenticated');
       }
 
-      // Upload via edge function
-      const uploadResponse = await fetch(`https://***REMOVED***.supabase.co/functions/v1/upload-profile-picture`, {
+      // Upload via edge function using the Supabase URL from environment
+      const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
+      const uploadResponse = await fetch(`${supabaseUrl}/functions/v1/upload-profile-picture`, {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${session.access_token}`,

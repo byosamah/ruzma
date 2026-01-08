@@ -605,7 +605,7 @@ LEMON_SQUEEZY_WEBHOOK_SECRET # Webhook signature verification
 ```
 
 **Webhook Configuration**:
-- URL: `https://***REMOVED***.supabase.co/functions/v1/lemon-squeezy-webhook`
+- URL: `https://YOUR-PROJECT-ID.supabase.co/functions/v1/lemon-squeezy-webhook`
 - Configured in Lemon Squeezy Dashboard → Settings → Webhooks
 - Verifies signature for security
 - Automatically updates user profiles and subscription status
@@ -698,7 +698,7 @@ LEMON_SQUEEZY_WEBHOOK_SECRET # Webhook signature verification
 2. Update schema in Supabase dashboard or via Supabase CLI
 3. Regenerate types:
    ```bash
-   npx supabase gen types typescript --project-id ***REMOVED*** > src/integrations/supabase/types.ts
+   npx supabase gen types typescript --project-id YOUR-PROJECT-ID > src/integrations/supabase/types.ts
    ```
 4. Update services/hooks using affected tables
 5. Update any affected queries with new columns/relations
@@ -821,33 +821,6 @@ See [CHANGELOG.md](CHANGELOG.md) for full technical details, migration guides, a
 
 ## Development Workflow
 
-### Feature Development with Spec Kit
-
-1. **Specify**: Create feature specification
-   ```bash
-   /specify "Add export functionality to projects"
-   ```
-
-2. **Plan**: Generate implementation plan
-   ```bash
-   /plan
-   ```
-
-3. **Tasks**: Break down into actionable tasks
-   ```bash
-   /tasks
-   ```
-
-4. **Implement**: Execute the implementation
-   ```bash
-   /implement
-   ```
-
-5. **Constitution**: Review against project principles
-   ```bash
-   /constitution
-   ```
-
 ### Standard Development Flow
 
 1. **Branch**: Create feature branch from `main`
@@ -937,7 +910,6 @@ chore: Maintenance tasks
 ### Core Documentation
 - `README.md` - User-facing project setup and overview
 - `CHANGELOG.md` - Detailed version history and migration guides
-- `.specify/` - Feature specifications and development workflow
 - `src/*/CLAUDE.md` - Component/directory-specific guidelines
 
 ### Technical References

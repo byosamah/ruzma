@@ -196,7 +196,7 @@ Payment Flow:
   - Proper error handling and audit logging
 - **Frontend**: Updated DeleteAccountDialog to use Edge Function instead of broken client-side admin call
 - **Safety**: Added confirmation dialog, proper sign-out flow, session cleanup
-- **Deployed**: Function live at `https://***REMOVED***.supabase.co/functions/v1/delete-account`
+- **Deployed**: Function live at your Supabase project's Edge Functions
 
 **Security Enhancements**:
 - **Password Change**: Added current password verification via re-authentication

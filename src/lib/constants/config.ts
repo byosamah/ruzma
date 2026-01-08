@@ -6,7 +6,7 @@
 // App URLs
 export const APP_CONFIG = {
   BASE_URL: import.meta.env.VITE_APP_BASE_URL || 'https://app.ruzma.co',
-  SUPABASE_URL: import.meta.env.VITE_SUPABASE_URL || 'https://***REMOVED***.supabase.co',
+  SUPABASE_URL: import.meta.env.VITE_SUPABASE_URL,
   SUPABASE_ANON_KEY: import.meta.env.VITE_SUPABASE_ANON_KEY,
 } as const;
 
