@@ -605,7 +605,7 @@ LEMON_SQUEEZY_WEBHOOK_SECRET # Webhook signature verification
 ```
 
 **Webhook Configuration**:
-- URL: `https://***REMOVED***.supabase.co/functions/v1/lemon-squeezy-webhook`
+- URL: `https://YOUR-PROJECT-ID.supabase.co/functions/v1/lemon-squeezy-webhook`
 - Configured in Lemon Squeezy Dashboard → Settings → Webhooks
 - Verifies signature for security
 - Automatically updates user profiles and subscription status
@@ -698,7 +698,7 @@ LEMON_SQUEEZY_WEBHOOK_SECRET # Webhook signature verification
 2. Update schema in Supabase dashboard or via Supabase CLI
 3. Regenerate types:
    ```bash
-   npx supabase gen types typescript --project-id ***REMOVED*** > src/integrations/supabase/types.ts
+   npx supabase gen types typescript --project-id YOUR-PROJECT-ID > src/integrations/supabase/types.ts
    ```
 4. Update services/hooks using affected tables
 5. Update any affected queries with new columns/relations
